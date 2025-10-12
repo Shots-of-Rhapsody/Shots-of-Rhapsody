@@ -1,6 +1,6 @@
 ---
-title: When Morality Meets Math: Toward a Formal Language of Ethics
-published: 2025-10-12
+title: "When Morality Meets Math: Toward a Formal Language of Ethics"
+published: 2025-10-01
 description: Translating ethical theory into auditable, mathematical evaluators that separate facts from values and make moral reasoning transparent.
 tags: [Philosophy, Ethics, Mathematics, AI, Moral-Uncertainty]
 category: Modern Philosophy
