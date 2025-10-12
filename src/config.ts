@@ -46,7 +46,7 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.About,
 		{
 			name: "GitHub",
-			url: "https://github.com/Shots-of-Rhapsody", // Internal links should not include the base path, as it is automatically added
+			url: "https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/", // Internal links should not include the base path, as it is automatically added
 			external: true, // Show an external link icon and will open in a new tab
 		},
 	],
