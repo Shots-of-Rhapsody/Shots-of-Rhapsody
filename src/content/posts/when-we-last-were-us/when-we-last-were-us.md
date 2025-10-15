@@ -1,7 +1,8 @@
 ---
 title: "Where We Last Were Us"
 published: 2025-10-01
-description: Two voices. One place. Never again the same. 
+description: Two voices. One place. Never again the same.
+image: "./When we last were us.jpg"
 tags: [Poetic, Dialogue, Voices, Romance, Love]
 category: Romance
 draft: false
