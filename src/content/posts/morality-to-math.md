@@ -9,8 +9,8 @@ draft: false
 
 # When Morality Meets Math: Toward a Formal Language of Ethics
 
-Rhetoric is the oldest operating system of ethics. It runs on persuasion, emotion, and centuries of inherited authority.  
-But when societies begin to automate decisions — **loan approvals, drone strikes, medical triage** — the old OS crashes.  
+Rhetoric is the oldest operating system of ethics. It runs on persuasion, emotion & centuries of inherited authority.  
+But when societies begin to automate decisions, **loan approvals, drone strikes, medical triage** , the old OS crashes.  
 Words become too slow. Debate becomes noise.  
 
 This project begins from a radical premise:  
@@ -20,11 +20,11 @@ This project begins from a radical premise:
 
 ## Purpose
 
-We aim to re-engineer ethical debate into something **auditable**, **testable**, and **pluralistic** — not to replace philosophy, but to give it syntax.
+The aim is to re-engineer ethical debate into something **auditable**, **testable** & **pluralistic** , not to replace philosophy, but to give it syntax.
 
 1. **Formalize**  
-   Represent the great normative theories — *consequentialism*, *deontology*, *virtue ethics*, and others — as evaluators.  
-   Each theory becomes a function: it takes in states of the world, outputs moral rankings, and can be inspected line by line.
+   Represent the great normative theories, *consequentialism*, *deontology*, *virtue ethics* & others as evaluators.  
+   Each theory becomes a function: it takes in states of the world, outputs moral rankings & can be inspected line by line.
 
    ```python
    # Consequentialism
@@ -45,8 +45,8 @@ We aim to re-engineer ethical debate into something **auditable**, **testable**,
    ```
 
 2. **Separate**  
-   Facts describe how things *are* — probabilities, causal models, statistical dependencies.  
-   Values describe how things *ought* to be — duties, rights, virtues, ideals.  
+   Facts describe how things *are* , probabilities, causal models, statistical dependencies.  
+   Values describe how things *ought* to be, duties, rights, virtues, ideals.  
    We separate them so each can be challenged on its own terms.
 
    ```
@@ -56,8 +56,8 @@ We aim to re-engineer ethical debate into something **auditable**, **testable**,
 
 3. **Aggregate**  
    Real moral life involves conflict.  
-   We build a system where multiple evaluators coexist — each with its own moral weight.  
-   When they disagree, the algorithm doesn’t “pick a winner”; it quantifies the disagreement and expresses uncertainty.  
+   We build a system where multiple evaluators coexist, each with its own moral weight.  
+   When they disagree, the algorithm doesn’t “pick a winner”; it quantifies the disagreement & expresses uncertainty.  
    That uncertainty becomes part of the ethical output.
 
    ```python
@@ -68,7 +68,7 @@ We aim to re-engineer ethical debate into something **auditable**, **testable**,
 
 4. **Constrain**  
    Rights and duties aren’t negotiable sliders.  
-   They are *constraints baked into the optimization itself* — limits that prevent hidden moral violations.
+   They are *constraints baked into the optimization itself* , limits that prevent hidden moral violations.
 
    ```python
    subject_to = [
@@ -78,7 +78,7 @@ We aim to re-engineer ethical debate into something **auditable**, **testable**,
    ```
 
 5. **Audit**  
-   Every moral recommendation should come with an **explanation set** — a trace showing which premises mattered most.  
+   Every moral recommendation should come with an **explanation set** , a trace showing which premises mattered most.  
    Think of it as *explainable AI for ethics*: no black boxes, only visible reasoning.
 
 ---
@@ -91,9 +91,9 @@ A good system should preserve disagreement as *signal*, not *noise*.
 > Moral certainty is comforting, but dangerous.  
 > Moral uncertainty is unsettling, but honest.
 
-The modern philosopher no longer writes in prose alone. They write in **datasets and decision trees**.  
-Truth is not declared; it is sampled.  
-Each model of the world — a climate simulation, a market forecast, a social algorithm — is a confession:  
+The modern philosopher no longer writes in prose alone. They write in **datasets & decision trees**.  
+Truth is not declared, it is sampled.  
+Each model of the world, a climate simulation, a market forecast, a social algorithm, is a confession:  
 we no longer believe in certainty, only in confidence intervals.
 
 ---
@@ -107,7 +107,7 @@ Formal ethics allows:
 - **Transparency:** Every judgment is traceable.  
 - **Pluralism:** Multiple moral theories coexist mathematically.  
 - **Accountability:** Hidden biases become visible as model weights.  
-- **Education:** Philosophy becomes interactive — something to test, not just recite.
+- **Education:** Philosophy becomes interactive, something to test, not just recite.
 
 | Principle | Description | Example |
 |------------|--------------|----------|
@@ -134,19 +134,19 @@ def moral_recommendation(scenario):
 ```
 
 Such syntax would not eliminate philosophy.  
-It would force it to grow a new grammar — one capable of reasoning **with** the machines it seeks to guide.
+It would force it to grow a new grammar, one capable of reasoning **with** the machines it seeks to guide.
 
 ---
 
 ## The Dream of a Transparent Morality
 
-> The point isn’t to reduce ethics to arithmetic — it’s to build a shared grammar where reason and compassion speak the same language.
+> The point isn’t to reduce ethics to arithmetic, it’s to build a shared grammar where reason & compassion speak the same language.
 
 When our models err, they should err visibly.  
 When they succeed, they should teach us *why*.  
 
 Philosophy once relied on rhetoric to move hearts.  
-In the age of computation, it must also learn to move data — **without losing its soul**.
+In the age of computation, it must also learn to move data, **without losing its soul**.
 
 ---
 
@@ -171,4 +171,4 @@ $$
 
 ---
 
-[^1]: Inspired by work in moral uncertainty (MacAskill, Bykvist & Ord), explainable AI, and computational ethics.
+[^1]: Inspired by work in moral uncertainty (MacAskill, Bykvist & Ord), explainable AI & computational ethics.
