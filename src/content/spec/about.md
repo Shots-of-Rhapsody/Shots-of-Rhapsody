@@ -1,5 +1,5 @@
 # About
-This is the demo site for [Shots of Rhapsody](https://github.com/Shots-of-Rhapsody).
+This is the demo site for [Shots of Rhapsody](https://github.com/Shots-of-Rhapsody/).
 
 ::github{repo="Shots-of-Rhapsody/shotsofrhapsody"}
 
