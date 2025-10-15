@@ -9,7 +9,7 @@ import { LinkPreset } from "./types/config";
 
 export const siteConfig: SiteConfig = {
 	title: "Shots of Rhapsody",
-	subtitle: "Serialized Fiction",
+	subtitle: "Short Stories",
 	lang: "en", // Language code, e.g. 'en', 'zh_CN', 'ja', etc.
 	themeColor: {
 		hue: 250, // Default hue for the theme color, from 0 to 360. e.g. red: 0, teal: 200, cyan: 250, pink: 345
@@ -53,9 +53,9 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "assets/images/Artaius Portrait.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	avatar: "assets/images/Neon Yin-Yang Vision.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "Shots of Rhapsody",
-	bio: "Serialized Fiction",
+	bio: "Short Stories",
 	links: [
 		{
 			name: "Twitter",
