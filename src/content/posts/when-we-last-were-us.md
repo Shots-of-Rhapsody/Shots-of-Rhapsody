@@ -1,9 +1,9 @@
 ---
-title: "When Morality Meets Math: Toward a Formal Language of Ethics"
+title: "Where We Last Were Us"
 published: 2025-10-01
-description: Translating ethical theory into auditable, mathematical evaluators that separate facts from values and make moral reasoning transparent.
-tags: [Philosophy, Ethics, Mathematics, AI, Moral-Uncertainty]
-category: Modern Philosophy
+description: Two voices. One place. Never again the same. 
+tags: [Poetic, Dialogue, Voices, Romance, Love]
+category: Romance
 draft: false
 ---
 
