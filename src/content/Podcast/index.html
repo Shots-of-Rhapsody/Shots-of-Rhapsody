@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Modular Ethics Podcast</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Modular Ethics Podcast</h1>
+  </header>
+
+  <div class="player" role="region" aria-label="Audio player">
+    <div class="track-title" id="title">No track loaded</div>
+    <div class="meta" id="meta">—</div>
+
+    <div class="controls">
+      <button id="prev" title="Previous">⏮️</button>
+      <button id="play" class="primary" title="Play/Pause">▶️</button>
+      <button id="next" title="Next">⏭️</button>
+      <div class="spacer"></div>
+      <button id="loop" title="Loop track">🔁</button>
+      <button id="shuffle" title="Shuffle">🔀</button>
+      <label class="tiny" for="vol">Vol</label>
+      <input id="vol" class="vol" type="range" min="0" max="1" step="0.01" value="1" />
+    </div>
+
+    <div class="row">
+      <span class="time" id="cur">0:00</span>
+      <input id="seek" class="seek" type="range" min="0" max="1000" step="1" value="0" />
+      <span class="time" id="dur">0:00</span>
+    </div>
+
+    <div class="list" id="list" aria-label="Playlist"></div>
+
+    <div class="drop" id="drop">Drop MP3 files here, or
+      <label style="cursor:pointer;color:var(--accent);">
+        choose<input id="picker" type="file" accept="audio/mpeg" multiple hidden>
+      </label>.
+    </div>
+  </div>
+</div>
+
+<audio id="audio" preload="metadata" crossorigin="anonymous"></audio>
+<script src="player.js"></script>
+</body>
+</html>
