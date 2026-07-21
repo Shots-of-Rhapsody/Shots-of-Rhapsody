@@ -26,6 +26,9 @@ package-lock.json
 bun.lockb
 yarn.lock
 
+# local-only Vocal creator exports and original images
+/.vocal-import/
+
 # ide
 .idea
 *.iml

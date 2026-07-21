@@ -38,6 +38,18 @@ jobs:
       - name: Run Astro Check
         run: pnpm check
 
+      - name: Run Vocal importer tests
+        run: pnpm test:vocal
+
+      - name: Verify imported Vocal content when present
+        shell: bash
+        run: |
+          if [[ -f provenance/vocal/manifest.json ]]; then
+            pnpm vocal:verify
+          else
+            echo "No Vocal manifest exists yet; importer tests cover the empty foundation."
+          fi
+
   build:
     runs-on: ubuntu-latest
     name: Astro Build for Node.js 24
@@ -62,3 +74,6 @@ jobs:
 
       - name: Run Astro Build
         run: pnpm build
+
+      - name: Verify built routes and metadata
+        run: pnpm verify:site
