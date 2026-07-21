@@ -149,6 +149,41 @@
         "byteSize": 2171787,
         "alt": null
       }
+    },
+    {
+      "slug": "the-guild-a-chronicle-of-pretty-souls",
+      "capturedAt": "2026-07-21T22:15:39.460Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/poets/the-guild-a-chronicle-of-pretty-souls"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/the-guild-a-chronicle-of-pretty-souls.json",
+        "markdown": "src/content/posts/the-guild-a-chronicle-of-pretty-souls/index.md",
+        "image": "src/content/posts/the-guild-a-chronicle-of-pretty-souls/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:078d3b9ab628e0cd4970bb26c8c6d739147d9153065eae736f9b6881b45c899f",
+        "rawImage": "sha256:0e30d93832138cb364af2778e830c2403bfc66980128d4a395f44a05473a9727",
+        "snapshot": "sha256:d4eae28e644a04ccb8e27bdd4c3001f8912d3cd1dc49d1d0a8e2e52655f27196",
+        "markdown": "sha256:9b6523db4868fd243af22c09e6c56b9d8293163301641da0f14240d32b9429a4",
+        "image": "sha256:0e30d93832138cb364af2778e830c2403bfc66980128d4a395f44a05473a9727",
+        "bodyText": "sha256:fcab02b745b2b8d19782bfbaba5e24c1b96cbb7d16f4b9d916be268f4c25d426"
+      },
+      "content": {
+        "subtitle": "A myth-bent memory of digital devotion, told in glitch-forged rhyme & frosting-slick fire.",
+        "imageCaption": "Shrineborn in Frost, Pixelwritten in Fire.",
+        "bodyTextSha256": "sha256:fcab02b745b2b8d19782bfbaba5e24c1b96cbb7d16f4b9d916be268f4c25d426",
+        "bodyBlockCount": 102
+      },
+      "image": {
+        "sha256": "sha256:0e30d93832138cb364af2778e830c2403bfc66980128d4a395f44a05473a9727",
+        "mimeType": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "byteSize": 2464326,
+        "alt": null
+      }
     }
   ]
 }

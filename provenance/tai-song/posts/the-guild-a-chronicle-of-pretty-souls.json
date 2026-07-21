@@ -1,0 +1,1033 @@
+{
+  "schemaVersion": 1,
+  "slug": "the-guild-a-chronicle-of-pretty-souls",
+  "title": "The Guild: A Chronicle of Pretty Souls",
+  "subtitle": "A myth-bent memory of digital devotion, told in glitch-forged rhyme & frosting-slick fire.",
+  "summary": "A digital elegy for joy, grief, and the guild that made it all sacred.\n\nThis story is a reimagined myth built from real memories. Every section is rooted in lived experience from my time leading a guild in a fantasy MMO, where connection was forged through gameplay, laughter, late nights, and digital stillness.\n\n",
+  "description": "A myth-bent memory of digital devotion, told in glitch-forged rhyme & frosting-slick fire.",
+  "author": "Tai Song",
+  "published": "2025-04-04T23:13:46.501Z",
+  "category": "Poets",
+  "tags": [],
+  "imageAlt": null,
+  "imageCaption": "Shrineborn in Frost, Pixelwritten in Fire.",
+  "provenance": {
+    "authority": "Proton Docs",
+    "captureFormat": "html-export",
+    "capturedAt": "2026-07-21T22:15:39.460Z"
+  },
+  "publication": {
+    "platform": "Vocal",
+    "url": "https://vocal.media/poets/the-guild-a-chronicle-of-pretty-souls"
+  },
+  "hero": {
+    "sha256": "sha256:0e30d93832138cb364af2778e830c2403bfc66980128d4a395f44a05473a9727",
+    "mimeType": "image/png",
+    "width": 2048,
+    "height": 2048,
+    "byteSize": 2464326,
+    "rawAlt": ""
+  },
+  "bodyDocument": {
+    "blocks": [
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "A digital elegy for joy, grief, and the guild that made it all sacred.",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "This story is a reimagined myth built from real memories. Every section is rooted in lived experience from my time leading a guild in a fantasy MMO, where connection was forged through gameplay, laughter, late nights, and digital stillness.",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The guild was more than a name. It was a sanctuary. A constellation of people who turned a game into something that felt real, where joy hit harder and goodbyes cut deeper than most friendships outside the screen.",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Told in a language that twists, stacks, and reinvents itself, this is not a simple read. It is memory encrypted in rhyme. Part elegy, part glitch hymn, part sugar-coded anthem for a place that no longer exists but somehow still lives.",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "For those who ever built something beautiful online and felt it slip away, this is how I choose to remember it.",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "______",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I. THE CITADEL",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "There once was a ghostgrid, glyph-glitched and encoded,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "cryptmapped in mythbatch and bitblast eroded.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "With blossomshock bandwidth and bufferbloom kernel,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "opcode in overflow, nectarstream thermal.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "No sovereign, no signal, no thread-tag embedded,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "plaintexted, dethroned, and unclustered, unthreaded.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Through sacchariflux spires and splice-fed decadence,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "we bleedthread in bleedstate with glitchlit contrition.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "______",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "II. THE ASCENT",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I pathspiked to postrole in scrollstacked propulsion,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "uplinked, extrapulled, autospliced mid-emulsion.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Draftflagged and vaultcalled through bosslogic tension,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "dragbound in questloop with lockbind ascension.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They flockfractured, folly-cast, flightbit and bannerless,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "laughspawned and sparkspun through syntaxless anarchists.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Byte-blessed and screencapped in framerate ignitions,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "clipbaptized in clickblitz and luminant missions.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Cryptstacked and glowspanned in ghostframe translucence,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "mistgridded, hauntgilded, strandscanned in occlusion.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Spamgraced and ritefragged in fragment-forged schema,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "mindwrapped in mapspliced, castspawned arena.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Vaultflashed and breachgasped in clampbursted keepholds,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "crashcast from fluxvaults and sprawlspliced in deepcode.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Payloaded and sparkmasked, blessframed in execgrace,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "warforked and logicrobed, shrinepatched with statface.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Compcounted in clashfeeds and mutexed attrition,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "warfactored, strikeflagged, in logicpartitioned volition.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Burstbonded and charmfluxed through pactscript affliction,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "shardlinked in zealbits with traitfragged conviction.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Cryoflagged and priestspliced in sanctflashed remains,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "zonefractured, buffcrushed, and pulsegilded lanes.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Scarlooped and firebitten, traceforged through regain,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "selfrecursive, burstbent in harmnested domain.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "______",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "III. RITUAL & REMEMBRANCE",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Ghostnull and softkilled, desoulcast and shunspawned,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "offtraced and bytebled, unplug-fractured, unspawned.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Grinflooded, jestcut, wraithlagged and cheercloaked,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "funspliced with static, spoofbled and hopechoked.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Shrinehued and idlelit, traceframed in tagflare,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "avatar-ghostpinned in pixelspilled starglare.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Fadequarantined, tabhaloed in memocrypt scars,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "offslotted and scrollbleached in byteboxed sidebars.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Praystreamed and vowlatched in whisperflagged transmit,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "chantfluxed in bleedrate and sanctscroll commitment.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Heartcast and clashlooped in bondbitten prayburst,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "syncchanting lagshards through divinebuffed phasecurse.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Shardblessed in griefcycled, dreadslotted loadshrouds,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "hymnclassed and statlamented, loopspawned in vowclouds.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Bitbeaded and clickpsaltered, raidknelt in ghostspawn,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "circletimed sanctcasts code-looped before dawn.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Rebindlooped and phaseengraved, ghostrecalled in deflections,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "relivecoded scripts in recurscribed reflections.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Combustlinked and screamrouted, clashbound in affections,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "blastveined and wrathchanneled through hollocode connections.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Creedthreaded and castparsed, bufferblessed qualms,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "encryptsalms in reliccomms and divinebatched dharms.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Debugscripture and gospelspliced in qualmclocked belief,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "codebenedicts sorrowstacked in reliccompiled grief.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "______",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "IV. THE LEGACY",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Ghostclocked and idlevaulted, flickerflagged in chill,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "pingbled and silencequarantined, loginlapsed stilled.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Candlesteeped and sweetflagged, blissbraided in thrill,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "jokegilt and chucklecast, frostingshrined still.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "______",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "V. THE REASSEMBLY",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "If shardspun and fatefractaled in spawnlaced dimension,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "pingspliced through pathscramble and moonfractured suspension.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Gameghosted and aliasblessed in netmask disguise,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "flamebound through fluxglyphs with respellbound replies.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Sweetsigiled, glitchgraced, with joyflagged expression,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "buffbaker reborn in confectiontransgression.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Evercraving the crumbcoded creed of our kin,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "frostforged, lorelayered, dreambitten within.",
+            "marks": []
+          }
+        ]
+      }
+    ]
+  },
+  "bodyHtml": "<p><em>A digital elegy for joy, grief, and the guild that made it all sacred.</em></p>\n<p><br /></p>\n<p><em>This story is a reimagined myth built from real memories. Every section is rooted in lived experience from my time leading a guild in a fantasy MMO, where connection was forged through gameplay, laughter, late nights, and digital stillness.</em></p>\n<p><br /></p>\n<p><em>The guild was more than a name. It was a sanctuary. A constellation of people who turned a game into something that felt real, where joy hit harder and goodbyes cut deeper than most friendships outside the screen.</em></p>\n<p><br /></p>\n<p><em>Told in a language that twists, stacks, and reinvents itself, this is not a simple read. It is memory encrypted in rhyme. Part elegy, part glitch hymn, part sugar-coded anthem for a place that no longer exists but somehow still lives.</em></p>\n<p><br /></p>\n<p><em>For those who ever built something beautiful online and felt it slip away, this is how I choose to remember it.</em></p>\n<p><br /></p>\n<p>______</p>\n<p><br /></p>\n<p>I. THE CITADEL</p>\n<p><br /></p>\n<p>There once was a ghostgrid, glyph-glitched and encoded,</p>\n<p>cryptmapped in mythbatch and bitblast eroded.</p>\n<p>With blossomshock bandwidth and bufferbloom kernel,</p>\n<p>opcode in overflow, nectarstream thermal.</p>\n<p>No sovereign, no signal, no thread-tag embedded,</p>\n<p>plaintexted, dethroned, and unclustered, unthreaded.</p>\n<p>Through sacchariflux spires and splice-fed decadence,</p>\n<p>we bleedthread in bleedstate with glitchlit contrition.</p>\n<p><br /></p>\n<p>______</p>\n<p><br /></p>\n<p>II. THE ASCENT</p>\n<p><br /></p>\n<p>I pathspiked to postrole in scrollstacked propulsion,</p>\n<p>uplinked, extrapulled, autospliced mid-emulsion.</p>\n<p>Draftflagged and vaultcalled through bosslogic tension,</p>\n<p>dragbound in questloop with lockbind ascension.</p>\n<p>They flockfractured, folly-cast, flightbit and bannerless,</p>\n<p>laughspawned and sparkspun through syntaxless anarchists.</p>\n<p>Byte-blessed and screencapped in framerate ignitions,</p>\n<p>clipbaptized in clickblitz and luminant missions.</p>\n<p>Cryptstacked and glowspanned in ghostframe translucence,</p>\n<p>mistgridded, hauntgilded, strandscanned in occlusion.</p>\n<p>Spamgraced and ritefragged in fragment-forged schema,</p>\n<p>mindwrapped in mapspliced, castspawned arena.</p>\n<p>Vaultflashed and breachgasped in clampbursted keepholds,</p>\n<p>crashcast from fluxvaults and sprawlspliced in deepcode.</p>\n<p>Payloaded and sparkmasked, blessframed in execgrace,</p>\n<p>warforked and logicrobed, shrinepatched with statface.</p>\n<p>Compcounted in clashfeeds and mutexed attrition,</p>\n<p>warfactored, strikeflagged, in logicpartitioned volition.</p>\n<p>Burstbonded and charmfluxed through pactscript affliction,</p>\n<p>shardlinked in zealbits with traitfragged conviction.</p>\n<p>Cryoflagged and priestspliced in sanctflashed remains,</p>\n<p>zonefractured, buffcrushed, and pulsegilded lanes.</p>\n<p>Scarlooped and firebitten, traceforged through regain,</p>\n<p>selfrecursive, burstbent in harmnested domain.</p>\n<p><br /></p>\n<p>______</p>\n<p><br /></p>\n<p>III. RITUAL &amp; REMEMBRANCE</p>\n<p><br /></p>\n<p>Ghostnull and softkilled, desoulcast and shunspawned,</p>\n<p>offtraced and bytebled, unplug-fractured, unspawned.</p>\n<p>Grinflooded, jestcut, wraithlagged and cheercloaked,</p>\n<p>funspliced with static, spoofbled and hopechoked.</p>\n<p>Shrinehued and idlelit, traceframed in tagflare,</p>\n<p>avatar-ghostpinned in pixelspilled starglare.</p>\n<p>Fadequarantined, tabhaloed in memocrypt scars,</p>\n<p>offslotted and scrollbleached in byteboxed sidebars.</p>\n<p>Praystreamed and vowlatched in whisperflagged transmit,</p>\n<p>chantfluxed in bleedrate and sanctscroll commitment.</p>\n<p>Heartcast and clashlooped in bondbitten prayburst,</p>\n<p>syncchanting lagshards through divinebuffed phasecurse.</p>\n<p>Shardblessed in griefcycled, dreadslotted loadshrouds,</p>\n<p>hymnclassed and statlamented, loopspawned in vowclouds.</p>\n<p>Bitbeaded and clickpsaltered, raidknelt in ghostspawn,</p>\n<p>circletimed sanctcasts code-looped before dawn.</p>\n<p>Rebindlooped and phaseengraved, ghostrecalled in deflections,</p>\n<p>relivecoded scripts in recurscribed reflections.</p>\n<p>Combustlinked and screamrouted, clashbound in affections,</p>\n<p>blastveined and wrathchanneled through hollocode connections.</p>\n<p>Creedthreaded and castparsed, bufferblessed qualms,</p>\n<p>encryptsalms in reliccomms and divinebatched dharms.</p>\n<p>Debugscripture and gospelspliced in qualmclocked belief,</p>\n<p>codebenedicts sorrowstacked in reliccompiled grief.</p>\n<p><br /></p>\n<p>______</p>\n<p><br /></p>\n<p>IV. THE LEGACY</p>\n<p><br /></p>\n<p>Ghostclocked and idlevaulted, flickerflagged in chill,</p>\n<p>pingbled and silencequarantined, loginlapsed stilled.</p>\n<p>Candlesteeped and sweetflagged, blissbraided in thrill,</p>\n<p>jokegilt and chucklecast, frostingshrined still.</p>\n<p><br /></p>\n<p>______</p>\n<p><br /></p>\n<p>V. THE REASSEMBLY</p>\n<p><br /></p>\n<p>If shardspun and fatefractaled in spawnlaced dimension,</p>\n<p>pingspliced through pathscramble and moonfractured suspension.</p>\n<p>Gameghosted and aliasblessed in netmask disguise,</p>\n<p>flamebound through fluxglyphs with respellbound replies.</p>\n<p>Sweetsigiled, glitchgraced, with joyflagged expression,</p>\n<p>buffbaker reborn in confectiontransgression.</p>\n<p>Evercraving the crumbcoded creed of our kin,</p>\n<p>frostforged, lorelayered, dreambitten within.</p>",
+  "bodyTextSha256": "sha256:fcab02b745b2b8d19782bfbaba5e24c1b96cbb7d16f4b9d916be268f4c25d426",
+  "bodyBlockCount": 102,
+  "license": {
+    "name": "All Rights Reserved"
+  }
+}
