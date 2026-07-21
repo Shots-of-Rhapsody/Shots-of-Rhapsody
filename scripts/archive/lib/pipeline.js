@@ -7,6 +7,7 @@ import {
 	writeFile,
 } from "node:fs/promises";
 import path from "node:path";
+import process from "node:process";
 import {
 	ALL_RIGHTS_RESERVED,
 	AUTHOR_NAME,
