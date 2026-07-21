@@ -85,12 +85,33 @@ export type LIGHT_DARK_MODE =
 export type BlogPostData = {
 	body: string;
 	title: string;
+	subtitle: string;
+	summary: string;
+	author: string;
 	published: Date;
+	updated?: Date;
 	description: string;
 	tags: string[];
 	draft?: boolean;
 	image?: string;
-	category?: string;
+	imageAlt: string | null;
+	imageCaption: string;
+	imageSourceUrl?: string;
+	category?: string | null;
+	source?: {
+		platform: "Vocal";
+		id: string;
+		url: string;
+		capturedAt: string;
+		publishedAt: string;
+		contentUpdatedAt: string | null;
+		wordCount: number;
+		communitySlug: string;
+	};
+	license?: {
+		name: string;
+		url?: string;
+	};
 	prevTitle?: string;
 	prevSlug?: string;
 	nextTitle?: string;

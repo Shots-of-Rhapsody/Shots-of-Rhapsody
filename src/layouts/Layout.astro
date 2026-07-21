@@ -17,7 +17,7 @@ import {
 } from "../constants/constants";
 import { defaultFavicons } from "../constants/icon";
 import type { Favicon } from "../types/config";
-import { pathsEqual, url } from "../utils/url-utils";
+import { getRssUrl, pathsEqual, url } from "../utils/url-utils";
 import "katex/dist/katex.css";
 
 interface Props {
@@ -26,9 +26,31 @@ interface Props {
 	description?: string;
 	lang?: string;
 	setOGTypeArticle?: boolean;
+	canonicalUrl?: string;
+	socialImage?: string;
+	socialImageAlt?: string | null;
+	author?: string;
+	published?: Date;
+	updated?: Date;
+	tags?: string[];
+	category?: string | null;
 }
 
-let { title, banner, description, lang, setOGTypeArticle } = Astro.props;
+let {
+	title,
+	banner,
+	description,
+	lang,
+	setOGTypeArticle,
+	canonicalUrl,
+	socialImage,
+	socialImageAlt,
+	author,
+	published,
+	updated,
+	tags = [],
+	category,
+} = Astro.props;
 
 // apply a class to the body element to decide the height of the banner, only used for initial page load
 // Swup can update the body for each page visit, but it's after the page transition, causing a delay for banner height change
@@ -70,6 +92,13 @@ const bannerOffsetByPosition = {
 };
 const bannerOffset =
 	bannerOffsetByPosition[siteConfig.banner.position || "center"];
+const canonical = new URL(
+	canonicalUrl || Astro.url.pathname,
+	Astro.site ?? Astro.url,
+).toString();
+const metadataTitle = title || pageTitle;
+const metadataDescription = description || pageTitle;
+const metadataAuthor = author || profileConfig.name;
 ---
 
 <!DOCTYPE html>
@@ -81,23 +110,33 @@ const bannerOffset =
 		<title>{pageTitle}</title>
 
 		<meta charset="UTF-8" />
-		<meta name="description" content={description || pageTitle}>
-		<meta name="author" content={profileConfig.name}>
+		<meta name="description" content={metadataDescription}>
+		<meta name="author" content={metadataAuthor}>
+		<link rel="canonical" href={canonical}>
 
 		<meta property="og:site_name" content={siteConfig.title}>
-		<meta property="og:url" content={Astro.url}>
-		<meta property="og:title" content={pageTitle}>
-		<meta property="og:description" content={description || pageTitle}>
+		<meta property="og:url" content={canonical}>
+		<meta property="og:title" content={metadataTitle}>
+		<meta property="og:description" content={metadataDescription}>
+		{socialImage && <meta property="og:image" content={socialImage}>}
+		{socialImage && <meta property="og:image:alt" content={socialImageAlt ?? ""}>}
 		{setOGTypeArticle ? (
         <meta property="og:type" content="article" />
         ) : (
         <meta property="og:type" content="website" />
         )}
+		{setOGTypeArticle && published && <meta property="article:published_time" content={published.toISOString()}>}
+		{setOGTypeArticle && updated && <meta property="article:modified_time" content={updated.toISOString()}>}
+		{setOGTypeArticle && metadataAuthor && <meta property="article:author" content={metadataAuthor}>}
+		{setOGTypeArticle && category && <meta property="article:section" content={category}>}
+		{setOGTypeArticle && tags.map((tag) => <meta property="article:tag" content={tag}>)}
 
 		<meta name="twitter:card" content="summary_large_image">
-		<meta property="twitter:url" content={Astro.url}>
-		<meta name="twitter:title" content={pageTitle}>
-		<meta name="twitter:description" content={description || pageTitle}>
+		<meta name="twitter:url" content={canonical}>
+		<meta name="twitter:title" content={metadataTitle}>
+		<meta name="twitter:description" content={metadataDescription}>
+		{socialImage && <meta name="twitter:image" content={socialImage}>}
+		{socialImage && <meta name="twitter:image:alt" content={socialImageAlt ?? ""}>}
 
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
@@ -145,7 +184,7 @@ const bannerOffset =
 
 		<slot name="head"></slot>
 
-		<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
+		<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={getRssUrl(Astro.site ?? Astro.url)}/>
 
 	</head>
 	<body class=" min-h-screen transition " class:list={[{"lg:is-home": isHomePage, "enable-banner": enableBanner}]}

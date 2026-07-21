@@ -1,0 +1,29 @@
+---
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { url } from "@utils/url-utils";
+---
+
+<MainGridLayout
+	title="Content Rights and Licensing"
+	description="Licensing scopes for Shots of Rhapsody software, articles, and media."
+>
+	<article class="card-base rounded-[var(--radius-large)] px-6 py-7 md:px-9 md:py-8 prose dark:prose-invert !max-w-none">
+		<h1>Content Rights and Licensing</h1>
+		<p>The software, writing, media, and upstream theme assets in this repository do not all share one license.</p>
+
+		<h2>Software and theme code</h2>
+		<p>The Fuwari-derived software and repository code remain available under the root MIT License.</p>
+
+		<h2>Imported Tai Song articles and hero images</h2>
+		<p>Articles imported from Vocal and their author-controlled hero images are marked per post as <strong>All Rights Reserved</strong>. Copyright remains with Tai Song. No permission to copy, redistribute, adapt, train on, or commercially reuse that writing or media is granted by this site.</p>
+		<p>A link to the original Vocal publication records provenance only. It does not change the license of the local article or image.</p>
+
+		<h2>Existing repository-only posts</h2>
+		<p>Posts that do not declare a per-post license retain the site's existing <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-SA 4.0</a> fallback until separately reviewed. This scoped policy does not revoke rights already granted under a valid earlier license.</p>
+
+		<h2>Third-party material</h2>
+		<p>Third-party names, trademarks, fonts, packages, and assets remain subject to their respective owners' terms. Their presence here does not grant additional rights.</p>
+
+		<p><a href={url("/")}>Return to Shots of Rhapsody</a></p>
+	</article>
+</MainGridLayout>
