@@ -4,17 +4,17 @@ No row may be marked complete until the committed snapshot, generated Markdown, 
 
 | Article | Import verification | Text and metadata comparison | Image and rendered-page comparison | Reviewer and UTC date |
 |---|---|---|---|---|
+| The Seventh Skin | [ ] | [ ] | [ ] | |
+| Poetic Biography | [ ] | [ ] | [ ] | |
+| The Guild: A Chronicle of Pretty Souls | [ ] | [ ] | [ ] | |
+| Cold Children | [ ] | [ ] | [ ] | |
+| Lanterns for the Unreturning | [ ] | [ ] | [ ] | |
+| The Khan Who Chose the Grain | [ ] | [ ] | [ ] | |
+| Eggasaurus Rex | [ ] | [ ] | [ ] | |
+| Where We Last Were Us | [ ] | [ ] | [ ] | |
 | Before the Sky Went Quiet: Part I - The Girl Who Faded | [ ] | [ ] | [ ] | |
 | Before the Sky Went Quiet: Part II - The Goodbye | [ ] | [ ] | [ ] | |
 | Before the Sky Went Quiet: Part III - The Echo That Stayed | [ ] | [ ] | [ ] | |
-| Where We Last Were Us | [ ] | [ ] | [ ] | |
-| Eggasaurus Rex | [ ] | [ ] | [ ] | |
-| The Khan Who Chose the Grain | [ ] | [ ] | [ ] | |
-| Lanterns for the Unreturning | [ ] | [ ] | [ ] | |
-| Cold Children | [ ] | [ ] | [ ] | |
-| The Guild: A Chronicle of Pretty Souls | [ ] | [ ] | [ ] | |
-| Poetic Biography | [ ] | [ ] | [ ] | |
-| The Seventh Skin | [ ] | [ ] | [ ] | |
 
 For every row, verify the exact title, subtitle, summary, description mapping, author, publication timestamp, source update timestamp, community, tag case/order, source URL, source ID, source word count, paragraph count/order, every leaf's text and marks, inline newlines, empty paragraphs, nullable alt text, caption, original image bytes, MIME type, dimensions, and file size. Then compare the complete locally built article visually against the saved source.
 
