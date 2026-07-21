@@ -4,11 +4,7 @@ import path from "node:path";
 import test from "node:test";
 import { verifyBuiltSite } from "../../verify-built-site.mjs";
 import { importArticles } from "../lib/pipeline.js";
-import {
-	makeRepository,
-	SAMPLE_CAPTURED_AT,
-	SAMPLE_SLUG,
-} from "./helpers.js";
+import { makeRepository, SAMPLE_CAPTURED_AT, SAMPLE_SLUG } from "./helpers.js";
 
 const SITE = "https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/";
 
@@ -87,7 +83,14 @@ test("verifies built local routes, metadata, RSS, and manifested Vocal output", 
 </body></html>`;
 	await writeFile(path.join(postDirectory, "index.html"), html);
 	await copyFile(
-		path.join(root, "src", "content", "posts", SAMPLE_SLUG, "hero-original.png"),
+		path.join(
+			root,
+			"src",
+			"content",
+			"posts",
+			SAMPLE_SLUG,
+			"hero-original.png",
+		),
 		path.join(assetDirectory, "hero.png"),
 	);
 
