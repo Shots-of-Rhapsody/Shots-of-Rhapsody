@@ -184,6 +184,41 @@
         "byteSize": 2464326,
         "alt": null
       }
+    },
+    {
+      "slug": "where-we-last-were-us",
+      "capturedAt": "2026-07-21T22:25:32.185Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/poets/where-we-last-were-us"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/where-we-last-were-us.json",
+        "markdown": "src/content/posts/where-we-last-were-us/index.md",
+        "image": "src/content/posts/where-we-last-were-us/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:c667d5a950c1d56c3fa0d68e5027e7ced4a8349c107321aa8ac35a3f4d7fb815",
+        "rawImage": "sha256:a2d68ea489c1ccfe563f024c0ece3521d8aa622cbde17955b2b0c470d19b9ad2",
+        "snapshot": "sha256:203910bb81f268409bd786ac047ac49b2ff248063059a6c2d5fab9e542d50f1a",
+        "markdown": "sha256:9bd21c24e1e56561681ed0a3dee43d65bccb51ab92342819154795fb05acb497",
+        "image": "sha256:a2d68ea489c1ccfe563f024c0ece3521d8aa622cbde17955b2b0c470d19b9ad2",
+        "bodyText": "sha256:a96fe978aab8b2fa75568171e4e512a05b2e357804b142c00e2d10f058ef62e6"
+      },
+      "content": {
+        "subtitle": "Two voices. One place. Never again the same.",
+        "imageCaption": "A quiet condo filled with shadows of memory, where love once lived & silence now stays.",
+        "bodyTextSha256": "sha256:a96fe978aab8b2fa75568171e4e512a05b2e357804b142c00e2d10f058ef62e6",
+        "bodyBlockCount": 233
+      },
+      "image": {
+        "sha256": "sha256:a2d68ea489c1ccfe563f024c0ece3521d8aa622cbde17955b2b0c470d19b9ad2",
+        "mimeType": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "byteSize": 5107084,
+        "alt": null
+      }
     }
   ]
 }
