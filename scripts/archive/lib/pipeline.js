@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import {
 	mkdir,
 	readFile,
@@ -7,7 +8,6 @@ import {
 	writeFile,
 } from "node:fs/promises";
 import path from "node:path";
-import process from "node:process";
 import {
 	ALL_RIGHTS_RESERVED,
 	AUTHOR_NAME,
@@ -779,7 +779,7 @@ async function classifyTarget(filePath, desired) {
 
 async function writeAtomic(filePath, contents) {
 	await mkdir(path.dirname(filePath), { recursive: true });
-	const temporaryPath = `${filePath}.archive-import-${process.pid}-${Math.random().toString(16).slice(2)}.tmp`;
+	const temporaryPath = `${filePath}.archive-import-${randomUUID()}.tmp`;
 	try {
 		await writeFile(temporaryPath, contents, { flag: "wx" });
 		await rename(temporaryPath, filePath);
