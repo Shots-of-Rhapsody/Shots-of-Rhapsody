@@ -1,0 +1,1383 @@
+{
+  "schemaVersion": 1,
+  "slug": "cold-children",
+  "title": "Cold Children",
+  "subtitle": "They never grew old. That was the gift and the warning.",
+  "summary": "The Hook\n\nThey keep her behind glass now.\n\nThe room is quiet. Not sterile, just reverent. Lights dimmed to mimic dusk. A few chairs along the far wall, each facing her enclosure like pews.\n\n",
+  "description": "They never grew old. That was the gift and the warning.",
+  "author": "Tai Song",
+  "published": "2025-04-08T09:53:10.641Z",
+  "category": "Fiction",
+  "tags": [],
+  "imageAlt": null,
+  "imageCaption": "\"To live is not to last. It is to yield.\"",
+  "provenance": {
+    "authority": "Proton Docs",
+    "captureFormat": "html-export",
+    "capturedAt": "2026-07-21T22:17:29.549Z"
+  },
+  "publication": {
+    "platform": "Vocal",
+    "url": "https://vocal.media/fiction/cold-children"
+  },
+  "hero": {
+    "sha256": "sha256:0316d2db3f1aee83a5112adbf54a2cdeaf0054958a57c0066db52fbae7991fe1",
+    "mimeType": "image/png",
+    "width": 2048,
+    "height": 2048,
+    "byteSize": 5233966,
+    "rawAlt": ""
+  },
+  "bodyDocument": {
+    "blocks": [
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Hook",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They keep her behind glass now.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The room is quiet. Not sterile, just reverent. Lights dimmed to mimic dusk. A few chairs along the far wall, each facing her enclosure like pews.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Her name was Senna Low. One of the first. Born in 2013. Treated in utero with the original LUMEN-9 protocol. She should be eighty, but she looks nine. A perfect nine. Always will.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She’s awake. Conscious. Reads one book per week. Doesn’t speak. Hasn’t since the fire in ‘53. But her eyes track movement. They studied her gaze for years, said it showed full cognition. Said she still dreams. Said she remembers everything.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Some call her a miracle. Others say she should have been allowed to age, to vanish, like the rest of us. There is a law now. Cold children can't be displayed without consent, even if they stop speaking.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I’ve seen toddlers mimic her face in photographs. But I wonder if they’d still call her a child if they saw the way she watches them. Not like a peer. Like a witness.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She rests in a seated position now, legs tucked, back straight. The glass curves inward around her, a transparent cocoon. Vines grow up the sides of the chamber. Decorative, maybe symbolic. I’ve watched the leaves change through three seasons. Her face never does.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "A boy walked in while I was writing. Six, maybe seven. He stood close to the glass, stared at her. She stared back. For a moment, they looked exactly the same.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Then the boy blinked.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She didn’t.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Invention",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They called it a preventative therapy.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "LUMEN-9 was designed for rare pediatric disorders, the kind that hollowed out children before they reached ten. Geneticists claimed it could pause cellular decay at the moment of biological perfection. Muscles firm, immune system mature, brain still open to learning. Not frozen. Just held. Like a breath.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The first trials were private. Quiet. Wealth concentrated behind the curtain. Parents of terminal children volunteered. Their desperation became data.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And it worked.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "No more metabolic crashes. No organ deterioration. Children who were dying stayed alive. Not just alive, but stable. Unaging. Preserved at the edge of growth.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Within five years, LUMEN-9 had been cleared for elective use. At first, only the sickest qualified. Then the richest. Then the vain.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The treatment wasn’t a pill or a surgery. It was timing. A precisely coded sequence injected during fetal development, activated once the child reached a biologically ideal state. No scars. No procedures. Just stillness.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Childhood was no longer a stage. It became a status. A condition, engineered and held.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Some ethicists warned that aging was not a flaw to be fixed, but a contract. One we all signed by being born. That to end it was not progress, but refusal.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Still, the world rushed in.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Parents did it to save their children. Others did it to keep them beautiful. To trap the softness of the cheeks, the shine of the eyes, the smallness of the voice.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Marketing called them “forever lights.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "We called them Cold.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "At first, it was novelty. Schools made new grade levels for them. Clothing lines emerged. Children’s wear redesigned for permanence. Pediatricians retired in protest. Toy companies floundered. Nobody knew what a nine-year-old wanted after twenty years of being one.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Cold grew slowly. Their faces stayed the same, but their words didn’t. They asked questions no nine-year-old should. They remembered everything. They read political theory. Learned code. Memorized the history of revolutions.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The world adjusted. Slowly, then all at once.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They were not eternal. They could still die.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "But they would never age.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And that made them something else entirely.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Rise of the Cold",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They never took power.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Not openly.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They didn’t run for office. They didn’t start wars. They didn’t build statues in their own image. But the world began to change around them, shaped by their stillness.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "By the 2040s, a Cold child named Ilen Whit rose to head of a private equity firm managing more capital than most countries. He appeared at board meetings in pressed school uniforms, hair parted neatly to one side. His voice remained soft, his stature small. His words silenced rooms.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Others followed. A Cold girl from Mexico City wrote a programming language in twelve dialects before age twenty. Another joined an arbitration panel for the UN. One disappeared into the Himalayas and reemerged six years later with an entire belief system based on absolute cognitive recall.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They never shouted. Never raised fists. But their influence moved like mineral veins under polished stone. You could feel it when you touched the surface. Cold schools opened in five nations. Old universities rewrote admission age policies. Toys disappeared from department stores. And parents who once dreamed of keeping their children small began to fear what that meant.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "A new discomfort settled in.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They still looked like children. But only in the way a sculpture does. Their expressions did not shift the way others did. Their tone was calm even in crisis. No tantrums. No tears. No hunger in their eyes. They looked through you, not at you.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "People whispered that the Cold no longer felt things the way we did. That memory had replaced emotion. That recall was now their form of grief.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "There were interviews, at first. Human interest segments. Profiles with soft music and smiling hosts. But audiences turned. The smiles did not reach the Cold’s eyes. Their laughter sounded rehearsed. Their intelligence unnerved. One network pulled an interview halfway through, citing viewer unease.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Parents began to reverse course. Some who had once funded the therapy sued to undo it. But you cannot replant a tree already grown without tearing its roots.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Cold remained.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They lived longer than their parents. Took control of family fortunes. Reinvested in biotech. Funded silence over spectacle. Their names appeared in public less and less, even as their influence deepened.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Some said they had broken free of time. Others said they were simply lost inside it, walking its edge like ghosts with nowhere left to age.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Cold never claimed that.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "But they stopped correcting those who did.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Quiet Division",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They never made demands.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "There were no manifestos. No declarations. No Cold Child ever stood on a stage and said, this world no longer fits us.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "But they stopped participating.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Slowly, then all at once.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "A Cold child named Serel refused to sign a government form that listed her birth year. She said it was irrelevant. Her case went to the courts. The judge ruled that age could no longer be the sole measure of legal capacity.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "After that, records changed.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Birth certificates were replaced with development profiles. Voting ages became flexible. The word “minor” disappeared from more and more laws. You were either Cold, or you were not.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Some called it inclusion.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Others knew better.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Cold began withdrawing from traditional schools. Not protesting. Just leaving. They built their own learning networks. Quiet satellites. Libraries without hours. Curriculum without clocks.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They formed enclaves. First in cities. Then in remote zones. Walled gardens without gates. You could walk in, but most didn’t. The air was too still. The silence too thick.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They no longer answered surveys. Didn’t marry. Didn’t raise children. Not publicly. Not in the old way. No Cold was ever seen in a maternity ward. But new Cold appeared, carefully spaced, always within the same communities.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They did not speak of origins, only continuity. And perhaps that was the final line. The Cold no longer saw life as something you entered, only something you maintained.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Some believed they cloned themselves. Others believed they adopted and treated in secret. A few whispered something else entirely. That they were selecting minds like seeds. That memory, not biology, was now the method of inheritance.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Governments sent emissaries.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Cold sent no one.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Diplomatic channels opened, then dried. Tax records went blank. Biometric data was refused. Enclaves became legal anomalies. Technically under jurisdiction. Functionally untouchable.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "There was no war.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "But the Cold disappeared from the shared future. They stopped appearing in censuses. Refused access to gene banks. Even the language began to drift. A Cold lexicon emerged, efficient and untranslatable. Not encrypted. Just beyond habit.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "One researcher spent twelve years studying Cold communication. He described it as context without shape. Said it felt like thought that had never touched a mouth.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He died of natural causes. His final notes were not published.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "It was not cruelty. But it felt like being outlived in every room, even while standing inside it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The rest of us continued on. Grew older. We replaced joints. Took memory pills. Edited genes in moderation. But we still aged. Still forgot. Still cried at birthdays.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Cold did none of it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They had not abandoned us.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "But they had outgrown waiting for us to catch up.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Philosophical Reckoning",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The interview was never broadcast.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She agreed only to speak if it wasn’t recorded. No transcript. No names. No light above the table.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Just conversation.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She was Cold. But unlike the others, she lived alone. Not in an enclave. Not in a tower. A small apartment above a shuttered bookstore. The walls were bare. The shelves were not.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She answered every question I asked, except her age.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“I stopped counting when my parents did,” she said. “After that, time became something I visited, not something I lived in.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She didn’t smile when she said it. But her voice was soft. Unhurried. She spoke like someone unbraiding a long thread, one finger at a time.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I asked her if she regretted the treatment.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“No,” she said. “Regret belongs to those who change. I have not changed.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She poured tea. The scent was jasmine and mint. A steam that belonged to childhood but not to her. She watched it rise and vanish.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“We were meant to be a gift,” she said. “But a gift that cannot be lost becomes a condition. And a condition becomes a question. People don’t like questions they cannot answer.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I asked what she meant by condition.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She paused.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Have you ever loved something more because it faded?”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I didn’t answer.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She continued. “There is a kind of mercy in forgetting. A softness in aging. We do not crack so much as loosen. But we never loosen. Not our bodies. Not our memories. We stay exact.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She looked toward the window. The glass reflected both of us, unevenly. I saw my shoulders stooped, my eyes rimmed. Her face, unchanged.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“We do not mourn in the way you do,” she said. “We remember instead. Fully. Always. Every moment, untouched. Every face, perfect. You forget in pieces, which makes room for something new. We keep everything, which means nothing can move.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She paused again.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Joy becomes brittle when you cannot forget its edges.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I asked her why she lived alone.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She said, “Because I did not want to lead. And those who do not lead must disappear. Or learn to watch.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I left before sunset.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "At the door, she asked a final question.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Do you think time is something you survive? Or something you owe?”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I didn’t know the answer. I still don’t. But sometimes I think we owe time the right to carry us forward, even when it carries us away.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Reflection",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I saw her again last week.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Not the one from the apartment. The one in glass. Senna Low.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Eighty years old, though she would never show it. Still seated. Still watching. The vines along her chamber had bloomed this time. Soft white petals pressed against the curved glass like they were trying to reach her.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They said she hasn’t moved in months. No words. No gestures. But her vitals are normal. Brain activity steady. Some say she’s dreaming. Others say she’s remembering.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I stood for a long time. Long enough that the museum lights dimmed again and again to remind me the hour had changed. Time moves that way now. In gentle nudges, for those who still listen.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "My hands ache in the cold. I forget names. I sleep early. I cry more easily than I used to. And I have never been more certain that these things are a form of grace.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Cold have not vanished, but we see them less. No new enclaves. No broadcasts. Just the occasional still figure in the background of a photo. A child’s face looking at something no one else sees.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They will remain.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And we, eventually, will not.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Maybe this is balance. Not punishment. Not reward. Just the symmetry of two species shaped by different truths. One chosen by stillness. The other by change.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "There is a place, not far from my home, where the wind moves through rows of trees that were planted after the first Cold child was born. Each one taller than the last. They do not speak. They do not lead. But they shift and creak and drop their leaves. Every season writes itself in full.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Sometimes I walk there.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And sometimes I wonder.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "If someone could offer me the cold, the stillness, the preservation, the exact memory of all that I have loved and all that I have lost, would I take it?",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The thought still lingers. The stillness. The clarity. No loss, no blur, no misremembered smile. A body that does not fail. A mind that forgets nothing.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Would I trade the tremble in my hand for silence? The ache in my chest for permanence?",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I think about Senna.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I think about the Cold girl in the apartment, asking me if time is something we owe.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And I think about my grandson, who forgets where he put his shoes, who scrapes his knees on gravel, who cries when the cat will not come inside.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And I know the answer.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I would not trade the ache.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I would not trade the forgetting.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I would not trade the time.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "To live is not to last. It is to yield. To be reshaped by time, not protected from it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Stillness forgets what sorrow teaches.”",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "bodyHtml": "<p><strong>The Hook</strong></p>\n<p>They keep her behind glass now.</p>\n<p>The room is quiet. Not sterile, just reverent. Lights dimmed to mimic dusk. A few chairs along the far wall, each facing her enclosure like pews.</p>\n<p>Her name was Senna Low. One of the first. Born in 2013. Treated in utero with the original LUMEN-9 protocol. She should be eighty, but she looks nine. A perfect nine. Always will.</p>\n<p>She’s awake. Conscious. Reads one book per week. Doesn’t speak. Hasn’t since the fire in ‘53. But her eyes track movement. They studied her gaze for years, said it showed full cognition. Said she still dreams. Said she remembers everything.</p>\n<p>Some call her a miracle. Others say she should have been allowed to age, to vanish, like the rest of us. There is a law now. Cold children can&#39;t be displayed without consent, even if they stop speaking.</p>\n<p>I’ve seen toddlers mimic her face in photographs. But I wonder if they’d still call her a child if they saw the way she watches them. Not like a peer. Like a witness.</p>\n<p>She rests in a seated position now, legs tucked, back straight. The glass curves inward around her, a transparent cocoon. Vines grow up the sides of the chamber. Decorative, maybe symbolic. I’ve watched the leaves change through three seasons. Her face never does.</p>\n<p>A boy walked in while I was writing. Six, maybe seven. He stood close to the glass, stared at her. She stared back. For a moment, they looked exactly the same.</p>\n<p>Then the boy blinked.</p>\n<p>She didn’t.</p>\n<p><br /></p>\n<p><strong>The Invention</strong></p>\n<p>They called it a preventative therapy.</p>\n<p>LUMEN-9 was designed for rare pediatric disorders, the kind that hollowed out children before they reached ten. Geneticists claimed it could pause cellular decay at the moment of biological perfection. Muscles firm, immune system mature, brain still open to learning. Not frozen. Just held. Like a breath.</p>\n<p>The first trials were private. Quiet. Wealth concentrated behind the curtain. Parents of terminal children volunteered. Their desperation became data.</p>\n<p>And it worked.</p>\n<p>No more metabolic crashes. No organ deterioration. Children who were dying stayed alive. Not just alive, but stable. Unaging. Preserved at the edge of growth.</p>\n<p>Within five years, LUMEN-9 had been cleared for elective use. At first, only the sickest qualified. Then the richest. Then the vain.</p>\n<p>The treatment wasn’t a pill or a surgery. It was timing. A precisely coded sequence injected during fetal development, activated once the child reached a biologically ideal state. No scars. No procedures. Just stillness.</p>\n<p>Childhood was no longer a stage. It became a status. A condition, engineered and held.</p>\n<p>Some ethicists warned that aging was not a flaw to be fixed, but a contract. One we all signed by being born. That to end it was not progress, but refusal.</p>\n<p>Still, the world rushed in.</p>\n<p>Parents did it to save their children. Others did it to keep them beautiful. To trap the softness of the cheeks, the shine of the eyes, the smallness of the voice.</p>\n<p>Marketing called them “forever lights.”</p>\n<p>We called them Cold.</p>\n<p>At first, it was novelty. Schools made new grade levels for them. Clothing lines emerged. Children’s wear redesigned for permanence. Pediatricians retired in protest. Toy companies floundered. Nobody knew what a nine-year-old wanted after twenty years of being one.</p>\n<p>The Cold grew slowly. Their faces stayed the same, but their words didn’t. They asked questions no nine-year-old should. They remembered everything. They read political theory. Learned code. Memorized the history of revolutions.</p>\n<p>The world adjusted. Slowly, then all at once.</p>\n<p>They were not eternal. They could still die.</p>\n<p>But they would never age.</p>\n<p>And that made them something else entirely.</p>\n<p><br /></p>\n<p><strong>Rise of the Cold</strong></p>\n<p>They never took power.</p>\n<p>Not openly.</p>\n<p>They didn’t run for office. They didn’t start wars. They didn’t build statues in their own image. But the world began to change around them, shaped by their stillness.</p>\n<p>By the 2040s, a Cold child named Ilen Whit rose to head of a private equity firm managing more capital than most countries. He appeared at board meetings in pressed school uniforms, hair parted neatly to one side. His voice remained soft, his stature small. His words silenced rooms.</p>\n<p>Others followed. A Cold girl from Mexico City wrote a programming language in twelve dialects before age twenty. Another joined an arbitration panel for the UN. One disappeared into the Himalayas and reemerged six years later with an entire belief system based on absolute cognitive recall.</p>\n<p>They never shouted. Never raised fists. But their influence moved like mineral veins under polished stone. You could feel it when you touched the surface. Cold schools opened in five nations. Old universities rewrote admission age policies. Toys disappeared from department stores. And parents who once dreamed of keeping their children small began to fear what that meant.</p>\n<p>A new discomfort settled in.</p>\n<p>They still looked like children. But only in the way a sculpture does. Their expressions did not shift the way others did. Their tone was calm even in crisis. No tantrums. No tears. No hunger in their eyes. They looked through you, not at you.</p>\n<p>People whispered that the Cold no longer felt things the way we did. That memory had replaced emotion. That recall was now their form of grief.</p>\n<p>There were interviews, at first. Human interest segments. Profiles with soft music and smiling hosts. But audiences turned. The smiles did not reach the Cold’s eyes. Their laughter sounded rehearsed. Their intelligence unnerved. One network pulled an interview halfway through, citing viewer unease.</p>\n<p>Parents began to reverse course. Some who had once funded the therapy sued to undo it. But you cannot replant a tree already grown without tearing its roots.</p>\n<p>The Cold remained.</p>\n<p>They lived longer than their parents. Took control of family fortunes. Reinvested in biotech. Funded silence over spectacle. Their names appeared in public less and less, even as their influence deepened.</p>\n<p>Some said they had broken free of time. Others said they were simply lost inside it, walking its edge like ghosts with nowhere left to age.</p>\n<p>The Cold never claimed that.</p>\n<p>But they stopped correcting those who did.</p>\n<p><br /></p>\n<p><strong>The Quiet Division</strong></p>\n<p>They never made demands.</p>\n<p>There were no manifestos. No declarations. No Cold Child ever stood on a stage and said, this world no longer fits us.</p>\n<p>But they stopped participating.</p>\n<p>Slowly, then all at once.</p>\n<p>A Cold child named Serel refused to sign a government form that listed her birth year. She said it was irrelevant. Her case went to the courts. The judge ruled that age could no longer be the sole measure of legal capacity.</p>\n<p>After that, records changed.</p>\n<p>Birth certificates were replaced with development profiles. Voting ages became flexible. The word “minor” disappeared from more and more laws. You were either Cold, or you were not.</p>\n<p>Some called it inclusion.</p>\n<p>Others knew better.</p>\n<p>The Cold began withdrawing from traditional schools. Not protesting. Just leaving. They built their own learning networks. Quiet satellites. Libraries without hours. Curriculum without clocks.</p>\n<p>They formed enclaves. First in cities. Then in remote zones. Walled gardens without gates. You could walk in, but most didn’t. The air was too still. The silence too thick.</p>\n<p>They no longer answered surveys. Didn’t marry. Didn’t raise children. Not publicly. Not in the old way. No Cold was ever seen in a maternity ward. But new Cold appeared, carefully spaced, always within the same communities.</p>\n<p>They did not speak of origins, only continuity. And perhaps that was the final line. The Cold no longer saw life as something you entered, only something you maintained.</p>\n<p>Some believed they cloned themselves. Others believed they adopted and treated in secret. A few whispered something else entirely. That they were selecting minds like seeds. That memory, not biology, was now the method of inheritance.</p>\n<p>Governments sent emissaries.</p>\n<p>The Cold sent no one.</p>\n<p>Diplomatic channels opened, then dried. Tax records went blank. Biometric data was refused. Enclaves became legal anomalies. Technically under jurisdiction. Functionally untouchable.</p>\n<p>There was no war.</p>\n<p>But the Cold disappeared from the shared future. They stopped appearing in censuses. Refused access to gene banks. Even the language began to drift. A Cold lexicon emerged, efficient and untranslatable. Not encrypted. Just beyond habit.</p>\n<p>One researcher spent twelve years studying Cold communication. He described it as context without shape. Said it felt like thought that had never touched a mouth.</p>\n<p>He died of natural causes. His final notes were not published.</p>\n<p>It was not cruelty. But it felt like being outlived in every room, even while standing inside it.</p>\n<p>The rest of us continued on. Grew older. We replaced joints. Took memory pills. Edited genes in moderation. But we still aged. Still forgot. Still cried at birthdays.</p>\n<p>The Cold did none of it.</p>\n<p>They had not abandoned us.</p>\n<p>But they had outgrown waiting for us to catch up.</p>\n<p><br /></p>\n<p><strong>Philosophical Reckoning</strong></p>\n<p>The interview was never broadcast.</p>\n<p>She agreed only to speak if it wasn’t recorded. No transcript. No names. No light above the table.</p>\n<p>Just conversation.</p>\n<p>She was Cold. But unlike the others, she lived alone. Not in an enclave. Not in a tower. A small apartment above a shuttered bookstore. The walls were bare. The shelves were not.</p>\n<p>She answered every question I asked, except her age.</p>\n<p>“I stopped counting when my parents did,” she said. “After that, time became something I visited, not something I lived in.”</p>\n<p>She didn’t smile when she said it. But her voice was soft. Unhurried. She spoke like someone unbraiding a long thread, one finger at a time.</p>\n<p>I asked her if she regretted the treatment.</p>\n<p>“No,” she said. “Regret belongs to those who change. I have not changed.”</p>\n<p>She poured tea. The scent was jasmine and mint. A steam that belonged to childhood but not to her. She watched it rise and vanish.</p>\n<p>“We were meant to be a gift,” she said. “But a gift that cannot be lost becomes a condition. And a condition becomes a question. People don’t like questions they cannot answer.”</p>\n<p>I asked what she meant by condition.</p>\n<p>She paused.</p>\n<p>“Have you ever loved something more because it faded?”</p>\n<p>I didn’t answer.</p>\n<p>She continued. “There is a kind of mercy in forgetting. A softness in aging. We do not crack so much as loosen. But we never loosen. Not our bodies. Not our memories. We stay exact.”</p>\n<p>She looked toward the window. The glass reflected both of us, unevenly. I saw my shoulders stooped, my eyes rimmed. Her face, unchanged.</p>\n<p>“We do not mourn in the way you do,” she said. “We remember instead. Fully. Always. Every moment, untouched. Every face, perfect. You forget in pieces, which makes room for something new. We keep everything, which means nothing can move.”</p>\n<p>She paused again.</p>\n<p>“Joy becomes brittle when you cannot forget its edges.”</p>\n<p>I asked her why she lived alone.</p>\n<p>She said, “Because I did not want to lead. And those who do not lead must disappear. Or learn to watch.”</p>\n<p>I left before sunset.</p>\n<p>At the door, she asked a final question.</p>\n<p>“Do you think time is something you survive? Or something you owe?”</p>\n<p>I didn’t know the answer. I still don’t. But sometimes I think we owe time the right to carry us forward, even when it carries us away.</p>\n<p><br /></p>\n<p><strong>Reflection</strong></p>\n<p>I saw her again last week.</p>\n<p>Not the one from the apartment. The one in glass. Senna Low.</p>\n<p>Eighty years old, though she would never show it. Still seated. Still watching. The vines along her chamber had bloomed this time. Soft white petals pressed against the curved glass like they were trying to reach her.</p>\n<p>They said she hasn’t moved in months. No words. No gestures. But her vitals are normal. Brain activity steady. Some say she’s dreaming. Others say she’s remembering.</p>\n<p>I stood for a long time. Long enough that the museum lights dimmed again and again to remind me the hour had changed. Time moves that way now. In gentle nudges, for those who still listen.</p>\n<p>My hands ache in the cold. I forget names. I sleep early. I cry more easily than I used to. And I have never been more certain that these things are a form of grace.</p>\n<p>The Cold have not vanished, but we see them less. No new enclaves. No broadcasts. Just the occasional still figure in the background of a photo. A child’s face looking at something no one else sees.</p>\n<p>They will remain.</p>\n<p>And we, eventually, will not.</p>\n<p>Maybe this is balance. Not punishment. Not reward. Just the symmetry of two species shaped by different truths. One chosen by stillness. The other by change.</p>\n<p>There is a place, not far from my home, where the wind moves through rows of trees that were planted after the first Cold child was born. Each one taller than the last. They do not speak. They do not lead. But they shift and creak and drop their leaves. Every season writes itself in full.</p>\n<p>Sometimes I walk there.</p>\n<p>And sometimes I wonder.</p>\n<p>If someone could offer me the cold, the stillness, the preservation, the exact memory of all that I have loved and all that I have lost, would I take it?</p>\n<p>The thought still lingers. The stillness. The clarity. No loss, no blur, no misremembered smile. A body that does not fail. A mind that forgets nothing.</p>\n<p>Would I trade the tremble in my hand for silence? The ache in my chest for permanence?</p>\n<p>I think about Senna.</p>\n<p>I think about the Cold girl in the apartment, asking me if time is something we owe.</p>\n<p>And I think about my grandson, who forgets where he put his shoes, who scrapes his knees on gravel, who cries when the cat will not come inside.</p>\n<p>And I know the answer.</p>\n<p>I would not trade the ache.</p>\n<p>I would not trade the forgetting.</p>\n<p>I would not trade the time.</p>\n<p>To live is not to last. It is to yield. To be reshaped by time, not protected from it.</p>\n<p><br /></p>\n<p><em>“Stillness forgets what sorrow teaches.”</em></p>",
+  "bodyTextSha256": "sha256:9b338adf444aaa6134e2688a11ea03bdf67918c032b46f034483eb7b51ce3fad",
+  "bodyBlockCount": 134,
+  "license": {
+    "name": "All Rights Reserved"
+  }
+}

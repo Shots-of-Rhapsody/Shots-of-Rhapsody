@@ -116,6 +116,41 @@
       }
     },
     {
+      "slug": "cold-children",
+      "capturedAt": "2026-07-21T22:17:29.549Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/cold-children"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/cold-children.json",
+        "markdown": "src/content/posts/cold-children/index.md",
+        "image": "src/content/posts/cold-children/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:697adacc029529e593d72ca499f97e629e60b5e05579d1b0819606fcaae504c9",
+        "rawImage": "sha256:0316d2db3f1aee83a5112adbf54a2cdeaf0054958a57c0066db52fbae7991fe1",
+        "snapshot": "sha256:ef23f8abd5d36309395811302945fb71fa5d1d04a8fccdfa350ee032388fd4f1",
+        "markdown": "sha256:1a7938584e6a2e88f2ec9bc317ebdbddbe483802731a34b3479a374771cd352b",
+        "image": "sha256:0316d2db3f1aee83a5112adbf54a2cdeaf0054958a57c0066db52fbae7991fe1",
+        "bodyText": "sha256:9b338adf444aaa6134e2688a11ea03bdf67918c032b46f034483eb7b51ce3fad"
+      },
+      "content": {
+        "subtitle": "They never grew old. That was the gift and the warning.",
+        "imageCaption": "\"To live is not to last. It is to yield.\"",
+        "bodyTextSha256": "sha256:9b338adf444aaa6134e2688a11ea03bdf67918c032b46f034483eb7b51ce3fad",
+        "bodyBlockCount": 134
+      },
+      "image": {
+        "sha256": "sha256:0316d2db3f1aee83a5112adbf54a2cdeaf0054958a57c0066db52fbae7991fe1",
+        "mimeType": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "byteSize": 5233966,
+        "alt": null
+      }
+    },
+    {
       "slug": "poetic-biography",
       "capturedAt": "2026-07-21T22:14:42.232Z",
       "publication": {
