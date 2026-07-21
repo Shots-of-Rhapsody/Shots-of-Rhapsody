@@ -44,6 +44,41 @@
         "byteSize": 3963797,
         "alt": null
       }
+    },
+    {
+      "slug": "before-the-sky-went-quiet-part-ii-the-goodbye",
+      "capturedAt": "2026-07-21T22:27:52.030Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/before-the-sky-went-quiet-part-ii-the-goodbye"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/before-the-sky-went-quiet-part-ii-the-goodbye.json",
+        "markdown": "src/content/posts/before-the-sky-went-quiet-part-ii-the-goodbye/index.md",
+        "image": "src/content/posts/before-the-sky-went-quiet-part-ii-the-goodbye/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:b63ab5050dad93c6ff643b6efffbb2955f8b503a84892b87b5265070a42a569e",
+        "rawImage": "sha256:2df405ca8f9a8e0ba0185e32672f0eb2f55ef4fa77af5dcee06dd90c24944efd",
+        "snapshot": "sha256:d963bda293283067a0753b89944e13a40b486b897661eed2fea2410906e76cf0",
+        "markdown": "sha256:5d6b4f5c6a823120090349e8f589bbe31e828cd1ab3e384ba1b87908e2b2f27c",
+        "image": "sha256:2df405ca8f9a8e0ba0185e32672f0eb2f55ef4fa77af5dcee06dd90c24944efd",
+        "bodyText": "sha256:7f0bf044bce8626bb0261ed6b8cebf576f0048a93456023a0ebb1804fe00e8ca"
+      },
+      "content": {
+        "subtitle": "She chose how she would leave. They chose how they’d remember her.",
+        "imageCaption": "There were no last words. Only music. A voice recorder. A father who kept his promise.",
+        "bodyTextSha256": "sha256:7f0bf044bce8626bb0261ed6b8cebf576f0048a93456023a0ebb1804fe00e8ca",
+        "bodyBlockCount": 333
+      },
+      "image": {
+        "sha256": "sha256:2df405ca8f9a8e0ba0185e32672f0eb2f55ef4fa77af5dcee06dd90c24944efd",
+        "mimeType": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "byteSize": 1651791,
+        "alt": null
+      }
     }
   ]
 }
