@@ -3,7 +3,7 @@ title: "Where We Last Were Us"
 subtitle: "Two voices. One place. Never again the same."
 published: 2025-04-01
 description: A story told entirely in dialogue.
-image: "./Where We Last Were Us.jpg"
+image: "./When We Last Were Us.jpg"
 tags: [Poetic, Dialogue, Memory, Love, Loss, Reflection, Intimacy, Romance]
 category: Romance
 draft: false

@@ -3,7 +3,7 @@ title: "The Last Cup"
 subtitle: "Where steam fades, memory lingers."
 published: 2025-10-01
 description: A man returns to a quiet tea house where time, memory & love have all cooled to silence.
-image: "./Solitude in a Tea House.png"
+image: "./The Last Cup.png"
 tags: [Poetic, Reflection, Memory, Romance, Love, Regret, Loss, Time]
 category: Romance
 draft: false
