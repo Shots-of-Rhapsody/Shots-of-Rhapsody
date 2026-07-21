@@ -79,6 +79,41 @@
         "byteSize": 1651791,
         "alt": null
       }
+    },
+    {
+      "slug": "before-the-sky-went-quiet-part-iii-the-echo-that-stayed",
+      "capturedAt": "2026-07-21T22:28:19.987Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/before-the-sky-went-quiet-part-iii-the-echo-that-stayed"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/before-the-sky-went-quiet-part-iii-the-echo-that-stayed.json",
+        "markdown": "src/content/posts/before-the-sky-went-quiet-part-iii-the-echo-that-stayed/index.md",
+        "image": "src/content/posts/before-the-sky-went-quiet-part-iii-the-echo-that-stayed/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:a0c8a626b8fe9fd7ce0be0a6e64bc2a750e3a8592e91871a065f70eb9f669430",
+        "rawImage": "sha256:0c92199d5febdef8fcc9b51432a246ff5e5f3afac5cf4955dfd4be44ed6df9f9",
+        "snapshot": "sha256:ef4c1521d1d720841f5942e44e75d4bdd466df3eef20a77452c87193c4c8af3b",
+        "markdown": "sha256:2b013c660ad5b1940c60330729f84b4f0061de34af779ff97483c7fc06065188",
+        "image": "sha256:0c92199d5febdef8fcc9b51432a246ff5e5f3afac5cf4955dfd4be44ed6df9f9",
+        "bodyText": "sha256:bcd6af6fcb1177234f5a9c537aea8c63bcd1edecfa3fde775b352ea5cb9435a5"
+      },
+      "content": {
+        "subtitle": "She’s gone. But the sound of her hasn’t left.",
+        "imageCaption": "Long after she vanished, her voice still lingers in the chord that cracks & the silence that follows.",
+        "bodyTextSha256": "sha256:bcd6af6fcb1177234f5a9c537aea8c63bcd1edecfa3fde775b352ea5cb9435a5",
+        "bodyBlockCount": 578
+      },
+      "image": {
+        "sha256": "sha256:0c92199d5febdef8fcc9b51432a246ff5e5f3afac5cf4955dfd4be44ed6df9f9",
+        "mimeType": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "byteSize": 4380915,
+        "alt": null
+      }
     }
   ]
 }
