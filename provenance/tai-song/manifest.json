@@ -186,6 +186,41 @@
       }
     },
     {
+      "slug": "the-seventh-skin",
+      "capturedAt": "2026-07-21T22:10:10.972Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/the-seventh-skin"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/the-seventh-skin.json",
+        "markdown": "src/content/posts/the-seventh-skin/index.md",
+        "image": "src/content/posts/the-seventh-skin/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:1a0719f5ec408ac633e443d177e8897f3386b65fb194ed22b7be039efeb895fd",
+        "rawImage": "sha256:6fa5c91254e003b9292a6e69ce9f87b11774e99ede588782d0d92cedfa1ea522",
+        "snapshot": "sha256:ff9b6f5a757920aa4be290b3faf85dd767c623ad0bf447a8d1ed2ad43c7662c6",
+        "markdown": "sha256:78bab783ac9f0bb13c224ab5fd23e47eb2d7a74d303ebd8f3e8d61eb1dcd7c20",
+        "image": "sha256:6fa5c91254e003b9292a6e69ce9f87b11774e99ede588782d0d92cedfa1ea522",
+        "bodyText": "sha256:ff49c8eb133dc06024bbb8d1104b2d91db47637ef18476ba9423c796c9537908"
+      },
+      "content": {
+        "subtitle": "A biotech miracle grants eternal youth and rewrites the meaning of life.",
+        "imageCaption": "Between memory and perfection, something beautiful forgot how to feel.",
+        "bodyTextSha256": "sha256:ff49c8eb133dc06024bbb8d1104b2d91db47637ef18476ba9423c796c9537908",
+        "bodyBlockCount": 119
+      },
+      "image": {
+        "sha256": "sha256:6fa5c91254e003b9292a6e69ce9f87b11774e99ede588782d0d92cedfa1ea522",
+        "mimeType": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "byteSize": 2142085,
+        "alt": null
+      }
+    },
+    {
       "slug": "where-we-last-were-us",
       "capturedAt": "2026-07-21T22:25:32.185Z",
       "publication": {
