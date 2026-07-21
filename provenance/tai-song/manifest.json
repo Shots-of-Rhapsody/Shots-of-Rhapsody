@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "authority": {
+    "platform": "Proton Docs",
+    "captureFormat": "html-export"
+  },
+  "author": {
+    "name": "Tai Song"
+  },
+  "inventoryPath": "provenance/tai-song/inventory.json",
+  "inventorySha256": "sha256:ecfae900bce5e3d9632ed339622ab0be1da60d39b0d8d1935d75067d0f909697",
+  "articles": [
+    {
+      "slug": "before-the-sky-went-quiet-part-i-the-girl-who-faded",
+      "capturedAt": "2026-07-21T22:27:24.771Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/before-the-sky-went-quiet-part-i-the-girl-who-faded"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/before-the-sky-went-quiet-part-i-the-girl-who-faded.json",
+        "markdown": "src/content/posts/before-the-sky-went-quiet-part-i-the-girl-who-faded/index.md",
+        "image": "src/content/posts/before-the-sky-went-quiet-part-i-the-girl-who-faded/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:a390257b21bb52a55890afdcb86d5941259ec77e7d113005420ac77d8a12dc78",
+        "rawImage": "sha256:d4e126d61f38ca13db941f7719592e7009ef7ba7ab87ea4011d2ced62d345949",
+        "snapshot": "sha256:251b9beddf04eb700d6d9cfb7f8f1ae1d0c0a14cfdf95423f4ee5c93ea5ec89b",
+        "markdown": "sha256:1524157c3636c88976dbc7051bf5ce572771d83fd0d8e6d5a4edb0723da88842",
+        "image": "sha256:d4e126d61f38ca13db941f7719592e7009ef7ba7ab87ea4011d2ced62d345949",
+        "bodyText": "sha256:e8ddda1f5ecc8356eb54cb5e10c082d2615602c721979a4337933d0105944ec2"
+      },
+      "content": {
+        "subtitle": "When her voice began to disappear, everything else followed.",
+        "imageCaption": "A girl caught in the quiet between before & after, still alive, but already starting to disappear.",
+        "bodyTextSha256": "sha256:e8ddda1f5ecc8356eb54cb5e10c082d2615602c721979a4337933d0105944ec2",
+        "bodyBlockCount": 558
+      },
+      "image": {
+        "sha256": "sha256:d4e126d61f38ca13db941f7719592e7009ef7ba7ab87ea4011d2ced62d345949",
+        "mimeType": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "byteSize": 3963797,
+        "alt": null
+      }
+    }
+  ]
+}
