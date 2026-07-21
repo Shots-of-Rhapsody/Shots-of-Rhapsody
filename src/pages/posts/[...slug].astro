@@ -152,9 +152,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
                     text-black/90 dark:text-white/90
                     md:before:w-1 before:h-5 before:rounded-md before:bg-[var(--primary)]
                     before:absolute before:top-[0.75rem] before:left-[-1.125rem]
-                ">
-                    {entry.data.title}
-                </h1>
+                ">{entry.data.title}</h1>
 				{entry.data.subtitle && <p data-archive-field={isArchivePost ? "subtitle" : undefined} class="transition text-lg md:text-xl text-black/65 dark:text-white/65 mb-3">{entry.data.subtitle}</p>}
 				<div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-black/50 dark:text-white/50 mb-4" data-pagefind-ignore>
 					<span data-archive-field={isArchivePost ? "author" : undefined}>By {author}</span>

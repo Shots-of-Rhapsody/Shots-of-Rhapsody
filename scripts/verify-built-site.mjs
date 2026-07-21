@@ -2,6 +2,7 @@ import { access, readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
+import { parse, parseFragment } from "parse5";
 import { inspectPng, sha256 } from "./archive/lib/integrity.js";
 import { bodyTextSha256, renderBodyHtml } from "./archive/lib/render.js";
 
@@ -69,26 +70,40 @@ function markedField(html, field) {
 	return match ? visibleText(match[2]) : undefined;
 }
 
-function markedElementInnerHtml(html, attributeName) {
-	const escapedAttribute = escapeRegExp(attributeName);
-	const opening = new RegExp(
-		`<([a-z][a-z0-9]*)\\b[^>]*\\b${escapedAttribute}(?:=["'][^"']*["'])?[^>]*>`,
-		"i",
-	).exec(html);
-	if (!opening) return undefined;
+function elementsWithAttribute(root, name) {
+	const matches = [];
+	const visit = (node) => {
+		if (node.attrs?.some((attribute) => attribute.name === name)) {
+			matches.push(node);
+		}
+		for (const child of node.childNodes ?? []) visit(child);
+	};
+	visit(root);
+	return matches;
+}
 
-	const tagName = opening[1];
-	const contentStart = opening.index + opening[0].length;
-	const tagPattern = new RegExp(`<\\/?${escapeRegExp(tagName)}\\b[^>]*>`, "gi");
-	tagPattern.lastIndex = contentStart;
-	let depth = 1;
-	for (const match of html.matchAll(tagPattern)) {
-		if (match.index === undefined) continue;
-		if (match[0].startsWith("</")) depth -= 1;
-		else if (!match[0].endsWith("/>")) depth += 1;
-		if (depth === 0) return html.slice(contentStart, match.index);
-	}
-	return undefined;
+function normalizedArchiveNode(node) {
+	if (node.nodeName === "#text") return ["text", node.value];
+	if (node.nodeName === "#comment") return ["comment", node.data];
+	if (!node.tagName) return [node.nodeName];
+	return [
+		"element",
+		node.tagName,
+		(node.attrs ?? [])
+			.map((attribute) => [attribute.name, attribute.value])
+			.sort(([left], [right]) => left.localeCompare(right)),
+		(node.childNodes ?? []).map(normalizedArchiveNode),
+	];
+}
+
+function archiveBodyStructureFromNodes(nodes) {
+	return nodes
+		.filter((node) => node.nodeName !== "#text" || /\S/u.test(node.value ?? ""))
+		.map(normalizedArchiveNode);
+}
+
+export function archiveBodyStructure(value) {
+	return archiveBodyStructureFromNodes(parseFragment(String(value)).childNodes);
 }
 
 function canonicalBodyHtml(value) {
@@ -97,41 +112,6 @@ function canonicalBodyHtml(value) {
 		.replace(/>\s+</g, "><")
 		.replace(/<br\s*\/?\s*>/gi, "<br>")
 		.trim();
-}
-
-const VOID_ELEMENTS = new Set([
-	"area",
-	"base",
-	"br",
-	"col",
-	"embed",
-	"hr",
-	"img",
-	"input",
-	"link",
-	"meta",
-	"param",
-	"source",
-	"track",
-	"wbr",
-]);
-
-function topLevelElementCount(value) {
-	let depth = 0;
-	let count = 0;
-	for (const match of String(value).matchAll(
-		/<\/?([a-z][a-z0-9-]*)\b[^>]*>/gi,
-	)) {
-		const raw = match[0];
-		const tagName = match[1].toLowerCase();
-		if (raw.startsWith("</")) {
-			depth = Math.max(0, depth - 1);
-			continue;
-		}
-		if (depth === 0) count += 1;
-		if (!raw.endsWith("/>") && !VOID_ELEMENTS.has(tagName)) depth += 1;
-	}
-	return count;
 }
 
 function exactSha256(value) {
@@ -894,6 +874,7 @@ async function verifyArchiveManifest(repoRoot, distRoot, site, failures) {
 			continue;
 		}
 		const html = await readFile(pagePath, "utf8");
+		const document = parse(html);
 		const expectedUrl = new URL(`posts/${slug}/`, site).toString();
 		const canonical = getCanonical(html, label, failures);
 		if (canonical !== expectedUrl)
@@ -956,21 +937,22 @@ async function verifyArchiveManifest(repoRoot, distRoot, site, failures) {
 			failures.push(`${label}: visible license is not All Rights Reserved`);
 		}
 
-		const bodyWrappers = tags(html, "div").filter((tag) =>
-			Object.hasOwn(tag.attributes, "data-archive-body"),
-		);
-		const bodyInnerHtml = markedElementInnerHtml(html, "data-archive-body");
-		if (bodyWrappers.length !== 1 || bodyInnerHtml === undefined) {
+		const bodyWrappers = elementsWithAttribute(document, "data-archive-body");
+		if (bodyWrappers.length !== 1) {
 			failures.push(`${label}: expected exactly one rendered archive body`);
 		} else {
-			if (
-				canonicalBodyHtml(bodyInnerHtml) !== canonicalBodyHtml(post.bodyHtml)
-			) {
+			const bodyNodes = bodyWrappers[0].childNodes ?? [];
+			const renderedBody = archiveBodyStructureFromNodes(bodyNodes);
+			const expectedBody = archiveBodyStructure(post.bodyHtml);
+			if (JSON.stringify(renderedBody) !== JSON.stringify(expectedBody)) {
 				failures.push(`${label}: rendered body HTML differs from snapshot`);
 			}
-			if (topLevelElementCount(bodyInnerHtml) !== expectedBlockCount) {
+			const renderedBlockCount = bodyNodes.filter(
+				(node) => node.tagName,
+			).length;
+			if (renderedBlockCount !== expectedBlockCount) {
 				failures.push(
-					`${label}: rendered body block count differs from snapshot`,
+					`${label}: rendered body block count ${renderedBlockCount} differs from snapshot ${expectedBlockCount}`,
 				);
 			}
 		}
