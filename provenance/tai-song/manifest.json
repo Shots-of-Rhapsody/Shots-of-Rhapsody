@@ -151,6 +151,41 @@
       }
     },
     {
+      "slug": "eggasaurus-rex",
+      "capturedAt": "2026-07-21T22:26:48.521Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/eggasaurus-rex"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/eggasaurus-rex.json",
+        "markdown": "src/content/posts/eggasaurus-rex/index.md",
+        "image": "src/content/posts/eggasaurus-rex/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:89ff3a2e6ad2bc50967df175ee9a5e253d7f998f95e7f192d96f1cdfec638aba",
+        "rawImage": "sha256:74aa40343df32361ce230171f393d44421c3f3d4d6502e8ddcd42f88b9bed802",
+        "snapshot": "sha256:4ca9ce47bd637fe2c019e255c69b9c808d749f96ef6962b81d672956d7d36bff",
+        "markdown": "sha256:346f3abdfafd88d3489b39313726bdee1c6a95b0aa75173891b518ee50603124",
+        "image": "sha256:74aa40343df32361ce230171f393d44421c3f3d4d6502e8ddcd42f88b9bed802",
+        "bodyText": "sha256:e2fed517ae6aae3d5cf0ab3bd734a1f5ad969b5520d5720ffa9288477c329646"
+      },
+      "content": {
+        "subtitle": "In the Land of Wobblebottom, nothing rolls quite like him...",
+        "imageCaption": "Welcome to the Land of Wobblebottom, where socks grow on trees, spaghetti boulders roll wild, and heroes wobble with pride!",
+        "bodyTextSha256": "sha256:e2fed517ae6aae3d5cf0ab3bd734a1f5ad969b5520d5720ffa9288477c329646",
+        "bodyBlockCount": 235
+      },
+      "image": {
+        "sha256": "sha256:74aa40343df32361ce230171f393d44421c3f3d4d6502e8ddcd42f88b9bed802",
+        "mimeType": "image/png",
+        "width": 1024,
+        "height": 1024,
+        "byteSize": 2737995,
+        "alt": null
+      }
+    },
+    {
       "slug": "poetic-biography",
       "capturedAt": "2026-07-21T22:14:42.232Z",
       "publication": {

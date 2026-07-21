@@ -1,0 +1,2257 @@
+{
+  "schemaVersion": 1,
+  "slug": "eggasaurus-rex",
+  "title": "Eggasaurus Rex",
+  "subtitle": "In the Land of Wobblebottom, nothing rolls quite like him...",
+  "summary": "-Author’s Note from the Wobbleverse.\n\nThis wobbly, glitter-splattered tale is a joyful break from my usual writing. Eggasaurus Rex is my very first attempt at a children’s short story, filled with sock trees, meatball disasters, and one delightfully ridiculous hero. I'd say it's meant for kids somewhere under the age of 9.\n\n",
+  "description": "In the Land of Wobblebottom, nothing rolls quite like him...",
+  "author": "Tai Song",
+  "published": "2025-04-12T18:56:59.994Z",
+  "category": "Fiction",
+  "tags": [],
+  "imageAlt": null,
+  "imageCaption": "Welcome to the Land of Wobblebottom, where socks grow on trees, spaghetti boulders roll wild, and heroes wobble with pride!",
+  "provenance": {
+    "authority": "Proton Docs",
+    "captureFormat": "html-export",
+    "capturedAt": "2026-07-21T22:26:48.521Z"
+  },
+  "publication": {
+    "platform": "Vocal",
+    "url": "https://vocal.media/fiction/eggasaurus-rex"
+  },
+  "hero": {
+    "sha256": "sha256:74aa40343df32361ce230171f393d44421c3f3d4d6502e8ddcd42f88b9bed802",
+    "mimeType": "image/png",
+    "width": 1024,
+    "height": 1024,
+    "byteSize": 2737995,
+    "rawAlt": ""
+  },
+  "bodyDocument": {
+    "blocks": [
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "-Author’s Note from the Wobbleverse.",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "This wobbly, glitter-splattered tale is a joyful break from my usual writing. Eggasaurus Rex is my very first attempt at a children’s short story, filled with sock trees, meatball disasters, and one delightfully ridiculous hero. I'd say it's meant for kids somewhere under the age of 9.",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "It’s meant to be read out loud, giggled through, and shared with young (or young-at-heart) readers.",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "So if you're here for my darker fiction or grown-up stories... today, we wobble instead.",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "------",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "One morning in the Land of Wobblebottom,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "right between the jellybean jungle and the sock tree forest,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "the sky gave a hiccup.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "BOING. BONK. SPROINGLE-SNAP... THWAP!",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "A rainbow-striped egg came bouncing down Trampoline Mountain,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "ricocheted off a giggle-bush,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "and landed smack in the middle of town square,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "right next to Grumpasaurus’s soup stand.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "It wobbled.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "It rolled.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "It hummed a little disco tune.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Tina Triclipclops dropped her clipboards.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“All three!” she gasped.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“That egg is unregistered and smells like marshmallow glue!”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Zoomy Zaptor zoomed,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "spun seventeen loops,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "and flopped face-first into a muffin tree.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“ZOOOOOOM-SPLAT-CHA-BOING!”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Baby Bloop put a sock on the egg",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "and sang it a lullaby.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Then floated upside-down into the bushes, whispering,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“You shall be Sir Socky von Wiggle, our bravest knight.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The egg wiggled...",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "jiggled...",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "jellied...",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And with a glittery wobble-pop,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "it burst like a confetti cannon full of jellyfish and socks.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "SPARKLES. EVERYWHERE.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They got in noses.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They danced on foreheads.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "One sparkle flew up and gave the moon a high five.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Out rolled a perfectly round, giggling dino",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "with disco-ball eyes, banana peel slippers,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "and lettuce taped to his tail.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“HELLO, TOTS!” he chuckled.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“I’m not a dinosaur. I’m a wiggly-jiggly Eggasaurus Rex-a-roo!”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He hiccupped jellybeans.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Three birds fainted.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "One tree applauded.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Tina cleared her throat.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Dino Orientation, Rule One: Roar like you mean it.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Eggasaurus puffed his cheeks,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "scrunched his sparkly face,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "and ROOO,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "AH-CHOOOO!",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "A blast of glitter launched Zoomy into a lemonade stand.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Rule Two,” said Tina, wiping glitter from her glasses.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Stomp like you’re angry at the ground.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Eggasaurus raised one banana-slippered foot.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“STOMPY-STOMP!” he shouted.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "whooooosh.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He slipped, tumbled,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "and rolled into a pineapple cart.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Grumpasaurus Grumble looked up.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Hmph. That’s not a stomp. That’s a squish with ambition.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Let him chase something!” Zoomy yelled.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Eggasaurus nodded.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He locked eyes on a butterfly,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "waddled after it…",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "and hugged a cactus.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“OOOOPS-A-NOODLE!” he said happily.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Wrong butterfly.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The other dinos stared.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Tina sighed.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Zoomy groaned.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Grumpasaurus muttered, “He’s not even a real dinosaur.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Eggasaurus blinked.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "His glitter dimmed just a little.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Oh,” he whispered. “Maybe I’m not.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He rolled into the bushes,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "quiet for the first time,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "and sat beside Sir Socky von Wiggle.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Sir Socky didn’t say anything.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "But his stripey silence was very comforting.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Suddenly, the ground jiggled.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Then wiggled.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Then made a slurping noise.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Oh no,” said Tina.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“It’s happening again.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Every dino turned to the cliffs.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "A GIANT, GARGANTUOUS SPAGHETTI MEATBALL BOULDER",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "was barreling toward town.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "It had pepperoni eyes.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "It had garlic bread legs.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "It had NO brakes.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“EVERYONE FOR THEMSELVES!” Zoomy shrieked.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“GLUE ME TO THE EARTH! I AM A TREE!”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“We need a plan!” Tina shouted.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“We need soup,” said Grumpasaurus.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Bloop,” said Bloop.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Eggasaurus peeked from the bushes.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "His eyes widened.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Then… he smiled.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Can I ride it?”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“NO!” everyone yelled.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He grinned.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Then I’ll roll at it!”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He curled into a perfect rainbow ball...",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "spun up speed...",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "and launched himself straight at the meatball boulder.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "BOING! ZOOM! SLAMMO-RAMA! KA-BLOOSH!",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He stuck to it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He giggled.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He waved at a butterfly.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Then,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "he rolled left,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "rolled right,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "bounced off the sock tree,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "spun around Muffin Hill…",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "and SPLORRRRRRSH!",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Straight into Great Tomato Lake.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Noodles flew.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Cheese rained from the sky.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Bloop caught a meatball in her sock.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "A tiny mayor popped out of a muffin",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "and declared a sprinkle emergency.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The dinos blinked.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Tomato soup dripped from trees.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "A noodle signed Tina’s clipboard.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Out in the lake, Eggasaurus floated like a ravioli.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“WOBBLE SUCCESS!” he shouted,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "spinning a soggy breadstick like a champion.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Baby Bloop threw jellybeans in the air.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Zoomy skated in circles yelling,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Eggasaurus! Eggasaurus! King of the ketchup!”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Tina sighed, still covered in cheese.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“I hereby declare him…",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Land of Wobblebottom’s Official Roller of Rescue.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Grumpasaurus grunted.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Hmph. Took you long enough.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The dinos danced.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They jiggled.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They wobbled.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They snorted juice out their noses.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Eggasaurus did the worm.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And the worm clapped.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "As the noodles napped in the sun,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Eggasaurus stood on a stack of muffins and proclaimed:",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“From this day forward… let it be known…",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "You don’t need claws or stomps or roars…",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "TO BE DINO-MIGHTY!”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He paused.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Then added with a wink:",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“You don’t need to fit to shine,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "just wobble in your own design.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He rolled into the sunset.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Backwards.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Singing the alphabet out of order.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Q... W... Marshmallow... H!”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Baby Bloop waved a sock on a stick,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Sir Socky von Wiggle, flying proudly.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The crowd cheered.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The birds burped bubbles.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And somewhere far away,",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "a second rainbow-striped egg wobbled.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "It had googly eyes.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And a mustache.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "THE END",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "(or maybe... the SPLAT-TASTIC beginning?)",
+            "marks": []
+          }
+        ]
+      }
+    ]
+  },
+  "bodyHtml": "<p><em>-Author’s Note from the Wobbleverse.</em></p>\n<p><em>This wobbly, glitter-splattered tale is a joyful break from my usual writing. Eggasaurus Rex is my very first attempt at a children’s short story, filled with sock trees, meatball disasters, and one delightfully ridiculous hero. I&#39;d say it&#39;s meant for kids somewhere under the age of 9.</em></p>\n<p><em>It’s meant to be read out loud, giggled through, and shared with young (or young-at-heart) readers.</em></p>\n<p><em>So if you&#39;re here for my darker fiction or grown-up stories... today, we wobble instead.</em></p>\n<p>------</p>\n<p>One morning in the Land of Wobblebottom,</p>\n<p>right between the jellybean jungle and the sock tree forest,</p>\n<p>the sky gave a hiccup.</p>\n<p><br /></p>\n<p>BOING. BONK. SPROINGLE-SNAP... THWAP!</p>\n<p><br /></p>\n<p>A rainbow-striped egg came bouncing down Trampoline Mountain,</p>\n<p>ricocheted off a giggle-bush,</p>\n<p>and landed smack in the middle of town square,</p>\n<p>right next to Grumpasaurus’s soup stand.</p>\n<p><br /></p>\n<p>It wobbled.</p>\n<p>It rolled.</p>\n<p>It hummed a little disco tune.</p>\n<p><br /></p>\n<p>Tina Triclipclops dropped her clipboards.</p>\n<p>“All three!” she gasped.</p>\n<p>“That egg is unregistered and smells like marshmallow glue!”</p>\n<p><br /></p>\n<p>Zoomy Zaptor zoomed,</p>\n<p>spun seventeen loops,</p>\n<p>and flopped face-first into a muffin tree.</p>\n<p>“ZOOOOOOM-SPLAT-CHA-BOING!”</p>\n<p><br /></p>\n<p>Baby Bloop put a sock on the egg</p>\n<p>and sang it a lullaby.</p>\n<p>Then floated upside-down into the bushes, whispering,</p>\n<p>“You shall be Sir Socky von Wiggle, our bravest knight.”</p>\n<p><br /></p>\n<p>The egg wiggled...</p>\n<p>jiggled...</p>\n<p>jellied...</p>\n<p><br /></p>\n<p>And with a glittery wobble-pop,</p>\n<p>it burst like a confetti cannon full of jellyfish and socks.</p>\n<p><br /></p>\n<p>SPARKLES. EVERYWHERE.</p>\n<p>They got in noses.</p>\n<p>They danced on foreheads.</p>\n<p>One sparkle flew up and gave the moon a high five.</p>\n<p><br /></p>\n<p>Out rolled a perfectly round, giggling dino</p>\n<p>with disco-ball eyes, banana peel slippers,</p>\n<p>and lettuce taped to his tail.</p>\n<p><br /></p>\n<p>“HELLO, TOTS!” he chuckled.</p>\n<p>“I’m not a dinosaur. I’m a wiggly-jiggly Eggasaurus Rex-a-roo!”</p>\n<p><br /></p>\n<p>He hiccupped jellybeans.</p>\n<p>Three birds fainted.</p>\n<p>One tree applauded.</p>\n<p><br /></p>\n<p>Tina cleared her throat.</p>\n<p>“Dino Orientation, Rule One: Roar like you mean it.”</p>\n<p><br /></p>\n<p>Eggasaurus puffed his cheeks,</p>\n<p>scrunched his sparkly face,</p>\n<p>and ROOO,</p>\n<p><br /></p>\n<p>AH-CHOOOO!</p>\n<p><br /></p>\n<p>A blast of glitter launched Zoomy into a lemonade stand.</p>\n<p><br /></p>\n<p>“Rule Two,” said Tina, wiping glitter from her glasses.</p>\n<p>“Stomp like you’re angry at the ground.”</p>\n<p><br /></p>\n<p>Eggasaurus raised one banana-slippered foot.</p>\n<p>“STOMPY-STOMP!” he shouted.</p>\n<p><br /></p>\n<p>whooooosh.</p>\n<p><br /></p>\n<p>He slipped, tumbled,</p>\n<p>and rolled into a pineapple cart.</p>\n<p><br /></p>\n<p>Grumpasaurus Grumble looked up.</p>\n<p>“Hmph. That’s not a stomp. That’s a squish with ambition.”</p>\n<p><br /></p>\n<p>“Let him chase something!” Zoomy yelled.</p>\n<p><br /></p>\n<p>Eggasaurus nodded.</p>\n<p>He locked eyes on a butterfly,</p>\n<p>waddled after it…</p>\n<p><br /></p>\n<p>and hugged a cactus.</p>\n<p><br /></p>\n<p>“OOOOPS-A-NOODLE!” he said happily.</p>\n<p>“Wrong butterfly.”</p>\n<p><br /></p>\n<p>The other dinos stared.</p>\n<p><br /></p>\n<p>Tina sighed.</p>\n<p>Zoomy groaned.</p>\n<p>Grumpasaurus muttered, “He’s not even a real dinosaur.”</p>\n<p><br /></p>\n<p>Eggasaurus blinked.</p>\n<p>His glitter dimmed just a little.</p>\n<p>“Oh,” he whispered. “Maybe I’m not.”</p>\n<p><br /></p>\n<p>He rolled into the bushes,</p>\n<p>quiet for the first time,</p>\n<p>and sat beside Sir Socky von Wiggle.</p>\n<p><br /></p>\n<p>Sir Socky didn’t say anything.</p>\n<p>But his stripey silence was very comforting.</p>\n<p><br /></p>\n<p>Suddenly, the ground jiggled.</p>\n<p>Then wiggled.</p>\n<p>Then made a slurping noise.</p>\n<p><br /></p>\n<p>“Oh no,” said Tina.</p>\n<p>“It’s happening again.”</p>\n<p><br /></p>\n<p>Every dino turned to the cliffs.</p>\n<p><br /></p>\n<p>A GIANT, GARGANTUOUS SPAGHETTI MEATBALL BOULDER</p>\n<p>was barreling toward town.</p>\n<p><br /></p>\n<p>It had pepperoni eyes.</p>\n<p>It had garlic bread legs.</p>\n<p>It had NO brakes.</p>\n<p><br /></p>\n<p>“EVERYONE FOR THEMSELVES!” Zoomy shrieked.</p>\n<p>“GLUE ME TO THE EARTH! I AM A TREE!”</p>\n<p><br /></p>\n<p>“We need a plan!” Tina shouted.</p>\n<p>“We need soup,” said Grumpasaurus.</p>\n<p>“Bloop,” said Bloop.</p>\n<p><br /></p>\n<p>Eggasaurus peeked from the bushes.</p>\n<p>His eyes widened.</p>\n<p>Then… he smiled.</p>\n<p><br /></p>\n<p>“Can I ride it?”</p>\n<p><br /></p>\n<p>“NO!” everyone yelled.</p>\n<p><br /></p>\n<p>He grinned.</p>\n<p>“Then I’ll roll at it!”</p>\n<p><br /></p>\n<p>He curled into a perfect rainbow ball...</p>\n<p>spun up speed...</p>\n<p>and launched himself straight at the meatball boulder.</p>\n<p><br /></p>\n<p>BOING! ZOOM! SLAMMO-RAMA! KA-BLOOSH!</p>\n<p><br /></p>\n<p>He stuck to it.</p>\n<p>He giggled.</p>\n<p>He waved at a butterfly.</p>\n<p><br /></p>\n<p>Then,</p>\n<p><br /></p>\n<p>he rolled left,</p>\n<p>rolled right,</p>\n<p>bounced off the sock tree,</p>\n<p>spun around Muffin Hill…</p>\n<p><br /></p>\n<p>and SPLORRRRRRSH!</p>\n<p><br /></p>\n<p>Straight into Great Tomato Lake.</p>\n<p><br /></p>\n<p>Noodles flew.</p>\n<p>Cheese rained from the sky.</p>\n<p>Bloop caught a meatball in her sock.</p>\n<p><br /></p>\n<p>A tiny mayor popped out of a muffin</p>\n<p>and declared a sprinkle emergency.</p>\n<p><br /></p>\n<p>The dinos blinked.</p>\n<p><br /></p>\n<p>Tomato soup dripped from trees.</p>\n<p>A noodle signed Tina’s clipboard.</p>\n<p><br /></p>\n<p>Out in the lake, Eggasaurus floated like a ravioli.</p>\n<p><br /></p>\n<p>“WOBBLE SUCCESS!” he shouted,</p>\n<p>spinning a soggy breadstick like a champion.</p>\n<p><br /></p>\n<p>Baby Bloop threw jellybeans in the air.</p>\n<p><br /></p>\n<p>Zoomy skated in circles yelling,</p>\n<p>“Eggasaurus! Eggasaurus! King of the ketchup!”</p>\n<p><br /></p>\n<p>Tina sighed, still covered in cheese.</p>\n<p>“I hereby declare him…</p>\n<p>The Land of Wobblebottom’s Official Roller of Rescue.”</p>\n<p><br /></p>\n<p>Grumpasaurus grunted.</p>\n<p>“Hmph. Took you long enough.”</p>\n<p><br /></p>\n<p>The dinos danced.</p>\n<p>They jiggled.</p>\n<p>They wobbled.</p>\n<p>They snorted juice out their noses.</p>\n<p><br /></p>\n<p>Eggasaurus did the worm.</p>\n<p>And the worm clapped.</p>\n<p><br /></p>\n<p>As the noodles napped in the sun,</p>\n<p>Eggasaurus stood on a stack of muffins and proclaimed:</p>\n<p><br /></p>\n<p>“From this day forward… let it be known…</p>\n<p>You don’t need claws or stomps or roars…</p>\n<p>TO BE DINO-MIGHTY!”</p>\n<p><br /></p>\n<p>He paused.</p>\n<p>Then added with a wink:</p>\n<p><br /></p>\n<p>“You don’t need to fit to shine,</p>\n<p>just wobble in your own design.”</p>\n<p><br /></p>\n<p>He rolled into the sunset.</p>\n<p>Backwards.</p>\n<p>Singing the alphabet out of order.</p>\n<p><br /></p>\n<p>“Q... W... Marshmallow... H!”</p>\n<p><br /></p>\n<p>Baby Bloop waved a sock on a stick,</p>\n<p>Sir Socky von Wiggle, flying proudly.</p>\n<p><br /></p>\n<p>The crowd cheered.</p>\n<p>The birds burped bubbles.</p>\n<p><br /></p>\n<p>And somewhere far away,</p>\n<p>a second rainbow-striped egg wobbled.</p>\n<p><br /></p>\n<p>It had googly eyes.</p>\n<p>And a mustache.</p>\n<p><br /></p>\n<p>THE END</p>\n<p>(or maybe... the SPLAT-TASTIC beginning?)</p>",
+  "bodyTextSha256": "sha256:e2fed517ae6aae3d5cf0ab3bd734a1f5ad969b5520d5720ffa9288477c329646",
+  "bodyBlockCount": 235,
+  "license": {
+    "name": "All Rights Reserved"
+  }
+}
