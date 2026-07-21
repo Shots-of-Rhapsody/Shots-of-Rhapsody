@@ -61,6 +61,12 @@ git push --set-upstream origin codex/fuwari-sync-YYYY-MM-DD
 
 Before merging the pull request, review every upstream commit and file change. Update the pinned reviewed-head value in this document only after that review succeeds.
 
+## Known non-gating upstream check
+
+The inherited `pnpm type-check` command runs TypeScript with `--isolatedDeclarations` even though this site does not emit a declaration package. At the reviewed upstream baseline and after the local compatibility work, it exits with 11 `TS9007`, `TS9010`, and `TS9013` annotation-inference diagnostics across the existing constants, content schema, RSS route, plugins, and utilities.
+
+This command is retained to make the upstream issue visible, but it is not a migration gate. The required gates are `pnpm check` (`astro check`), `pnpm test:vocal`, `pnpm lint:ci`, `pnpm build`, content/hash verification when a manifest exists, and `pnpm verify:site`. Do not report the standalone declaration check as passing unless its upstream contract is deliberately repaired in a separately reviewed change.
+
 ## Prohibited shortcuts
 
 - Do not run `git pull upstream main`.
