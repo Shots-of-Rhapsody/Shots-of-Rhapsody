@@ -18,7 +18,7 @@
     "vocal:inventory": "node scripts/vocal/inventory.js",
     "vocal:import": "node scripts/vocal/import.js",
     "vocal:verify": "node scripts/vocal/verify.js",
-    "test:vocal": "node --test scripts/vocal/test/extract.test.js scripts/vocal/test/import.test.js scripts/vocal/test/inventory.test.js scripts/vocal/test/verify.test.js",
+    "test:vocal": "node --test scripts/vocal/test/extract.test.js scripts/vocal/test/import.test.js scripts/vocal/test/inventory.test.js scripts/vocal/test/site.test.js scripts/vocal/test/verify.test.js",
     "format": "biome format --write ./src ./scripts/vocal ./scripts/verify-built-site.mjs",
     "lint": "biome check ./src ./scripts/vocal ./scripts/verify-built-site.mjs",
     "lint:ci": "biome ci ./src ./scripts/vocal ./scripts/verify-built-site.mjs --reporter=github",
