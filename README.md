@@ -99,6 +99,12 @@ If your work questions, formalizes, or imagines, it belongs here.
 
 ---
 
+## Maintenance
+
+This site began from the Fuwari template. Its pinned lineage and review-only update procedure are documented in [Fuwari upstream synchronization](docs/upstream-sync.md).
+
+---
+
 ## License
 
 All content © 2025 **Shots of Rhapsody**.  
