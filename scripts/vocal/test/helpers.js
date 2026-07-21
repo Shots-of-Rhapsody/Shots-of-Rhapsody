@@ -106,7 +106,10 @@ function makePngChunk(type, data) {
 	chunk.writeUInt32BE(data.length, 0);
 	typeBuffer.copy(chunk, 4);
 	data.copy(chunk, 8);
-	chunk.writeUInt32BE(pngCrc32(Buffer.concat([typeBuffer, data])), 8 + data.length);
+	chunk.writeUInt32BE(
+		pngCrc32(Buffer.concat([typeBuffer, data])),
+		8 + data.length,
+	);
 	return chunk;
 }
 
@@ -153,7 +156,8 @@ export async function makeRepository(test, options = {}) {
 		schemaVersion: 1,
 		expectedCount: articles.length,
 		expectedWordCount:
-			options.expectedWordCount ?? articles.reduce((total, article) => {
+			options.expectedWordCount ??
+			articles.reduce((total, article) => {
 				return total + (article.slug === post.slug ? post.wordCount : 0);
 			}, 0),
 		articles,

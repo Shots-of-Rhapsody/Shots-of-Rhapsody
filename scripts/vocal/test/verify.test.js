@@ -66,7 +66,10 @@ test("verification detects snapshot and raw-page divergence", async (testContext
 	const snapshot = JSON.parse(await readFile(snapshotPath, "utf8"));
 	snapshot.unknownPostField.preserve = false;
 	await writeFile(snapshotPath, `${JSON.stringify(snapshot, null, 2)}\n`);
-	await assert.rejects(verifyArticles({ repoRoot: root }), /snapshot hash mismatch/u);
+	await assert.rejects(
+		verifyArticles({ repoRoot: root }),
+		/snapshot hash mismatch/u,
+	);
 });
 
 test("requireComplete rejects a pending subset", async (testContext) => {

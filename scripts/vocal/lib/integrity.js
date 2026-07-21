@@ -61,7 +61,9 @@ export function inspectPng(buffer, label = "PNG") {
 
 		if (chunkIndex === 0) {
 			if (type !== "IHDR" || length !== 13) {
-				throw new ContractError(`${label} does not begin with a valid IHDR chunk`);
+				throw new ContractError(
+					`${label} does not begin with a valid IHDR chunk`,
+				);
 			}
 			width = buffer.readUInt32BE(dataStart);
 			height = buffer.readUInt32BE(dataStart + 4);
@@ -78,7 +80,9 @@ export function inspectPng(buffer, label = "PNG") {
 				[6, new Set([8, 16])],
 			]);
 			if (!validDepths.get(colorType)?.has(bitDepth)) {
-				throw new ContractError(`${label} has an invalid PNG color type/bit depth`);
+				throw new ContractError(
+					`${label} has an invalid PNG color type/bit depth`,
+				);
 			}
 			if (
 				buffer[dataStart + 10] !== 0 ||
@@ -93,7 +97,8 @@ export function inspectPng(buffer, label = "PNG") {
 
 		if (type === "IDAT") sawIdat = true;
 		if (type === "IEND") {
-			if (length !== 0) throw new ContractError(`${label} has an invalid IEND chunk`);
+			if (length !== 0)
+				throw new ContractError(`${label} has an invalid IEND chunk`);
 			sawIend = true;
 			if (crcOffset + 4 !== buffer.length) {
 				throw new ContractError(`${label} has bytes after its IEND chunk`);

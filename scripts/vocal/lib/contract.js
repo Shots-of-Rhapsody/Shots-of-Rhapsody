@@ -77,10 +77,7 @@ export function assertSafeJsonNumbers(value, label = "post") {
 }
 
 export function assertSlug(slug) {
-	if (
-		typeof slug !== "string" ||
-		!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)
-	) {
+	if (typeof slug !== "string" || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
 		throw new ContractError(
 			`Invalid slug ${JSON.stringify(slug)}; use lowercase kebab-case`,
 		);

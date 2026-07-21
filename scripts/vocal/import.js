@@ -55,7 +55,9 @@ function printHumanResult(result) {
 			.join(", ");
 		console.log(`- ${article.slug}: ${actions}`);
 		if (article.capturedAtRequired) {
-			console.log("  first write requires --captured-at <canonical UTC ISO timestamp>");
+			console.log(
+				"  first write requires --captured-at <canonical UTC ISO timestamp>",
+			);
 		}
 	}
 	console.log(`- manifest=${result.manifestAction}`);

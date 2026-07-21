@@ -29,14 +29,8 @@ test("requires exactly one typed __NEXT_DATA__ script", async () => {
 		() => extractNextDataPost(valid.replace(' type="application/json"', "")),
 		/type="application\/json"/u,
 	);
-	assert.throws(
-		() => extractNextDataPost(`${valid}${valid}`),
-		/found 2/u,
-	);
-	assert.throws(
-		() => extractNextDataPost("<html></html>"),
-		/found 0/u,
-	);
+	assert.throws(() => extractNextDataPost(`${valid}${valid}`), /found 2/u);
+	assert.throws(() => extractNextDataPost("<html></html>"), /found 0/u);
 });
 
 test("fails closed on invalid Next JSON or post paths", () => {
@@ -108,11 +102,7 @@ test("renders the complete approved text edge-case matrix exactly", () => {
 
 test("maps null alt text and the exact Vocal platform literal", () => {
 	const post = makePost({ heroImageAltText: null });
-	const model = validatePost(
-		post,
-		inventoryArticle(post),
-		SAMPLE_CAPTURED_AT,
-	);
+	const model = validatePost(post, inventoryArticle(post), SAMPLE_CAPTURED_AT);
 	const markdown = renderIndexMarkdown(model.metadata, model.document);
 	assert.equal(VOCAL_PLATFORM, "Vocal");
 	assert.equal(model.metadata.imageAlt, null);
@@ -138,7 +128,10 @@ test("includes updated only when contentUpdatedAt is later than publication", ()
 });
 
 test("requires an absolute HTTPS heroImage.id during post validation", () => {
-	for (const id of ["http://images.example.test/original.png", "/original.png"]) {
+	for (const id of [
+		"http://images.example.test/original.png",
+		"/original.png",
+	]) {
 		const basePost = makePost();
 		const post = makePost({ heroImage: { ...basePost.heroImage, id } });
 		assert.throws(
@@ -160,9 +153,12 @@ test("fails closed on nonempty body media and embed collections", () => {
 });
 
 test("rejects unsafe integers instead of silently rounding them", async () => {
-	const page = await makePage(makePost({ unsafe: Number.MAX_SAFE_INTEGER + 1 }));
+	const page = await makePage(
+		makePost({ unsafe: Number.MAX_SAFE_INTEGER + 1 }),
+	);
 	assert.throws(
 		() => extractNextDataPost(page),
-		(error) => error instanceof ContractError && /unsafe integer/u.test(error.message),
+		(error) =>
+			error instanceof ContractError && /unsafe integer/u.test(error.message),
 	);
 });

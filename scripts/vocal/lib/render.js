@@ -1,14 +1,16 @@
 import {
 	assertNonEmptyString,
-	assertPlainObject,
 	assertOptionalString,
+	assertPlainObject,
 	ContractError,
 } from "./contract.js";
 
 function assertOnlyKeys(object, allowed, label) {
 	for (const key of Object.keys(object)) {
 		if (!allowed.has(key)) {
-			throw new ContractError(`${label} contains unsupported key ${JSON.stringify(key)}`);
+			throw new ContractError(
+				`${label} contains unsupported key ${JSON.stringify(key)}`,
+			);
 		}
 	}
 }
@@ -90,7 +92,9 @@ export function renderSlateDocument(document) {
 		"post.content.document",
 	);
 	if (document.object !== "document") {
-		throw new ContractError('post.content.document.object must equal "document"');
+		throw new ContractError(
+			'post.content.document.object must equal "document"',
+		);
 	}
 	const data = assertPlainObject(document.data, "post.content.document.data");
 	if (Object.keys(data).length !== 0) {
@@ -128,13 +132,22 @@ export function renderIndexMarkdown(metadata, document) {
 	const title = assertNonEmptyString(metadata.title, "metadata.title");
 	const subtitle = assertNonEmptyString(metadata.subtitle, "metadata.subtitle");
 	const summary = assertNonEmptyString(metadata.summary, "metadata.summary");
-	const published = assertNonEmptyString(metadata.published, "metadata.published");
-	const sourceUrl = assertNonEmptyString(metadata.sourceUrl, "metadata.sourceUrl");
+	const published = assertNonEmptyString(
+		metadata.published,
+		"metadata.published",
+	);
+	const sourceUrl = assertNonEmptyString(
+		metadata.sourceUrl,
+		"metadata.sourceUrl",
+	);
 	const imageAlt = metadata.imageAlt;
 	if (imageAlt !== null && typeof imageAlt !== "string") {
 		throw new ContractError("metadata.imageAlt must be a string or null");
 	}
-	const imageCaption = assertOptionalString(metadata.imageCaption, "metadata.imageCaption");
+	const imageCaption = assertOptionalString(
+		metadata.imageCaption,
+		"metadata.imageCaption",
+	);
 	if (imageCaption === undefined) {
 		throw new ContractError("metadata.imageCaption must be a string");
 	}
@@ -144,7 +157,10 @@ export function renderIndexMarkdown(metadata, document) {
 	);
 	const updated = assertOptionalString(metadata.updated, "metadata.updated");
 	const category = assertNonEmptyString(metadata.category, "metadata.category");
-	if (!Array.isArray(metadata.tags) || metadata.tags.some((tag) => typeof tag !== "string")) {
+	if (
+		!Array.isArray(metadata.tags) ||
+		metadata.tags.some((tag) => typeof tag !== "string")
+	) {
 		throw new ContractError("metadata.tags must be an array of strings");
 	}
 	const source = assertPlainObject(metadata.source, "metadata.source");

@@ -41,7 +41,9 @@ function decodeHtml(value) {
 		.replace(/&#39;|&apos;/g, "'")
 		.replace(/&lt;/g, "<")
 		.replace(/&gt;/g, ">")
-		.replace(/&#(\d+);/g, (_, codePoint) => String.fromCodePoint(Number(codePoint)))
+		.replace(/&#(\d+);/g, (_, codePoint) =>
+			String.fromCodePoint(Number(codePoint)),
+		)
 		.replace(/&#x([0-9a-f]+);/gi, (_, codePoint) =>
 			String.fromCodePoint(Number.parseInt(codePoint, 16)),
 		);
@@ -69,16 +71,21 @@ function markedField(html, field) {
 function xmlElementText(xml, name) {
 	const escapedName = escapeRegExp(name);
 	const match = xml.match(
-		new RegExp(`<${escapedName}(?:\\s[^>]*)?>(?:<!\\[CDATA\\[)?([\\s\\S]*?)(?:\\]\\]>)?<\\/${escapedName}>`),
+		new RegExp(
+			`<${escapedName}(?:\\s[^>]*)?>(?:<!\\[CDATA\\[)?([\\s\\S]*?)(?:\\]\\]>)?<\\/${escapedName}>`,
+		),
 	);
 	return match ? decodeHtml(match[1]) : undefined;
 }
 
 function attributes(tag) {
 	const result = {};
-	const expression = /([^\s=/>]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/g;
+	const expression =
+		/([^\s=/>]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/g;
 	for (const match of tag.matchAll(expression)) {
-		result[match[1].toLowerCase()] = decodeHtml(match[2] ?? match[3] ?? match[4] ?? "");
+		result[match[1].toLowerCase()] = decodeHtml(
+			match[2] ?? match[3] ?? match[4] ?? "",
+		);
 	}
 	return result;
 }
@@ -93,7 +100,10 @@ function expectedPageUrl(filePath, distRoot, site) {
 	const relativePath = path.relative(distRoot, filePath).replace(/\\/g, "/");
 	if (relativePath === "index.html") return site.toString();
 	if (relativePath.endsWith("/index.html")) {
-		return new URL(relativePath.slice(0, -"index.html".length), site).toString();
+		return new URL(
+			relativePath.slice(0, -"index.html".length),
+			site,
+		).toString();
 	}
 	return new URL(relativePath, site).toString();
 }
@@ -126,8 +136,16 @@ async function isFile(filePath) {
 	}
 }
 
-async function resolveBuiltUrl(rawValue, pageUrl, distRoot, site, label, failures) {
-	if (!rawValue || /^(?:#|mailto:|tel:|data:|javascript:)/i.test(rawValue)) return;
+async function resolveBuiltUrl(
+	rawValue,
+	pageUrl,
+	distRoot,
+	site,
+	label,
+	failures,
+) {
+	if (!rawValue || /^(?:#|mailto:|tel:|data:|javascript:)/i.test(rawValue))
+		return;
 	let target;
 	try {
 		target = new URL(decodeHtml(rawValue), pageUrl);
@@ -137,38 +155,54 @@ async function resolveBuiltUrl(rawValue, pageUrl, distRoot, site, label, failure
 	}
 	if (target.origin !== site.origin) return;
 
-	const basePath = site.pathname.endsWith("/") ? site.pathname : `${site.pathname}/`;
-	if (target.pathname !== basePath.slice(0, -1) && !target.pathname.startsWith(basePath)) {
-		failures.push(`${label}: same-origin URL escapes the configured base path: ${target}`);
+	const basePath = site.pathname.endsWith("/")
+		? site.pathname
+		: `${site.pathname}/`;
+	if (
+		target.pathname !== basePath.slice(0, -1) &&
+		!target.pathname.startsWith(basePath)
+	) {
+		failures.push(
+			`${label}: same-origin URL escapes the configured base path: ${target}`,
+		);
 		return;
 	}
 
-	let relativePath = target.pathname === basePath.slice(0, -1)
-		? ""
-		: target.pathname.slice(basePath.length);
+	let relativePath =
+		target.pathname === basePath.slice(0, -1)
+			? ""
+			: target.pathname.slice(basePath.length);
 	try {
 		relativePath = decodeURIComponent(relativePath);
 	} catch {
-		failures.push(`${label}: URL path is not valid percent-encoding: ${target}`);
+		failures.push(
+			`${label}: URL path is not valid percent-encoding: ${target}`,
+		);
 		return;
 	}
-	const candidates = relativePath.endsWith("/") || relativePath === ""
-		? [path.join(distRoot, relativePath, "index.html")]
-		: [
-				path.join(distRoot, relativePath),
-				path.join(distRoot, relativePath, "index.html"),
-			];
-	if (!(await Promise.any(candidates.map(async (candidate) => {
-		if (!(await isFile(candidate))) throw new Error("missing");
-		return candidate;
-	})).catch(() => undefined))) {
+	const candidates =
+		relativePath.endsWith("/") || relativePath === ""
+			? [path.join(distRoot, relativePath, "index.html")]
+			: [
+					path.join(distRoot, relativePath),
+					path.join(distRoot, relativePath, "index.html"),
+				];
+	if (
+		!(await Promise.any(
+			candidates.map(async (candidate) => {
+				if (!(await isFile(candidate))) throw new Error("missing");
+				return candidate;
+			}),
+		).catch(() => undefined))
+	) {
 		failures.push(`${label}: built target is missing for ${target}`);
 	}
 }
 
 function extractJsonLd(html, label, failures) {
-	const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)]
-		.filter((match) => attributes(match[1]).type === "application/ld+json");
+	const scripts = [
+		...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi),
+	].filter((match) => attributes(match[1]).type === "application/ld+json");
 	if (scripts.length !== 1) {
 		failures.push(`${label}: expected exactly one JSON-LD script`);
 		return undefined;
@@ -188,22 +222,34 @@ async function verifyHtml(filePath, distRoot, site, failures, postPages) {
 	const pageUrl = expectedPageUrl(filePath, distRoot, site);
 	const canonical = getCanonical(html, relativePath, failures);
 	if (canonical !== pageUrl) {
-		failures.push(`${relativePath}: canonical ${canonical ?? "<missing>"} does not equal ${pageUrl}`);
+		failures.push(
+			`${relativePath}: canonical ${canonical ?? "<missing>"} does not equal ${pageUrl}`,
+		);
 	}
 	if (canonical?.startsWith("https://vocal.media/")) {
 		failures.push(`${relativePath}: Vocal must not be the canonical URL`);
 	}
 
-	for (const selector of ["description", "author", "og:url", "og:title", "og:description"]) {
+	for (const selector of [
+		"description",
+		"author",
+		"og:url",
+		"og:title",
+		"og:description",
+	]) {
 		const values = metaContent(html, selector);
 		if (values.length !== 1 || !values[0]) {
-			failures.push(`${relativePath}: expected one nonempty ${selector} meta value`);
+			failures.push(
+				`${relativePath}: expected one nonempty ${selector} meta value`,
+			);
 		}
 	}
 	for (const selector of ["og:url", "twitter:url"]) {
 		const values = metaContent(html, selector);
 		if (values.length !== 1 || values[0] !== canonical) {
-			failures.push(`${relativePath}: ${selector} must equal the canonical URL`);
+			failures.push(
+				`${relativePath}: ${selector} must equal the canonical URL`,
+			);
 		}
 	}
 	for (const selector of ["og:image", "twitter:image"]) {
@@ -224,13 +270,20 @@ async function verifyHtml(filePath, distRoot, site, failures, postPages) {
 		for (const tag of tags(html, tagName)) {
 			for (const attributeName of ["href", "src"]) {
 				if (tag.attributes[attributeName]) {
-					urlAttributes.push([tag.attributes[attributeName], `${relativePath} ${tagName}[${attributeName}]`]);
+					urlAttributes.push([
+						tag.attributes[attributeName],
+						`${relativePath} ${tagName}[${attributeName}]`,
+					]);
 				}
 			}
 			if (tag.attributes.srcset) {
 				for (const candidate of tag.attributes.srcset.split(",")) {
 					const candidateUrl = candidate.trim().split(/\s+/)[0];
-					if (candidateUrl) urlAttributes.push([candidateUrl, `${relativePath} ${tagName}[srcset]`]);
+					if (candidateUrl)
+						urlAttributes.push([
+							candidateUrl,
+							`${relativePath} ${tagName}[srcset]`,
+						]);
 				}
 			}
 		}
@@ -239,21 +292,41 @@ async function verifyHtml(filePath, distRoot, site, failures, postPages) {
 		await resolveBuiltUrl(target, pageUrl, distRoot, site, label, failures);
 	}
 
-	if (relativePath.startsWith("posts/") && relativePath.endsWith("/index.html")) {
+	if (
+		relativePath.startsWith("posts/") &&
+		relativePath.endsWith("/index.html")
+	) {
 		postPages.push(pageUrl);
 		const jsonLd = extractJsonLd(html, relativePath, failures);
 		if (!jsonLd) return;
-		if (jsonLd["@type"] !== "BlogPosting") failures.push(`${relativePath}: JSON-LD type is not BlogPosting`);
+		if (jsonLd["@type"] !== "BlogPosting")
+			failures.push(`${relativePath}: JSON-LD type is not BlogPosting`);
 		if (!jsonLd.headline || !jsonLd.author?.name || !jsonLd.datePublished) {
-			failures.push(`${relativePath}: JSON-LD lacks headline, author, or publication date`);
+			failures.push(
+				`${relativePath}: JSON-LD lacks headline, author, or publication date`,
+			);
 		}
-		if (jsonLd.url !== canonical || jsonLd.mainEntityOfPage?.["@id"] !== canonical) {
-			failures.push(`${relativePath}: JSON-LD page URLs do not equal the canonical URL`);
+		if (
+			jsonLd.url !== canonical ||
+			jsonLd.mainEntityOfPage?.["@id"] !== canonical
+		) {
+			failures.push(
+				`${relativePath}: JSON-LD page URLs do not equal the canonical URL`,
+			);
 		}
 		if (jsonLd.image) {
 			for (const key of ["url", "contentUrl"]) {
-				if (!jsonLd.image[key]) failures.push(`${relativePath}: JSON-LD image.${key} is missing`);
-				else await resolveBuiltUrl(jsonLd.image[key], pageUrl, distRoot, site, `${relativePath} JSON-LD image.${key}`, failures);
+				if (!jsonLd.image[key])
+					failures.push(`${relativePath}: JSON-LD image.${key} is missing`);
+				else
+					await resolveBuiltUrl(
+						jsonLd.image[key],
+						pageUrl,
+						distRoot,
+						site,
+						`${relativePath} JSON-LD image.${key}`,
+						failures,
+					);
 			}
 		}
 	}
@@ -266,10 +339,15 @@ async function verifyRss(distRoot, site, failures, postPages) {
 		return;
 	}
 	const xml = await readFile(rssPath, "utf8");
-	if (!/<rss\b/.test(xml) || !/<channel>/.test(xml)) failures.push("rss.xml is not an RSS channel");
-	const itemBlocks = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map((match) => match[1]);
+	if (!/<rss\b/.test(xml) || !/<channel>/.test(xml))
+		failures.push("rss.xml is not an RSS channel");
+	const itemBlocks = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map(
+		(match) => match[1],
+	);
 	if (itemBlocks.length !== postPages.length) {
-		failures.push(`rss.xml has ${itemBlocks.length} items but ${postPages.length} post pages were built`);
+		failures.push(
+			`rss.xml has ${itemBlocks.length} items but ${postPages.length} post pages were built`,
+		);
 	}
 	const rssLinks = [];
 	for (const [index, item] of itemBlocks.entries()) {
@@ -288,17 +366,36 @@ async function verifyRss(distRoot, site, failures, postPages) {
 		rssLinks.push(absolute.toString());
 		const guid = xmlElementText(item, "guid");
 		if (guid !== absolute.toString()) {
-			failures.push(`rss.xml item ${index + 1} GUID does not equal its local link`);
+			failures.push(
+				`rss.xml item ${index + 1} GUID does not equal its local link`,
+			);
 		}
-		await resolveBuiltUrl(absolute.toString(), site, distRoot, site, `rss.xml item ${index + 1}`, failures);
+		await resolveBuiltUrl(
+			absolute.toString(),
+			site,
+			distRoot,
+			site,
+			`rss.xml item ${index + 1}`,
+			failures,
+		);
 	}
 	for (const postPage of postPages) {
-		if (!rssLinks.includes(postPage)) failures.push(`rss.xml is missing post ${postPage}`);
+		if (!rssLinks.includes(postPage))
+			failures.push(`rss.xml is missing post ${postPage}`);
 	}
 	for (const match of xml.matchAll(/<media:content\b[^>]*\burl="([^"]+)"/g)) {
 		const imageUrl = decodeHtml(match[1]);
-		if (!/^https?:\/\//.test(imageUrl)) failures.push(`rss.xml image URL is not absolute: ${imageUrl}`);
-		else await resolveBuiltUrl(imageUrl, site, distRoot, site, "rss.xml media image", failures);
+		if (!/^https?:\/\//.test(imageUrl))
+			failures.push(`rss.xml image URL is not absolute: ${imageUrl}`);
+		else
+			await resolveBuiltUrl(
+				imageUrl,
+				site,
+				distRoot,
+				site,
+				"rss.xml media image",
+				failures,
+			);
 	}
 }
 
@@ -310,14 +407,31 @@ async function verifySitemap(distRoot, site, failures) {
 	}
 	const indexXml = await readFile(indexPath, "utf8");
 	for (const match of indexXml.matchAll(/<loc>([^<]+)<\/loc>/g)) {
-		await resolveBuiltUrl(decodeHtml(match[1]), site, distRoot, site, "sitemap index", failures);
+		await resolveBuiltUrl(
+			decodeHtml(match[1]),
+			site,
+			distRoot,
+			site,
+			"sitemap index",
+			failures,
+		);
 	}
-	const sitemapFiles = (await walk(distRoot)).filter((file) => /sitemap-\d+\.xml$/.test(file));
-	if (sitemapFiles.length === 0) failures.push("no sitemap content file was built");
+	const sitemapFiles = (await walk(distRoot)).filter((file) =>
+		/sitemap-\d+\.xml$/.test(file),
+	);
+	if (sitemapFiles.length === 0)
+		failures.push("no sitemap content file was built");
 	for (const file of sitemapFiles) {
 		const xml = await readFile(file, "utf8");
 		for (const match of xml.matchAll(/<loc>([^<]+)<\/loc>/g)) {
-			await resolveBuiltUrl(decodeHtml(match[1]), site, distRoot, site, path.basename(file), failures);
+			await resolveBuiltUrl(
+				decodeHtml(match[1]),
+				site,
+				distRoot,
+				site,
+				path.basename(file),
+				failures,
+			);
 		}
 	}
 }
@@ -332,7 +446,12 @@ function sameStringArray(left, right) {
 }
 
 async function verifyVocalManifest(repoRoot, distRoot, site, failures) {
-	const manifestPath = path.join(repoRoot, "provenance", "vocal", "manifest.json");
+	const manifestPath = path.join(
+		repoRoot,
+		"provenance",
+		"vocal",
+		"manifest.json",
+	);
 	if (!(await isFile(manifestPath))) return;
 
 	let manifest;
@@ -355,8 +474,14 @@ async function verifyVocalManifest(repoRoot, distRoot, site, failures) {
 
 	for (const entry of manifest.articles) {
 		const label = `Vocal ${entry.slug}`;
-		const snapshotPath = path.join(repoRoot, ...String(entry.paths?.snapshot ?? "").split("/"));
-		const sourceImagePath = path.join(repoRoot, ...String(entry.paths?.image ?? "").split("/"));
+		const snapshotPath = path.join(
+			repoRoot,
+			...String(entry.paths?.snapshot ?? "").split("/"),
+		);
+		const sourceImagePath = path.join(
+			repoRoot,
+			...String(entry.paths?.image ?? "").split("/"),
+		);
 		if (!(await isFile(snapshotPath))) {
 			failures.push(`${label}: snapshot is missing`);
 			continue;
@@ -372,7 +497,8 @@ async function verifyVocalManifest(repoRoot, distRoot, site, failures) {
 		if (await isFile(sourceImagePath)) {
 			const imageBytes = await readFile(sourceImagePath);
 			const digest = `sha256:${createHash("sha256").update(imageBytes).digest("hex")}`;
-			if (digest !== entry.hashes?.image) failures.push(`${label}: repository PNG hash differs from manifest`);
+			if (digest !== entry.hashes?.image)
+				failures.push(`${label}: repository PNG hash differs from manifest`);
 		} else {
 			failures.push(`${label}: repository PNG is missing`);
 		}
@@ -385,7 +511,8 @@ async function verifyVocalManifest(repoRoot, distRoot, site, failures) {
 		const html = await readFile(pagePath, "utf8");
 		const expectedUrl = new URL(`posts/${entry.slug}/`, site).toString();
 		const canonical = getCanonical(html, label, failures);
-		if (canonical !== expectedUrl) failures.push(`${label}: canonical URL is not the expected local route`);
+		if (canonical !== expectedUrl)
+			failures.push(`${label}: canonical URL is not the expected local route`);
 
 		for (const [field, expected] of [
 			["title", post.name],
@@ -393,13 +520,19 @@ async function verifyVocalManifest(repoRoot, distRoot, site, failures) {
 			["author", `By ${manifest.author?.name}`],
 			["image-caption", post.heroImageCaption],
 		]) {
-			if (markedField(html, field) !== expected) failures.push(`${label}: visible ${field} differs from snapshot`);
+			if (markedField(html, field) !== expected)
+				failures.push(`${label}: visible ${field} differs from snapshot`);
 		}
 		const sourceLinks = tags(html, "a").filter((tag) =>
 			Object.hasOwn(tag.attributes, "data-vocal-source-url"),
 		);
-		if (sourceLinks.length !== 1 || sourceLinks[0].attributes.href !== entry.sourceUrl) {
-			failures.push(`${label}: expected one exact visible Vocal provenance link`);
+		if (
+			sourceLinks.length !== 1 ||
+			sourceLinks[0].attributes.href !== entry.sourceUrl
+		) {
+			failures.push(
+				`${label}: expected one exact visible Vocal provenance link`,
+			);
 		}
 		const licenseBlocks = tags(html, "div").filter((tag) =>
 			Object.hasOwn(tag.attributes, "data-license-name"),
@@ -414,7 +547,8 @@ async function verifyVocalManifest(repoRoot, distRoot, site, failures) {
 		const jsonLd = extractJsonLd(html, label, failures);
 		const expectedModified =
 			post.contentUpdatedAt !== null &&
-			new Date(post.contentUpdatedAt).valueOf() > new Date(post.publishedAt).valueOf()
+			new Date(post.contentUpdatedAt).valueOf() >
+				new Date(post.publishedAt).valueOf()
 				? post.contentUpdatedAt
 				: undefined;
 		const expectedTags = post.tags.map((tag) => tag.name);
@@ -436,26 +570,39 @@ async function verifyVocalManifest(repoRoot, distRoot, site, failures) {
 				["image source", jsonLd.image?.sameAs, post.heroImage.id],
 			];
 			for (const [field, actual, expected] of expectedValues) {
-				if (actual !== expected) failures.push(`${label}: JSON-LD ${field} differs from snapshot`);
+				if (actual !== expected)
+					failures.push(`${label}: JSON-LD ${field} differs from snapshot`);
 			}
-			if (!sameStringArray(jsonLd.keywords, expectedTags)) failures.push(`${label}: JSON-LD tag order differs from snapshot`);
-			const expectedAlt = post.heroImageAltText ?? `Cover image for “${post.name}”`;
-			if (jsonLd.image?.description !== expectedAlt) failures.push(`${label}: JSON-LD image alt fallback differs`);
-			if (jsonLd.image?.url !== jsonLd.image?.contentUrl) failures.push(`${label}: JSON-LD image must use one local emitted URL`);
+			if (!sameStringArray(jsonLd.keywords, expectedTags))
+				failures.push(`${label}: JSON-LD tag order differs from snapshot`);
+			const expectedAlt =
+				post.heroImageAltText ?? `Cover image for “${post.name}”`;
+			if (jsonLd.image?.description !== expectedAlt)
+				failures.push(`${label}: JSON-LD image alt fallback differs`);
+			if (jsonLd.image?.url !== jsonLd.image?.contentUrl)
+				failures.push(`${label}: JSON-LD image must use one local emitted URL`);
 			for (const selector of ["og:image", "twitter:image"]) {
 				const values = metaContent(html, selector);
-				if (values.length !== 1 || values[0] !== jsonLd.image?.url) failures.push(`${label}: ${selector} does not match JSON-LD image`);
+				if (values.length !== 1 || values[0] !== jsonLd.image?.url)
+					failures.push(`${label}: ${selector} does not match JSON-LD image`);
 			}
 			for (const selector of ["og:image:alt", "twitter:image:alt"]) {
 				const values = metaContent(html, selector);
-				if (values.length !== 1 || values[0] !== expectedAlt) failures.push(`${label}: ${selector} differs from the alt contract`);
+				if (values.length !== 1 || values[0] !== expectedAlt)
+					failures.push(`${label}: ${selector} differs from the alt contract`);
 			}
 		}
 
-		const heroMatch = html.match(/<figure\b[^>]*data-vocal-hero[^>]*>([\s\S]*?)<\/figure>/i);
+		const heroMatch = html.match(
+			/<figure\b[^>]*data-vocal-hero[^>]*>([\s\S]*?)<\/figure>/i,
+		);
 		const heroImages = heroMatch ? tags(heroMatch[1], "img") : [];
-		const expectedAlt = post.heroImageAltText ?? `Cover image for “${post.name}”`;
-		if (heroImages.length !== 1 || heroImages[0].attributes.alt !== expectedAlt) {
+		const expectedAlt =
+			post.heroImageAltText ?? `Cover image for “${post.name}”`;
+		if (
+			heroImages.length !== 1 ||
+			heroImages[0].attributes.alt !== expectedAlt
+		) {
 			failures.push(`${label}: visible hero or its alt text differs`);
 		}
 
@@ -466,43 +613,65 @@ async function verifyVocalManifest(repoRoot, distRoot, site, failures) {
 			failures.push(`${label}: RSS must contain exactly one local item`);
 		} else {
 			const item = matchingRssItems[0];
-			if (xmlElementText(item, "guid") !== expectedUrl) failures.push(`${label}: RSS GUID differs from local URL`);
-			if (xmlElementText(item, "description") !== post.summary) failures.push(`${label}: RSS summary differs from snapshot`);
-			if (xmlElementText(item, "dc:creator") !== manifest.author?.name) failures.push(`${label}: RSS author differs from snapshot`);
-			if (xmlElementText(item, "dc:source") !== entry.sourceUrl) failures.push(`${label}: RSS source differs from manifest`);
-			const categories = [...item.matchAll(/<category>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/category>/g)].map((match) => decodeHtml(match[1]));
+			if (xmlElementText(item, "guid") !== expectedUrl)
+				failures.push(`${label}: RSS GUID differs from local URL`);
+			if (xmlElementText(item, "description") !== post.summary)
+				failures.push(`${label}: RSS summary differs from snapshot`);
+			if (xmlElementText(item, "dc:creator") !== manifest.author?.name)
+				failures.push(`${label}: RSS author differs from snapshot`);
+			if (xmlElementText(item, "dc:source") !== entry.sourceUrl)
+				failures.push(`${label}: RSS source differs from manifest`);
+			const categories = [
+				...item.matchAll(
+					/<category>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/category>/g,
+				),
+			].map((match) => decodeHtml(match[1]));
 			const expectedCategories = [...expectedTags, post.vocalSite.name];
-			if (!sameStringArray(categories, expectedCategories)) failures.push(`${label}: RSS category order differs from snapshot`);
+			if (!sameStringArray(categories, expectedCategories))
+				failures.push(`${label}: RSS category order differs from snapshot`);
 		}
 	}
 }
 
-export async function verifyBuiltSite({ dist = DEFAULT_DIST, site: siteValue = DEFAULT_SITE, repoRoot: repoRootValue = process.cwd() } = {}) {
+export async function verifyBuiltSite({
+	dist = DEFAULT_DIST,
+	site: siteValue = DEFAULT_SITE,
+	repoRoot: repoRootValue = process.cwd(),
+} = {}) {
 	const distRoot = path.resolve(dist);
 	const repoRoot = path.resolve(repoRootValue);
 	const site = new URL(siteValue);
 	if (!site.pathname.endsWith("/")) site.pathname += "/";
 	const files = await walk(distRoot);
 	const htmlFiles = files.filter((file) => file.endsWith(".html"));
-	if (htmlFiles.length === 0) throw new Error(`No built HTML files found under ${distRoot}`);
+	if (htmlFiles.length === 0)
+		throw new Error(`No built HTML files found under ${distRoot}`);
 
 	const failures = [];
 	const postPages = [];
-	for (const file of htmlFiles) await verifyHtml(file, distRoot, site, failures, postPages);
+	for (const file of htmlFiles)
+		await verifyHtml(file, distRoot, site, failures, postPages);
 	await verifyRss(distRoot, site, failures, postPages);
 	await verifySitemap(distRoot, site, failures);
 	await verifyVocalManifest(repoRoot, distRoot, site, failures);
 
 	if (failures.length > 0) {
-		throw new Error(`Built-site verification failed:\n- ${failures.join("\n- ")}`);
+		throw new Error(
+			`Built-site verification failed:\n- ${failures.join("\n- ")}`,
+		);
 	}
 	return { htmlPages: htmlFiles.length, postPages: postPages.length };
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
+if (
+	process.argv[1] &&
+	import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href
+) {
 	try {
 		const result = await verifyBuiltSite(parseArguments(process.argv.slice(2)));
-		console.log(`Built-site verification passed: ${result.htmlPages} HTML pages, ${result.postPages} posts`);
+		console.log(
+			`Built-site verification passed: ${result.htmlPages} HTML pages, ${result.postPages} posts`,
+		);
 	} catch (error) {
 		console.error(error.message);
 		process.exitCode = 1;

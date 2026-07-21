@@ -4,11 +4,11 @@ import path from "node:path";
 import test from "node:test";
 import { importArticles } from "../lib/pipeline.js";
 import {
+	inventoryArticle,
 	makePage,
 	makePng,
 	makePost,
 	makeRepository,
-	inventoryArticle,
 	SAMPLE_CAPTURED_AT,
 	SAMPLE_SLUG,
 	writeRawArticle,
@@ -55,7 +55,10 @@ test("first write requires capturedAt and creates deterministic artifacts", asyn
 	assert.deepEqual(snapshot, post);
 	assert.equal(snapshot.account, undefined);
 	const manifest = JSON.parse(
-		await readFile(path.join(root, "provenance", "vocal", "manifest.json"), "utf8"),
+		await readFile(
+			path.join(root, "provenance", "vocal", "manifest.json"),
+			"utf8",
+		),
 	);
 	assert.equal(manifest.platform, "Vocal");
 	assert.deepEqual(manifest.articles[0].image, {
@@ -69,7 +72,10 @@ test("first write requires capturedAt and creates deterministic artifacts", asyn
 		path.join(root, "src", "content", "posts", SAMPLE_SLUG, "index.md"),
 		"utf8",
 	);
-	assert.match(markdown, /description: "Curly quotes, colons: and <characters> remain exact\."/u);
+	assert.match(
+		markdown,
+		/description: "Curly quotes, colons: and <characters> remain exact\."/u,
+	);
 	assert.match(markdown, /source:\r?\n {2}platform: "Vocal"/u);
 	assert.match(markdown, /capturedAt: "2026-07-21T19:20:21\.000Z"/u);
 	assert.match(markdown, /<strong><em> boldly<\/em><\/strong>/u);
@@ -134,7 +140,10 @@ test("safe updates require review and refuse overwritten generated files", async
 		capturedAt: "2026-07-22T19:20:21.000Z",
 	});
 	const updatedManifest = JSON.parse(
-		await readFile(path.join(root, "provenance", "vocal", "manifest.json"), "utf8"),
+		await readFile(
+			path.join(root, "provenance", "vocal", "manifest.json"),
+			"utf8",
+		),
 	);
 	assert.equal(
 		updatedManifest.articles[0].capturedAt,

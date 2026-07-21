@@ -1,4 +1,11 @@
-import { mkdir, readFile, rename, stat, unlink, writeFile } from "node:fs/promises";
+import {
+	mkdir,
+	readFile,
+	rename,
+	stat,
+	unlink,
+	writeFile,
+} from "node:fs/promises";
 import path from "node:path";
 import {
 	assertCapturedAt,
@@ -9,8 +16,8 @@ import {
 	getArticlePaths,
 	getRepositoryPaths,
 	MANIFEST_SCHEMA_VERSION,
-	serializeJson,
 	SNAPSHOT_JSON_POINTER,
+	serializeJson,
 	toRepositoryPath,
 	VOCAL_AUTHOR_NAME,
 	VOCAL_AUTHOR_URL,
@@ -79,7 +86,9 @@ function assertHttpsUrl(value, label) {
 	try {
 		url = new URL(value);
 	} catch (error) {
-		throw new ContractError(`${label} must be an absolute URL`, { cause: error });
+		throw new ContractError(`${label} must be an absolute URL`, {
+			cause: error,
+		});
 	}
 	if (url.protocol !== "https:") {
 		throw new ContractError(`${label} must use HTTPS`);
@@ -174,11 +183,15 @@ function validateInventoryArticle(article, index) {
 		`${label}.expectedImage.height`,
 	);
 	if (width === 0 || height === 0) {
-		throw new ContractError(`${label}.expectedImage dimensions must be positive`);
+		throw new ContractError(
+			`${label}.expectedImage dimensions must be positive`,
+		);
 	}
 	const legacyPaths = article.legacyPaths ?? [];
 	if (!Array.isArray(legacyPaths)) {
-		throw new ContractError(`${label}.legacyPaths must be an array when present`);
+		throw new ContractError(
+			`${label}.legacyPaths must be an array when present`,
+		);
 	}
 	const validatedLegacyPaths = legacyPaths.map((legacyPath, legacyIndex) => {
 		const legacyLabel = `${label}.legacyPaths[${legacyIndex}]`;
@@ -186,7 +199,11 @@ function validateInventoryArticle(article, index) {
 		if (
 			legacyPath.includes("\\") ||
 			!legacyPath.startsWith("src/content/posts/") ||
-			legacyPath.split("/").some((segment) => segment === "" || segment === "." || segment === "..")
+			legacyPath
+				.split("/")
+				.some(
+					(segment) => segment === "" || segment === "." || segment === "..",
+				)
 		) {
 			throw new ContractError(
 				`${legacyLabel} must be a safe repository-relative path below src/content/posts`,
@@ -245,7 +262,9 @@ export function validateInventory(value) {
 			throw new ContractError(`inventory repeats slug ${article.slug}`);
 		}
 		if (sourceUrls.has(article.sourceUrl)) {
-			throw new ContractError(`inventory repeats source URL ${article.sourceUrl}`);
+			throw new ContractError(
+				`inventory repeats source URL ${article.sourceUrl}`,
+			);
 		}
 		bySlug.set(article.slug, article);
 		sourceUrls.add(article.sourceUrl);
@@ -319,7 +338,9 @@ export function validatePost(post, inventoryArticle, capturedAt) {
 
 	const publishedTime = new Date(publishedAt).valueOf();
 	const updatedTime =
-		contentUpdatedAt === null ? undefined : new Date(contentUpdatedAt).valueOf();
+		contentUpdatedAt === null
+			? undefined
+			: new Date(contentUpdatedAt).valueOf();
 	const updated =
 		updatedTime !== undefined && updatedTime > publishedTime
 			? contentUpdatedAt
@@ -407,11 +428,18 @@ function validateManifest(value) {
 		throw new ContractError(`manifest.platform must equal ${VOCAL_PLATFORM}`);
 	}
 	const author = assertPlainObject(manifest.author, "manifest.author");
-	if (author.name !== VOCAL_AUTHOR_NAME || author.profileUrl !== VOCAL_AUTHOR_URL) {
-		throw new ContractError("manifest.author does not match the fixed Vocal author");
+	if (
+		author.name !== VOCAL_AUTHOR_NAME ||
+		author.profileUrl !== VOCAL_AUTHOR_URL
+	) {
+		throw new ContractError(
+			"manifest.author does not match the fixed Vocal author",
+		);
 	}
 	if (manifest.jsonPointer !== SNAPSHOT_JSON_POINTER) {
-		throw new ContractError(`manifest.jsonPointer must equal ${SNAPSHOT_JSON_POINTER}`);
+		throw new ContractError(
+			`manifest.jsonPointer must equal ${SNAPSHOT_JSON_POINTER}`,
+		);
 	}
 	if (manifest.inventoryPath !== "provenance/vocal/inventory.json") {
 		throw new ContractError(
@@ -435,24 +463,48 @@ function validateManifest(value) {
 		previousSlug = slug;
 		assertCapturedAt(entry.capturedAt);
 		assertNonEmptyString(entry.sourceUrl, `manifest article ${slug}.sourceUrl`);
-		const paths = assertPlainObject(entry.paths, `manifest article ${slug}.paths`);
+		const paths = assertPlainObject(
+			entry.paths,
+			`manifest article ${slug}.paths`,
+		);
 		for (const key of ["snapshot", "markdown", "image"]) {
 			assertNonEmptyString(paths[key], `manifest article ${slug}.paths.${key}`);
 		}
-		const hashes = assertPlainObject(entry.hashes, `manifest article ${slug}.hashes`);
-		for (const key of ["rawPage", "rawImage", "snapshot", "markdown", "image"]) {
+		const hashes = assertPlainObject(
+			entry.hashes,
+			`manifest article ${slug}.hashes`,
+		);
+		for (const key of [
+			"rawPage",
+			"rawImage",
+			"snapshot",
+			"markdown",
+			"image",
+		]) {
 			assertSha256(hashes[key], `manifest article ${slug}.hashes.${key}`);
 		}
-		const image = assertPlainObject(entry.image, `manifest article ${slug}.image`);
+		const image = assertPlainObject(
+			entry.image,
+			`manifest article ${slug}.image`,
+		);
 		if (image.mimeType !== "image/png") {
-			throw new ContractError(`manifest article ${slug}.image.mimeType must be image/png`);
+			throw new ContractError(
+				`manifest article ${slug}.image.mimeType must be image/png`,
+			);
 		}
 		for (const key of ["width", "height", "byteSize"]) {
-			if (assertInteger(image[key], `manifest article ${slug}.image.${key}`) === 0) {
-				throw new ContractError(`manifest article ${slug}.image.${key} must be positive`);
+			if (
+				assertInteger(image[key], `manifest article ${slug}.image.${key}`) === 0
+			) {
+				throw new ContractError(
+					`manifest article ${slug}.image.${key} must be positive`,
+				);
 			}
 		}
-		const source = assertPlainObject(entry.source, `manifest article ${slug}.source`);
+		const source = assertPlainObject(
+			entry.source,
+			`manifest article ${slug}.source`,
+		);
 		const sourceId = assertNonEmptyString(
 			source.id,
 			`manifest article ${slug}.source.id`,
@@ -471,7 +523,10 @@ function validateManifest(value) {
 				`manifest article ${slug}.source.contentUpdatedAt`,
 			);
 		}
-		assertInteger(source.wordCount, `manifest article ${slug}.source.wordCount`);
+		assertInteger(
+			source.wordCount,
+			`manifest article ${slug}.source.wordCount`,
+		);
 		assertNonEmptyString(
 			source.communitySlug,
 			`manifest article ${slug}.source.communitySlug`,
@@ -484,7 +539,10 @@ async function loadManifest(repoRoot, inventoryBuffer) {
 	const roots = getRepositoryPaths(repoRoot);
 	const buffer = await readOptionalFile(roots.manifestPath);
 	if (buffer === undefined) {
-		return { manifest: emptyManifest(repoRoot, inventoryBuffer), exists: false };
+		return {
+			manifest: emptyManifest(repoRoot, inventoryBuffer),
+			exists: false,
+		};
 	}
 	return {
 		manifest: validateManifest(parseJsonBuffer(buffer, "Vocal manifest")),
@@ -528,12 +586,17 @@ function makeManifestEntry(repoRoot, article, capturedAt, artifacts) {
 
 async function loadRawArticle(repoRoot, inventoryArticle, capturedAt) {
 	const paths = getArticlePaths(repoRoot, inventoryArticle.slug);
-	const rawPageBuffer = await readRequiredFile(paths.rawPagePath, "Raw Vocal page");
+	const rawPageBuffer = await readRequiredFile(
+		paths.rawPagePath,
+		"Raw Vocal page",
+	);
 	const rawImageBuffer = await readRequiredFile(
 		paths.rawImagePath,
 		"Raw Vocal hero image",
 	);
-	const post = extractNextDataPost(decodeUtf8(rawPageBuffer, paths.rawPagePath));
+	const post = extractNextDataPost(
+		decodeUtf8(rawPageBuffer, paths.rawPagePath),
+	);
 	const model = validatePost(post, inventoryArticle, capturedAt);
 	const image = inspectPng(rawImageBuffer, paths.rawImagePath);
 	if (
@@ -562,7 +625,11 @@ function renderArtifacts(article) {
 		renderIndexMarkdown(article.model.metadata, article.model.document),
 		"utf8",
 	);
-	return { snapshotBuffer, markdownBuffer, imageBuffer: article.rawImageBuffer };
+	return {
+		snapshotBuffer,
+		markdownBuffer,
+		imageBuffer: article.rawImageBuffer,
+	};
 }
 
 function entryBySlug(manifest) {
@@ -606,9 +673,11 @@ async function writeAtomic(filePath, contents) {
 async function ensureRegularFile(filePath, label) {
 	try {
 		const value = await stat(filePath);
-		if (!value.isFile()) throw new ContractError(`${label} is not a regular file`);
+		if (!value.isFile())
+			throw new ContractError(`${label} is not a regular file`);
 	} catch (error) {
-		if (error?.code === "ENOENT") throw new ContractError(`${label} is missing`);
+		if (error?.code === "ENOENT")
+			throw new ContractError(`${label} is missing`);
 		throw error;
 	}
 }
@@ -635,7 +704,9 @@ export async function importArticles({
 		throw new ContractError("--update requires --write");
 	}
 	const inventory = await loadInventory(repoRoot);
-	const selectedSlugs = all ? inventory.articles.map((article) => article.slug) : slugs;
+	const selectedSlugs = all
+		? inventory.articles.map((article) => article.slug)
+		: slugs;
 	if (!Array.isArray(selectedSlugs) || selectedSlugs.length === 0) {
 		throw new ContractError("Select at least one --slug or use --all");
 	}
@@ -652,7 +723,9 @@ export async function importArticles({
 	for (const slug of uniqueSlugs) {
 		const inventoryArticle = inventory.bySlug.get(slug);
 		if (!inventoryArticle) {
-			throw new ContractError(`Slug ${slug} is not present in the fixed inventory`);
+			throw new ContractError(
+				`Slug ${slug} is not present in the fixed inventory`,
+			);
 		}
 		const oldEntry = oldEntries.get(slug);
 		let effectiveCapturedAt = oldEntry?.capturedAt ?? providedCapturedAt;
@@ -701,18 +774,25 @@ export async function importArticles({
 		const desiredEntry =
 			effectiveCapturedAt === PENDING_CAPTURED_AT
 				? undefined
-				: makeManifestEntry(
-						repoRoot,
-						article,
-						effectiveCapturedAt,
-						artifacts,
-					);
+				: makeManifestEntry(repoRoot, article, effectiveCapturedAt, artifacts);
 		const actions = {
-			snapshot: await classifyTarget(article.paths.snapshotPath, artifacts.snapshotBuffer),
-			markdown: await classifyTarget(article.paths.markdownPath, artifacts.markdownBuffer),
-			image: await classifyTarget(article.paths.imagePath, artifacts.imageBuffer),
+			snapshot: await classifyTarget(
+				article.paths.snapshotPath,
+				artifacts.snapshotBuffer,
+			),
+			markdown: await classifyTarget(
+				article.paths.markdownPath,
+				artifacts.markdownBuffer,
+			),
+			image: await classifyTarget(
+				article.paths.imagePath,
+				artifacts.imageBuffer,
+			),
 		};
-		if (!oldEntry && Object.values(actions).some((action) => action !== "create")) {
+		if (
+			!oldEntry &&
+			Object.values(actions).some((action) => action !== "create")
+		) {
 			throw new ContractError(
 				`Refusing to adopt unmanaged existing output for ${slug}`,
 			);
@@ -750,7 +830,9 @@ export async function importArticles({
 	}
 	const nextManifest = {
 		...emptyManifest(repoRoot, inventory.buffer),
-		articles: [...nextEntries.values()].sort((a, b) => a.slug.localeCompare(b.slug)),
+		articles: [...nextEntries.values()].sort((a, b) =>
+			a.slug.localeCompare(b.slug),
+		),
 	};
 	validateManifest(nextManifest);
 	const manifestBuffer = Buffer.from(serializeJson(nextManifest), "utf8");
@@ -762,15 +844,30 @@ export async function importArticles({
 	if (write) {
 		for (const plan of plans) {
 			const filePlans = [
-				[plan.article.paths.snapshotPath, plan.artifacts.snapshotBuffer, plan.actions.snapshot],
-				[plan.article.paths.markdownPath, plan.artifacts.markdownBuffer, plan.actions.markdown],
-				[plan.article.paths.imagePath, plan.artifacts.imageBuffer, plan.actions.image],
+				[
+					plan.article.paths.snapshotPath,
+					plan.artifacts.snapshotBuffer,
+					plan.actions.snapshot,
+				],
+				[
+					plan.article.paths.markdownPath,
+					plan.artifacts.markdownBuffer,
+					plan.actions.markdown,
+				],
+				[
+					plan.article.paths.imagePath,
+					plan.artifacts.imageBuffer,
+					plan.actions.image,
+				],
 			];
 			for (const [filePath, contents, action] of filePlans) {
 				if (action !== "unchanged") await writeAtomic(filePath, contents);
 			}
 		}
-		await writeAtomic(getRepositoryPaths(repoRoot).manifestPath, manifestBuffer);
+		await writeAtomic(
+			getRepositoryPaths(repoRoot).manifestPath,
+			manifestBuffer,
+		);
 	}
 
 	return {
@@ -784,9 +881,15 @@ export async function importArticles({
 	};
 }
 
-export async function inspectInventoryArticles({ repoRoot, slugs, all = false } = {}) {
+export async function inspectInventoryArticles({
+	repoRoot,
+	slugs,
+	all = false,
+} = {}) {
 	const inventory = await loadInventory(repoRoot);
-	const selectedSlugs = all ? inventory.articles.map((article) => article.slug) : slugs;
+	const selectedSlugs = all
+		? inventory.articles.map((article) => article.slug)
+		: slugs;
 	if (!Array.isArray(selectedSlugs) || selectedSlugs.length === 0) {
 		throw new ContractError("Select at least one --slug or use --all");
 	}
@@ -799,7 +902,9 @@ export async function inspectInventoryArticles({ repoRoot, slugs, all = false } 
 	for (const slug of uniqueSlugs) {
 		const inventoryArticle = inventory.bySlug.get(slug);
 		if (!inventoryArticle) {
-			throw new ContractError(`Slug ${slug} is not present in the fixed inventory`);
+			throw new ContractError(
+				`Slug ${slug} is not present in the fixed inventory`,
+			);
 		}
 		const paths = getArticlePaths(repoRoot, slug);
 		const rawPageBuffer = await readRequiredFile(
@@ -820,9 +925,12 @@ export async function inspectInventoryArticles({ repoRoot, slugs, all = false } 
 		try {
 			parsedHeroUrl = new URL(heroImageUrl);
 		} catch (error) {
-			throw new ContractError(`post.heroImage.id for ${slug} is not an absolute URL`, {
-				cause: error,
-			});
+			throw new ContractError(
+				`post.heroImage.id for ${slug} is not an absolute URL`,
+				{
+					cause: error,
+				},
+			);
 		}
 		if (parsedHeroUrl.protocol !== "https:") {
 			throw new ContractError(`post.heroImage.id for ${slug} must use HTTPS`);
@@ -851,7 +959,9 @@ function assertManifestEntry(entry, inventoryArticle, repoRoot) {
 	};
 	for (const [key, value] of Object.entries(expectedPaths)) {
 		if (entry.paths[key] !== value) {
-			throw new ContractError(`Manifest ${key} path mismatch for ${entry.slug}`);
+			throw new ContractError(
+				`Manifest ${key} path mismatch for ${entry.slug}`,
+			);
 		}
 	}
 	return paths;
@@ -872,7 +982,9 @@ export async function verifyArticles({
 	const manifestEntries = entryBySlug(manifest);
 	for (const slug of manifestEntries.keys()) {
 		if (!inventory.bySlug.has(slug)) {
-			throw new ContractError(`Manifest slug ${slug} is not in the fixed inventory`);
+			throw new ContractError(
+				`Manifest slug ${slug} is not in the fixed inventory`,
+			);
 		}
 		const inventoryArticle = inventory.bySlug.get(slug);
 		for (const legacyPath of inventoryArticle.legacyPaths) {
@@ -898,11 +1010,18 @@ export async function verifyArticles({
 
 	for (const slug of selectedSlugs) {
 		const entry = manifestEntries.get(slug);
-		if (!entry) throw new ContractError(`Manifest has no imported article ${slug}`);
+		if (!entry)
+			throw new ContractError(`Manifest has no imported article ${slug}`);
 		const inventoryArticle = inventory.bySlug.get(slug);
 		const paths = assertManifestEntry(entry, inventoryArticle, repoRoot);
-		const snapshotBuffer = await readRequiredFile(paths.snapshotPath, "Snapshot");
-		const markdownBuffer = await readRequiredFile(paths.markdownPath, "Markdown output");
+		const snapshotBuffer = await readRequiredFile(
+			paths.snapshotPath,
+			"Snapshot",
+		);
+		const markdownBuffer = await readRequiredFile(
+			paths.markdownPath,
+			"Markdown output",
+		);
 		const imageBuffer = await readRequiredFile(paths.imagePath, "Image output");
 		const post = assertPlainObject(
 			parseJsonBuffer(snapshotBuffer, `Snapshot for ${slug}`),
@@ -943,7 +1062,8 @@ export async function verifyArticles({
 		if (
 			entry.source.id !== model.metadata.source.id ||
 			entry.source.publishedAt !== model.metadata.source.publishedAt ||
-			entry.source.contentUpdatedAt !== model.metadata.source.contentUpdatedAt ||
+			entry.source.contentUpdatedAt !==
+				model.metadata.source.contentUpdatedAt ||
 			entry.source.wordCount !== model.metadata.source.wordCount ||
 			entry.source.communitySlug !== model.metadata.source.communitySlug
 		) {
@@ -976,7 +1096,9 @@ export async function verifyArticles({
 
 	const isComplete = manifestEntries.size === inventory.expectedCount;
 	if (isComplete || requireComplete) {
-		const inventorySlugs = new Set(inventory.articles.map((article) => article.slug));
+		const inventorySlugs = new Set(
+			inventory.articles.map((article) => article.slug),
+		);
 		if (
 			manifestEntries.size !== inventory.expectedCount ||
 			[...inventorySlugs].some((slug) => !manifestEntries.has(slug))

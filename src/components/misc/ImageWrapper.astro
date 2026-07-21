@@ -11,12 +11,12 @@ interface Props {
 }
 
 import { Image } from "astro:assets";
-import { url } from "../../utils/url-utils";
 import {
 	isExternalImage,
 	isPublicImage,
 	loadLocalImage,
 } from "../../utils/image-utils";
+import { url } from "../../utils/url-utils";
 
 const {
 	id,
@@ -33,9 +33,10 @@ const isLocal = !isPublicImage(src) && !isExternalImage(src);
 const isPublic = isPublicImage(src);
 const img = isLocal ? await loadLocalImage(src, basePath) : undefined;
 
-const imageClass = fit === "contain"
-	? "w-full h-auto object-contain"
-	: "w-full h-full object-cover";
+const imageClass =
+	fit === "contain"
+		? "w-full h-auto object-contain"
+		: "w-full h-full object-cover";
 const imageStyle = `object-position: ${position}`;
 const altText = alt ?? "";
 ---

@@ -33,15 +33,14 @@ function stripInvalidXmlChars(str: string): string {
 
 export async function GET(context: APIContext) {
 	const blog = await getSortedPosts();
-	if (!context.site) throw new Error("Astro site configuration is required for RSS");
+	if (!context.site)
+		throw new Error("Astro site configuration is required for RSS");
 	const site = context.site;
 	const siteRoot = getSiteRootUrl(site);
 	const items = await Promise.all(
 		blog.map(async (post) => {
 			const content =
-				typeof post.body === "string"
-					? post.body
-					: String(post.body || "");
+				typeof post.body === "string" ? post.body : String(post.body || "");
 			const cleanedContent = stripInvalidXmlChars(content);
 			const postUrl = getAbsolutePostUrlBySlug(post.slug, site).toString();
 			const basePath = path.join("content/posts/", getDir(post.id));
@@ -67,9 +66,13 @@ export async function GET(context: APIContext) {
 					},
 				},
 			);
-			for (const match of renderedContent.matchAll(/\b(?:href|src)="([^"]+)"/g)) {
+			for (const match of renderedContent.matchAll(
+				/\b(?:href|src)="([^"]+)"/g,
+			)) {
 				if (!/^(?:https?:|data:|mailto:|tel:|#)/i.test(match[1])) {
-					throw new Error(`RSS content for ${post.slug} contains relative URL ${match[1]}`);
+					throw new Error(
+						`RSS content for ${post.slug} contains relative URL ${match[1]}`,
+					);
 				}
 			}
 			const author = post.data.author || profileConfig.name;

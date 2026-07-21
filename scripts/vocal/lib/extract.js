@@ -16,7 +16,9 @@ function getQuotedAttribute(attributes, name) {
 		values.push(match[1] ?? match[2]);
 	}
 	if (values.length > 1) {
-		throw new ContractError(`script#__NEXT_DATA__ has duplicate ${name} attributes`);
+		throw new ContractError(
+			`script#__NEXT_DATA__ has duplicate ${name} attributes`,
+		);
 	}
 	return values[0];
 }
@@ -33,7 +35,7 @@ export function extractNextDataPost(html) {
 		const type = getQuotedAttribute(attributes, "type");
 		if (type?.toLowerCase() !== "application/json") {
 			throw new ContractError(
-				"script#__NEXT_DATA__ must declare type=\"application/json\"",
+				'script#__NEXT_DATA__ must declare type="application/json"',
 			);
 		}
 		candidates.push(match[2]);

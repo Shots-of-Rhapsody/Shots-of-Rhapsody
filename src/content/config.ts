@@ -24,10 +24,7 @@ const postSchema = z
 				url: z.string().url(),
 				capturedAt: z.string().datetime({ offset: true }),
 				publishedAt: z.string().datetime({ offset: true }),
-				contentUpdatedAt: z
-					.string()
-					.datetime({ offset: true })
-					.nullable(),
+				contentUpdatedAt: z.string().datetime({ offset: true }).nullable(),
 				wordCount: z.number().int().nonnegative(),
 				communitySlug: z.string().min(1),
 			})
@@ -75,7 +72,9 @@ const postSchema = z
 				path: ["description"],
 			});
 		}
-		if (post.published.valueOf() !== new Date(post.source.publishedAt).valueOf()) {
+		if (
+			post.published.valueOf() !== new Date(post.source.publishedAt).valueOf()
+		) {
 			context.addIssue({
 				code: "custom",
 				message: "Vocal publication timestamps must match",

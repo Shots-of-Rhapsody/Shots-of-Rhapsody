@@ -16,9 +16,7 @@ export function isPublicImage(src: string): boolean {
 }
 
 export function getLocalImageModulePath(src: string, basePath = "/"): string {
-	return path
-		.normalize(path.join("../", basePath, src))
-		.replace(/\\/g, "/");
+	return path.normalize(path.join("../", basePath, src)).replace(/\\/g, "/");
 }
 
 export async function loadLocalImage(

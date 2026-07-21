@@ -41,13 +41,7 @@ test("fails closed when saved HTML is missing or malformed", async (testContext)
 
 	const malformed = await makeRepository(testContext);
 	await writeFile(
-		path.join(
-			malformed.root,
-			".vocal-import",
-			"raw",
-			SAMPLE_SLUG,
-			"page.html",
-		),
+		path.join(malformed.root, ".vocal-import", "raw", SAMPLE_SLUG, "page.html"),
 		"<html>not a saved Vocal page</html>",
 	);
 	await assert.rejects(

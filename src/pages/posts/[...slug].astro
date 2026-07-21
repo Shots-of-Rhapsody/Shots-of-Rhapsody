@@ -16,11 +16,7 @@ import {
 import { Icon } from "astro-icon/components";
 import ImageWrapper from "../../components/misc/ImageWrapper.astro";
 import PostMetadata from "../../components/PostMeta.astro";
-import {
-	licenseConfig,
-	profileConfig,
-	siteConfig,
-} from "../../config";
+import { licenseConfig, profileConfig, siteConfig } from "../../config";
 
 export async function getStaticPaths() {
 	const blogEntries = await getSortedPosts();
@@ -52,7 +48,8 @@ const displayedMinutes = entry.data.source
 	? Math.max(1, Math.round(entry.data.source.wordCount / 200))
 	: remarkPluginFrontmatter.minutes;
 const showLicense = Boolean(entry.data.license) || licenseConfig.enable;
-const effectiveLicense = entry.data.license ?? (licenseConfig.enable ? licenseConfig : undefined);
+const effectiveLicense =
+	entry.data.license ?? (licenseConfig.enable ? licenseConfig : undefined);
 
 const jsonLd = {
 	"@context": "https://schema.org",
