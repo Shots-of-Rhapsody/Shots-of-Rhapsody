@@ -98,15 +98,17 @@ export type BlogPostData = {
 	imageCaption: string;
 	imageSourceUrl: string;
 	category?: string | null;
-	source?: {
-		platform: "Vocal";
-		id: string;
-		url: string;
+	provenance?: {
+		authority: "Proton Docs";
+		captureFormat: "html-export";
 		capturedAt: string;
-		publishedAt: string;
-		contentUpdatedAt: string | null;
-		wordCount: number;
-		communitySlug: string;
+		wordCount?: number;
+		bodyTextSha256: `sha256:${string}`;
+		bodyBlockCount: number;
+	};
+	publication?: {
+		platform: "Vocal";
+		url: string;
 	};
 	license?: {
 		name: string;

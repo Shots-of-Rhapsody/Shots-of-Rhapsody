@@ -7,15 +7,18 @@ import { ContractError, DEFAULT_REPO_ROOT } from "./lib/contract.js";
 import { importArticles } from "./lib/pipeline.js";
 
 const HELP = `Usage:
-  node scripts/vocal/import.js --slug <slug> [--slug <slug> ...] [options]
-  node scripts/vocal/import.js --all [options]
+  node scripts/archive/import.js --slug <slug> [--slug <slug> ...] [options]
+  node scripts/archive/import.js --all [options]
+
+Reads only ignored, locally saved Proton Docs HTML exports and hero PNGs.
+It never requests Proton or Vocal.
 
 Options:
   --slug <slug>       Import one fixed-inventory slug; may be repeated
   --all               Import every article in the fixed inventory
-  --captured-at <ISO> Required for the first write of an article
+  --captured-at <ISO> Required for the first write or changed raw evidence
   --write             Apply the plan (default is read-only dry-run)
-  --update            Safely update outputs that still match manifest hashes
+  --update            Replace reviewed managed outputs whose hashes still match
   --json              Emit a machine-readable result
   --help              Show this help
 `;
@@ -48,7 +51,7 @@ function parseOptions(argv) {
 }
 
 function printHumanResult(result) {
-	console.log(`Vocal import ${result.mode}:`);
+	console.log(`Archive import ${result.mode}:`);
 	for (const article of result.articles) {
 		const actions = Object.entries(article.actions)
 			.map(([name, action]) => `${name}=${action}`)
@@ -56,7 +59,7 @@ function printHumanResult(result) {
 		console.log(`- ${article.slug}: ${actions}`);
 		if (article.capturedAtRequired) {
 			console.log(
-				"  first write requires --captured-at <canonical UTC ISO timestamp>",
+				"  first write or changed evidence requires --captured-at <canonical UTC ISO timestamp>",
 			);
 		}
 	}
@@ -76,7 +79,6 @@ export async function main(argv = process.argv.slice(2)) {
 		console.log(HELP);
 		return 0;
 	}
-
 	try {
 		const result = await importArticles({
 			repoRoot: DEFAULT_REPO_ROOT,
@@ -91,7 +93,7 @@ export async function main(argv = process.argv.slice(2)) {
 		return 0;
 	} catch (error) {
 		if (error instanceof ContractError) {
-			console.error(`Vocal import failed: ${error.message}`);
+			console.error(`Archive import failed: ${error.message}`);
 			return 1;
 		}
 		throw error;

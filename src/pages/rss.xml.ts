@@ -47,8 +47,9 @@ export async function GET(context: APIContext) {
 			const imageUrl = post.data.image
 				? await getAbsoluteImageUrl(post.data.image, basePath, site)
 				: undefined;
-			const imageAlt =
-				post.data.imageAlt ?? `Cover image for “${post.data.title}”`;
+			const imageAlt = post.data.provenance
+				? (post.data.imageAlt ?? "")
+				: (post.data.imageAlt ?? `Cover image for “${post.data.title}”`);
 			const heroFigure = imageUrl
 				? `<figure><img src="${escapeXml(imageUrl)}" alt="${escapeXml(imageAlt)}" loading="lazy" decoding="async">${post.data.imageCaption ? `<figcaption>${escapeXml(post.data.imageCaption)}</figcaption>` : ""}</figure>`
 				: "";
@@ -81,8 +82,8 @@ export async function GET(context: APIContext) {
 				post.data.updated
 					? `<dcterms:modified>${escapeXml(post.data.updated.toISOString())}</dcterms:modified>`
 					: "",
-				post.data.source?.url
-					? `<dc:source>${escapeXml(post.data.source.url)}</dc:source>`
+				post.data.publication?.url
+					? `<dc:relation>${escapeXml(post.data.publication.url)}</dc:relation>`
 					: "",
 				imageUrl
 					? `<media:content url="${escapeXml(imageUrl)}" medium="image" />`

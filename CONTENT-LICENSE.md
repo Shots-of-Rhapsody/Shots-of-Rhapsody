@@ -8,9 +8,9 @@ The Fuwari-derived software and repository code remain available under the root 
 
 ## Imported Tai Song articles and hero images
 
-Articles imported from Vocal and their author-controlled hero images are marked per post as **All Rights Reserved**. Copyright remains with Tai Song. No permission to copy, redistribute, adapt, train on, or commercially reuse that writing or media is granted by this repository.
+Articles imported from Tai Song's Proton Docs author masters and their author-controlled hero images are marked per post as **All Rights Reserved**. Copyright remains with Tai Song. No permission to copy, redistribute, adapt, train on, or commercially reuse that writing or media is granted by this repository.
 
-A link to the original Vocal publication records provenance only. It does not change the license of the local article or image.
+A link to a historical Vocal publication records publication history only. It is not the authority for the imported text and does not change the license of the local article or image.
 
 ## Existing repository-only posts
 

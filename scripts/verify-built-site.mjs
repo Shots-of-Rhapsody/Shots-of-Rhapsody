@@ -1,8 +1,9 @@
-import { createHash } from "node:crypto";
 import { access, readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
+import { inspectPng, sha256 } from "./archive/lib/integrity.js";
+import { bodyTextSha256, renderBodyHtml } from "./archive/lib/render.js";
 
 const DEFAULT_DIST = "dist";
 const DEFAULT_SITE = "https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/";
@@ -61,11 +62,135 @@ function markedField(html, field) {
 	const escapedField = escapeRegExp(field);
 	const match = html.match(
 		new RegExp(
-			`<([a-z][a-z0-9]*)\\b[^>]*data-vocal-field=["']${escapedField}["'][^>]*>([\\s\\S]*?)<\\/\\1>`,
+			`<([a-z][a-z0-9]*)\\b[^>]*data-archive-field=["']${escapedField}["'][^>]*>([\\s\\S]*?)<\\/\\1>`,
 			"i",
 		),
 	);
 	return match ? visibleText(match[2]) : undefined;
+}
+
+function markedElementInnerHtml(html, attributeName) {
+	const escapedAttribute = escapeRegExp(attributeName);
+	const opening = new RegExp(
+		`<([a-z][a-z0-9]*)\\b[^>]*\\b${escapedAttribute}(?:=["'][^"']*["'])?[^>]*>`,
+		"i",
+	).exec(html);
+	if (!opening) return undefined;
+
+	const tagName = opening[1];
+	const contentStart = opening.index + opening[0].length;
+	const tagPattern = new RegExp(`<\\/?${escapeRegExp(tagName)}\\b[^>]*>`, "gi");
+	tagPattern.lastIndex = contentStart;
+	let depth = 1;
+	for (const match of html.matchAll(tagPattern)) {
+		if (match.index === undefined) continue;
+		if (match[0].startsWith("</")) depth -= 1;
+		else if (!match[0].endsWith("/>")) depth += 1;
+		if (depth === 0) return html.slice(contentStart, match.index);
+	}
+	return undefined;
+}
+
+function canonicalBodyHtml(value) {
+	return String(value)
+		.replace(/\r\n?/g, "\n")
+		.replace(/>\s+</g, "><")
+		.replace(/<br\s*\/?\s*>/gi, "<br>")
+		.trim();
+}
+
+const VOID_ELEMENTS = new Set([
+	"area",
+	"base",
+	"br",
+	"col",
+	"embed",
+	"hr",
+	"img",
+	"input",
+	"link",
+	"meta",
+	"param",
+	"source",
+	"track",
+	"wbr",
+]);
+
+function topLevelElementCount(value) {
+	let depth = 0;
+	let count = 0;
+	for (const match of String(value).matchAll(
+		/<\/?([a-z][a-z0-9-]*)\b[^>]*>/gi,
+	)) {
+		const raw = match[0];
+		const tagName = match[1].toLowerCase();
+		if (raw.startsWith("</")) {
+			depth = Math.max(0, depth - 1);
+			continue;
+		}
+		if (depth === 0) count += 1;
+		if (!raw.endsWith("/>") && !VOID_ELEMENTS.has(tagName)) depth += 1;
+	}
+	return count;
+}
+
+function exactSha256(value) {
+	return typeof value === "string" && /^sha256:[0-9a-f]{64}$/.test(value)
+		? value
+		: undefined;
+}
+
+function isoString(value) {
+	if (value === null || value === undefined || value === "") return undefined;
+	const date = new Date(value);
+	return Number.isNaN(date.valueOf()) ? undefined : date.toISOString();
+}
+
+function isPlainObject(value) {
+	return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function samePublication(left, right) {
+	if (left === undefined || right === undefined) return left === right;
+	return (
+		isPlainObject(left) &&
+		isPlainObject(right) &&
+		Object.keys(left).length === 2 &&
+		Object.keys(right).length === 2 &&
+		left.platform === right.platform &&
+		left.url === right.url
+	);
+}
+
+function resolveManifestPath(repoRoot, rawPath, label, failures) {
+	if (typeof rawPath !== "string" || rawPath.length === 0) {
+		failures.push(`${label}: manifest path is missing`);
+		return undefined;
+	}
+	const resolved = path.resolve(
+		repoRoot,
+		...rawPath.replace(/\\/g, "/").split("/"),
+	);
+	const relative = path.relative(repoRoot, resolved);
+	if (relative.startsWith("..") || path.isAbsolute(relative)) {
+		failures.push(`${label}: manifest path escapes the repository`);
+		return undefined;
+	}
+	return resolved;
+}
+
+function hasPrivateProtonReference(value) {
+	if (typeof value === "string") {
+		return /https?:\/\/[^\s"'<>]*proton[^\s"'<>]*/i.test(value);
+	}
+	if (Array.isArray(value)) return value.some(hasPrivateProtonReference);
+	if (!isPlainObject(value)) return false;
+	return Object.entries(value).some(
+		([key, child]) =>
+			/(?:proton|document|doc).*(?:id|url)|(?:id|url).*(?:proton|document|doc)/i.test(
+				key,
+			) || hasPrivateProtonReference(child),
+	);
 }
 
 function xmlElementText(xml, name) {
@@ -229,6 +354,14 @@ async function verifyHtml(filePath, distRoot, site, failures, postPages) {
 	if (canonical?.startsWith("https://vocal.media/")) {
 		failures.push(`${relativePath}: Vocal must not be the canonical URL`);
 	}
+	if (/\bdata-vocal-/i.test(html)) {
+		failures.push(
+			`${relativePath}: legacy data-vocal markers remain in output`,
+		);
+	}
+	if (hasPrivateProtonReference(html)) {
+		failures.push(`${relativePath}: output exposes a private Proton URL or ID`);
+	}
 
 	for (const selector of [
 		"description",
@@ -341,6 +474,10 @@ async function verifyRss(distRoot, site, failures, postPages) {
 	const xml = await readFile(rssPath, "utf8");
 	if (!/<rss\b/.test(xml) || !/<channel>/.test(xml))
 		failures.push("rss.xml is not an RSS channel");
+	if (/<dc:source(?:\s|>)/i.test(xml))
+		failures.push("rss.xml must not publish dc:source provenance");
+	if (hasPrivateProtonReference(xml))
+		failures.push("rss.xml exposes a private Proton URL or ID");
 	const itemBlocks = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map(
 		(match) => match[1],
 	);
@@ -445,11 +582,11 @@ function sameStringArray(left, right) {
 	);
 }
 
-async function verifyVocalManifest(repoRoot, distRoot, site, failures) {
+async function verifyArchiveManifest(repoRoot, distRoot, site, failures) {
 	const manifestPath = path.join(
 		repoRoot,
 		"provenance",
-		"vocal",
+		"tai-song",
 		"manifest.json",
 	);
 	if (!(await isFile(manifestPath))) return;
@@ -458,12 +595,38 @@ async function verifyVocalManifest(repoRoot, distRoot, site, failures) {
 	try {
 		manifest = JSON.parse(await readFile(manifestPath, "utf8"));
 	} catch (error) {
-		failures.push(`Vocal manifest is invalid JSON (${error.message})`);
+		failures.push(`Author-master manifest is invalid JSON (${error.message})`);
 		return;
 	}
+	if (hasPrivateProtonReference(manifest)) {
+		failures.push("Author-master manifest contains a private Proton URL or ID");
+	}
+	if (manifest.author?.name !== "Tai Song") {
+		failures.push("Author-master manifest author must be Tai Song");
+	}
+	if (
+		manifest.authority?.platform !== "Proton Docs" ||
+		manifest.authority?.captureFormat !== "html-export"
+	) {
+		failures.push("Author-master manifest authority contract is invalid");
+	}
 	if (!Array.isArray(manifest.articles)) {
-		failures.push("Vocal manifest has no articles array");
+		failures.push("Author-master manifest has no articles array");
 		return;
+	}
+	const inventoryPath = resolveManifestPath(
+		repoRoot,
+		manifest.inventoryPath,
+		"Author-master inventory",
+		failures,
+	);
+	if (inventoryPath && (await isFile(inventoryPath))) {
+		const inventoryDigest = sha256(await readFile(inventoryPath));
+		if (inventoryDigest !== exactSha256(manifest.inventorySha256)) {
+			failures.push("Author-master inventory hash differs from manifest");
+		}
+	} else {
+		failures.push("Author-master inventory is missing");
 	}
 
 	const rssPath = path.join(distRoot, "rss.xml");
@@ -471,67 +634,316 @@ async function verifyVocalManifest(repoRoot, distRoot, site, failures) {
 	const rssItems = [...rssXml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map(
 		(match) => match[1],
 	);
+	const seenSlugs = new Set();
 
 	for (const entry of manifest.articles) {
-		const label = `Vocal ${entry.slug}`;
-		const snapshotPath = path.join(
+		const slug = typeof entry?.slug === "string" ? entry.slug : "<missing>";
+		const label = `Author-master ${slug}`;
+		if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+			failures.push(`${label}: slug is invalid`);
+			continue;
+		}
+		if (seenSlugs.has(slug)) {
+			failures.push(`${label}: manifest slug is duplicated`);
+			continue;
+		}
+		seenSlugs.add(slug);
+
+		const snapshotPath = resolveManifestPath(
 			repoRoot,
-			...String(entry.paths?.snapshot ?? "").split("/"),
+			entry.paths?.snapshot,
+			`${label} snapshot`,
+			failures,
 		);
-		const sourceImagePath = path.join(
+		const markdownPath = resolveManifestPath(
 			repoRoot,
-			...String(entry.paths?.image ?? "").split("/"),
+			entry.paths?.markdown,
+			`${label} Markdown`,
+			failures,
 		);
-		if (!(await isFile(snapshotPath))) {
+		const sourceImagePath = resolveManifestPath(
+			repoRoot,
+			entry.paths?.image,
+			`${label} image`,
+			failures,
+		);
+		if (!snapshotPath || !(await isFile(snapshotPath))) {
 			failures.push(`${label}: snapshot is missing`);
 			continue;
 		}
+
+		const snapshotBytes = await readFile(snapshotPath);
+		const snapshotDigest = sha256(snapshotBytes);
+		if (snapshotDigest !== exactSha256(entry.hashes?.snapshot)) {
+			failures.push(`${label}: snapshot hash differs from manifest`);
+		}
 		let post;
 		try {
-			post = JSON.parse(await readFile(snapshotPath, "utf8"));
+			post = JSON.parse(snapshotBytes.toString("utf8"));
 		} catch (error) {
 			failures.push(`${label}: snapshot is invalid JSON (${error.message})`);
 			continue;
 		}
+		if (hasPrivateProtonReference(post)) {
+			failures.push(`${label}: snapshot contains a private Proton URL or ID`);
+		}
 
-		if (await isFile(sourceImagePath)) {
+		if (markdownPath && (await isFile(markdownPath))) {
+			const markdownDigest = sha256(await readFile(markdownPath));
+			if (markdownDigest !== exactSha256(entry.hashes?.markdown)) {
+				failures.push(`${label}: Markdown hash differs from manifest`);
+			}
+		} else {
+			failures.push(`${label}: generated Markdown is missing`);
+		}
+		if (sourceImagePath && (await isFile(sourceImagePath))) {
 			const imageBytes = await readFile(sourceImagePath);
-			const digest = `sha256:${createHash("sha256").update(imageBytes).digest("hex")}`;
-			if (digest !== entry.hashes?.image)
-				failures.push(`${label}: repository PNG hash differs from manifest`);
+			const imageDigest = sha256(imageBytes);
+			for (const [source, expected] of [
+				["manifest", entry.hashes?.image],
+				["manifest raw image", entry.hashes?.rawImage],
+				["manifest image metadata", entry.image?.sha256],
+				["snapshot hero metadata", post.hero?.sha256],
+			]) {
+				if (imageDigest !== exactSha256(expected)) {
+					failures.push(`${label}: repository PNG differs from ${source}`);
+				}
+			}
+			let dimensions;
+			try {
+				dimensions = inspectPng(imageBytes, `${label} repository hero`);
+			} catch (error) {
+				failures.push(`${label}: ${error.message}`);
+			}
+			if (dimensions) {
+				for (const [source, metadata] of [
+					["manifest", entry.image],
+					["snapshot", post.hero],
+				]) {
+					if (
+						metadata?.mimeType !== "image/png" ||
+						metadata.width !== dimensions.width ||
+						metadata.height !== dimensions.height ||
+						metadata.byteSize !== imageBytes.length
+					) {
+						failures.push(`${label}: ${source} PNG metadata differs from file`);
+					}
+				}
+			}
 		} else {
 			failures.push(`${label}: repository PNG is missing`);
 		}
 
-		const pagePath = path.join(distRoot, "posts", entry.slug, "index.html");
+		if (post.slug !== slug)
+			failures.push(`${label}: snapshot slug differs from manifest`);
+		for (const field of [
+			"title",
+			"subtitle",
+			"summary",
+			"description",
+			"author",
+			"category",
+			"imageCaption",
+		]) {
+			if (typeof post[field] !== "string" || post[field].length === 0) {
+				failures.push(`${label}: snapshot ${field} must be nonempty`);
+			}
+		}
+		if (post.author !== "Tai Song")
+			failures.push(`${label}: snapshot author must be Tai Song`);
+		if (post.description !== post.subtitle) {
+			failures.push(`${label}: snapshot description must equal its subtitle`);
+		}
+		if (
+			!Array.isArray(post.tags) ||
+			post.tags.some((tag) => typeof tag !== "string" || tag.length === 0) ||
+			new Set(post.tags).size !== post.tags.length
+		) {
+			failures.push(`${label}: snapshot tags must be an ordered string array`);
+		}
+		if (post.imageAlt !== null && typeof post.imageAlt !== "string") {
+			failures.push(
+				`${label}: snapshot imageAlt must preserve the source string or null`,
+			);
+		}
+		if (post.license?.name !== "All Rights Reserved") {
+			failures.push(`${label}: snapshot license is not All Rights Reserved`);
+		}
+		if (
+			Object.hasOwn(post, "updated") ||
+			Object.hasOwn(post, "contentUpdatedAt")
+		) {
+			failures.push(`${label}: snapshot must not infer an updated timestamp`);
+		}
+
+		const provenance = post.provenance;
+		const allowedProvenanceKeys = new Set([
+			"authority",
+			"captureFormat",
+			"capturedAt",
+		]);
+		if (
+			!isPlainObject(provenance) ||
+			provenance.authority !== "Proton Docs" ||
+			provenance.captureFormat !== "html-export" ||
+			!isoString(provenance.capturedAt)
+		) {
+			failures.push(`${label}: snapshot provenance contract is invalid`);
+		} else {
+			for (const key of Object.keys(provenance)) {
+				if (!allowedProvenanceKeys.has(key)) {
+					failures.push(`${label}: snapshot provenance has unexpected ${key}`);
+				}
+			}
+		}
+		if (entry.capturedAt !== provenance?.capturedAt) {
+			failures.push(
+				`${label}: capturedAt differs between manifest and snapshot`,
+			);
+		}
+
+		const expectedBodyHash = exactSha256(post.bodyTextSha256);
+		const expectedBlockCount = post.bodyBlockCount;
+		if (typeof post.bodyHtml !== "string" || post.bodyHtml.length === 0) {
+			failures.push(`${label}: snapshot bodyHtml must be nonempty`);
+		}
+		if (!expectedBodyHash) {
+			failures.push(`${label}: snapshot bodyTextSha256 is invalid`);
+		}
+		if (!Number.isInteger(expectedBlockCount) || expectedBlockCount <= 0) {
+			failures.push(`${label}: snapshot bodyBlockCount must be positive`);
+		}
+		try {
+			if (bodyTextSha256(post.bodyDocument) !== expectedBodyHash) {
+				failures.push(
+					`${label}: canonical body document hash differs from snapshot`,
+				);
+			}
+			if (
+				canonicalBodyHtml(renderBodyHtml(post.bodyDocument)) !==
+				canonicalBodyHtml(post.bodyHtml)
+			) {
+				failures.push(
+					`${label}: bodyHtml differs from the canonical body document`,
+				);
+			}
+			if (post.bodyDocument.blocks.length !== expectedBlockCount) {
+				failures.push(
+					`${label}: body document block count differs from snapshot`,
+				);
+			}
+		} catch (error) {
+			failures.push(`${label}: bodyDocument is invalid (${error.message})`);
+		}
+		for (const [source, expected] of [
+			["manifest hash", entry.hashes?.bodyText],
+			["manifest content", entry.content?.bodyTextSha256],
+		]) {
+			if (exactSha256(expected) !== expectedBodyHash) {
+				failures.push(`${label}: ${source} differs from snapshot body hash`);
+			}
+		}
+		if (entry.content?.bodyBlockCount !== expectedBlockCount) {
+			failures.push(`${label}: manifest block count differs from snapshot`);
+		}
+		for (const [field, expected] of [
+			["subtitle", post.subtitle],
+			["imageCaption", post.imageCaption],
+		]) {
+			if (entry.content?.[field] !== expected) {
+				failures.push(`${label}: manifest ${field} differs from snapshot`);
+			}
+		}
+		if (entry.image?.alt !== post.imageAlt) {
+			failures.push(`${label}: manifest image alt differs from snapshot`);
+		}
+
+		const expectedPublication = post.publication;
+		if (expectedPublication !== undefined) {
+			let publicationUrl;
+			try {
+				publicationUrl = new URL(expectedPublication.url);
+			} catch {
+				publicationUrl = undefined;
+			}
+			if (
+				expectedPublication.platform !== "Vocal" ||
+				publicationUrl?.protocol !== "https:"
+			) {
+				failures.push(`${label}: snapshot publication contract is invalid`);
+			}
+		}
+		if (!samePublication(entry.publication, expectedPublication)) {
+			failures.push(
+				`${label}: publication differs between manifest and snapshot`,
+			);
+		}
+
+		const expectedPublished = isoString(post.published);
+		const expectedModified = undefined;
+		if (!expectedPublished)
+			failures.push(`${label}: snapshot published date is invalid`);
+		const expectedTags = Array.isArray(post.tags) ? post.tags : [];
+		const expectedAlt = post.imageAlt ?? "";
+		const expectedImageDescription = post.imageAlt ?? undefined;
+		const expectedCaption = post.imageCaption || undefined;
+
+		const pagePath = path.join(distRoot, "posts", slug, "index.html");
 		if (!(await isFile(pagePath))) {
 			failures.push(`${label}: built article route is missing`);
 			continue;
 		}
 		const html = await readFile(pagePath, "utf8");
-		const expectedUrl = new URL(`posts/${entry.slug}/`, site).toString();
+		const expectedUrl = new URL(`posts/${slug}/`, site).toString();
 		const canonical = getCanonical(html, label, failures);
 		if (canonical !== expectedUrl)
 			failures.push(`${label}: canonical URL is not the expected local route`);
+		for (const [selector, expected] of [
+			["author", post.author],
+			["description", post.description],
+			["og:title", post.title],
+			["twitter:title", post.title],
+			["og:description", post.description],
+			["twitter:description", post.description],
+			["article:published_time", expectedPublished],
+			["article:section", post.category],
+		]) {
+			const values = metaContent(html, selector);
+			if (values.length !== 1 || values[0] !== expected) {
+				failures.push(`${label}: ${selector} metadata differs from snapshot`);
+			}
+		}
+		if (metaContent(html, "article:modified_time").length !== 0) {
+			failures.push(`${label}: page must not infer an updated timestamp`);
+		}
+		if (!sameStringArray(metaContent(html, "article:tag"), expectedTags)) {
+			failures.push(
+				`${label}: article tag metadata order differs from snapshot`,
+			);
+		}
 
 		for (const [field, expected] of [
-			["title", post.name],
+			["title", post.title],
 			["subtitle", post.subtitle],
-			["author", `By ${manifest.author?.name}`],
-			["image-caption", post.heroImageCaption],
+			["author", `By ${post.author}`],
+			["image-caption", expectedCaption],
 		]) {
 			if (markedField(html, field) !== expected)
 				failures.push(`${label}: visible ${field} differs from snapshot`);
 		}
-		const sourceLinks = tags(html, "a").filter((tag) =>
-			Object.hasOwn(tag.attributes, "data-vocal-source-url"),
+		const publicationLinks = tags(html, "a").filter((tag) =>
+			Object.hasOwn(tag.attributes, "data-archive-publication-url"),
 		);
-		if (
-			sourceLinks.length !== 1 ||
-			sourceLinks[0].attributes.href !== entry.sourceUrl
-		) {
+		if (expectedPublication) {
+			if (
+				publicationLinks.length !== 1 ||
+				publicationLinks[0].attributes.href !== expectedPublication.url
+			) {
+				failures.push(`${label}: historical Vocal link differs from snapshot`);
+			}
+		} else if (publicationLinks.length !== 0) {
 			failures.push(
-				`${label}: expected one exact visible Vocal provenance link`,
+				`${label}: unexpected historical publication link is visible`,
 			);
 		}
 		const licenseBlocks = tags(html, "div").filter((tag) =>
@@ -544,41 +956,59 @@ async function verifyVocalManifest(repoRoot, distRoot, site, failures) {
 			failures.push(`${label}: visible license is not All Rights Reserved`);
 		}
 
+		const bodyWrappers = tags(html, "div").filter((tag) =>
+			Object.hasOwn(tag.attributes, "data-archive-body"),
+		);
+		const bodyInnerHtml = markedElementInnerHtml(html, "data-archive-body");
+		if (bodyWrappers.length !== 1 || bodyInnerHtml === undefined) {
+			failures.push(`${label}: expected exactly one rendered archive body`);
+		} else {
+			if (
+				canonicalBodyHtml(bodyInnerHtml) !== canonicalBodyHtml(post.bodyHtml)
+			) {
+				failures.push(`${label}: rendered body HTML differs from snapshot`);
+			}
+			if (topLevelElementCount(bodyInnerHtml) !== expectedBlockCount) {
+				failures.push(
+					`${label}: rendered body block count differs from snapshot`,
+				);
+			}
+		}
+
 		const jsonLd = extractJsonLd(html, label, failures);
-		const expectedModified =
-			post.contentUpdatedAt !== null &&
-			new Date(post.contentUpdatedAt).valueOf() >
-				new Date(post.publishedAt).valueOf()
-				? post.contentUpdatedAt
-				: undefined;
-		const expectedTags = post.tags.map((tag) => tag.name);
 		if (jsonLd) {
 			const expectedValues = [
-				["headline", jsonLd.headline, post.name],
+				["headline", jsonLd.headline, post.title],
 				["alternativeHeadline", jsonLd.alternativeHeadline, post.subtitle],
-				["description", jsonLd.description, post.subtitle],
-				["author", jsonLd.author?.name, manifest.author?.name],
-				["datePublished", jsonLd.datePublished, post.publishedAt],
+				["description", jsonLd.description, post.description],
+				["author", jsonLd.author?.name, post.author],
+				["datePublished", jsonLd.datePublished, expectedPublished],
 				["dateModified", jsonLd.dateModified, expectedModified],
 				["url", jsonLd.url, expectedUrl],
 				["mainEntityOfPage", jsonLd.mainEntityOfPage?.["@id"], expectedUrl],
-				["source", jsonLd.isBasedOn, entry.sourceUrl],
-				["category", jsonLd.articleSection, post.vocalSite.name],
-				["wordCount", jsonLd.wordCount, post.wordCount],
+				["source", jsonLd.isBasedOn, expectedPublication?.url],
+				["category", jsonLd.articleSection, post.category],
 				["license", jsonLd.copyrightNotice, "All Rights Reserved"],
-				["caption", jsonLd.image?.caption, post.heroImageCaption || undefined],
-				["image source", jsonLd.image?.sameAs, post.heroImage.id],
+				["caption", jsonLd.image?.caption, expectedCaption],
 			];
+			if (provenance?.wordCount !== undefined) {
+				expectedValues.push([
+					"wordCount",
+					jsonLd.wordCount,
+					provenance.wordCount,
+				]);
+			}
 			for (const [field, actual, expected] of expectedValues) {
 				if (actual !== expected)
 					failures.push(`${label}: JSON-LD ${field} differs from snapshot`);
 			}
+			if (Object.hasOwn(jsonLd.image ?? {}, "sameAs")) {
+				failures.push(`${label}: JSON-LD image must not publish a source URL`);
+			}
 			if (!sameStringArray(jsonLd.keywords, expectedTags))
 				failures.push(`${label}: JSON-LD tag order differs from snapshot`);
-			const expectedAlt =
-				post.heroImageAltText ?? `Cover image for “${post.name}”`;
-			if (jsonLd.image?.description !== expectedAlt)
-				failures.push(`${label}: JSON-LD image alt fallback differs`);
+			if (jsonLd.image?.description !== expectedImageDescription)
+				failures.push(`${label}: JSON-LD image alt differs from snapshot`);
 			if (jsonLd.image?.url !== jsonLd.image?.contentUrl)
 				failures.push(`${label}: JSON-LD image must use one local emitted URL`);
 			for (const selector of ["og:image", "twitter:image"]) {
@@ -594,11 +1024,9 @@ async function verifyVocalManifest(repoRoot, distRoot, site, failures) {
 		}
 
 		const heroMatch = html.match(
-			/<figure\b[^>]*data-vocal-hero[^>]*>([\s\S]*?)<\/figure>/i,
+			/<figure\b[^>]*data-archive-hero[^>]*>([\s\S]*?)<\/figure>/i,
 		);
 		const heroImages = heroMatch ? tags(heroMatch[1], "img") : [];
-		const expectedAlt =
-			post.heroImageAltText ?? `Cover image for “${post.name}”`;
 		if (
 			heroImages.length !== 1 ||
 			heroImages[0].attributes.alt !== expectedAlt
@@ -613,22 +1041,85 @@ async function verifyVocalManifest(repoRoot, distRoot, site, failures) {
 			failures.push(`${label}: RSS must contain exactly one local item`);
 		} else {
 			const item = matchingRssItems[0];
+			if (xmlElementText(item, "title") !== post.title)
+				failures.push(`${label}: RSS title differs from snapshot`);
 			if (xmlElementText(item, "guid") !== expectedUrl)
 				failures.push(`${label}: RSS GUID differs from local URL`);
 			if (xmlElementText(item, "description") !== post.summary)
 				failures.push(`${label}: RSS summary differs from snapshot`);
-			if (xmlElementText(item, "dc:creator") !== manifest.author?.name)
+			if (xmlElementText(item, "dc:creator") !== post.author)
 				failures.push(`${label}: RSS author differs from snapshot`);
-			if (xmlElementText(item, "dc:source") !== entry.sourceUrl)
-				failures.push(`${label}: RSS source differs from manifest`);
+			if (
+				xmlElementText(item, "pubDate") !==
+				new Date(post.published).toUTCString()
+			)
+				failures.push(`${label}: RSS publication date differs from snapshot`);
+			if (xmlElementText(item, "dc:relation") !== expectedPublication?.url)
+				failures.push(
+					`${label}: RSS publication relation differs from snapshot`,
+				);
+			if (xmlElementText(item, "dc:source") !== undefined)
+				failures.push(`${label}: RSS must not publish dc:source provenance`);
+			if (xmlElementText(item, "dcterms:modified") !== undefined)
+				failures.push(`${label}: RSS must not infer an updated timestamp`);
+			const mediaImages = tags(item, "media:content");
+			if (
+				mediaImages.length !== 1 ||
+				mediaImages[0].attributes.url !== jsonLd?.image?.url
+			) {
+				failures.push(`${label}: RSS hero URL differs from the local page`);
+			}
+			if (xmlElementText(item, "media:description") !== post.imageCaption) {
+				failures.push(`${label}: RSS image caption differs from snapshot`);
+			}
+			const encodedContent = xmlElementText(item, "content:encoded") ?? "";
+			const encodedHeroImages = tags(encodedContent, "img").filter(
+				(tag) => tag.attributes.src === jsonLd?.image?.url,
+			);
+			if (
+				encodedHeroImages.length !== 1 ||
+				encodedHeroImages[0].attributes.alt !== expectedAlt
+			) {
+				failures.push(`${label}: RSS content hero alt differs from snapshot`);
+			}
+			const encodedCaption = encodedContent.match(
+				/<figcaption\b[^>]*>([\s\S]*?)<\/figcaption>/i,
+			);
+			if (
+				!encodedCaption ||
+				visibleText(encodedCaption[1]) !== post.imageCaption
+			) {
+				failures.push(`${label}: RSS content caption differs from snapshot`);
+			}
 			const categories = [
 				...item.matchAll(
 					/<category>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/category>/g,
 				),
 			].map((match) => decodeHtml(match[1]));
-			const expectedCategories = [...expectedTags, post.vocalSite.name];
+			const expectedCategories = [...expectedTags, post.category];
 			if (!sameStringArray(categories, expectedCategories))
 				failures.push(`${label}: RSS category order differs from snapshot`);
+		}
+	}
+
+	const builtPostsRoot = path.join(distRoot, "posts");
+	let builtPostFiles = [];
+	try {
+		builtPostFiles = (await walk(builtPostsRoot)).filter((file) =>
+			file.endsWith("index.html"),
+		);
+	} catch {
+		// The generic verifier already reports missing post routes.
+	}
+	for (const file of builtPostFiles) {
+		const html = await readFile(file, "utf8");
+		if (!/\bdata-archive-body(?:\s|=|>)/i.test(html)) continue;
+		const relative = path.relative(builtPostsRoot, file).replace(/\\/g, "/");
+		const slug = relative.replace(/\/index\.html$/, "");
+		if (!seenSlugs.has(slug)) {
+			failures.push(
+				`Author-master ${slug}: rendered archive post is absent from manifest`,
+			);
 		}
 	}
 }
@@ -653,7 +1144,7 @@ export async function verifyBuiltSite({
 		await verifyHtml(file, distRoot, site, failures, postPages);
 	await verifyRss(distRoot, site, failures, postPages);
 	await verifySitemap(distRoot, site, failures);
-	await verifyVocalManifest(repoRoot, distRoot, site, failures);
+	await verifyArchiveManifest(repoRoot, distRoot, site, failures);
 
 	if (failures.length > 0) {
 		throw new Error(

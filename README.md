@@ -103,7 +103,7 @@ If your work questions, formalizes, or imagines, it belongs here.
 
 This site began from the Fuwari template. Its pinned lineage and review-only update procedure are documented in [Fuwari upstream synchronization](docs/upstream-sync.md).
 
-The Tai Song Vocal archive uses a manual-capture, local-only import and verification workflow documented in the [Vocal archive import runbook](docs/vocal-import.md). Raw creator exports stay ignored; only sanitized provenance and verified outputs are committed.
+The Tai Song archive uses the author's Proton Docs HTML exports and original PNGs as its authoritative, local-only inputs. The deterministic import and verification workflow is documented in the [Tai Song archive import runbook](docs/tai-song-import.md). Raw creator exports stay ignored; only sanitized provenance and verified outputs are committed.
 
 ---
 

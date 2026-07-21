@@ -41,12 +41,19 @@ const description =
 const coverUrl = entry.data.image
 	? await getAbsoluteImageUrl(entry.data.image, postBasePath, siteUrl)
 	: undefined;
-const coverAlt = entry.data.imageAlt ?? `Cover image for “${entry.data.title}”`;
-const displayedWordCount =
-	entry.data.source?.wordCount ?? remarkPluginFrontmatter.words;
-const displayedMinutes = entry.data.source
-	? Math.max(1, Math.round(entry.data.source.wordCount / 200))
-	: remarkPluginFrontmatter.minutes;
+const isArchivePost = Boolean(entry.data.provenance);
+const coverAlt = isArchivePost
+	? (entry.data.imageAlt ?? "")
+	: (entry.data.imageAlt ?? `Cover image for “${entry.data.title}”`);
+const imageDescription = isArchivePost
+	? (entry.data.imageAlt ?? undefined)
+	: coverAlt;
+const archiveWordCount = entry.data.provenance?.wordCount;
+const displayedWordCount = archiveWordCount ?? remarkPluginFrontmatter.words;
+const displayedMinutes =
+	archiveWordCount !== undefined
+		? Math.max(1, Math.round(archiveWordCount / 200))
+		: remarkPluginFrontmatter.minutes;
 const showLicense = Boolean(entry.data.license) || licenseConfig.enable;
 const effectiveLicense =
 	entry.data.license ?? (licenseConfig.enable ? licenseConfig : undefined);
@@ -69,8 +76,7 @@ const jsonLd = {
 		name: siteConfig.title,
 		url: siteRoot.toString(),
 	},
-	datePublished:
-		entry.data.source?.publishedAt ?? entry.data.published.toISOString(),
+	datePublished: entry.data.published.toISOString(),
 	dateModified: entry.data.updated?.toISOString(),
 	url: canonicalUrl,
 	mainEntityOfPage: {
@@ -82,12 +88,11 @@ const jsonLd = {
 				"@type": "ImageObject",
 				url: coverUrl,
 				contentUrl: coverUrl,
-				sameAs: entry.data.imageSourceUrl,
-				description: coverAlt,
+				description: imageDescription,
 				caption: entry.data.imageCaption || undefined,
 			}
 		: undefined,
-	isBasedOn: entry.data.source?.url,
+	isBasedOn: entry.data.publication?.url,
 	articleSection: entry.data.category || undefined,
 	wordCount: displayedWordCount,
 	license: effectiveLicense?.url ?? effectiveLicense?.name,
@@ -141,7 +146,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
             <div class="relative onload-animation">
                 <h1
                     data-pagefind-body data-pagefind-weight="10" data-pagefind-meta="title"
-					data-vocal-field={entry.data.source ? "title" : undefined}
+					data-archive-field={isArchivePost ? "title" : undefined}
                     class="transition w-full block font-bold mb-3
                     text-3xl md:text-[2.25rem]/[2.75rem]
                     text-black/90 dark:text-white/90
@@ -150,11 +155,11 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
                 ">
                     {entry.data.title}
                 </h1>
-				{entry.data.subtitle && <p data-vocal-field={entry.data.source ? "subtitle" : undefined} class="transition text-lg md:text-xl text-black/65 dark:text-white/65 mb-3">{entry.data.subtitle}</p>}
+				{entry.data.subtitle && <p data-archive-field={isArchivePost ? "subtitle" : undefined} class="transition text-lg md:text-xl text-black/65 dark:text-white/65 mb-3">{entry.data.subtitle}</p>}
 				<div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-black/50 dark:text-white/50 mb-4" data-pagefind-ignore>
-					<span data-vocal-field={entry.data.source ? "author" : undefined}>By {author}</span>
-					{entry.data.source && <span aria-hidden="true">·</span>}
-					{entry.data.source && <a data-vocal-source-url href={entry.data.source.url} target="_blank" rel="noopener noreferrer" class="link text-[var(--primary)]">Originally published on Vocal</a>}
+					<span data-archive-field={isArchivePost ? "author" : undefined}>By {author}</span>
+					{entry.data.publication && <span aria-hidden="true">·</span>}
+					{entry.data.publication && <a data-archive-publication-url href={entry.data.publication.url} target="_blank" rel="noopener noreferrer" class="link text-[var(--primary)]">Originally published on {entry.data.publication.platform}</a>}
 				</div>
             </div>
 
@@ -172,7 +177,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 
             <!-- always show cover as long as it has one -->
 
-			{entry.data.image && <figure data-vocal-hero={entry.data.source ? "" : undefined} class="mb-8 onload-animation">
+			{entry.data.image && <figure data-archive-hero={isArchivePost ? "" : undefined} class="mb-8 onload-animation">
 				<ImageWrapper
 					id="post-cover"
 					src={entry.data.image}
@@ -182,11 +187,11 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 					loading="eager"
 					class="rounded-xl banner-container bg-black/5 dark:bg-white/5"
 				/>
-				{entry.data.imageCaption && <figcaption data-vocal-field={entry.data.source ? "image-caption" : undefined} class="mt-2 px-2 text-sm text-center text-black/50 dark:text-white/50">{entry.data.imageCaption}</figcaption>}
+				{entry.data.imageCaption && <figcaption data-archive-field={isArchivePost ? "image-caption" : undefined} class="mt-2 px-2 text-sm text-center text-black/50 dark:text-white/50">{entry.data.imageCaption}</figcaption>}
 			</figure>}
 
 
-            <Markdown class="mb-6 markdown-content onload-animation">
+            <Markdown archiveBody={isArchivePost} class="mb-6 markdown-content onload-animation">
                 <Content />
             </Markdown>
 

@@ -38,16 +38,16 @@ jobs:
       - name: Run Astro Check
         run: pnpm check
 
-      - name: Run Vocal importer tests
-        run: pnpm test:vocal
+      - name: Run author archive importer tests
+        run: pnpm test:archive
 
-      - name: Verify imported Vocal content when present
+      - name: Verify imported author-master content when present
         shell: bash
         run: |
-          if [[ -f provenance/vocal/manifest.json ]]; then
-            pnpm vocal:verify
+          if [[ -f provenance/tai-song/manifest.json ]]; then
+            pnpm archive:verify
           else
-            echo "No Vocal manifest exists yet; importer tests cover the empty foundation."
+            echo "No archive manifest exists yet; importer tests cover the empty foundation."
           fi
 
   build:

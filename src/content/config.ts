@@ -1,5 +1,19 @@
 import { defineCollection, z } from "astro:content";
 
+const httpsUrl = z
+	.string()
+	.url()
+	.refine(
+		(value) => {
+			try {
+				return new URL(value).protocol === "https:";
+			} catch {
+				return false;
+			}
+		},
+		{ message: "URL must use HTTPS" },
+	);
+
 const postSchema = z
 	.object({
 		title: z.string(),
@@ -11,7 +25,7 @@ const postSchema = z
 		draft: z.boolean().optional().default(false),
 		description: z.string().optional().default(""),
 		image: z.string().optional().default(""),
-		tags: z.array(z.string()).optional().default([]),
+		tags: z.array(z.string().min(1)).optional().default([]),
 		category: z.string().optional().nullable().default(""),
 		lang: z.string().optional().default(""),
 		imageAlt: z.string().nullable().optional().default(null),
@@ -20,17 +34,23 @@ const postSchema = z
 			.union([z.literal(""), z.string().url()])
 			.optional()
 			.default(""),
-		source: z
+		provenance: z
+			.object({
+				authority: z.literal("Proton Docs"),
+				captureFormat: z.literal("html-export"),
+				capturedAt: z.string().datetime({ offset: true }),
+				wordCount: z.number().int().nonnegative().optional(),
+				bodyTextSha256: z.string().regex(/^sha256:[0-9a-f]{64}$/),
+				bodyBlockCount: z.number().int().positive(),
+			})
+			.strict()
+			.optional(),
+		publication: z
 			.object({
 				platform: z.literal("Vocal"),
-				id: z.string().min(1),
-				url: z.string().url(),
-				capturedAt: z.string().datetime({ offset: true }),
-				publishedAt: z.string().datetime({ offset: true }),
-				contentUpdatedAt: z.string().datetime({ offset: true }).nullable(),
-				wordCount: z.number().int().nonnegative(),
-				communitySlug: z.string().min(1),
+				url: httpsUrl,
 			})
+			.strict()
 			.optional(),
 		license: z
 			.object({
@@ -46,80 +66,95 @@ const postSchema = z
 		nextSlug: z.string().default(""),
 	})
 	.superRefine((post, context) => {
-		if (!post.source) return;
+		if (!post.provenance) return;
 
-		const requireValue = (field: "subtitle" | "summary" | "author") => {
+		const requireValue = (
+			field:
+				| "title"
+				| "subtitle"
+				| "summary"
+				| "description"
+				| "author"
+				| "imageCaption",
+		) => {
 			if (post[field].length === 0) {
 				context.addIssue({
 					code: "custom",
-					message: `Vocal posts require a nonempty ${field}`,
+					message: `Author-master archive posts require an explicit nonempty ${field}`,
 					path: [field],
 				});
 			}
 		};
-		for (const field of ["subtitle", "summary", "author"] as const) {
+		for (const field of [
+			"title",
+			"subtitle",
+			"summary",
+			"description",
+			"author",
+			"imageCaption",
+		] as const) {
 			requireValue(field);
 		}
 
 		if (post.author !== "Tai Song") {
 			context.addIssue({
 				code: "custom",
-				message: "Vocal archive posts must identify Tai Song as author",
+				message: "Author-master archive posts must identify Tai Song as author",
 				path: ["author"],
+			});
+		}
+		if (typeof post.category !== "string" || post.category.length === 0) {
+			context.addIssue({
+				code: "custom",
+				message:
+					"Author-master archive posts require an explicit nonempty category",
+				path: ["category"],
 			});
 		}
 		if (post.description !== post.subtitle) {
 			context.addIssue({
 				code: "custom",
-				message: "Vocal post description must exactly match its subtitle",
+				message:
+					"Author-master archive post descriptions must exactly match their subtitles",
 				path: ["description"],
 			});
 		}
-		if (
-			post.published.valueOf() !== new Date(post.source.publishedAt).valueOf()
-		) {
+		if (new Set(post.tags).size !== post.tags.length) {
 			context.addIssue({
 				code: "custom",
-				message: "Vocal publication timestamps must match",
-				path: ["published"],
-			});
-		}
-
-		const sourceUpdated = post.source.contentUpdatedAt;
-		const shouldExposeUpdated =
-			sourceUpdated !== null &&
-			new Date(sourceUpdated).valueOf() > post.published.valueOf();
-		if (
-			(shouldExposeUpdated &&
-				post.updated?.valueOf() !== new Date(sourceUpdated).valueOf()) ||
-			(!shouldExposeUpdated && post.updated !== undefined)
-		) {
-			context.addIssue({
-				code: "custom",
-				message:
-					"Vocal updated must match a source update later than publication and otherwise be omitted",
-				path: ["updated"],
+				message: "Author-master archive post tags must be unique",
+				path: ["tags"],
 			});
 		}
 		if (post.image !== "./hero-original.png") {
 			context.addIssue({
 				code: "custom",
-				message: "Vocal posts must use the colocated original hero PNG",
+				message:
+					"Author-master archive posts must use the colocated original hero PNG",
 				path: ["image"],
 			});
 		}
-		if (!post.imageSourceUrl) {
+		if (post.imageSourceUrl) {
 			context.addIssue({
 				code: "custom",
-				message: "Vocal posts require the original hero source URL",
+				message:
+					"Author-master archive posts must not expose a private image source URL",
 				path: ["imageSourceUrl"],
 			});
 		}
 		if (post.license?.name !== "All Rights Reserved") {
 			context.addIssue({
 				code: "custom",
-				message: "Imported Vocal posts must declare All Rights Reserved",
+				message: "Author-master archive posts must declare All Rights Reserved",
 				path: ["license", "name"],
+			});
+		}
+		if (post.updated !== undefined) {
+			context.addIssue({
+				code: "custom",
+				message:
+					"Author-master archive posts must omit updated when no authoritative update was captured",
+				path: ["updated"],
 			});
 		}
 	});

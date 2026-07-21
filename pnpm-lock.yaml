@@ -162,6 +162,9 @@ importers:
       '@types/sanitize-html':
         specifier: ^2.16.0
         version: 2.16.0
+      parse5:
+        specifier: 7.3.0
+        version: 7.3.0
       postcss-import:
         specifier: ^16.1.1
         version: 16.1.1(postcss@8.5.6)

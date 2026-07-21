@@ -97,8 +97,9 @@ export function inspectPng(buffer, label = "PNG") {
 
 		if (type === "IDAT") sawIdat = true;
 		if (type === "IEND") {
-			if (length !== 0)
+			if (length !== 0) {
 				throw new ContractError(`${label} has an invalid IEND chunk`);
+			}
 			sawIend = true;
 			if (crcOffset + 4 !== buffer.length) {
 				throw new ContractError(`${label} has bytes after its IEND chunk`);
@@ -110,5 +111,5 @@ export function inspectPng(buffer, label = "PNG") {
 	if (!sawIdat || !sawIend) {
 		throw new ContractError(`${label} must contain IDAT and IEND chunks`);
 	}
-	return { width, height };
+	return { mimeType: "image/png", width, height };
 }
