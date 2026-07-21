@@ -16,7 +16,10 @@ const postSchema = z
 		lang: z.string().optional().default(""),
 		imageAlt: z.string().nullable().optional().default(null),
 		imageCaption: z.string().optional().default(""),
-		imageSourceUrl: z.string().url().optional(),
+		imageSourceUrl: z
+			.union([z.literal(""), z.string().url()])
+			.optional()
+			.default(""),
 		source: z
 			.object({
 				platform: z.literal("Vocal"),

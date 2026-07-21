@@ -96,7 +96,7 @@ export type BlogPostData = {
 	image?: string;
 	imageAlt: string | null;
 	imageCaption: string;
-	imageSourceUrl?: string;
+	imageSourceUrl: string;
 	category?: string | null;
 	source?: {
 		platform: "Vocal";
