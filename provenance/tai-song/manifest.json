@@ -221,6 +221,41 @@
       }
     },
     {
+      "slug": "the-khan-who-chose-the-grain",
+      "capturedAt": "2026-07-21T22:26:20.844Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/the-khan-who-chose-the-grain"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/the-khan-who-chose-the-grain.json",
+        "markdown": "src/content/posts/the-khan-who-chose-the-grain/index.md",
+        "image": "src/content/posts/the-khan-who-chose-the-grain/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:0ddea6897e6ea428d226c8bc4719d00d05560d2365570d2faa395c2d8bc00e52",
+        "rawImage": "sha256:855711f5d13ca6c633d18095cf633a379d222fe611b8f28ae78428f43e08f4cb",
+        "snapshot": "sha256:d1bc28c0e7c9ecf2f7d0023720a92a548bb06002716d395be2bcd0bcf60e74f8",
+        "markdown": "sha256:8ac676e7209b3be255ead9e09a5f1ab301fa2f196ad749c56b983fcf7cac3be9",
+        "image": "sha256:855711f5d13ca6c633d18095cf633a379d222fe611b8f28ae78428f43e08f4cb",
+        "bodyText": "sha256:492d6027d38db120c47023c372683ffb220864e4838e6040e9e9f126800a8784"
+      },
+      "content": {
+        "subtitle": "A legend reborn in mercy, where empire was traded for grain & silence grew into legacy.",
+        "imageCaption": "Where the arrow fell, the grain rose. A legend rewritten not in conquest, but in kindness.",
+        "bodyTextSha256": "sha256:492d6027d38db120c47023c372683ffb220864e4838e6040e9e9f126800a8784",
+        "bodyBlockCount": 189
+      },
+      "image": {
+        "sha256": "sha256:855711f5d13ca6c633d18095cf633a379d222fe611b8f28ae78428f43e08f4cb",
+        "mimeType": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "byteSize": 2137927,
+        "alt": null
+      }
+    },
+    {
       "slug": "the-seventh-skin",
       "capturedAt": "2026-07-21T22:10:10.972Z",
       "publication": {
