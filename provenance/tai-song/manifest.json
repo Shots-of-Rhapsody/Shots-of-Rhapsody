@@ -186,6 +186,41 @@
       }
     },
     {
+      "slug": "lanterns-for-the-unreturning",
+      "capturedAt": "2026-07-22T23:34:43.378Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/lanterns-for-the-unreturning"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/lanterns-for-the-unreturning.json",
+        "markdown": "src/content/posts/lanterns-for-the-unreturning/index.md",
+        "image": "src/content/posts/lanterns-for-the-unreturning/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:52f97eb7ecfd5e9a361bf44143a95473ec09ca3f8f44c441e549c3224171dbc5",
+        "rawImage": "sha256:92a2beb3a9db0481ae4e775ed31cb9c4a9a4e6a2fa7d1a9d5151edcdb72af35b",
+        "snapshot": "sha256:fe9863596e1524f19a091fd2503dc58f127ced7ef192f7ee0ec7bcd9cd695c6c",
+        "markdown": "sha256:e650906930168743482ddbcb35719680b2ff525e98f3169a59056629dbe99c6a",
+        "image": "sha256:92a2beb3a9db0481ae4e775ed31cb9c4a9a4e6a2fa7d1a9d5151edcdb72af35b",
+        "bodyText": "sha256:d84038f7fa8cf62292722ea2ab759b52bcc0c966f85389ceb60d8b5f07d1732a"
+      },
+      "content": {
+        "subtitle": "A forgotten letter. A love unstilled by time. A voice carried only by memory.",
+        "imageCaption": "A letter folded in silence. A lantern never lit. Memory waiting at the edge of time.",
+        "bodyTextSha256": "sha256:d84038f7fa8cf62292722ea2ab759b52bcc0c966f85389ceb60d8b5f07d1732a",
+        "bodyBlockCount": 79
+      },
+      "image": {
+        "sha256": "sha256:92a2beb3a9db0481ae4e775ed31cb9c4a9a4e6a2fa7d1a9d5151edcdb72af35b",
+        "mimeType": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "byteSize": 1780783,
+        "alt": null
+      }
+    },
+    {
       "slug": "poetic-biography",
       "capturedAt": "2026-07-21T22:14:42.232Z",
       "publication": {
