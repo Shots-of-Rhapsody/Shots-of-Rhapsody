@@ -85,12 +85,35 @@ export type LIGHT_DARK_MODE =
 export type BlogPostData = {
 	body: string;
 	title: string;
+	subtitle: string;
+	summary: string;
+	author: string;
 	published: Date;
+	updated?: Date;
 	description: string;
 	tags: string[];
 	draft?: boolean;
 	image?: string;
-	category?: string;
+	imageAlt: string | null;
+	imageCaption: string;
+	imageSourceUrl: string;
+	category?: string | null;
+	provenance?: {
+		authority: "Proton Docs";
+		captureFormat: "html-export";
+		capturedAt: string;
+		wordCount?: number;
+		bodyTextSha256: `sha256:${string}`;
+		bodyBlockCount: number;
+	};
+	publication?: {
+		platform: "Vocal";
+		url: string;
+	};
+	license?: {
+		name: string;
+		url?: string;
+	};
 	prevTitle?: string;
 	prevSlug?: string;
 	nextTitle?: string;

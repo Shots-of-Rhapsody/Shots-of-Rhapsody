@@ -16,6 +16,18 @@ export function getPostUrlBySlug(slug: string): string {
 	return url(`/posts/${slug}/`);
 }
 
+export function getSiteRootUrl(site: URL): URL {
+	return new URL(url("/"), site);
+}
+
+export function getAbsolutePostUrlBySlug(slug: string, site: URL): URL {
+	return new URL(getPostUrlBySlug(slug), site);
+}
+
+export function getRssUrl(site: URL): URL {
+	return new URL(url("/rss.xml"), site);
+}
+
 export function getTagUrl(tag: string): string {
 	if (!tag) return url("/archive/");
 	return url(`/archive/?tag=${encodeURIComponent(tag.trim())}`);

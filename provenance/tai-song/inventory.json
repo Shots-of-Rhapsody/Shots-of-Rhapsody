@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "expectedCount": 11,
+  "articles": [
+    {
+      "slug": "the-seventh-skin",
+      "title": "The Seventh Skin",
+      "subtitle": "A biotech miracle grants eternal youth and rewrites the meaning of life.",
+      "summary": "Epigraph:\n\nTo shed your skin is to shed your story.\n\nThe Seventh Skin\n\nExcerpt from the Oversight Tribunal Archives, 2143:\n\n“Decay is the rhythm of the living. Halt it, and you play a different song.”\n\n",
+      "description": "A biotech miracle grants eternal youth and rewrites the meaning of life.",
+      "publishedAt": "2025-04-02T01:44:31.063Z",
+      "communityName": "Fiction",
+      "communitySlug": "fiction",
+      "tags": [],
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/the-seventh-skin"
+      },
+      "expectedImage": { "width": 2048, "height": 2048 },
+      "legacyPaths": [
+        "src/content/posts/The Seventh Skin/The Seventh Skin.md",
+        "src/content/posts/The Seventh Skin/The Seventh Skin.jpg"
+      ]
+    },
+    {
+      "slug": "poetic-biography",
+      "title": "Poetic Biography",
+      "subtitle": "The story behind the breath you didn’t know you were holding.",
+      "summary": "I’m not just a lover. I’m a storm you call by name. I don’t slip softly into places or people. I arrive like a confession you never meant to make, & when I leave, I take a piece of you with me, while leaving a piece of myself, still burning, behind.\n\n",
+      "description": "The story behind the breath you didn’t know you were holding.",
+      "publishedAt": "2025-04-02T15:36:06.358Z",
+      "communityName": "Humans",
+      "communitySlug": "humans",
+      "tags": [],
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/humans/poetic-biography"
+      },
+      "expectedImage": { "width": 2048, "height": 2048 },
+      "legacyPaths": [
+        "src/content/posts/Poetic Biography/Poetic Biography.md",
+        "src/content/posts/Poetic Biography/Poetic Biography.jpg"
+      ]
+    },
+    {
+      "slug": "the-guild-a-chronicle-of-pretty-souls",
+      "title": "The Guild: A Chronicle of Pretty Souls",
+      "subtitle": "A myth-bent memory of digital devotion, told in glitch-forged rhyme & frosting-slick fire.",
+      "summary": "A digital elegy for joy, grief, and the guild that made it all sacred.\n\nThis story is a reimagined myth built from real memories. Every section is rooted in lived experience from my time leading a guild in a fantasy MMO, where connection was forged through gameplay, laughter, late nights, and digital stillness.\n\n",
+      "description": "A myth-bent memory of digital devotion, told in glitch-forged rhyme & frosting-slick fire.",
+      "publishedAt": "2025-04-04T23:13:46.501Z",
+      "communityName": "Poets",
+      "communitySlug": "poets",
+      "tags": [],
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/poets/the-guild-a-chronicle-of-pretty-souls"
+      },
+      "expectedImage": { "width": 2048, "height": 2048 }
+    },
+    {
+      "slug": "cold-children",
+      "title": "Cold Children",
+      "subtitle": "They never grew old. That was the gift and the warning.",
+      "summary": "The Hook\n\nThey keep her behind glass now.\n\nThe room is quiet. Not sterile, just reverent. Lights dimmed to mimic dusk. A few chairs along the far wall, each facing her enclosure like pews.\n\n",
+      "description": "They never grew old. That was the gift and the warning.",
+      "publishedAt": "2025-04-08T09:53:10.641Z",
+      "communityName": "Fiction",
+      "communitySlug": "fiction",
+      "tags": [],
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/cold-children"
+      },
+      "expectedImage": { "width": 2048, "height": 2048 }
+    },
+    {
+      "slug": "lanterns-for-the-unreturning",
+      "title": "Lanterns for the Unreturning",
+      "subtitle": "A forgotten letter. A love unstilled by time. A voice carried only by memory.",
+      "summary": "The Invocation\n\nTo the one whose voice was once the wind through bamboo,\n\nI write by oillight, though the wick is old and the flame pulls toward the open window. Outside, the plum trees bend under spring’s last chill, and the paper screens tremble as if remembering you. I know you will not read this. Perhaps you no longer walk this world. Perhaps you live, and have forgotten me. But I have not forgotten you.\n\n",
+      "description": "A forgotten letter. A love unstilled by time. A voice carried only by memory.",
+      "publishedAt": "2025-04-10T01:54:45.057Z",
+      "communityName": "Fiction",
+      "communitySlug": "fiction",
+      "tags": [],
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/lanterns-for-the-unreturning"
+      },
+      "expectedImage": { "width": 2048, "height": 2048 }
+    },
+    {
+      "slug": "the-khan-who-chose-the-grain",
+      "title": "The Khan Who Chose the Grain",
+      "subtitle": "A legend reborn in mercy, where empire was traded for grain & silence grew into legacy.",
+      "summary": "The Scroll in the Dust\n\nThey say the sky chose him.\n\nBefore the legends, before the fear, he was only Temujin, a boy born beneath a cracked moon, his mother’s cry louder than the wolves outside the firelight.\n\n",
+      "description": "A legend reborn in mercy, where empire was traded for grain & silence grew into legacy.",
+      "publishedAt": "2025-04-11T19:08:04.457Z",
+      "communityName": "Fiction",
+      "communitySlug": "fiction",
+      "tags": [],
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/the-khan-who-chose-the-grain"
+      },
+      "expectedImage": { "width": 2048, "height": 2048 }
+    },
+    {
+      "slug": "eggasaurus-rex",
+      "title": "Eggasaurus Rex",
+      "subtitle": "In the Land of Wobblebottom, nothing rolls quite like him...",
+      "summary": "-Author’s Note from the Wobbleverse.\n\nThis wobbly, glitter-splattered tale is a joyful break from my usual writing. Eggasaurus Rex is my very first attempt at a children’s short story, filled with sock trees, meatball disasters, and one delightfully ridiculous hero. I'd say it's meant for kids somewhere under the age of 9.\n\n",
+      "description": "In the Land of Wobblebottom, nothing rolls quite like him...",
+      "publishedAt": "2025-04-12T18:56:59.994Z",
+      "communityName": "Fiction",
+      "communitySlug": "fiction",
+      "tags": [],
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/eggasaurus-rex"
+      },
+      "expectedImage": { "width": 1024, "height": 1024 }
+    },
+    {
+      "slug": "where-we-last-were-us",
+      "title": "Where We Last Were Us",
+      "subtitle": "Two voices. One place. Never again the same.",
+      "summary": "Quiet. Poetic. Told entirely in dialogue between two voices echoing through a shared past.\n\nThis is a story about what we keep, what we lose, and the places that remember us even when we don’t return.\n\n",
+      "description": "Two voices. One place. Never again the same.",
+      "publishedAt": "2025-04-14T08:35:07.012Z",
+      "communityName": "Poets",
+      "communitySlug": "poets",
+      "tags": [],
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/poets/where-we-last-were-us"
+      },
+      "expectedImage": { "width": 2048, "height": 2048 },
+      "legacyPaths": [
+        "src/content/posts/Whe We Last Were Us/When We Last Were Us.md",
+        "src/content/posts/Whe We Last Were Us/When We Last Were Us.jpg"
+      ]
+    },
+    {
+      "slug": "before-the-sky-went-quiet-part-i-the-girl-who-faded",
+      "title": "Before the Sky Went Quiet: Part I - The Girl Who Faded",
+      "subtitle": "When her voice began to disappear, everything else followed.",
+      "summary": "Chapter One\n\nIf You’re Reading This\n\nThe attic still smelled like her shampoo. Lavender and citrus. Too bright. Too alive. The kind that clung to blankets and door frames and memories that refused to leave quietly.\n\n",
+      "description": "When her voice began to disappear, everything else followed.",
+      "publishedAt": "2025-04-21T06:23:12.929Z",
+      "communityName": "Fiction",
+      "communitySlug": "fiction",
+      "tags": [],
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/before-the-sky-went-quiet-part-i-the-girl-who-faded"
+      },
+      "expectedImage": { "width": 2048, "height": 2048 }
+    },
+    {
+      "slug": "before-the-sky-went-quiet-part-ii-the-goodbye",
+      "title": "Before the Sky Went Quiet: Part II - The Goodbye",
+      "subtitle": "She chose how she would leave. They chose how they’d remember her.",
+      "summary": "Chapter Seven\n\nThe Last Clear Day\n\nShe knew the second she opened her eyes.\n\nThis was her last real day.\n\nNo pain.\n\nNo confusion.\n\n",
+      "description": "She chose how she would leave. They chose how they’d remember her.",
+      "publishedAt": "2025-04-28T07:09:40.082Z",
+      "communityName": "Fiction",
+      "communitySlug": "fiction",
+      "tags": [],
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/before-the-sky-went-quiet-part-ii-the-goodbye"
+      },
+      "expectedImage": { "width": 2048, "height": 2048 }
+    },
+    {
+      "slug": "before-the-sky-went-quiet-part-iii-the-echo-that-stayed",
+      "title": "Before the Sky Went Quiet: Part III - The Echo That Stayed",
+      "subtitle": "She’s gone. But the sound of her hasn’t left.",
+      "summary": "Chapter Ten\n\nThe Letter She Never Sent\n\nMae didn’t cry at the funeral.\n\nShe sat in the third row with her hands folded tight in her lap, watching the slideshow like she was trying to memorize every photo before it disappeared.\n\n",
+      "description": "She’s gone. But the sound of her hasn’t left.",
+      "publishedAt": "2025-05-05T06:43:23.374Z",
+      "communityName": "Fiction",
+      "communitySlug": "fiction",
+      "tags": [],
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/before-the-sky-went-quiet-part-iii-the-echo-that-stayed"
+      },
+      "expectedImage": { "width": 2048, "height": 2048 }
+    }
+  ]
+}

@@ -29,6 +29,21 @@
           "type": "string"
         },
         {
+          "title": "subtitle",
+          "name": "subtitle",
+          "type": "string"
+        },
+        {
+          "title": "summary",
+          "name": "summary",
+          "type": "string"
+        },
+        {
+          "title": "author",
+          "name": "author",
+          "type": "string"
+        },
+        {
           "title": "published",
           "name": "published",
           "type": "datetime",
@@ -40,6 +55,21 @@
           "name": "image",
           "type": "image",
           "isPreviewImage": true
+        },
+        {
+          "title": "image alt text",
+          "name": "imageAlt",
+          "type": "string"
+        },
+        {
+          "title": "image caption",
+          "name": "imageCaption",
+          "type": "string"
+        },
+        {
+          "title": "image source URL",
+          "name": "imageSourceUrl",
+          "type": "string"
         },
         {
           "title": "tags",
@@ -58,7 +88,7 @@
         },
         {
           "title": "language",
-          "name": "language",
+          "name": "lang",
           "type": "string"
         }
       ]

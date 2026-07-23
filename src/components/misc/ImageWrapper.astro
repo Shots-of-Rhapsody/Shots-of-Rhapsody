@@ -1,54 +1,47 @@
 ---
-import path from "node:path";
-
 interface Props {
 	id?: string;
 	src: string;
 	class?: string;
-	alt?: string;
+	alt?: string | null;
 	position?: string;
 	basePath?: string;
+	fit?: "cover" | "contain";
+	loading?: "eager" | "lazy";
 }
 
 import { Image } from "astro:assets";
+import {
+	isExternalImage,
+	isPublicImage,
+	loadLocalImage,
+} from "../../utils/image-utils";
 import { url } from "../../utils/url-utils";
 
-const { id, src, alt, position = "center", basePath = "/" } = Astro.props;
+const {
+	id,
+	src,
+	alt,
+	position = "center",
+	basePath = "/",
+	fit = "cover",
+	loading = "lazy",
+} = Astro.props;
 const className = Astro.props.class;
 
-const isLocal = !(
-	src.startsWith("/") ||
-	src.startsWith("http") ||
-	src.startsWith("https") ||
-	src.startsWith("data:")
-);
-const isPublic = src.startsWith("/");
+const isLocal = !isPublicImage(src) && !isExternalImage(src);
+const isPublic = isPublicImage(src);
+const img = isLocal ? await loadLocalImage(src, basePath) : undefined;
 
-// TODO temporary workaround for images dynamic import
-// https://github.com/withastro/astro/issues/3373
-// biome-ignore lint/suspicious/noImplicitAnyLet: <check later>
-let img;
-if (isLocal) {
-	const files = import.meta.glob<ImageMetadata>("../../**", {
-		import: "default",
-	});
-	let normalizedPath = path
-		.normalize(path.join("../../", basePath, src))
-		.replace(/\\/g, "/");
-	const file = files[normalizedPath];
-	if (!file) {
-		console.error(
-			`\n[ERROR] Image file not found: ${normalizedPath.replace("../../", "src/")}`,
-		);
-	}
-	img = await file();
-}
-
-const imageClass = "w-full h-full object-cover";
+const imageClass =
+	fit === "contain"
+		? "w-full h-auto object-contain"
+		: "w-full h-full object-cover";
 const imageStyle = `object-position: ${position}`;
+const altText = alt ?? "";
 ---
 <div id={id} class:list={[className, 'overflow-hidden relative']}>
     <div class="transition absolute inset-0 dark:bg-black/10 bg-opacity-50 pointer-events-none"></div>
-    {isLocal && img && <Image src={img} alt={alt || ""} class={imageClass} style={imageStyle}/>}
-    {!isLocal && <img src={isPublic ? url(src) : src} alt={alt || ""} class={imageClass} style={imageStyle}/>}
+    {isLocal && img && <Image src={img} alt={altText} class={imageClass} style={imageStyle} loading={loading}/>}
+    {!isLocal && <img src={isPublic ? url(src) : src} alt={altText} class={imageClass} style={imageStyle} loading={loading} decoding="async"/>}
 </div>

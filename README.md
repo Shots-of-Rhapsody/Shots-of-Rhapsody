@@ -103,12 +103,13 @@ If your work questions, formalizes, or imagines, it belongs here.
 
 This site began from the Fuwari template. Its pinned lineage and review-only update procedure are documented in [Fuwari upstream synchronization](docs/upstream-sync.md).
 
+The Tai Song archive uses the author's Proton Docs HTML exports and original PNGs as its authoritative, local-only inputs. The deterministic import and verification workflow is documented in the [Tai Song archive import runbook](docs/tai-song-import.md). Raw creator exports stay ignored; only sanitized provenance and verified outputs are committed.
+
 ---
 
 ## License
 
-All content © 2025 **Shots of Rhapsody**.  
-Creative Commons Attribution–NonCommercial-ShareAlike 4.0 International License.
+Repository software remains under the root [MIT License](LICENSE). Writing and media use scoped, per-post rights; see [Content rights and licensing](CONTENT-LICENSE.md). Imported Tai Song articles and author-controlled hero images are All Rights Reserved, while existing posts without an explicit per-post license retain the site's CC BY-NC-SA 4.0 fallback pending separate review.
 
 ---
 

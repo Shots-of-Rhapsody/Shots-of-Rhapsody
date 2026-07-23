@@ -7,28 +7,35 @@ import { formatDateToYYYYMMDD } from "../../utils/date-utils";
 
 interface Props {
 	title: string;
-	slug: string;
 	pubDate: Date;
-	class: string;
+	author?: string;
+	license?: {
+		name: string;
+		url?: string;
+	};
+	canonicalUrl: string;
+	class?: string;
 }
 
-const { title, pubDate } = Astro.props;
+const { title, pubDate, author, license, canonicalUrl } = Astro.props;
 const className = Astro.props.class;
-const profileConf = profileConfig;
-const licenseConf = licenseConfig;
-const postUrl = decodeURIComponent(Astro.url.toString());
+const authorName = author || profileConfig.name;
+const licenseDetails = license ?? licenseConfig;
+const isCreativeCommons = licenseDetails.name
+	.toLowerCase()
+	.includes("creative commons");
 ---
-<div class={`relative transition overflow-hidden bg-[var(--license-block-bg)] py-5 px-6 ${className}`}>
+<div data-license-name={licenseDetails.name} class={`relative transition overflow-hidden bg-[var(--license-block-bg)] py-5 px-6 ${className}`}>
     <div class="transition font-bold text-black/75 dark:text-white/75">
         {title}
     </div>
-    <a href={postUrl} class="link text-[var(--primary)]">
-        {postUrl}
+    <a href={canonicalUrl} class="link text-[var(--primary)]">
+        {canonicalUrl}
     </a>
-    <div class="flex gap-6 mt-2">
+    <div class="flex flex-wrap gap-6 mt-2">
         <div>
             <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.author)}</div>
-            <div class="transition text-black/75 dark:text-white/75 line-clamp-2">{profileConf.name}</div>
+            <div class="transition text-black/75 dark:text-white/75 line-clamp-2">{authorName}</div>
         </div>
         <div>
             <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.publishedAt)}</div>
@@ -36,8 +43,12 @@ const postUrl = decodeURIComponent(Astro.url.toString());
         </div>
         <div>
             <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.license)}</div>
-            <a href={licenseConf.url} target="_blank" class="link text-[var(--primary)] line-clamp-2">{licenseConf.name}</a>
+			{licenseDetails.url ? (
+				<a href={licenseDetails.url} target="_blank" rel="noopener noreferrer" class="link text-[var(--primary)] line-clamp-2">{licenseDetails.name}</a>
+			) : (
+				<div class="transition text-black/75 dark:text-white/75 line-clamp-2">{licenseDetails.name}</div>
+			)}
         </div>
     </div>
-    <Icon name="fa6-brands:creative-commons" class="transition text-[15rem] absolute pointer-events-none right-6 top-1/2 -translate-y-1/2 text-black/5 dark:text-white/5"></Icon>
+    <Icon name={isCreativeCommons ? "fa6-brands:creative-commons" : "material-symbols:copyright-rounded"} class="transition text-[15rem] absolute pointer-events-none right-6 top-1/2 -translate-y-1/2 text-black/5 dark:text-white/5"></Icon>
 </div>

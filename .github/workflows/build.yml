@@ -38,6 +38,18 @@ jobs:
       - name: Run Astro Check
         run: pnpm check
 
+      - name: Run author archive importer tests
+        run: pnpm test:archive
+
+      - name: Verify imported author-master content when present
+        shell: bash
+        run: |
+          if [[ -f provenance/tai-song/manifest.json ]]; then
+            pnpm archive:verify
+          else
+            echo "No archive manifest exists yet; importer tests cover the empty foundation."
+          fi
+
   build:
     runs-on: ubuntu-latest
     name: Astro Build for Node.js 24
@@ -62,3 +74,6 @@ jobs:
 
       - name: Run Astro Build
         run: pnpm build
+
+      - name: Verify built routes and metadata
+        run: pnpm verify:site
