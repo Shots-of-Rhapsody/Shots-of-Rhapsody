@@ -116,6 +116,111 @@
       }
     },
     {
+      "slug": "cold-children",
+      "capturedAt": "2026-07-21T22:17:29.549Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/cold-children"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/cold-children.json",
+        "markdown": "src/content/posts/cold-children/index.md",
+        "image": "src/content/posts/cold-children/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:697adacc029529e593d72ca499f97e629e60b5e05579d1b0819606fcaae504c9",
+        "rawImage": "sha256:0316d2db3f1aee83a5112adbf54a2cdeaf0054958a57c0066db52fbae7991fe1",
+        "snapshot": "sha256:ef23f8abd5d36309395811302945fb71fa5d1d04a8fccdfa350ee032388fd4f1",
+        "markdown": "sha256:1a7938584e6a2e88f2ec9bc317ebdbddbe483802731a34b3479a374771cd352b",
+        "image": "sha256:0316d2db3f1aee83a5112adbf54a2cdeaf0054958a57c0066db52fbae7991fe1",
+        "bodyText": "sha256:9b338adf444aaa6134e2688a11ea03bdf67918c032b46f034483eb7b51ce3fad"
+      },
+      "content": {
+        "subtitle": "They never grew old. That was the gift and the warning.",
+        "imageCaption": "\"To live is not to last. It is to yield.\"",
+        "bodyTextSha256": "sha256:9b338adf444aaa6134e2688a11ea03bdf67918c032b46f034483eb7b51ce3fad",
+        "bodyBlockCount": 134
+      },
+      "image": {
+        "sha256": "sha256:0316d2db3f1aee83a5112adbf54a2cdeaf0054958a57c0066db52fbae7991fe1",
+        "mimeType": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "byteSize": 5233966,
+        "alt": null
+      }
+    },
+    {
+      "slug": "eggasaurus-rex",
+      "capturedAt": "2026-07-21T22:26:48.521Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/eggasaurus-rex"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/eggasaurus-rex.json",
+        "markdown": "src/content/posts/eggasaurus-rex/index.md",
+        "image": "src/content/posts/eggasaurus-rex/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:89ff3a2e6ad2bc50967df175ee9a5e253d7f998f95e7f192d96f1cdfec638aba",
+        "rawImage": "sha256:74aa40343df32361ce230171f393d44421c3f3d4d6502e8ddcd42f88b9bed802",
+        "snapshot": "sha256:4ca9ce47bd637fe2c019e255c69b9c808d749f96ef6962b81d672956d7d36bff",
+        "markdown": "sha256:346f3abdfafd88d3489b39313726bdee1c6a95b0aa75173891b518ee50603124",
+        "image": "sha256:74aa40343df32361ce230171f393d44421c3f3d4d6502e8ddcd42f88b9bed802",
+        "bodyText": "sha256:e2fed517ae6aae3d5cf0ab3bd734a1f5ad969b5520d5720ffa9288477c329646"
+      },
+      "content": {
+        "subtitle": "In the Land of Wobblebottom, nothing rolls quite like him...",
+        "imageCaption": "Welcome to the Land of Wobblebottom, where socks grow on trees, spaghetti boulders roll wild, and heroes wobble with pride!",
+        "bodyTextSha256": "sha256:e2fed517ae6aae3d5cf0ab3bd734a1f5ad969b5520d5720ffa9288477c329646",
+        "bodyBlockCount": 235
+      },
+      "image": {
+        "sha256": "sha256:74aa40343df32361ce230171f393d44421c3f3d4d6502e8ddcd42f88b9bed802",
+        "mimeType": "image/png",
+        "width": 1024,
+        "height": 1024,
+        "byteSize": 2737995,
+        "alt": null
+      }
+    },
+    {
+      "slug": "lanterns-for-the-unreturning",
+      "capturedAt": "2026-07-22T23:34:43.378Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/lanterns-for-the-unreturning"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/lanterns-for-the-unreturning.json",
+        "markdown": "src/content/posts/lanterns-for-the-unreturning/index.md",
+        "image": "src/content/posts/lanterns-for-the-unreturning/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:52f97eb7ecfd5e9a361bf44143a95473ec09ca3f8f44c441e549c3224171dbc5",
+        "rawImage": "sha256:92a2beb3a9db0481ae4e775ed31cb9c4a9a4e6a2fa7d1a9d5151edcdb72af35b",
+        "snapshot": "sha256:fe9863596e1524f19a091fd2503dc58f127ced7ef192f7ee0ec7bcd9cd695c6c",
+        "markdown": "sha256:e650906930168743482ddbcb35719680b2ff525e98f3169a59056629dbe99c6a",
+        "image": "sha256:92a2beb3a9db0481ae4e775ed31cb9c4a9a4e6a2fa7d1a9d5151edcdb72af35b",
+        "bodyText": "sha256:d84038f7fa8cf62292722ea2ab759b52bcc0c966f85389ceb60d8b5f07d1732a"
+      },
+      "content": {
+        "subtitle": "A forgotten letter. A love unstilled by time. A voice carried only by memory.",
+        "imageCaption": "A letter folded in silence. A lantern never lit. Memory waiting at the edge of time.",
+        "bodyTextSha256": "sha256:d84038f7fa8cf62292722ea2ab759b52bcc0c966f85389ceb60d8b5f07d1732a",
+        "bodyBlockCount": 79
+      },
+      "image": {
+        "sha256": "sha256:92a2beb3a9db0481ae4e775ed31cb9c4a9a4e6a2fa7d1a9d5151edcdb72af35b",
+        "mimeType": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "byteSize": 1780783,
+        "alt": null
+      }
+    },
+    {
       "slug": "poetic-biography",
       "capturedAt": "2026-07-21T22:14:42.232Z",
       "publication": {
@@ -182,6 +287,76 @@
         "width": 2048,
         "height": 2048,
         "byteSize": 2464326,
+        "alt": null
+      }
+    },
+    {
+      "slug": "the-khan-who-chose-the-grain",
+      "capturedAt": "2026-07-21T22:26:20.844Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/the-khan-who-chose-the-grain"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/the-khan-who-chose-the-grain.json",
+        "markdown": "src/content/posts/the-khan-who-chose-the-grain/index.md",
+        "image": "src/content/posts/the-khan-who-chose-the-grain/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:0ddea6897e6ea428d226c8bc4719d00d05560d2365570d2faa395c2d8bc00e52",
+        "rawImage": "sha256:855711f5d13ca6c633d18095cf633a379d222fe611b8f28ae78428f43e08f4cb",
+        "snapshot": "sha256:d1bc28c0e7c9ecf2f7d0023720a92a548bb06002716d395be2bcd0bcf60e74f8",
+        "markdown": "sha256:8ac676e7209b3be255ead9e09a5f1ab301fa2f196ad749c56b983fcf7cac3be9",
+        "image": "sha256:855711f5d13ca6c633d18095cf633a379d222fe611b8f28ae78428f43e08f4cb",
+        "bodyText": "sha256:492d6027d38db120c47023c372683ffb220864e4838e6040e9e9f126800a8784"
+      },
+      "content": {
+        "subtitle": "A legend reborn in mercy, where empire was traded for grain & silence grew into legacy.",
+        "imageCaption": "Where the arrow fell, the grain rose. A legend rewritten not in conquest, but in kindness.",
+        "bodyTextSha256": "sha256:492d6027d38db120c47023c372683ffb220864e4838e6040e9e9f126800a8784",
+        "bodyBlockCount": 189
+      },
+      "image": {
+        "sha256": "sha256:855711f5d13ca6c633d18095cf633a379d222fe611b8f28ae78428f43e08f4cb",
+        "mimeType": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "byteSize": 2137927,
+        "alt": null
+      }
+    },
+    {
+      "slug": "the-seventh-skin",
+      "capturedAt": "2026-07-21T22:10:10.972Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/the-seventh-skin"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/the-seventh-skin.json",
+        "markdown": "src/content/posts/the-seventh-skin/index.md",
+        "image": "src/content/posts/the-seventh-skin/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:1a0719f5ec408ac633e443d177e8897f3386b65fb194ed22b7be039efeb895fd",
+        "rawImage": "sha256:6fa5c91254e003b9292a6e69ce9f87b11774e99ede588782d0d92cedfa1ea522",
+        "snapshot": "sha256:ff9b6f5a757920aa4be290b3faf85dd767c623ad0bf447a8d1ed2ad43c7662c6",
+        "markdown": "sha256:78bab783ac9f0bb13c224ab5fd23e47eb2d7a74d303ebd8f3e8d61eb1dcd7c20",
+        "image": "sha256:6fa5c91254e003b9292a6e69ce9f87b11774e99ede588782d0d92cedfa1ea522",
+        "bodyText": "sha256:ff49c8eb133dc06024bbb8d1104b2d91db47637ef18476ba9423c796c9537908"
+      },
+      "content": {
+        "subtitle": "A biotech miracle grants eternal youth and rewrites the meaning of life.",
+        "imageCaption": "Between memory and perfection, something beautiful forgot how to feel.",
+        "bodyTextSha256": "sha256:ff49c8eb133dc06024bbb8d1104b2d91db47637ef18476ba9423c796c9537908",
+        "bodyBlockCount": 119
+      },
+      "image": {
+        "sha256": "sha256:6fa5c91254e003b9292a6e69ce9f87b11774e99ede588782d0d92cedfa1ea522",
+        "mimeType": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "byteSize": 2142085,
         "alt": null
       }
     },
