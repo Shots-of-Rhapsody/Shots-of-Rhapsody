@@ -1,0 +1,147 @@
+{
+	"version": 1,
+	"gitMetadata": {
+		"trustedUpstreamTips": [
+			{
+				"commit": "6d39b0dec41282e7852e23e032998a5789abee28",
+				"reason": "Reviewed public Fuwari ancestry joined through the documented upstream-lineage merge. Identity metadata is accepted only for commits reachable from this exact tip; secret-like messages remain blocking."
+			}
+		],
+		"allowedPublicNames": [
+			{
+				"name": "Tai Song",
+				"reason": "Public author identity used throughout the release archive."
+			},
+			{
+				"name": "Shots of Rhapsody",
+				"reason": "Public project identity."
+			},
+			{
+				"name": "Shots-of-Rhapsody",
+				"reason": "Public GitHub organization identity."
+			},
+			{
+				"name": "GitHub",
+				"reason": "Standard GitHub-generated merge identity."
+			},
+			{
+				"name": "github-actions[bot]",
+				"reason": "Standard GitHub Actions bot identity."
+			},
+			{
+				"name": "dependabot[bot]",
+				"reason": "Standard GitHub Dependabot identity."
+			}
+		],
+		"allowedIdentityObjects": [],
+		"allowedMessageEmailObjects": []
+	},
+	"contentAllowlists": {},
+	"contentAllowlistEntries": [
+		{
+			"rules": [
+				"github-token",
+				"provider-token",
+				"private-key",
+				"local-user-path",
+				"email-address-review"
+			],
+			"path": "scripts/release/audit-repository.mjs",
+			"blob": "1768719782e1f7618bae5d83561d9e99944bc7d0",
+			"reason": "Immutable scanner source containing its own detection expressions."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "pnpm-lock.yaml",
+			"blob": "57492cff4268cb3d6316db5a4607587e199b44ec",
+			"reason": "Immutable lockfile blob containing only reviewed public npm deprecation metadata."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "pnpm-lock.yaml",
+			"blob": "ac6990b4a72b896ddd602e68f81d0d0c7c010964",
+			"reason": "Immutable lockfile blob containing only reviewed public npm deprecation metadata."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "pnpm-lock.yaml",
+			"blob": "c8c394669cbb7caf66d466a33258d14702307a4f",
+			"reason": "Immutable lockfile blob containing only reviewed public npm deprecation metadata."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "pnpm-lock.yaml",
+			"blob": "df9b4a6084670a368a852475b107d880acd03228",
+			"reason": "Immutable lockfile blob containing only reviewed public npm deprecation metadata."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "pnpm-lock.yaml",
+			"blob": "cdcb1a6b893bdf29d50f127c6a97ca075ff05779",
+			"reason": "Immutable lockfile blob containing only reviewed public npm deprecation metadata."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "pnpm-lock.yaml",
+			"blob": "94211015c8e300cbd5aa118c2d7123cb4766092e",
+			"reason": "Immutable lockfile blob containing only reviewed public npm deprecation metadata."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "pnpm-lock.yaml",
+			"blob": "3f3298e9e9d350a2738b938452660aaf9beb0836",
+			"reason": "Immutable lockfile blob containing only reviewed public package Git resolution syntax."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "pnpm-lock.yaml",
+			"blob": "5913fe6e0cefa2696ce50bc1325a860d9794a266",
+			"reason": "Immutable lockfile blob containing only reviewed public package Git resolution syntax."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "pnpm-lock.yaml",
+			"blob": "405aabb6ea12625d27c956b809d3ccbc53f4b61a",
+			"reason": "Immutable lockfile blob containing only reviewed public package Git resolution syntax."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "pnpm-lock.yaml",
+			"blob": "32f3fd2b7b3608d5885b19803e7d92f44a404fa4",
+			"reason": "Immutable lockfile blob containing only reviewed public npm deprecation metadata."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "pnpm-lock.yaml",
+			"blob": "a0d3e44c1132265feafffd05923a3a347b996edf",
+			"reason": "Immutable lockfile blob containing only reviewed public package Git resolution syntax."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "pnpm-lock.yaml",
+			"blob": "0bde632bd990faf64e6341a887c3afa0be82386f",
+			"reason": "Immutable lockfile blob containing only reviewed public package Git resolution syntax."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "pnpm-lock.yaml",
+			"blob": "2a7a99a2474a14d1dfa5698361560a05136104e3",
+			"reason": "Immutable lockfile blob containing only reviewed public npm deprecation metadata."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "pnpm-lock.yaml",
+			"blob": "ab6bfc03ef1a8bf074e720c2de55bfe95de885a5",
+			"reason": "Immutable lockfile blob containing only reviewed public package Git resolution syntax."
+		}
+	],
+	"acceptedDisclosures": [
+		{
+			"path": "legacy/podcast/Podcast Ep 1.mp3",
+			"gitBlob": "69314c9f79c84e58cec118bdb2e4269aab2c737f",
+			"sha256": "b4ec04aa9f99b0c52c3bd77123962cd7d7a49b316147bd293ad011698d232dc3",
+			"bytes": 57831360,
+			"reason": "Accepted legacy podcast source; intentionally tracked but excluded from the built site."
+		}
+	]
+}

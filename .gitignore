@@ -32,6 +32,13 @@ yarn.lock
 # local-only Proton Docs author exports and embedded images
 /.proton-import/
 
+# local release evidence; CI uploads these as short-lived artifacts
+/playwright-report/
+/test-results/
+/dependency-audit.json
+/gitleaks-report*.json
+/public-release-audit*.json
+
 # ide
 .idea
 *.iml

@@ -1,34 +1,197 @@
 name: Deploy Astro to GitHub Pages
+
 on:
   workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 permissions:
   contents: read
+
 jobs:
   build:
+    name: Build and verify release artifact
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
-        with: { version: 11.16.0 }
-      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
+      - name: Checkout approved main commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Confirm the release commit is the current main tip
+        shell: bash
+        run: |
+          git fetch --no-tags origin main
+          test "$(git rev-parse HEAD)" = "$(git rev-parse refs/remotes/origin/main)"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        with:
+          version: 11.16.0
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
-          cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-      - run: pnpm verify:release
-      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
+          cache: pnpm
+
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Test the author archive importer
+        run: pnpm test:archive
+
+      - name: Test Astro content route migration
+        run: pnpm test:migration
+
+      - name: Test release audit tooling
+        run: pnpm test:release-tools
+
+      - name: Verify the complete committed archive
+        run: pnpm archive:verify -- --require-complete
+
+      - name: Run non-writing lint
+        run: pnpm lint:ci
+
+      - name: Run Astro type checking
+        run: pnpm type-check
+
+      - name: Build the production site
+        run: pnpm build
+
+      - name: Verify routes, feeds, metadata, and human signoff
+        run: pnpm verify:release
+
+      - name: Install the pinned Chromium browser
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run production browser and accessibility tests
+        run: pnpm test:e2e
+
+      - name: Upload privacy-verified browser screenshots
+        if: success()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-release-evidence
+          path: test-results/**/*.png
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Audit the complete dependency graph
+        shell: bash
+        run: |
+          pnpm audit --json > dependency-audit.json || true
+          node scripts/release/verify-dependency-audit.mjs dependency-audit.json
+
+      - name: Snapshot and synchronize every public Git ref
+        shell: bash
+        run: |
+          snapshot_remote_refs() {
+            git ls-remote origin | LC_ALL=C sort
+          }
+          snapshot_remote_refs > "${RUNNER_TEMP}/public-refs-before.txt"
+          awk '
+            $2 == "HEAD" { next }
+            $2 ~ /^refs\/heads\// { next }
+            $2 ~ /^refs\/tags\// { next }
+            $2 ~ /^refs\/notes\// { next }
+            $2 ~ /^refs\/pull\/[0-9]+\/(head|merge)$/ { next }
+            { exit 1 }
+          ' "${RUNNER_TEMP}/public-refs-before.txt"
+          git fetch --prune --prune-tags origin \
+            '+refs/heads/*:refs/remotes/origin/*' \
+            '+refs/tags/*:refs/tags/*'
+          git fetch --prune --no-tags origin \
+            '+refs/pull/*/head:refs/remotes/audit-pull-head/*' \
+            '+refs/pull/*/merge:refs/remotes/audit-pull-merge/*'
+          git fetch --prune --no-tags origin \
+            '+refs/notes/*:refs/remotes/audit-notes/*'
+          snapshot_remote_refs > "${RUNNER_TEMP}/public-refs-fetched.txt"
+          cmp --silent \
+            "${RUNNER_TEMP}/public-refs-before.txt" \
+            "${RUNNER_TEMP}/public-refs-fetched.txt"
+
+      - name: Scan complete reachable history with checksum-verified Gitleaks
+        id: gitleaks
+        continue-on-error: true
+        run: node scripts/release/run-gitleaks.mjs --report "${{ runner.temp }}/gitleaks-report.json"
+
+      - name: Run independent release-candidate disclosure audit
+        run: >-
+          node scripts/release/audit-repository.mjs
+          --gitleaks-report "${{ runner.temp }}/gitleaks-report.json"
+          --output "${{ runner.temp }}/public-release-audit.json"
+
+      - name: Require successful Gitleaks execution
+        if: always()
+        shell: bash
+        run: test "${{ steps.gitleaks.outcome }}" = "success"
+
+      - name: Reconfirm the audited public ref set is unchanged
+        shell: bash
+        run: |
+          git ls-remote origin | LC_ALL=C sort \
+            > "${RUNNER_TEMP}/public-refs-after.txt"
+          cmp --silent \
+            "${RUNNER_TEMP}/public-refs-before.txt" \
+            "${RUNNER_TEMP}/public-refs-after.txt"
+
+      - name: Upload redacted disclosure evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: public-disclosure-release-evidence
+          path: |
+            ${{ runner.temp }}/gitleaks-report.json
+            ${{ runner.temp }}/public-release-audit.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Check patch whitespace
+        run: git diff --check HEAD^
+
+      - name: Reconfirm the verified commit is still the main tip
+        shell: bash
+        run: |
+          git fetch --no-tags origin main
+          test "$(git rev-parse HEAD)" = "$(git rev-parse refs/remotes/origin/main)"
+
+      - name: Upload verified Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: ./dist
+
   deploy:
+    name: Deploy approved main artifact
     needs: build
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       pages: write
       id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - id: deployment
-        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+      - name: Checkout the dispatched release commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+
+      - name: Require the dispatched commit to remain the main tip
+        shell: bash
+        run: |
+          git fetch --no-tags origin main
+          test "$(git rev-parse HEAD)" = "$(git rev-parse refs/remotes/origin/main)"
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0

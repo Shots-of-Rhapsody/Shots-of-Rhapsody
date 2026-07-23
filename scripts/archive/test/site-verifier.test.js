@@ -1,13 +1,19 @@
 import assert from "node:assert/strict";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import test from "node:test";
 import { gzipSync } from "node:zlib";
 import {
 	archiveBodyStructure,
+	artifactBufferHasPrivateReference,
 	decodePagefindFragment,
 	frontmatterDraftValue,
+	hasPrivateProtonReference,
 	markedAttributeValues,
 	parseArguments,
 	validateRobotsText,
+	verifyNoPrivateBuildReferences,
 } from "../../verify-built-site.mjs";
 
 test("built-site CLI enables signoff enforcement only when requested", () => {
@@ -104,4 +110,63 @@ test("Pagefind fragment decoding accepts only the reviewed payload", () => {
 		/unknown payload prefix/u,
 	);
 	assert.throws(() => decodePagefindFragment(Buffer.from("not gzip")));
+});
+
+test("full decoded Pagefind records reject nested private source data", () => {
+	const privateUrl = [
+		"https://docs.proton.me",
+		"u",
+		"1",
+		"document",
+		"synthetic-test-only",
+	].join("/");
+	const record = {
+		url: "/posts/example/",
+		meta: { title: "Example" },
+		content: "Public excerpt",
+		internal: { nested: [{ source: privateUrl }] },
+	};
+	const decoded = decodePagefindFragment(
+		gzipSync(
+			Buffer.concat([
+				Buffer.from("pagefind_dcd", "utf8"),
+				Buffer.from(JSON.stringify(record), "utf8"),
+			]),
+		),
+	);
+	assert.equal(hasPrivateProtonReference(decoded), true);
+	assert.equal(
+		hasPrivateProtonReference({ rawSourcePath: "redacted-but-forbidden" }),
+		true,
+	);
+});
+
+test("all built artifacts are scanned as bytes without exposing leak details", async (context) => {
+	const root = await mkdtemp(path.join(tmpdir(), "site-verifier-"));
+	context.after(() => rm(root, { recursive: true, force: true }));
+	const cleanFile = path.join(root, "clean.bin");
+	const privateFile = path.join(root, "private.bin");
+	const rawSourceDirectory = [".", "proton-import"].join("");
+	const rawSourcePath = [rawSourceDirectory, "raw", "private-id"].join("/");
+	await writeFile(cleanFile, Buffer.from([0, 255, 1, 128, 2]));
+	await writeFile(
+		privateFile,
+		Buffer.concat([
+			Buffer.from([0, 255, 254]),
+			Buffer.from(rawSourcePath, "ascii"),
+			Buffer.from([253, 0]),
+		]),
+	);
+
+	assert.equal(
+		artifactBufferHasPrivateReference(await readFile(privateFile)),
+		true,
+	);
+	const failures = [];
+	await verifyNoPrivateBuildReferences([cleanFile, privateFile], failures);
+	assert.deepEqual(failures, [
+		"built artifact 2 contains a private Proton or raw-source reference",
+	]);
+	assert.equal(failures[0].includes(rawSourcePath), false);
+	assert.equal(failures[0].includes(path.basename(privateFile)), false);
 });

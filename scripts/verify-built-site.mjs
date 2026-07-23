@@ -185,15 +185,38 @@ function resolveManifestPath(repoRoot, rawPath, label, failures) {
 	return resolved;
 }
 
-function hasPrivateProtonReference(value) {
+const PRIVATE_BUILD_REFERENCE_PATTERNS = [
+	/https?:\/\/[^\s"'<>]*proton[^\s"'<>]*/iu,
+	/\bprotonusercontent\.(?:com|ch)\b/iu,
+	/\.proton-import(?:[\\/]|\b)/iu,
+];
+
+function normalizedReferenceText(value) {
+	return value
+		.replace(/\\\//gu, "/")
+		.replace(/\\u([0-9a-f]{4})/giu, (_, codePoint) =>
+			String.fromCodePoint(Number.parseInt(codePoint, 16)),
+		)
+		.replace(/\\x([0-9a-f]{2})/giu, (_, codePoint) =>
+			String.fromCodePoint(Number.parseInt(codePoint, 16)),
+		)
+		.replace(/&(?:sol|#0*47|#x0*2f);/giu, "/")
+		.replace(/&(?:colon|#0*58|#x0*3a);/giu, ":")
+		.replace(/&(?:period|#0*46|#x0*2e);/giu, ".");
+}
+
+export function hasPrivateProtonReference(value) {
 	if (typeof value === "string") {
-		return /https?:\/\/[^\s"'<>]*proton[^\s"'<>]*/i.test(value);
+		const normalized = normalizedReferenceText(value);
+		return PRIVATE_BUILD_REFERENCE_PATTERNS.some((pattern) =>
+			pattern.test(normalized),
+		);
 	}
 	if (Array.isArray(value)) return value.some(hasPrivateProtonReference);
 	if (!isPlainObject(value)) return false;
 	return Object.entries(value).some(
 		([key, child]) =>
-			/(?:proton|document|doc).*(?:id|url)|(?:id|url).*(?:proton|document|doc)/i.test(
+			/(?:proton|document|doc|raw(?:source)?).*(?:id|url|path|root|directory)|(?:id|url|path|root|directory).*(?:proton|document|doc|raw(?:source)?)/iu.test(
 				key,
 			) || hasPrivateProtonReference(child),
 	);
@@ -1661,14 +1684,22 @@ async function verifyPagefind(repoRoot, distRoot, manifest, site, failures) {
 		/^fragment\/.*\.pf_fragment$/u.test(relativeFiles[index]),
 	);
 	const records = [];
+	let privateRecordCount = 0;
 	for (const file of fragmentFiles) {
 		try {
-			records.push(decodePagefindFragment(await readFile(file)));
+			const record = decodePagefindFragment(await readFile(file));
+			records.push(record);
+			if (hasPrivateProtonReference(record)) privateRecordCount += 1;
 		} catch (error) {
 			failures.push(
 				`Pagefind fragment ${path.basename(file)} is invalid (${error.message})`,
 			);
 		}
+	}
+	if (privateRecordCount > 0) {
+		failures.push(
+			`Pagefind contains ${privateRecordCount} decoded record(s) with a private Proton or raw-source reference`,
+		);
 	}
 	const titles = await readManifestTitles(repoRoot, manifest, failures);
 	const actualRecords = records.map(
@@ -1690,6 +1721,31 @@ async function verifyPagefind(repoRoot, distRoot, manifest, site, failures) {
 		);
 	}
 	return records.length;
+}
+
+export function artifactBufferHasPrivateReference(buffer) {
+	if (!(buffer instanceof Uint8Array)) {
+		throw new TypeError("built artifact must be provided as bytes");
+	}
+	// Latin-1 preserves every byte one-for-one, so arbitrary binary assets can be
+	// searched for embedded ASCII references without lossy text decoding.
+	return hasPrivateProtonReference(Buffer.from(buffer).toString("latin1"));
+}
+
+export async function verifyNoPrivateBuildReferences(files, failures) {
+	for (const [index, file] of files.entries()) {
+		try {
+			if (artifactBufferHasPrivateReference(await readFile(file))) {
+				failures.push(
+					`built artifact ${index + 1} contains a private Proton or raw-source reference`,
+				);
+			}
+		} catch {
+			failures.push(
+				`built artifact ${index + 1} could not be scanned for private references`,
+			);
+		}
+	}
 }
 
 function verifyNoPodcastArtifacts(files, distRoot, failures) {
@@ -1773,6 +1829,7 @@ export async function verifyBuiltSite({
 	}
 	await verifySitemap(distRoot, site, expectedPageUrls, failures);
 	await verifyRobots(distRoot, site, failures);
+	await verifyNoPrivateBuildReferences(files, failures);
 	verifyNoPodcastArtifacts(files, distRoot, failures);
 
 	if (failures.length > 0) {

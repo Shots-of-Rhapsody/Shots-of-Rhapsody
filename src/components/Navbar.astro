@@ -1,4 +1,7 @@
 ---
+import type { IconifyIcon, IconifyJSON } from "@iconify/svelte";
+import { icons as fa6SolidIcons } from "@iconify-json/fa6-solid";
+import { icons as materialSymbolIcons } from "@iconify-json/material-symbols";
 import { Icon } from "astro-icon/components";
 import { navBarConfig, siteConfig } from "../config";
 import { LinkPresets } from "../constants/link-presets";
@@ -10,6 +13,40 @@ import DisplaySettings from "./widget/DisplaySettings.svelte";
 import NavMenuPanel from "./widget/NavMenuPanel.astro";
 
 const className = Astro.props.class;
+
+function offlineIcon(collection: IconifyJSON, name: string): IconifyIcon {
+	const direct = collection.icons[name];
+	if (direct) {
+		return {
+			...direct,
+			width: direct.width ?? collection.width,
+			height: direct.height ?? collection.height,
+		};
+	}
+	const alias = collection.aliases?.[name];
+	const parent = alias ? collection.icons[alias.parent] : undefined;
+	if (!alias || !parent) throw new Error(`Missing bundled icon: ${name}`);
+	const { parent: _parent, ...aliasProperties } = alias;
+	return {
+		...parent,
+		...aliasProperties,
+		width: parent.width ?? collection.width,
+		height: parent.height ?? collection.height,
+	};
+}
+
+const lightDarkIcons = {
+	light: offlineIcon(materialSymbolIcons, "wb-sunny-outline-rounded"),
+	dark: offlineIcon(materialSymbolIcons, "dark-mode-outline-rounded"),
+	auto: offlineIcon(materialSymbolIcons, "radio-button-partial-outline"),
+};
+const searchIcons = {
+	search: offlineIcon(materialSymbolIcons, "search"),
+	result: offlineIcon(fa6SolidIcons, "chevron-right"),
+};
+const displaySettingsIcons = {
+	reset: offlineIcon(fa6SolidIcons, "arrow-rotate-left"),
+};
 
 let links: NavBarLink[] = navBarConfig.links.map(
 	(item: NavBarLink | LinkPreset): NavBarLink => {
@@ -26,7 +63,7 @@ let links: NavBarLink[] = navBarConfig.links.map(
         className,
         "card-base !overflow-visible max-w-[var(--page-width)] h-[4.5rem] !rounded-t-none mx-auto flex items-center justify-between px-4"]}>
         <a href={url('/')} class="btn-plain scale-animation rounded-lg h-[3.25rem] px-5 font-bold active:scale-95">
-            <div class="flex flex-row text-[var(--primary)] items-center text-md">
+            <div class="flex flex-row text-black/75 dark:text-white/85 items-center text-md">
                 <Icon name="material-symbols:home-outline-rounded" class="text-[1.75rem] mb-1 mr-2" />
                 {siteConfig.title}
             </div>
@@ -45,19 +82,19 @@ let links: NavBarLink[] = navBarConfig.links.map(
         </div>
         <div class="flex">
             <!--<SearchPanel client:load>-->
-            <Search client:only="svelte"></Search>
+            <Search icons={searchIcons} client:only="svelte"></Search>
             {!siteConfig.themeColor.fixed && (
                     <button aria-label="Display Settings" class="btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90" id="display-settings-switch">
                         <Icon name="material-symbols:palette-outline" class="text-[1.25rem]"></Icon>
                     </button>
             )}
-            <LightDarkSwitch client:only="svelte"></LightDarkSwitch>
+            <LightDarkSwitch icons={lightDarkIcons} client:only="svelte"></LightDarkSwitch>
             <button aria-label="Menu" name="Nav Menu" class="btn-plain scale-animation rounded-lg w-11 h-11 active:scale-90 md:!hidden" id="nav-menu-switch">
                 <Icon name="material-symbols:menu-rounded" class="text-[1.25rem]"></Icon>
             </button>
         </div>
         <NavMenuPanel links={links}></NavMenuPanel>
-        <DisplaySettings client:only="svelte"></DisplaySettings>
+        <DisplaySettings icons={displaySettingsIcons} client:only="svelte"></DisplaySettings>
     </div>
 </div>
 
@@ -107,11 +144,6 @@ loadButtonScript();
 {import.meta.env.PROD && <script is:inline define:vars={{scriptUrl: url('/pagefind/pagefind.js')}}>
 async function loadPagefind() {
     try {
-        const response = await fetch(scriptUrl, { method: 'HEAD' });
-        if (!response.ok) {
-            throw new Error(`Pagefind script not found: ${response.status}`);
-        }
-
         const pagefind = await import(scriptUrl);
 
         await pagefind.options({
