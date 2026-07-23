@@ -2,6 +2,9 @@
   "name": "fuwari",
   "type": "module",
   "version": "0.0.1",
+  "engines": {
+    "node": ">=24 <25"
+  },
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -12,7 +15,9 @@
     "type-check": "tsc --noEmit --isolatedDeclarations",
     "new-post": "node scripts/new-post.js",
     "format": "biome format --write ./src",
-    "lint": "biome check --write ./src",
+    "lint": "biome check ./src",
+    "lint:ci": "biome ci ./src --reporter=github",
+    "lint:fix": "biome check --write ./src",
     "preinstall": "npx only-allow pnpm"
   },
   "dependencies": {

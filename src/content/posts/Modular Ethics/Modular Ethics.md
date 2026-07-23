@@ -3,7 +3,7 @@ title: "Modular Moral Reasoning"
 subtitle: Turn philosophy into math, then test it, compare it & explain it.
 published: 2025-10-01
 description: Building a transparent engine where ethical theories become modular programs evaluated on shared scenarios.
-image: "./Modular Ethics.jpg"
+image: "./Modular Ethics.png"
 tags: [Philosophy, Ethics, Mathematics, AI, Moral-Uncertainty]
 category: Modern Philosophy
 draft: false
