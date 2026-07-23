@@ -61,11 +61,17 @@ git push --set-upstream origin codex/fuwari-sync-YYYY-MM-DD
 
 Before merging the pull request, review every upstream commit and file change. Update the pinned reviewed-head value in this document only after that review succeeds.
 
-## Known non-gating upstream check
+## Astro checking
 
-The inherited `pnpm type-check` command runs TypeScript with `--isolatedDeclarations` even though this site does not emit a declaration package. At the reviewed upstream baseline and after the local compatibility work, it exits with 11 `TS9007`, `TS9010`, and `TS9013` annotation-inference diagnostics across the existing constants, content schema, RSS route, plugins, and utilities.
+The imported template's standalone declaration check was incompatible with the
+site and was retired during the reviewed Astro 7 migration. Both `pnpm check`
+and `pnpm type-check` now run `astro check`; `pnpm type-check` is a required CI
+and release gate. Upstream updates must preserve that contract unless a
+separate reviewed change documents and validates a supported replacement.
 
-This command is retained to make the upstream issue visible, but it is not a migration gate. The required gates are `pnpm check` (`astro check`), `pnpm test:archive`, `pnpm lint:ci`, `pnpm build`, `pnpm archive:verify` when a manifest exists, and `pnpm verify:site`. Publication additionally requires `pnpm verify:release`. Do not report the standalone declaration check as passing unless its upstream contract is deliberately repaired in a separately reviewed change.
+The other required gates are `pnpm test:archive`, `pnpm lint:ci`, `pnpm build`,
+`pnpm archive:verify` when a manifest exists, and `pnpm verify:site`.
+Publication additionally requires `pnpm verify:release`.
 
 ## Prohibited shortcuts
 
