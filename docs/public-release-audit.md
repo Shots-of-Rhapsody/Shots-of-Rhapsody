@@ -46,14 +46,15 @@ their original hero images remain All Rights Reserved.
   private and requires an explicit history-remediation decision.
 - Review-only findings, including email-address locations, must be classified
   as public project data or removed before this report can be marked passed.
-- The current preliminary metadata scan has 138 redacted owner-review
-  findings. One unapproved project name appears in 118 author/committer roles
-  across 63 commits; its associated email metadata is GitHub noreply. A
-  separate non-GitHub-noreply `Signed-off-by` identity appears in 20 commit
-  messages. Both values are deliberately omitted. Public disclosure or history
-  remediation requires explicit owner decisions. Commit-message identity
-  exceptions must be exact-object scoped; no global message-email exception is
-  permitted.
+- The preliminary metadata scan has two redacted owner-review
+  classifications. One unapproved project name appears in author/committer
+  roles; its associated email metadata is GitHub noreply. A separate
+  non-GitHub-noreply `Signed-off-by` identity currently appears in 20 commit
+  messages. Both values are deliberately omitted. The exact finding count is
+  candidate-dependent and is emitted by the audit. Public disclosure or
+  history remediation requires explicit owner decisions. Commit-message
+  identity exceptions must be exact-object scoped; no global message-email
+  exception is permitted.
 
 The final completed report will record tool versions, commands, checksums,
 audited refs, accepted disclosures, and the audited tree SHA without including
