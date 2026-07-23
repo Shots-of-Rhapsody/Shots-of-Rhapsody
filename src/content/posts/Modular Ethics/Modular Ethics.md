@@ -6,7 +6,7 @@ description: Building a transparent engine where ethical theories become modular
 image: "./Modular Ethics.png"
 tags: [Philosophy, Ethics, Mathematics, AI, Moral-Uncertainty]
 category: Modern Philosophy
-draft: false
+draft: true
 ---
 
 # Facts live in causal models. Values live in normative modules. Disagreement is handled by explicit moral uncertainty. No hand-waving.

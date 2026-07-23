@@ -1,116 +1,67 @@
-# Shots of Rhapsody — A Journal of Fiction, Philosophy & the Modern Mind
+# Shots of Rhapsody
 
-> *Where logic meets lyric & every equation hides a story.*
+> Fiction, poetry, and reflection preserved with source-level care.
 
----
+Shots of Rhapsody is Tai Song's independent writing archive. The first public collection contains exactly eleven articles reconstructed from the author's Proton Docs HTML exports and their original PNG hero images.
 
-## Overview
+The site presents creative work without silently editing it. Titles, subtitles, summaries, body text, paragraph order, emphasis, punctuation, Unicode, captions, and image bytes are covered by deterministic provenance checks. Automated checks do not replace the required human side-by-side review.
 
-**Shots of Rhapsody** is both a **fictional anthology** & a **philosophical lab notebook** , a digital agora where **mathematics**, **science**, & **modern philosophy** meet the art of storytelling.  
-It explores how reason & imagination coexist in an age of algorithms, uncertainty & accelerating change.
+## Published archive
 
-This site is not a traditional blog.  
-It’s an **experiment in synthesis**: fiction & nonfiction, theory & metaphor, data & desire, all treated as different dialects of the same search for understanding.
+The launch collection contains eleven works by Tai Song across fiction, poetry, and personal reflection. The site provides a factual [Tai Song author index](https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/authors/tai-song/) generated from the same fixed manifest that controls release verification.
 
----
+Four repository-only posts remain drafts and are intentionally excluded from production routes, feeds, archives, search, and sitemaps. They are not part of the eleven-article archive.
+
+An unreferenced legacy podcast bundle is retained under `legacy/podcast/` for repository history and intentionally excluded from Astro's content tree and every production artifact.
 
 ## Mission
 
-Ethical debates, scientific revolutions & creative visions often share a common flaw:  
-they remain trapped in rhetoric.  
+Shots of Rhapsody gives imaginative and reflective writing a durable home while keeping the author's voice intact. The project values:
 
-This project aims to **formalize reflection** , not by sterilizing emotion, but by giving complex thought a **transparent grammar**.
+- faithful preservation over editorial normalization;
+- clear provenance without exposing private author-workspace data;
+- accessible presentation of images, captions, and article structure;
+- explicit boundaries between open-source code and copyrighted creative work;
+- reviewable, reproducible publishing changes.
 
-### We seek to:
+## Integrity workflow
 
-- **Bridge** philosophy with computation, art with logic & story with model.  
-- **Translate** abstract ethics into systems that can be tested, visualized & challenged.  
-- **Explore** how narrative & mathematics can both express truth, one in metaphor, the other in measure.  
-- **Engage** readers through vivid design, interactive snippets & experimental prose.
+The archive importer is local-only. Raw creator exports stay under the ignored `.proton-import/` directory; committed outputs contain sanitized provenance, generated Markdown, and exact original image bytes.
 
----
+The workflow and acceptance criteria are documented in:
 
-## Structure
+- [Tai Song archive import runbook](docs/tai-song-import.md)
+- [Archive provenance](provenance/tai-song/README.md)
+- [Human-review checklist](provenance/tai-song/review-checklist.md)
 
-| Section | Description |
-|----------|--------------|
-| **Essays** | Nonfiction reflections on philosophy, science, & the evolving logic of civilization. |
-| **Stories** | Fiction that embodies those reflections, philosophical narratives, modern myths, speculative parables. |
-| **Build Logs** | Research notes, models & code explorations showing the formal side of ethical reasoning. |
-| **Dialogues** | Conversations between disciplines, a mathematician arguing with a monk, an algorithm debating a poet. |
+The strict release verifier reconciles the eleven manifest entries with built routes, RSS, archive data, Pagefind search input, sitemap entries, metadata, JSON-LD, article bodies, and hero images. Release remains blocked until all eleven structured human-review signoffs are complete.
 
-Each piece exists somewhere between fiction & analysis, blending storytelling with rational structure.
+## Development
 
----
+The project uses Astro and the Fuwari theme foundation. Use the pinned package manager and lockfile:
 
-## Aesthetic & Tone
+```shell
+pnpm install --frozen-lockfile
+pnpm check
+pnpm test:archive
+pnpm build
+pnpm verify:site
+pnpm verify:release
+```
 
-Designed for **clarity, rhythm, and resonance**:
-- Minimalist layout  
-- Smooth transitions between visual & textual modes  
-- Code, callouts & diagrams used as **aesthetic devices**, not just utilities  
-- A color palette anchored in **dark jade**, symbolizing balance & thoughtfulness  
+`pnpm verify:site` validates the complete built archive while permitting the exact empty human-review template and reporting it as pending. `pnpm verify:release` is the publication gate: it fails closed until all eleven structured human-review signoffs are genuine and complete.
 
-Even mathematical expressions here have emotional gravity:
+Fuwari's pinned lineage and review-only update procedure are documented in [Fuwari upstream synchronization](docs/upstream-sync.md). Upstream is fetch-only; project changes are pushed only to the Shots of Rhapsody repository.
 
-$$
-\text{maximize truth while minimizing harm}
-$$
+## Repository
 
----
+- [Shots-of-Rhapsody/Shots-of-Rhapsody](https://github.com/Shots-of-Rhapsody/Shots-of-Rhapsody)
+- Issues and changes should be proposed through that repository's normal review process.
 
-## Core Concepts
+## Rights and attribution
 
-1. **Formal Philosophy**  
-   Turning ethical theories into *mathematical evaluators* that can reason about value, uncertainty & duty.
+The root [MIT License](LICENSE) applies to repository software and the Fuwari-derived theme code. It does **not** license the articles, hero images, project branding, or other creative media.
 
-2. **Computational Humanism**  
-   Viewing technology as a moral medium, an extension of human reasoning, not its replacement.
+The eleven imported Tai Song articles and their author-controlled hero images are **All Rights Reserved**. Historical Vocal links record publication history only. Repository-only draft posts retain their separately documented fallback status until reviewed.
 
-3. **Narrative Logic**  
-   Using story as a testing ground for theories: each fiction acts as an allegorical simulation of an ethical model.
-
-4. **Transparency of Thought**  
-   Every idea is written to be auditable, you should be able to *see how it works* as much as *feel why it matters*.
-
----
-
-## Example Post Themes
-
-- *When Morality Meets Math:* Encoding ethics in algorithms  
-- *The Aesthetics of Logic:* Why symmetry pleases both the eye & the intellect  
-- *Entropy & Meaning:* The mathematics of impermanence  
-- *Fiction as Forecast:* How storytelling anticipates technology  
-- *Consciousness as Computation:* Rethinking the “ghost in the machine”  
-
----
-
-## Contributing
-
-This is an open intellectual commons.  
-You can contribute essays, short stories, or even functional code snippets that explore:
-
-- Philosophy of science & ethics  
-- AI & moral computation  
-- Cognitive models & symbolic reasoning  
-- Artistic or speculative fiction on modern dilemmas  
-
-If your work questions, formalizes, or imagines, it belongs here.
-
----
-
-## Maintenance
-
-This site began from the Fuwari template. Its pinned lineage and review-only update procedure are documented in [Fuwari upstream synchronization](docs/upstream-sync.md).
-
-The Tai Song archive uses the author's Proton Docs HTML exports and original PNGs as its authoritative, local-only inputs. The deterministic import and verification workflow is documented in the [Tai Song archive import runbook](docs/tai-song-import.md). Raw creator exports stay ignored; only sanitized provenance and verified outputs are committed.
-
----
-
-## License
-
-Repository software remains under the root [MIT License](LICENSE). Writing and media use scoped, per-post rights; see [Content rights and licensing](CONTENT-LICENSE.md). Imported Tai Song articles and author-controlled hero images are All Rights Reserved, while existing posts without an explicit per-post license retain the site's CC BY-NC-SA 4.0 fallback pending separate review.
-
----
-
-### *“The universe is not made of atoms; it’s made of arguments, stitched into story.”*
+See [Content rights and licensing](CONTENT-LICENSE.md) and [Third-party notices](THIRD-PARTY-NOTICES.md) for the complete scope.

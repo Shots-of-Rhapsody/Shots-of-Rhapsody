@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shots-of-rhapsody.github.io/schemas/review-signoff-v1.json",
+  "title": "ReviewSignoffV1",
+  "description": "Human text and presentation review records for the fixed Tai Song archive.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "articles"],
+  "properties": {
+    "version": { "const": 1 },
+    "articles": {
+      "type": "array",
+      "maxItems": 11,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "slug",
+          "snapshotSha256",
+          "markdownSha256",
+          "imageSha256",
+          "reviewedCommit",
+          "reviewer",
+          "reviewedAt",
+          "textAccuracy",
+          "presentation",
+          "notes"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "snapshotSha256": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "markdownSha256": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "imageSha256": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "reviewedCommit": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "reviewer": { "const": "Tai Song" },
+          "reviewedAt": { "type": "string", "format": "date-time" },
+          "textAccuracy": { "const": "passed" },
+          "presentation": { "const": "passed" },
+          "notes": { "type": "string" }
+        }
+      }
+    }
+  }
+}

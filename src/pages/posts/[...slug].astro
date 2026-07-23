@@ -12,6 +12,7 @@ import {
 	getDir,
 	getPostUrlBySlug,
 	getSiteRootUrl,
+	url,
 } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
 import ImageWrapper from "../../components/misc/ImageWrapper.astro";
@@ -42,6 +43,10 @@ const coverUrl = entry.data.image
 	? await getAbsoluteImageUrl(entry.data.image, postBasePath, siteUrl)
 	: undefined;
 const isArchivePost = Boolean(entry.data.provenance);
+const authorUrl =
+	isArchivePost && author === "Tai Song"
+		? new URL(url("/authors/tai-song/"), siteUrl).toString()
+		: undefined;
 const coverAlt = isArchivePost
 	? (entry.data.imageAlt ?? "")
 	: (entry.data.imageAlt ?? `Cover image for “${entry.data.title}”`);
@@ -57,6 +62,10 @@ const displayedMinutes =
 const showLicense = Boolean(entry.data.license) || licenseConfig.enable;
 const effectiveLicense =
 	entry.data.license ?? (licenseConfig.enable ? licenseConfig : undefined);
+const coverCaptionId =
+	isArchivePost && entry.data.imageCaption
+		? `hero-caption-${entry.slug}`
+		: undefined;
 
 const jsonLd = {
 	"@context": "https://schema.org",
@@ -69,6 +78,8 @@ const jsonLd = {
 	author: {
 		"@type": "Person",
 		name: author,
+		url: authorUrl,
+		"@id": authorUrl ? `${authorUrl}#person` : undefined,
 	},
 	publisher: {
 		"@type": "Organization",
@@ -155,7 +166,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
                 ">{entry.data.title}</h1>
 				{entry.data.subtitle && <p data-archive-field={isArchivePost ? "subtitle" : undefined} class="transition text-lg md:text-xl text-black/65 dark:text-white/65 mb-3">{entry.data.subtitle}</p>}
 				<div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-black/50 dark:text-white/50 mb-4" data-pagefind-ignore>
-					<span data-archive-field={isArchivePost ? "author" : undefined}>By {author}</span>
+					<span data-archive-field={isArchivePost ? "author" : undefined}>By {authorUrl ? <a href={url("/authors/tai-song/")} class="link text-[var(--primary)]">{author}</a> : author}</span>
 					{entry.data.publication && <span aria-hidden="true">·</span>}
 					{entry.data.publication && <a data-archive-publication-url href={entry.data.publication.url} target="_blank" rel="noopener noreferrer" class="link text-[var(--primary)]">Originally published on {entry.data.publication.platform}</a>}
 				</div>
@@ -181,11 +192,12 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 					src={entry.data.image}
 					basePath={postBasePath}
 					alt={coverAlt}
+					ariaDescribedby={coverCaptionId}
 					fit="contain"
 					loading="eager"
 					class="rounded-xl banner-container bg-black/5 dark:bg-white/5"
 				/>
-				{entry.data.imageCaption && <figcaption data-archive-field={isArchivePost ? "image-caption" : undefined} class="mt-2 px-2 text-sm text-center text-black/50 dark:text-white/50">{entry.data.imageCaption}</figcaption>}
+				{entry.data.imageCaption && <figcaption id={coverCaptionId} data-archive-field={isArchivePost ? "image-caption" : undefined} class="mt-2 px-2 text-sm text-center text-black/50 dark:text-white/50">{entry.data.imageCaption}</figcaption>}
 			</figure>}
 
 
@@ -206,25 +218,25 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
     </div>
 
     <div class="flex flex-col md:flex-row justify-between mb-4 gap-4 overflow-hidden w-full">
-        <a href={entry.data.nextSlug ? getPostUrlBySlug(entry.data.nextSlug) : "#"}
-           class:list={["w-full font-bold overflow-hidden active:scale-95", {"pointer-events-none": !entry.data.nextSlug}]}>
-            {entry.data.nextSlug && <div class="btn-card rounded-2xl w-full h-[3.75rem] max-w-full px-4 flex items-center !justify-start gap-4" >
+        {entry.data.nextSlug ? <a data-post-navigation="next" href={getPostUrlBySlug(entry.data.nextSlug)}
+           class="w-full font-bold overflow-hidden active:scale-95">
+            <div class="btn-card rounded-2xl w-full h-[3.75rem] max-w-full px-4 flex items-center !justify-start gap-4" >
                 <Icon name="material-symbols:chevron-left-rounded" class="text-[2rem] text-[var(--primary)]" />
                 <div class="overflow-hidden transition overflow-ellipsis whitespace-nowrap max-w-[calc(100%_-_3rem)] text-black/75 dark:text-white/75">
                     {entry.data.nextTitle}
                 </div>
-            </div>}
-        </a>
+            </div>
+        </a> : <span aria-hidden="true" class="w-full"></span>}
 
-        <a href={entry.data.prevSlug ? getPostUrlBySlug(entry.data.prevSlug) : "#"}
-           class:list={["w-full font-bold overflow-hidden active:scale-95", {"pointer-events-none": !entry.data.prevSlug}]}>
-            {entry.data.prevSlug && <div class="btn-card rounded-2xl w-full h-[3.75rem] max-w-full px-4 flex items-center !justify-end gap-4">
+        {entry.data.prevSlug ? <a data-post-navigation="previous" href={getPostUrlBySlug(entry.data.prevSlug)}
+           class="w-full font-bold overflow-hidden active:scale-95">
+            <div class="btn-card rounded-2xl w-full h-[3.75rem] max-w-full px-4 flex items-center !justify-end gap-4">
                 <div class="overflow-hidden transition overflow-ellipsis whitespace-nowrap max-w-[calc(100%_-_3rem)] text-black/75 dark:text-white/75">
                     {entry.data.prevTitle}
                 </div>
                 <Icon name="material-symbols:chevron-right-rounded" class="text-[2rem] text-[var(--primary)]" />
-            </div>}
-        </a>
+            </div>
+        </a> : <span aria-hidden="true" class="w-full"></span>}
     </div>
 
 </MainGridLayout>

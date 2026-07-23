@@ -2,17 +2,43 @@ import { access, readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
+import { gunzipSync } from "node:zlib";
 import { parse, parseFragment } from "parse5";
 import { inspectPng, sha256 } from "./archive/lib/integrity.js";
 import { bodyTextSha256, renderBodyHtml } from "./archive/lib/render.js";
+import { evaluateReviewSignoffs } from "./archive/lib/review-signoff.js";
 
 const DEFAULT_DIST = "dist";
 const DEFAULT_SITE = "https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/";
+const EXPECTED_ARCHIVE_COUNT = 11;
+const REQUIRED_NON_POST_ROUTES = [
+	"",
+	"2/",
+	"about/",
+	"archive/",
+	"authors/tai-song/",
+	"content-license/",
+];
+const EXPECTED_DRAFT_POST_PATHS = [
+	"src/content/posts/guide/index.md",
+	"src/content/posts/video.md",
+	"src/content/posts/Modular Ethics/Modular Ethics.md",
+	"src/content/posts/The Last Cup/The Last Cup.md",
+];
+const AUDIO_ARTIFACT_PATTERN = /\.(?:aac|flac|m4a|mp3|ogg|opus|wav)$/iu;
 
-function parseArguments(argv) {
-	const options = { dist: DEFAULT_DIST, site: DEFAULT_SITE };
+export function parseArguments(argv) {
+	const options = {
+		dist: DEFAULT_DIST,
+		site: DEFAULT_SITE,
+		requireSignoff: false,
+	};
 	for (let index = 0; index < argv.length; index += 1) {
 		const argument = argv[index];
+		if (argument === "--require-signoff") {
+			options.requireSignoff = true;
+			continue;
+		}
 		if (argument === "--dist" || argument === "--site") {
 			const value = argv[index + 1];
 			if (!value) throw new Error(`${argument} requires a value`);
@@ -199,6 +225,70 @@ function tags(html, name) {
 	return [...html.matchAll(new RegExp(`<${name}\\b[^>]*>`, "gi"))].map(
 		(match) => ({ raw: match[0], attributes: attributes(match[0]) }),
 	);
+}
+
+function normalizedPath(value) {
+	return value.replace(/\\/gu, "/");
+}
+
+function sortedUnique(values) {
+	return [...new Set(values)].sort((left, right) => left.localeCompare(right));
+}
+
+function compareExactValues(actualValues, expectedValues, label, failures) {
+	const actual = sortedUnique(actualValues);
+	const expected = sortedUnique(expectedValues);
+	if (actualValues.length !== actual.length) {
+		failures.push(`${label} contains duplicate entries`);
+	}
+	for (const value of expected) {
+		if (!actual.includes(value)) failures.push(`${label} is missing ${value}`);
+	}
+	for (const value of actual) {
+		if (!expected.includes(value))
+			failures.push(`${label} unexpectedly includes ${value}`);
+	}
+}
+
+function manifestPostUrls(manifest, site) {
+	return manifest.articles.map((article) =>
+		new URL(`posts/${article.slug}/`, site).toString(),
+	);
+}
+
+export function frontmatterDraftValue(markdown) {
+	const match = String(markdown).match(
+		/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/u,
+	);
+	if (!match) return undefined;
+	const values = [...match[1].matchAll(/^draft:\s*(true|false)\s*$/gmu)];
+	if (values.length !== 1) return undefined;
+	return values[0][1] === "true";
+}
+
+export function markedAttributeValues(html, tagName, attributeName) {
+	return tags(html, tagName)
+		.map((tag) => tag.attributes[attributeName])
+		.filter((value) => typeof value === "string" && value.length > 0);
+}
+
+export function validateRobotsText(text, siteValue = DEFAULT_SITE) {
+	const site = new URL(siteValue);
+	if (!site.pathname.endsWith("/")) site.pathname += "/";
+	const expectedSitemap = new URL("sitemap-index.xml", site).toString();
+	const failures = [];
+	const normalized = String(text).replace(/\r\n?/gu, "\n").trim();
+	const expected = `User-agent: *\nAllow: /\n\nSitemap: ${expectedSitemap}`;
+	if (normalized !== expected) {
+		failures.push("robots.txt does not match the base-aware launch policy");
+	}
+	if (/^\s*Disallow:/gimu.test(normalized)) {
+		failures.push("robots.txt must not disallow public site resources");
+	}
+	if (/_astro/iu.test(normalized)) {
+		failures.push("robots.txt must not block Astro assets");
+	}
+	return failures;
 }
 
 function expectedPageUrl(filePath, distRoot, site) {
@@ -516,16 +606,19 @@ async function verifyRss(distRoot, site, failures, postPages) {
 	}
 }
 
-async function verifySitemap(distRoot, site, failures) {
+async function verifySitemap(distRoot, site, expectedPageUrls, failures) {
 	const indexPath = path.join(distRoot, "sitemap-index.xml");
 	if (!(await isFile(indexPath))) {
 		failures.push("sitemap-index.xml is missing");
 		return;
 	}
 	const indexXml = await readFile(indexPath, "utf8");
-	for (const match of indexXml.matchAll(/<loc>([^<]+)<\/loc>/g)) {
+	const indexLocations = [...indexXml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(
+		(match) => decodeHtml(match[1]),
+	);
+	for (const location of indexLocations) {
 		await resolveBuiltUrl(
-			decodeHtml(match[1]),
+			location,
 			site,
 			distRoot,
 			site,
@@ -538,11 +631,23 @@ async function verifySitemap(distRoot, site, failures) {
 	);
 	if (sitemapFiles.length === 0)
 		failures.push("no sitemap content file was built");
+	const expectedIndexLocations = sitemapFiles.map((file) =>
+		new URL(path.basename(file), site).toString(),
+	);
+	compareExactValues(
+		indexLocations,
+		expectedIndexLocations,
+		"sitemap index",
+		failures,
+	);
+	const pageLocations = [];
 	for (const file of sitemapFiles) {
 		const xml = await readFile(file, "utf8");
 		for (const match of xml.matchAll(/<loc>([^<]+)<\/loc>/g)) {
+			const location = decodeHtml(match[1]);
+			pageLocations.push(location);
 			await resolveBuiltUrl(
-				decodeHtml(match[1]),
+				location,
 				site,
 				distRoot,
 				site,
@@ -551,6 +656,12 @@ async function verifySitemap(distRoot, site, failures) {
 			);
 		}
 	}
+	compareExactValues(
+		pageLocations,
+		expectedPageUrls,
+		"sitemap pages",
+		failures,
+	);
 }
 
 function sameStringArray(left, right) {
@@ -562,21 +673,32 @@ function sameStringArray(left, right) {
 	);
 }
 
-async function verifyArchiveManifest(repoRoot, distRoot, site, failures) {
+async function verifyArchiveManifest(
+	repoRoot,
+	distRoot,
+	site,
+	failures,
+	{ requireSignoff, notices },
+) {
 	const manifestPath = path.join(
 		repoRoot,
 		"provenance",
 		"tai-song",
 		"manifest.json",
 	);
-	if (!(await isFile(manifestPath))) return;
+	if (!(await isFile(manifestPath))) {
+		failures.push("Author-master manifest is missing");
+		return undefined;
+	}
 
 	let manifest;
+	let manifestBytes;
 	try {
-		manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+		manifestBytes = await readFile(manifestPath);
+		manifest = JSON.parse(manifestBytes.toString("utf8"));
 	} catch (error) {
 		failures.push(`Author-master manifest is invalid JSON (${error.message})`);
-		return;
+		return undefined;
 	}
 	if (hasPrivateProtonReference(manifest)) {
 		failures.push("Author-master manifest contains a private Proton URL or ID");
@@ -592,7 +714,45 @@ async function verifyArchiveManifest(repoRoot, distRoot, site, failures) {
 	}
 	if (!Array.isArray(manifest.articles)) {
 		failures.push("Author-master manifest has no articles array");
-		return;
+		return undefined;
+	}
+	if (manifest.articles.length !== EXPECTED_ARCHIVE_COUNT) {
+		failures.push(
+			`Author-master manifest must contain exactly ${EXPECTED_ARCHIVE_COUNT} articles`,
+		);
+	}
+
+	const reviewSignoffPath = path.join(
+		repoRoot,
+		"provenance",
+		"tai-song",
+		"review-signoffs.json",
+	);
+	if (!(await isFile(reviewSignoffPath))) {
+		failures.push("Human review signoff record is missing");
+	} else {
+		try {
+			const reviewRecord = JSON.parse(
+				await readFile(reviewSignoffPath, "utf8"),
+			);
+			const review = evaluateReviewSignoffs({
+				record: reviewRecord,
+				manifest,
+				requireSignoff,
+			});
+			for (const failure of review.failures) {
+				failures.push(`Human review: ${failure}`);
+			}
+			if (review.status === "pending") {
+				notices.push(
+					"Human review signoff is pending; run pnpm verify:release to enforce all 11 signoffs",
+				);
+			}
+		} catch (error) {
+			failures.push(
+				`Human review signoff record is invalid JSON (${error.message})`,
+			);
+		}
 	}
 	const inventoryPath = resolveManifestPath(
 		repoRoot,
@@ -867,6 +1027,7 @@ async function verifyArchiveManifest(repoRoot, distRoot, site, failures) {
 		const expectedAlt = post.imageAlt ?? "";
 		const expectedImageDescription = post.imageAlt ?? undefined;
 		const expectedCaption = post.imageCaption || undefined;
+		const expectedAuthorUrl = new URL("authors/tai-song/", site).toString();
 
 		const pagePath = path.join(distRoot, "posts", slug, "index.html");
 		if (!(await isFile(pagePath))) {
@@ -911,6 +1072,19 @@ async function verifyArchiveManifest(repoRoot, distRoot, site, failures) {
 		]) {
 			if (markedField(html, field) !== expected)
 				failures.push(`${label}: visible ${field} differs from snapshot`);
+		}
+		const authorField = html.match(
+			/<span\b[^>]*data-archive-field=["']author["'][^>]*>([\s\S]*?)<\/span>/iu,
+		);
+		const authorLinks = authorField ? tags(authorField[1], "a") : [];
+		if (
+			authorLinks.length !== 1 ||
+			new URL(authorLinks[0].attributes.href, site).toString() !==
+				expectedAuthorUrl
+		) {
+			failures.push(
+				`${label}: visible author link differs from the local author page`,
+			);
 		}
 		const publicationLinks = tags(html, "a").filter((tag) =>
 			Object.hasOwn(tag.attributes, "data-archive-publication-url"),
@@ -964,6 +1138,8 @@ async function verifyArchiveManifest(repoRoot, distRoot, site, failures) {
 				["alternativeHeadline", jsonLd.alternativeHeadline, post.subtitle],
 				["description", jsonLd.description, post.description],
 				["author", jsonLd.author?.name, post.author],
+				["author URL", jsonLd.author?.url, expectedAuthorUrl],
+				["author ID", jsonLd.author?.["@id"], `${expectedAuthorUrl}#person`],
 				["datePublished", jsonLd.datePublished, expectedPublished],
 				["dateModified", jsonLd.dateModified, expectedModified],
 				["url", jsonLd.url, expectedUrl],
@@ -1014,6 +1190,34 @@ async function verifyArchiveManifest(repoRoot, distRoot, site, failures) {
 			heroImages[0].attributes.alt !== expectedAlt
 		) {
 			failures.push(`${label}: visible hero or its alt text differs`);
+		} else {
+			const hero = heroImages[0];
+			const captionTags = heroMatch
+				? tags(heroMatch[1], "figcaption").filter(
+						(tag) => tag.attributes["data-archive-field"] === "image-caption",
+					)
+				: [];
+			const captionId = captionTags[0]?.attributes.id;
+			if (
+				captionTags.length !== 1 ||
+				!captionId ||
+				hero.attributes["aria-describedby"] !== captionId
+			) {
+				failures.push(
+					`${label}: hero must reference its exact visible caption`,
+				);
+			}
+			const imageClasses = new Set((hero.attributes.class ?? "").split(/\s+/u));
+			if (
+				!imageClasses.has("object-contain") ||
+				imageClasses.has("object-cover") ||
+				hero.attributes.width !== String(entry.image?.width) ||
+				hero.attributes.height !== String(entry.image?.height)
+			) {
+				failures.push(
+					`${label}: visible hero does not preserve contain fit and source dimensions`,
+				);
+			}
 		}
 
 		const matchingRssItems = rssItems.filter(
@@ -1104,12 +1308,409 @@ async function verifyArchiveManifest(repoRoot, distRoot, site, failures) {
 			);
 		}
 	}
+	return manifest;
+}
+
+async function verifyRobots(distRoot, site, failures) {
+	const robotsPath = path.join(distRoot, "robots.txt");
+	if (!(await isFile(robotsPath))) {
+		failures.push("robots.txt is missing");
+		return;
+	}
+	for (const failure of validateRobotsText(
+		await readFile(robotsPath, "utf8"),
+		site.toString(),
+	)) {
+		failures.push(failure);
+	}
+}
+
+async function verifyDraftSources(repoRoot, manifest, failures) {
+	const postsRoot = path.join(repoRoot, "src", "content", "posts");
+	const markdownFiles = (await walk(postsRoot)).filter((file) =>
+		file.toLowerCase().endsWith(".md"),
+	);
+	const draftPaths = [];
+	for (const file of markdownFiles) {
+		const draft = frontmatterDraftValue(await readFile(file, "utf8"));
+		if (draft === true) {
+			draftPaths.push(normalizedPath(path.relative(repoRoot, file)));
+		}
+	}
+	compareExactValues(
+		draftPaths,
+		EXPECTED_DRAFT_POST_PATHS,
+		"draft source allowlist",
+		failures,
+	);
+	for (const article of manifest.articles) {
+		const markdownPath = resolveManifestPath(
+			repoRoot,
+			article.paths?.markdown,
+			`Author-master ${article.slug} Markdown`,
+			failures,
+		);
+		if (
+			markdownPath &&
+			frontmatterDraftValue(await readFile(markdownPath, "utf8")) === true
+		) {
+			failures.push(`Author-master ${article.slug} must not be a draft`);
+		}
+	}
+}
+
+async function verifyLaunchRoutes(
+	distRoot,
+	htmlFiles,
+	postPages,
+	manifest,
+	site,
+	failures,
+) {
+	const expectedPostUrls = manifestPostUrls(manifest, site);
+	compareExactValues(
+		postPages,
+		expectedPostUrls,
+		"built post routes",
+		failures,
+	);
+	const expectedHtmlUrls = [
+		...REQUIRED_NON_POST_ROUTES.map((route) => new URL(route, site).toString()),
+		...expectedPostUrls,
+	];
+	const actualHtmlUrls = htmlFiles
+		.filter(
+			(file) =>
+				!normalizedPath(path.relative(distRoot, file)).startsWith("pagefind/"),
+		)
+		.map((file) => expectedPageUrl(file, distRoot, site));
+	compareExactValues(
+		actualHtmlUrls,
+		expectedHtmlUrls,
+		"built HTML routes",
+		failures,
+	);
+	return expectedHtmlUrls;
+}
+
+async function verifyLaunchRss(distRoot, manifest, site, failures) {
+	const rssPath = path.join(distRoot, "rss.xml");
+	if (!(await isFile(rssPath))) return 0;
+	const xml = await readFile(rssPath, "utf8");
+	const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/gu)].map(
+		(match) => match[1],
+	);
+	const links = items
+		.map((item) => xmlElementText(item, "link"))
+		.filter((value) => typeof value === "string");
+	compareExactValues(
+		links,
+		manifestPostUrls(manifest, site),
+		"RSS items",
+		failures,
+	);
+	if (items.length !== EXPECTED_ARCHIVE_COUNT) {
+		failures.push(`RSS must contain exactly ${EXPECTED_ARCHIVE_COUNT} items`);
+	}
+	return items.length;
+}
+
+async function verifyArchiveIndex(distRoot, manifest, site, failures) {
+	const archivePath = path.join(distRoot, "archive", "index.html");
+	if (!(await isFile(archivePath))) {
+		failures.push("archive route is missing");
+		return 0;
+	}
+	const html = await readFile(archivePath, "utf8");
+	const entries = tags(html, "a").filter(
+		(tag) => typeof tag.attributes["data-archive-entry-slug"] === "string",
+	);
+	const slugs = entries.map(
+		(entry) => entry.attributes["data-archive-entry-slug"],
+	);
+	const expectedSlugs = manifest.articles.map((article) => article.slug);
+	compareExactValues(slugs, expectedSlugs, "archive entries", failures);
+	for (const entry of entries) {
+		const expectedHref = new URL(
+			`posts/${entry.attributes["data-archive-entry-slug"]}/`,
+			site,
+		).toString();
+		if (new URL(entry.attributes.href, site).toString() !== expectedHref) {
+			failures.push(
+				`archive entry ${entry.attributes["data-archive-entry-slug"]} has an incorrect link`,
+			);
+		}
+	}
+	const islands = tags(html, "astro-island").filter((tag) =>
+		String(tag.attributes["component-url"] ?? "").includes("ArchivePanel"),
+	);
+	if (islands.length !== 1) {
+		failures.push("archive route must contain exactly one ArchivePanel island");
+	} else {
+		for (const attributeName of [
+			"component-url",
+			"renderer-url",
+			"before-hydration-url",
+		]) {
+			await resolveBuiltUrl(
+				islands[0].attributes[attributeName],
+				new URL("archive/", site),
+				distRoot,
+				site,
+				`archive Astro island ${attributeName}`,
+				failures,
+			);
+		}
+	}
+	return entries.length;
+}
+
+async function readManifestTitles(repoRoot, manifest, failures) {
+	const result = new Map();
+	for (const article of manifest.articles) {
+		const snapshotPath = resolveManifestPath(
+			repoRoot,
+			article.paths?.snapshot,
+			`Author-master ${article.slug} snapshot`,
+			failures,
+		);
+		if (!snapshotPath || !(await isFile(snapshotPath))) continue;
+		try {
+			const snapshot = JSON.parse(await readFile(snapshotPath, "utf8"));
+			result.set(article.slug, snapshot.title);
+		} catch (error) {
+			failures.push(
+				`Author-master ${article.slug} snapshot cannot supply a title (${error.message})`,
+			);
+		}
+	}
+	return result;
+}
+
+async function verifyAuthorPage(repoRoot, distRoot, manifest, site, failures) {
+	const authorPath = path.join(distRoot, "authors", "tai-song", "index.html");
+	if (!(await isFile(authorPath))) {
+		failures.push("Tai Song author route is missing");
+		return 0;
+	}
+	const html = await readFile(authorPath, "utf8");
+	const document = parse(html);
+	const authorMarkers = elementsWithAttribute(document, "data-author-archive");
+	if (
+		authorMarkers.length !== 1 ||
+		!authorMarkers[0].attrs?.some(
+			(attribute) =>
+				attribute.name === "data-author-archive" &&
+				attribute.value === "Tai Song",
+		)
+	) {
+		failures.push("Tai Song author page has an invalid archive marker");
+	}
+	const articleNodes = elementsWithAttribute(
+		document,
+		"data-author-article-slug",
+	);
+	const slugs = articleNodes.map(
+		(node) =>
+			node.attrs?.find(
+				(attribute) => attribute.name === "data-author-article-slug",
+			)?.value,
+	);
+	compareExactValues(
+		slugs,
+		manifest.articles.map((article) => article.slug),
+		"Tai Song author works",
+		failures,
+	);
+	const titles = await readManifestTitles(repoRoot, manifest, failures);
+	for (const node of articleNodes) {
+		const slug = node.attrs?.find(
+			(attribute) => attribute.name === "data-author-article-slug",
+		)?.value;
+		const anchors = [];
+		const visit = (candidate) => {
+			if (candidate.tagName === "a") anchors.push(candidate);
+			for (const child of candidate.childNodes ?? []) visit(child);
+		};
+		visit(node);
+		const anchorAttributes = Object.fromEntries(
+			(anchors[0]?.attrs ?? []).map((attribute) => [
+				attribute.name,
+				attribute.value,
+			]),
+		);
+		const anchorText = anchors[0]
+			? archiveBodyStructureFromNodes(anchors[0].childNodes ?? [])
+					.filter((entry) => entry[0] === "text")
+					.map((entry) => entry[1])
+					.join("")
+			: undefined;
+		if (
+			anchors.length !== 1 ||
+			new URL(anchorAttributes.href, site).toString() !==
+				new URL(`posts/${slug}/`, site).toString() ||
+			anchorText !== titles.get(slug)
+		) {
+			failures.push(
+				`Tai Song author work ${slug} has an incorrect link or title`,
+			);
+		}
+	}
+
+	const authorUrl = new URL("authors/tai-song/", site).toString();
+	const jsonLd = extractJsonLd(html, "Tai Song author page", failures);
+	if (jsonLd) {
+		if (
+			jsonLd["@type"] !== "Person" ||
+			jsonLd.name !== "Tai Song" ||
+			jsonLd.url !== authorUrl ||
+			jsonLd["@id"] !== `${authorUrl}#person`
+		) {
+			failures.push("Tai Song author JSON-LD identity is incorrect");
+		}
+		const works = Array.isArray(jsonLd.workExample) ? jsonLd.workExample : [];
+		const actualWorks = works.map((work) => `${work.url}\n${work.name}`);
+		const expectedWorks = manifest.articles.map(
+			(article) =>
+				`${new URL(`posts/${article.slug}/`, site)}\n${titles.get(article.slug)}`,
+		);
+		compareExactValues(
+			actualWorks,
+			expectedWorks,
+			"Tai Song author JSON-LD works",
+			failures,
+		);
+	}
+	return articleNodes.length;
+}
+
+export function decodePagefindFragment(buffer) {
+	const inflated = gunzipSync(buffer);
+	const prefix = Buffer.from("pagefind_dcd", "utf8");
+	if (!inflated.subarray(0, prefix.length).equals(prefix)) {
+		throw new Error("Pagefind fragment has an unknown payload prefix");
+	}
+	return JSON.parse(inflated.subarray(prefix.length).toString("utf8"));
+}
+
+function pagefindResultUrl(rawUrl, site) {
+	if (typeof rawUrl !== "string" || rawUrl.length === 0) return undefined;
+	if (/^https?:\/\//iu.test(rawUrl)) return new URL(rawUrl).toString();
+	const basePath = site.pathname.endsWith("/")
+		? site.pathname
+		: `${site.pathname}/`;
+	if (rawUrl.startsWith(basePath))
+		return new URL(rawUrl, site.origin).toString();
+	return new URL(rawUrl.replace(/^\/+/, ""), site).toString();
+}
+
+async function verifyPagefind(repoRoot, distRoot, manifest, site, failures) {
+	const pagefindRoot = path.join(distRoot, "pagefind");
+	let pagefindFiles;
+	try {
+		pagefindFiles = await walk(pagefindRoot);
+	} catch {
+		failures.push("Pagefind output is missing");
+		return 0;
+	}
+	const relativeFiles = pagefindFiles.map((file) =>
+		normalizedPath(path.relative(pagefindRoot, file)),
+	);
+	for (const pattern of [
+		/^pagefind\.js$/u,
+		/(?:\.wasm$|(?:^|\/)wasm\.[^/]+\.pagefind$)/u,
+		/\.pf_meta$/u,
+		/\.pf_index$/u,
+	]) {
+		const matches = pagefindFiles.filter((_, index) =>
+			pattern.test(relativeFiles[index]),
+		);
+		if (
+			matches.length === 0 ||
+			(await Promise.all(matches.map((file) => readFile(file)))).some(
+				(buffer) => buffer.length === 0,
+			)
+		) {
+			failures.push(`Pagefind output lacks a nonempty ${pattern} artifact`);
+		}
+	}
+	const entryPath = path.join(pagefindRoot, "pagefind-entry.json");
+	let entry;
+	try {
+		entry = JSON.parse(await readFile(entryPath, "utf8"));
+	} catch (error) {
+		failures.push(`Pagefind entry is missing or invalid (${error.message})`);
+		return 0;
+	}
+	if (entry.version !== "1.4.0") {
+		failures.push(
+			`Pagefind entry version ${entry.version} is not the reviewed 1.4.0 format`,
+		);
+	}
+	const languages = Object.keys(entry.languages ?? {});
+	if (
+		languages.length !== 1 ||
+		languages[0] !== "en" ||
+		entry.languages?.en?.page_count !== EXPECTED_ARCHIVE_COUNT
+	) {
+		failures.push(
+			`Pagefind must contain exactly ${EXPECTED_ARCHIVE_COUNT} English pages`,
+		);
+	}
+	const fragmentFiles = pagefindFiles.filter((_, index) =>
+		/^fragment\/.*\.pf_fragment$/u.test(relativeFiles[index]),
+	);
+	const records = [];
+	for (const file of fragmentFiles) {
+		try {
+			records.push(decodePagefindFragment(await readFile(file)));
+		} catch (error) {
+			failures.push(
+				`Pagefind fragment ${path.basename(file)} is invalid (${error.message})`,
+			);
+		}
+	}
+	const titles = await readManifestTitles(repoRoot, manifest, failures);
+	const actualRecords = records.map(
+		(record) => `${pagefindResultUrl(record.url, site)}\n${record.meta?.title}`,
+	);
+	const expectedRecords = manifest.articles.map(
+		(article) =>
+			`${new URL(`posts/${article.slug}/`, site)}\n${titles.get(article.slug)}`,
+	);
+	compareExactValues(
+		actualRecords,
+		expectedRecords,
+		"Pagefind records",
+		failures,
+	);
+	if (records.length !== EXPECTED_ARCHIVE_COUNT) {
+		failures.push(
+			`Pagefind must emit exactly ${EXPECTED_ARCHIVE_COUNT} fragments`,
+		);
+	}
+	return records.length;
+}
+
+function verifyNoPodcastArtifacts(files, distRoot, failures) {
+	for (const file of files) {
+		const relative = normalizedPath(path.relative(distRoot, file));
+		if (
+			/(?:^|\/)podcast(?:\/|$)/iu.test(relative) ||
+			AUDIO_ARTIFACT_PATTERN.test(relative)
+		) {
+			failures.push(
+				`forbidden podcast/audio artifact was emitted: ${relative}`,
+			);
+		}
+	}
 }
 
 export async function verifyBuiltSite({
 	dist = DEFAULT_DIST,
 	site: siteValue = DEFAULT_SITE,
 	repoRoot: repoRootValue = process.cwd(),
+	requireSignoff = false,
 } = {}) {
 	const distRoot = path.resolve(dist);
 	const repoRoot = path.resolve(repoRootValue);
@@ -1121,19 +1722,73 @@ export async function verifyBuiltSite({
 		throw new Error(`No built HTML files found under ${distRoot}`);
 
 	const failures = [];
+	const notices = [];
 	const postPages = [];
 	for (const file of htmlFiles)
 		await verifyHtml(file, distRoot, site, failures, postPages);
 	await verifyRss(distRoot, site, failures, postPages);
-	await verifySitemap(distRoot, site, failures);
-	await verifyArchiveManifest(repoRoot, distRoot, site, failures);
+	const manifest = await verifyArchiveManifest(
+		repoRoot,
+		distRoot,
+		site,
+		failures,
+		{ requireSignoff, notices },
+	);
+	let expectedPageUrls = [];
+	let rssItems = 0;
+	let pagefindRecords = 0;
+	let archiveEntries = 0;
+	let authorWorks = 0;
+	if (manifest) {
+		expectedPageUrls = await verifyLaunchRoutes(
+			distRoot,
+			htmlFiles,
+			postPages,
+			manifest,
+			site,
+			failures,
+		);
+		rssItems = await verifyLaunchRss(distRoot, manifest, site, failures);
+		archiveEntries = await verifyArchiveIndex(
+			distRoot,
+			manifest,
+			site,
+			failures,
+		);
+		authorWorks = await verifyAuthorPage(
+			repoRoot,
+			distRoot,
+			manifest,
+			site,
+			failures,
+		);
+		pagefindRecords = await verifyPagefind(
+			repoRoot,
+			distRoot,
+			manifest,
+			site,
+			failures,
+		);
+		await verifyDraftSources(repoRoot, manifest, failures);
+	}
+	await verifySitemap(distRoot, site, expectedPageUrls, failures);
+	await verifyRobots(distRoot, site, failures);
+	verifyNoPodcastArtifacts(files, distRoot, failures);
 
 	if (failures.length > 0) {
 		throw new Error(
 			`Built-site verification failed:\n- ${failures.join("\n- ")}`,
 		);
 	}
-	return { htmlPages: htmlFiles.length, postPages: postPages.length };
+	return {
+		htmlPages: htmlFiles.length,
+		postPages: postPages.length,
+		rssItems,
+		pagefindRecords,
+		archiveEntries,
+		authorWorks,
+		notices,
+	};
 }
 
 if (
@@ -1142,8 +1797,11 @@ if (
 ) {
 	try {
 		const result = await verifyBuiltSite(parseArguments(process.argv.slice(2)));
+		for (const notice of result.notices) {
+			console.warn(`Built-site verification notice: ${notice}`);
+		}
 		console.log(
-			`Built-site verification passed: ${result.htmlPages} HTML pages, ${result.postPages} posts`,
+			`Built-site verification passed: ${result.htmlPages} HTML pages, ${result.postPages} posts, ${result.rssItems} RSS items, ${result.pagefindRecords} Pagefind records, ${result.archiveEntries} archive links, ${result.authorWorks} author works`,
 		);
 	} catch (error) {
 		console.error(error.message);
