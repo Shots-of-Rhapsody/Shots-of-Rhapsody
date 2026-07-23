@@ -1,0 +1,5213 @@
+{
+  "schemaVersion": 1,
+  "slug": "before-the-sky-went-quiet-part-i-the-girl-who-faded",
+  "title": "Before the Sky Went Quiet: Part I - The Girl Who Faded",
+  "subtitle": "When her voice began to disappear, everything else followed.",
+  "summary": "Chapter One\n\nIf You’re Reading This\n\nThe attic still smelled like her shampoo. Lavender and citrus. Too bright. Too alive. The kind that clung to blankets and door frames and memories that refused to leave quietly.\n\n",
+  "description": "When her voice began to disappear, everything else followed.",
+  "author": "Tai Song",
+  "published": "2025-04-21T06:23:12.929Z",
+  "category": "Fiction",
+  "tags": [],
+  "imageAlt": null,
+  "imageCaption": "A girl caught in the quiet between before & after, still alive, but already starting to disappear.",
+  "provenance": {
+    "authority": "Proton Docs",
+    "captureFormat": "html-export",
+    "capturedAt": "2026-07-21T22:27:24.771Z"
+  },
+  "publication": {
+    "platform": "Vocal",
+    "url": "https://vocal.media/fiction/before-the-sky-went-quiet-part-i-the-girl-who-faded"
+  },
+  "hero": {
+    "sha256": "sha256:d4e126d61f38ca13db941f7719592e7009ef7ba7ab87ea4011d2ced62d345949",
+    "mimeType": "image/png",
+    "width": 2048,
+    "height": 2048,
+    "byteSize": 3963797,
+    "rawAlt": ""
+  },
+  "bodyDocument": {
+    "blocks": [
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Chapter One",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "If You’re Reading This",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The attic still smelled like her shampoo. Lavender and citrus. Too bright. Too alive. The kind that clung to blankets and door frames and memories that refused to leave quietly.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Calder Monroe stood in the doorway, one hand gripping the frame like it was the only thing holding him upright. He hadn’t been up here in seven months. Not since the day Sora stopped breathing.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He hadn’t touched her guitar. Not her books. Not the voice recorder she used to keep by her bed.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Grief, for Calder, was not a storm. It was dust. It settled on everything she left behind. And he was too afraid to move anything in case the outline of her disappeared with it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He stepped inside.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The guitar case was still open. The silver cassette necklace she wore every day was looped around one of the tuning pegs. He touched it, then stopped. He wasn’t ready.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The letter was on her desk. Folded. Curled at the edges. His name in her handwriting.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "OPEN WHEN YOU CAN’T HEAR ME ANYMORE.",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "His hands shook as he picked it up. He sat on the floor without meaning to. Cross-legged, like he used to when she was a baby and he’d sit beside her crib with a lullaby still stuck in his throat.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Inside was one page. Typed. But she had signed it in pen. The blue ink bled a little on the final loop of her name.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He read it without blinking.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Hey, Dad. If you’re reading this, it means the house got too quiet.",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I’m sorry I’m not there to fill it. I’m sorry for so many things. Mostly, I’m sorry you have to sit in that silence without me. I know what it does. I watched it break you once. I don’t want it to break you again.",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "So I left you something.",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "It’s not much. You’ll find it. You’ll know.",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I didn’t tell Mae. I didn’t tell anyone. I wanted it to be ours. You and me. One more thing before the quiet wins.",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "If you ever play again, don’t do it quietly. Let it be awful. Let it be loud. Let it remind the walls I was here.",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I love you. I love you. I love you.",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "-Sora",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He folded the page. Not carefully. Just once. Then he held it to his chest and leaned forward over the guitar case like he might vanish into it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The attic didn’t echo. It absorbed. His breath. His silence. Her name, when he finally said it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Not to remember her.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Just to hear it again, in the air.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Chapter Two",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Before I Knew",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Sora Monroe woke up with the word ",
+            "marks": []
+          },
+          {
+            "type": "text",
+            "text": "banana",
+            "marks": [
+              "italic"
+            ]
+          },
+          {
+            "type": "text",
+            "text": " stuck in her mouth.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Not literally. But when she said it out loud, something about it felt wrong. Her tongue lagged. The ",
+            "marks": []
+          },
+          {
+            "type": "text",
+            "text": "buh",
+            "marks": [
+              "italic"
+            ]
+          },
+          {
+            "type": "text",
+            "text": " hit flat. It didn’t sound like her voice.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Banana,” she said again.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Still wrong.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She blinked at her ceiling. Her room looked normal. Posters on the wall, star chart taped above her bed, hoodie slung across the chair. Nothing was different. Except her voice.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She sat up slowly and touched her throat.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "No pain. No swelling. Just that strange sense of ",
+            "marks": []
+          },
+          {
+            "type": "text",
+            "text": "off",
+            "marks": [
+              "italic"
+            ]
+          },
+          {
+            "type": "text",
+            "text": ".",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Downstairs, her dad called out.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Toast is done. I made the kind that doesn’t kill you.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Sora smiled and stood. Her legs felt shaky, but she blamed sleep. Or too much sugar the night before. Or the fact that she had been waiting all week for 4:00 p.m.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Decision email day.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Today was supposed to be the day her future started.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She grabbed her phone. Checked the time.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "9:18 a.m.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Still hours to go.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "At the table, Calder slid a plate toward her. The toast was burnt on one side. He raised his eyebrows.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“You look tired.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“I’m fine,” she said. It came out thinner than usual.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He tilted his head.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Just tired,” she repeated.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He didn’t push.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Mae texted her around noon.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Can I come by after school?",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Sora stared at the message.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Typed: ",
+            "marks": []
+          },
+          {
+            "type": "text",
+            "text": "Yes",
+            "marks": [
+              "italic"
+            ]
+          },
+          {
+            "type": "text",
+            "text": ".",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Deleted it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Typed: ",
+            "marks": []
+          },
+          {
+            "type": "text",
+            "text": "Sure",
+            "marks": [
+              "italic"
+            ]
+          },
+          {
+            "type": "text",
+            "text": ".",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Sent that one.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She sat on the couch with her laptop open but didn’t write anything. She scrolled through her playlist, clicked the same four songs in a loop, then turned the sound off completely.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "When Calder left to get groceries, she stood in the hallway and tried to sing.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "One note. Soft.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "It cracked.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She stopped.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "At 4:00 sharp, her phone buzzed.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "SUBJECT: CONGRATULATIONS - Welcome to NYU.",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She opened the email. Full ride. Creative writing program. Dorm placement.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She should have screamed.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "But all that came out was a quiet laugh.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She rolled over, pulled the red marker from her desk drawer, and stood up.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Her star chart waited. Dozens of constellations. Tiny dreams inked beside them. Song titles. Characters. Wishes.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She looked at the one labeled Vega.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Crossed it out.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "No reason.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "It just felt right.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "That night, she stood in the bathroom mirror and said every word she could think of.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Love. Music. Hope. Mae. Mom.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Each one landed flat.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Each one made her heart pound.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She pressed her palm to her throat.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And said nothing else.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Chapter Three",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Song",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The letter sat on the kitchen table for three days.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Sora’s name, barely visible through the paper. Her final voice printed in Courier. Folded twice.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Calder had read it once. He didn’t need to read it again. It burned into his head like lyrics he wished he’d never heard.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "On the fourth day, he poured a quarter-glass of whiskey and walked into the garage.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He hadn’t touched the music since before she died. Not the amp. Not the mic. Not the notebook she kept balanced on a milk crate beside the broken speaker.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "But the garage still smelled like her.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And that was enough to open the door.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The notebook was open on the stool. Her handwriting filled the page in half-formed lyrics and sharpie notes.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "At the top:",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "LOUD EXIT - WORKING LYRICS - DAD DON’T TOUCH",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He almost laughed. Almost.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He flipped the page.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Taped to the back was a flash drive. She’d drawn a tiny ghost on it. It said ",
+            "marks": []
+          },
+          {
+            "type": "text",
+            "text": "boo",
+            "marks": [
+              "italic"
+            ]
+          },
+          {
+            "type": "text",
+            "text": ".",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He plugged it in.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Only one file.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "LOUD EXIT - VOICE ONLY - ROUGH DRAFT",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He hesitated.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Then clicked.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Her voice came through the speaker. Breathy. Soft.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Okay. This is take whatever. It doesn’t matter.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“If you’re hearing this, I guess I didn’t get to finish it.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“But this is the part I remember. So I’m just gonna talk it.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She laughed once. The kind of laugh you give yourself when no one else is listening.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Then the humming started. Off-key. Barely audible.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Then her voice.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Not singing.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Just speaking.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I know this song won’t fix it",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I know this won’t undo",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "But maybe in the silence",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "You’ll still remember you",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Not the man who buried music",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Not the man who broke",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The man who once sang lullabies",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And taught the stars to joke",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She coughed.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Then nothing.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The file ended.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Calder didn’t move.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He sat with his hands on the amp, staring at the soundwave frozen on the screen.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He tried to hum the melody. Nothing came out.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He tried to play the chord progression. His fingers slipped.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Then he pressed the neck of the guitar to his forehead and exhaled.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Hard. Long. Hollow.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He whispered her name.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And let the silence finish the rest.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Chapter Four",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Throat, Tongue, Silence",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The exam room smelled like paper and plastic and worry.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Sora sat on the edge of the table, hoodie sleeves pulled down over her hands. Calder stood nearby, hands in his pockets, eyes locked on the sink like it might offer a better answer.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The doctor spoke gently.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Too gently.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“It may be muscular, but the speech pattern changes are concerning.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“I'd like to refer you to a neurologist.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Neurologist.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "That was the word.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "It didn’t land like a bomb.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "It landed like a door closing.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Sora blinked slowly. She stared at the wall behind him. A laminated poster of the human throat. Arrows pointing at muscles she could feel slipping already.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In the car, Calder didn’t start the engine right away.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“I should’ve taken you in sooner,” he said.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Sora didn’t answer.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“I thought it was stress. Or a cold. Or... I don’t know.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“I did too,” she whispered.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Her voice cracked halfway through.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He gripped the wheel harder.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“I’m fine,” she added.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Neither of them believed it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "That night, Sora turned on her voice recorder.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“They said neurologist.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“They didn’t say terminal. But I could feel it in the room.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“I think I already knew.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“I didn’t ask how much time. Because if they told me, I’d hear it every time I blinked.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She stopped recording.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Couldn’t finish the sentence.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She sat with the device in her hand, staring at the red light blinking.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Then she shut it off.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In the morning, she stood in front of the mirror and whispered the alphabet.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "A. B. C. D.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Each letter landed differently. Sluggish. Strangled.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "F. J. M. R.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Those didn’t come out at all.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She lowered the toothbrush. Didn’t use it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Walked back to her room barefoot.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Opened the drawer.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Pulled out the red marker.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Faced the star chart taped above her bed.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She crossed out three stars in a row.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "No names.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Just silence.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Chapter Five",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I Almost Said It",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Mae showed up with a playlist titled ",
+            "marks": []
+          },
+          {
+            "type": "text",
+            "text": "“Songs to Hear When You’re Dying (But Chill About It)”",
+            "marks": [
+              "italic"
+            ]
+          },
+          {
+            "type": "text",
+            "text": " and two packs of gummy bears.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Sora laughed when she read the name. The sound cracked halfway through. She caught it. Swallowed it. Smiled like nothing was wrong.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Mae flopped onto the bed beside her, sprawled across the blanket like she belonged there.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“This week sucked,” Mae said. “You’re the only reason I didn’t run into traffic.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“You say that every week,” Sora wrote on her whiteboard.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Mae grinned. “Yeah, but this week I meant it.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They lay side by side, heads tilted toward each other. The music played low. Mae hummed along with one of the songs. Sora closed her eyes.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Not to sleep.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Just to feel it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Are you still going to NYU?” Mae asked.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Sora opened her eyes.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She didn’t answer.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Mae sat up slightly, watching her.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“You got in. Full ride. You’re going, right?”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Sora reached for the whiteboard.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Her hand shook. She erased a scribble and wrote:",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“I don’t know.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Mae frowned. “Why wouldn’t you?”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Sora stared at the ceiling.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Then wrote:",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“My voice is going.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Mae blinked.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“So? You’re still you.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Sora looked at her.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Longer than she meant to.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Mae held the gaze.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“You don’t need a voice to be worth listening to,” she said.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Sora smiled.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "But it hurt.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She wanted to say it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She wanted to reach out, take Mae’s hand, and whisper the words she had rehearsed a hundred times.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I love you.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I have loved you since the moment you told a teacher to go to hell for giving me a zero when I was sick.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I love the way you laugh with your whole body.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I love that you call sad movies therapy and mean it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I love you.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "But Mae was smiling.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And Sora didn’t want to be the reason that smile changed.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "So she said nothing.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Just leaned her head a little closer. Close enough to feel Mae’s shoulder rise and fall with each breath.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Close enough to remember it later.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "After Mae left, Sora picked up her voice recorder.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Pressed record.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Whispered:",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“I almost said it.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“She touched my wrist and it felt like the world steadied for a second.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“But if she doesn’t feel the same, I lose everything.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“So I kept it.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“I think I love her.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“I think I always did.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She stopped recording.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Didn’t save it with a title.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Didn’t need one.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Chapter Six",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Quiet Wins",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The last word Sora said out loud was ",
+            "marks": []
+          },
+          {
+            "type": "text",
+            "text": "no",
+            "marks": [
+              "bold"
+            ]
+          },
+          {
+            "type": "text",
+            "text": ".",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "A nurse had offered to help her stand after an appointment. Sora had wanted to do it herself.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She said “no.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Soft.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Firm.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Her own.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "That was two weeks ago.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She hadn’t spoken since.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She used her whiteboard now. Short phrases. One-word answers. The pen started to smear where her grip failed.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Calder adjusted. Fast. Quiet. Without fuss. He learned to read her eyes. Her eyebrows. Her fingers when they twitched toward the drawer.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She refused the voice app he downloaded.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She didn’t want to sound like a stranger.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She didn’t want her words to come from something that didn’t know how she used to laugh.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "One night, she turned on her recorder and tried to scream into her pillow.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Nothing came out.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Not even a gasp.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She didn’t cry.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She didn’t panic.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She just lay there, still, and let the silence stretch over her body like a sheet.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Then she picked up her journal.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Wrote slowly.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Carefully.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“The silence is inside me now.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Not just around me. Inside.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“I feel like a story I can’t finish telling.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She stared at that last line for a long time.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Then she crossed it out.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Calder carried her down the stairs the next day.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She hadn’t asked.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She had just been sitting at the top, her hands flat against the floor, eyes on the window like she wanted to step through it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He didn’t speak.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "He just lifted her gently and brought her to the porch.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Wrapped her in two blankets.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Sat beside her.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She leaned into him. No words.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Only the wind.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Only the way her hand gripped his sleeve like she was trying not to float away.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Later that night, she peeled off three more stars from her chart.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Didn’t cross them out.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Didn’t name them.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Just held them in her hand, looked at them like maybe they meant something, then dropped them into the trash.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "One star remained.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Bottom right corner.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "She wrote next to it:",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“Mae.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Then put the marker away.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "break"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And never picked it up again.",
+            "marks": []
+          }
+        ]
+      }
+    ]
+  },
+  "bodyHtml": "<p><strong>Chapter One</strong></p>\n<p><em>If You’re Reading This</em></p>\n<p><br /></p>\n<p>The attic still smelled like her shampoo. Lavender and citrus. Too bright. Too alive. The kind that clung to blankets and door frames and memories that refused to leave quietly.</p>\n<p><br /></p>\n<p>Calder Monroe stood in the doorway, one hand gripping the frame like it was the only thing holding him upright. He hadn’t been up here in seven months. Not since the day Sora stopped breathing.</p>\n<p><br /></p>\n<p>He hadn’t touched her guitar. Not her books. Not the voice recorder she used to keep by her bed.</p>\n<p><br /></p>\n<p>Grief, for Calder, was not a storm. It was dust. It settled on everything she left behind. And he was too afraid to move anything in case the outline of her disappeared with it.</p>\n<p><br /></p>\n<p>He stepped inside.</p>\n<p><br /></p>\n<p>The guitar case was still open. The silver cassette necklace she wore every day was looped around one of the tuning pegs. He touched it, then stopped. He wasn’t ready.</p>\n<p><br /></p>\n<p>The letter was on her desk. Folded. Curled at the edges. His name in her handwriting.</p>\n<p><br /></p>\n<p><em>OPEN WHEN YOU CAN’T HEAR ME ANYMORE.</em></p>\n<p><br /></p>\n<p>His hands shook as he picked it up. He sat on the floor without meaning to. Cross-legged, like he used to when she was a baby and he’d sit beside her crib with a lullaby still stuck in his throat.</p>\n<p><br /></p>\n<p>Inside was one page. Typed. But she had signed it in pen. The blue ink bled a little on the final loop of her name.</p>\n<p><br /></p>\n<p>He read it without blinking.</p>\n<p><br /></p>\n<p><em>Hey, Dad. If you’re reading this, it means the house got too quiet.</em></p>\n<p><br /></p>\n<p><em>I’m sorry I’m not there to fill it. I’m sorry for so many things. Mostly, I’m sorry you have to sit in that silence without me. I know what it does. I watched it break you once. I don’t want it to break you again.</em></p>\n<p><br /></p>\n<p><em>So I left you something.</em></p>\n<p><br /></p>\n<p><em>It’s not much. You’ll find it. You’ll know.</em></p>\n<p><br /></p>\n<p><em>I didn’t tell Mae. I didn’t tell anyone. I wanted it to be ours. You and me. One more thing before the quiet wins.</em></p>\n<p><br /></p>\n<p><em>If you ever play again, don’t do it quietly. Let it be awful. Let it be loud. Let it remind the walls I was here.</em></p>\n<p><br /></p>\n<p><em>I love you. I love you. I love you.</em></p>\n<p><br /></p>\n<p><em>-Sora</em></p>\n<p><br /></p>\n<p>He folded the page. Not carefully. Just once. Then he held it to his chest and leaned forward over the guitar case like he might vanish into it.</p>\n<p><br /></p>\n<p>The attic didn’t echo. It absorbed. His breath. His silence. Her name, when he finally said it.</p>\n<p><br /></p>\n<p>Not to remember her.</p>\n<p><br /></p>\n<p>Just to hear it again, in the air.</p>\n<p><br /></p>\n<p><br /></p>\n<p><strong>Chapter Two</strong></p>\n<p><em>Before I Knew</em></p>\n<p><br /></p>\n<p>Sora Monroe woke up with the word <em>banana</em> stuck in her mouth.</p>\n<p><br /></p>\n<p>Not literally. But when she said it out loud, something about it felt wrong. Her tongue lagged. The <em>buh</em> hit flat. It didn’t sound like her voice.</p>\n<p><br /></p>\n<p>“Banana,” she said again.</p>\n<p><br /></p>\n<p>Still wrong.</p>\n<p><br /></p>\n<p>She blinked at her ceiling. Her room looked normal. Posters on the wall, star chart taped above her bed, hoodie slung across the chair. Nothing was different. Except her voice.</p>\n<p><br /></p>\n<p>She sat up slowly and touched her throat.</p>\n<p><br /></p>\n<p>No pain. No swelling. Just that strange sense of <em>off</em>.</p>\n<p><br /></p>\n<p>Downstairs, her dad called out.</p>\n<p><br /></p>\n<p>“Toast is done. I made the kind that doesn’t kill you.”</p>\n<p><br /></p>\n<p>Sora smiled and stood. Her legs felt shaky, but she blamed sleep. Or too much sugar the night before. Or the fact that she had been waiting all week for 4:00 p.m.</p>\n<p><br /></p>\n<p>Decision email day.</p>\n<p><br /></p>\n<p>Today was supposed to be the day her future started.</p>\n<p><br /></p>\n<p>She grabbed her phone. Checked the time.</p>\n<p><br /></p>\n<p>9:18 a.m.</p>\n<p><br /></p>\n<p>Still hours to go.</p>\n<p><br /></p>\n<p>At the table, Calder slid a plate toward her. The toast was burnt on one side. He raised his eyebrows.</p>\n<p><br /></p>\n<p>“You look tired.”</p>\n<p><br /></p>\n<p>“I’m fine,” she said. It came out thinner than usual.</p>\n<p><br /></p>\n<p>He tilted his head.</p>\n<p><br /></p>\n<p>“Just tired,” she repeated.</p>\n<p><br /></p>\n<p>He didn’t push.</p>\n<p><br /></p>\n<p>Mae texted her around noon.</p>\n<p><br /></p>\n<p><em>Can I come by after school?</em></p>\n<p><br /></p>\n<p>Sora stared at the message.</p>\n<p><br /></p>\n<p>Typed: <em>Yes</em>.</p>\n<p><br /></p>\n<p>Deleted it.</p>\n<p><br /></p>\n<p>Typed: <em>Sure</em>.</p>\n<p><br /></p>\n<p>Sent that one.</p>\n<p><br /></p>\n<p>She sat on the couch with her laptop open but didn’t write anything. She scrolled through her playlist, clicked the same four songs in a loop, then turned the sound off completely.</p>\n<p><br /></p>\n<p>When Calder left to get groceries, she stood in the hallway and tried to sing.</p>\n<p><br /></p>\n<p>One note. Soft.</p>\n<p><br /></p>\n<p>It cracked.</p>\n<p><br /></p>\n<p>She stopped.</p>\n<p><br /></p>\n<p>At 4:00 sharp, her phone buzzed.</p>\n<p><br /></p>\n<p><strong>SUBJECT: CONGRATULATIONS - Welcome to NYU.</strong></p>\n<p><br /></p>\n<p>She opened the email. Full ride. Creative writing program. Dorm placement.</p>\n<p><br /></p>\n<p>She should have screamed.</p>\n<p><br /></p>\n<p>But all that came out was a quiet laugh.</p>\n<p><br /></p>\n<p>She rolled over, pulled the red marker from her desk drawer, and stood up.</p>\n<p><br /></p>\n<p>Her star chart waited. Dozens of constellations. Tiny dreams inked beside them. Song titles. Characters. Wishes.</p>\n<p><br /></p>\n<p>She looked at the one labeled Vega.</p>\n<p><br /></p>\n<p>Crossed it out.</p>\n<p><br /></p>\n<p>No reason.</p>\n<p><br /></p>\n<p>It just felt right.</p>\n<p><br /></p>\n<p>That night, she stood in the bathroom mirror and said every word she could think of.</p>\n<p><br /></p>\n<p>“Love. Music. Hope. Mae. Mom.”</p>\n<p><br /></p>\n<p>Each one landed flat.</p>\n<p><br /></p>\n<p>Each one made her heart pound.</p>\n<p><br /></p>\n<p>She pressed her palm to her throat.</p>\n<p><br /></p>\n<p>And said nothing else.</p>\n<p><br /></p>\n<p><br /></p>\n<p><br /></p>\n<p><strong>Chapter Three</strong></p>\n<p><em>The Song</em></p>\n<p><br /></p>\n<p>The letter sat on the kitchen table for three days.</p>\n<p><br /></p>\n<p>Sora’s name, barely visible through the paper. Her final voice printed in Courier. Folded twice.</p>\n<p><br /></p>\n<p>Calder had read it once. He didn’t need to read it again. It burned into his head like lyrics he wished he’d never heard.</p>\n<p><br /></p>\n<p>On the fourth day, he poured a quarter-glass of whiskey and walked into the garage.</p>\n<p><br /></p>\n<p>He hadn’t touched the music since before she died. Not the amp. Not the mic. Not the notebook she kept balanced on a milk crate beside the broken speaker.</p>\n<p><br /></p>\n<p>But the garage still smelled like her.</p>\n<p><br /></p>\n<p>And that was enough to open the door.</p>\n<p><br /></p>\n<p>The notebook was open on the stool. Her handwriting filled the page in half-formed lyrics and sharpie notes.</p>\n<p><br /></p>\n<p>At the top:</p>\n<p><br /></p>\n<p><strong>LOUD EXIT - WORKING LYRICS - DAD DON’T TOUCH</strong></p>\n<p><br /></p>\n<p>He almost laughed. Almost.</p>\n<p><br /></p>\n<p>He flipped the page.</p>\n<p><br /></p>\n<p>Taped to the back was a flash drive. She’d drawn a tiny ghost on it. It said <em>boo</em>.</p>\n<p><br /></p>\n<p>He plugged it in.</p>\n<p><br /></p>\n<p>Only one file.</p>\n<p><br /></p>\n<p><strong>LOUD EXIT - VOICE ONLY - ROUGH DRAFT</strong></p>\n<p><br /></p>\n<p>He hesitated.</p>\n<p><br /></p>\n<p>Then clicked.</p>\n<p><br /></p>\n<p>Her voice came through the speaker. Breathy. Soft.</p>\n<p><br /></p>\n<p>“Okay. This is take whatever. It doesn’t matter.”</p>\n<p><br /></p>\n<p>“If you’re hearing this, I guess I didn’t get to finish it.”</p>\n<p><br /></p>\n<p>“But this is the part I remember. So I’m just gonna talk it.”</p>\n<p><br /></p>\n<p>She laughed once. The kind of laugh you give yourself when no one else is listening.</p>\n<p><br /></p>\n<p>Then the humming started. Off-key. Barely audible.</p>\n<p><br /></p>\n<p>Then her voice.</p>\n<p><br /></p>\n<p>Not singing.</p>\n<p><br /></p>\n<p>Just speaking.</p>\n<p><br /></p>\n<p><em>I know this song won’t fix it</em></p>\n<p><em>I know this won’t undo</em></p>\n<p><em>But maybe in the silence</em></p>\n<p><em>You’ll still remember you</em></p>\n<p><br /></p>\n<p><em>Not the man who buried music</em></p>\n<p><em>Not the man who broke</em></p>\n<p><em>The man who once sang lullabies</em></p>\n<p><em>And taught the stars to joke</em></p>\n<p><br /></p>\n<p>She coughed.</p>\n<p><br /></p>\n<p>Then nothing.</p>\n<p><br /></p>\n<p>The file ended.</p>\n<p><br /></p>\n<p>Calder didn’t move.</p>\n<p><br /></p>\n<p>He sat with his hands on the amp, staring at the soundwave frozen on the screen.</p>\n<p><br /></p>\n<p>He tried to hum the melody. Nothing came out.</p>\n<p><br /></p>\n<p>He tried to play the chord progression. His fingers slipped.</p>\n<p><br /></p>\n<p>Then he pressed the neck of the guitar to his forehead and exhaled.</p>\n<p><br /></p>\n<p>Hard. Long. Hollow.</p>\n<p><br /></p>\n<p>He whispered her name.</p>\n<p><br /></p>\n<p><br /></p>\n<p>And let the silence finish the rest.</p>\n<p><br /></p>\n<p><br /></p>\n<p><br /></p>\n<p><strong>Chapter Four</strong></p>\n<p><em>Throat, Tongue, Silence</em></p>\n<p><br /></p>\n<p>The exam room smelled like paper and plastic and worry.</p>\n<p><br /></p>\n<p>Sora sat on the edge of the table, hoodie sleeves pulled down over her hands. Calder stood nearby, hands in his pockets, eyes locked on the sink like it might offer a better answer.</p>\n<p><br /></p>\n<p>The doctor spoke gently.</p>\n<p><br /></p>\n<p>Too gently.</p>\n<p><br /></p>\n<p>“It may be muscular, but the speech pattern changes are concerning.”</p>\n<p><br /></p>\n<p>“I&#39;d like to refer you to a neurologist.”</p>\n<p><br /></p>\n<p>Neurologist.</p>\n<p><br /></p>\n<p>That was the word.</p>\n<p><br /></p>\n<p>It didn’t land like a bomb.</p>\n<p><br /></p>\n<p>It landed like a door closing.</p>\n<p><br /></p>\n<p>Sora blinked slowly. She stared at the wall behind him. A laminated poster of the human throat. Arrows pointing at muscles she could feel slipping already.</p>\n<p><br /></p>\n<p>In the car, Calder didn’t start the engine right away.</p>\n<p><br /></p>\n<p>“I should’ve taken you in sooner,” he said.</p>\n<p><br /></p>\n<p>Sora didn’t answer.</p>\n<p><br /></p>\n<p>“I thought it was stress. Or a cold. Or... I don’t know.”</p>\n<p><br /></p>\n<p>“I did too,” she whispered.</p>\n<p><br /></p>\n<p>Her voice cracked halfway through.</p>\n<p><br /></p>\n<p>He gripped the wheel harder.</p>\n<p><br /></p>\n<p>“I’m fine,” she added.</p>\n<p><br /></p>\n<p>Neither of them believed it.</p>\n<p><br /></p>\n<p><br /></p>\n<p><br /></p>\n<p>That night, Sora turned on her voice recorder.</p>\n<p><br /></p>\n<p>“They said neurologist.”</p>\n<p><br /></p>\n<p>“They didn’t say terminal. But I could feel it in the room.”</p>\n<p><br /></p>\n<p>“I think I already knew.”</p>\n<p><br /></p>\n<p>“I didn’t ask how much time. Because if they told me, I’d hear it every time I blinked.”</p>\n<p><br /></p>\n<p>She stopped recording.</p>\n<p><br /></p>\n<p>Couldn’t finish the sentence.</p>\n<p><br /></p>\n<p>She sat with the device in her hand, staring at the red light blinking.</p>\n<p><br /></p>\n<p>Then she shut it off.</p>\n<p><br /></p>\n<p><br /></p>\n<p><br /></p>\n<p>In the morning, she stood in front of the mirror and whispered the alphabet.</p>\n<p><br /></p>\n<p>A. B. C. D.</p>\n<p><br /></p>\n<p>Each letter landed differently. Sluggish. Strangled.</p>\n<p><br /></p>\n<p>F. J. M. R.</p>\n<p><br /></p>\n<p>Those didn’t come out at all.</p>\n<p><br /></p>\n<p>She lowered the toothbrush. Didn’t use it.</p>\n<p><br /></p>\n<p>Walked back to her room barefoot.</p>\n<p><br /></p>\n<p>Opened the drawer.</p>\n<p><br /></p>\n<p>Pulled out the red marker.</p>\n<p><br /></p>\n<p>Faced the star chart taped above her bed.</p>\n<p><br /></p>\n<p>She crossed out three stars in a row.</p>\n<p><br /></p>\n<p>No names.</p>\n<p><br /></p>\n<p><br /></p>\n<p>Just silence.</p>\n<p><br /></p>\n<p><br /></p>\n<p><br /></p>\n<p><strong>Chapter Five</strong></p>\n<p><em>I Almost Said It</em></p>\n<p><br /></p>\n<p>Mae showed up with a playlist titled <em>“Songs to Hear When You’re Dying (But Chill About It)”</em> and two packs of gummy bears.</p>\n<p><br /></p>\n<p>Sora laughed when she read the name. The sound cracked halfway through. She caught it. Swallowed it. Smiled like nothing was wrong.</p>\n<p><br /></p>\n<p>Mae flopped onto the bed beside her, sprawled across the blanket like she belonged there.</p>\n<p><br /></p>\n<p>“This week sucked,” Mae said. “You’re the only reason I didn’t run into traffic.”</p>\n<p><br /></p>\n<p>“You say that every week,” Sora wrote on her whiteboard.</p>\n<p><br /></p>\n<p>Mae grinned. “Yeah, but this week I meant it.”</p>\n<p><br /></p>\n<p>They lay side by side, heads tilted toward each other. The music played low. Mae hummed along with one of the songs. Sora closed her eyes.</p>\n<p><br /></p>\n<p>Not to sleep.</p>\n<p><br /></p>\n<p>Just to feel it.</p>\n<p><br /></p>\n<p><br /></p>\n<p><br /></p>\n<p>“Are you still going to NYU?” Mae asked.</p>\n<p><br /></p>\n<p>Sora opened her eyes.</p>\n<p><br /></p>\n<p>She didn’t answer.</p>\n<p><br /></p>\n<p>Mae sat up slightly, watching her.</p>\n<p><br /></p>\n<p>“You got in. Full ride. You’re going, right?”</p>\n<p><br /></p>\n<p>Sora reached for the whiteboard.</p>\n<p><br /></p>\n<p>Her hand shook. She erased a scribble and wrote:</p>\n<p><br /></p>\n<p>“I don’t know.”</p>\n<p><br /></p>\n<p>Mae frowned. “Why wouldn’t you?”</p>\n<p><br /></p>\n<p>Sora stared at the ceiling.</p>\n<p><br /></p>\n<p>Then wrote:</p>\n<p><br /></p>\n<p>“My voice is going.”</p>\n<p><br /></p>\n<p>Mae blinked.</p>\n<p><br /></p>\n<p>“So? You’re still you.”</p>\n<p><br /></p>\n<p>Sora looked at her.</p>\n<p><br /></p>\n<p>Longer than she meant to.</p>\n<p><br /></p>\n<p>Mae held the gaze.</p>\n<p><br /></p>\n<p>“You don’t need a voice to be worth listening to,” she said.</p>\n<p><br /></p>\n<p>Sora smiled.</p>\n<p><br /></p>\n<p>But it hurt.</p>\n<p><br /></p>\n<p><br /></p>\n<p><br /></p>\n<p>She wanted to say it.</p>\n<p><br /></p>\n<p>She wanted to reach out, take Mae’s hand, and whisper the words she had rehearsed a hundred times.</p>\n<p><br /></p>\n<p>I love you.</p>\n<p>I have loved you since the moment you told a teacher to go to hell for giving me a zero when I was sick.</p>\n<p>I love the way you laugh with your whole body.</p>\n<p>I love that you call sad movies therapy and mean it.</p>\n<p>I love you.</p>\n<p><br /></p>\n<p>But Mae was smiling.</p>\n<p><br /></p>\n<p>And Sora didn’t want to be the reason that smile changed.</p>\n<p><br /></p>\n<p>So she said nothing.</p>\n<p><br /></p>\n<p>Just leaned her head a little closer. Close enough to feel Mae’s shoulder rise and fall with each breath.</p>\n<p><br /></p>\n<p>Close enough to remember it later.</p>\n<p><br /></p>\n<p><br /></p>\n<p><br /></p>\n<p>After Mae left, Sora picked up her voice recorder.</p>\n<p><br /></p>\n<p>Pressed record.</p>\n<p><br /></p>\n<p>Whispered:</p>\n<p><br /></p>\n<p>“I almost said it.”</p>\n<p><br /></p>\n<p>“She touched my wrist and it felt like the world steadied for a second.”</p>\n<p><br /></p>\n<p>“But if she doesn’t feel the same, I lose everything.”</p>\n<p><br /></p>\n<p>“So I kept it.”</p>\n<p><br /></p>\n<p>“I think I love her.”</p>\n<p><br /></p>\n<p>“I think I always did.”</p>\n<p><br /></p>\n<p>She stopped recording.</p>\n<p><br /></p>\n<p>Didn’t save it with a title.</p>\n<p><br /></p>\n<p><br /></p>\n<p>Didn’t need one.</p>\n<p><br /></p>\n<p><br /></p>\n<p><br /></p>\n<p><strong>Chapter Six</strong></p>\n<p><em>The Quiet Wins</em></p>\n<p><br /></p>\n<p>The last word Sora said out loud was <strong>no</strong>.</p>\n<p><br /></p>\n<p>A nurse had offered to help her stand after an appointment. Sora had wanted to do it herself.</p>\n<p><br /></p>\n<p>She said “no.”</p>\n<p><br /></p>\n<p>Soft.</p>\n<p><br /></p>\n<p>Firm.</p>\n<p><br /></p>\n<p>Her own.</p>\n<p><br /></p>\n<p>That was two weeks ago.</p>\n<p><br /></p>\n<p>She hadn’t spoken since.</p>\n<p><br /></p>\n<p><br /></p>\n<p><br /></p>\n<p>She used her whiteboard now. Short phrases. One-word answers. The pen started to smear where her grip failed.</p>\n<p><br /></p>\n<p>Calder adjusted. Fast. Quiet. Without fuss. He learned to read her eyes. Her eyebrows. Her fingers when they twitched toward the drawer.</p>\n<p><br /></p>\n<p>She refused the voice app he downloaded.</p>\n<p><br /></p>\n<p>She didn’t want to sound like a stranger.</p>\n<p><br /></p>\n<p>She didn’t want her words to come from something that didn’t know how she used to laugh.</p>\n<p><br /></p>\n<p><br /></p>\n<p><br /></p>\n<p>One night, she turned on her recorder and tried to scream into her pillow.</p>\n<p><br /></p>\n<p>Nothing came out.</p>\n<p><br /></p>\n<p>Not even a gasp.</p>\n<p><br /></p>\n<p>She didn’t cry.</p>\n<p><br /></p>\n<p>She didn’t panic.</p>\n<p><br /></p>\n<p>She just lay there, still, and let the silence stretch over her body like a sheet.</p>\n<p><br /></p>\n<p>Then she picked up her journal.</p>\n<p><br /></p>\n<p>Wrote slowly.</p>\n<p><br /></p>\n<p>Carefully.</p>\n<p><br /></p>\n<p>“The silence is inside me now.”</p>\n<p>“Not just around me. Inside.”</p>\n<p>“I feel like a story I can’t finish telling.”</p>\n<p><br /></p>\n<p>She stared at that last line for a long time.</p>\n<p><br /></p>\n<p>Then she crossed it out.</p>\n<p><br /></p>\n<p><br /></p>\n<p><br /></p>\n<p>Calder carried her down the stairs the next day.</p>\n<p><br /></p>\n<p>She hadn’t asked.</p>\n<p><br /></p>\n<p>She had just been sitting at the top, her hands flat against the floor, eyes on the window like she wanted to step through it.</p>\n<p><br /></p>\n<p>He didn’t speak.</p>\n<p><br /></p>\n<p>He just lifted her gently and brought her to the porch.</p>\n<p><br /></p>\n<p>Wrapped her in two blankets.</p>\n<p><br /></p>\n<p>Sat beside her.</p>\n<p><br /></p>\n<p>She leaned into him. No words.</p>\n<p><br /></p>\n<p>Only the wind.</p>\n<p><br /></p>\n<p>Only the way her hand gripped his sleeve like she was trying not to float away.</p>\n<p><br /></p>\n<p><br /></p>\n<p><br /></p>\n<p>Later that night, she peeled off three more stars from her chart.</p>\n<p><br /></p>\n<p>Didn’t cross them out.</p>\n<p><br /></p>\n<p>Didn’t name them.</p>\n<p><br /></p>\n<p>Just held them in her hand, looked at them like maybe they meant something, then dropped them into the trash.</p>\n<p><br /></p>\n<p>One star remained.</p>\n<p><br /></p>\n<p>Bottom right corner.</p>\n<p><br /></p>\n<p>She wrote next to it:</p>\n<p><br /></p>\n<p>“Mae.”</p>\n<p><br /></p>\n<p>Then put the marker away.</p>\n<p><br /></p>\n<p><br /></p>\n<p>And never picked it up again.</p>",
+  "bodyTextSha256": "sha256:e8ddda1f5ecc8356eb54cb5e10c082d2615602c721979a4337933d0105944ec2",
+  "bodyBlockCount": 558,
+  "license": {
+    "name": "All Rights Reserved"
+  }
+}

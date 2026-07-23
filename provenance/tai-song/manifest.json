@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "authority": {
+    "platform": "Proton Docs",
+    "captureFormat": "html-export"
+  },
+  "author": {
+    "name": "Tai Song"
+  },
+  "inventoryPath": "provenance/tai-song/inventory.json",
+  "inventorySha256": "sha256:ecfae900bce5e3d9632ed339622ab0be1da60d39b0d8d1935d75067d0f909697",
+  "articles": [
+    {
+      "slug": "before-the-sky-went-quiet-part-i-the-girl-who-faded",
+      "capturedAt": "2026-07-21T22:27:24.771Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/before-the-sky-went-quiet-part-i-the-girl-who-faded"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/before-the-sky-went-quiet-part-i-the-girl-who-faded.json",
+        "markdown": "src/content/posts/before-the-sky-went-quiet-part-i-the-girl-who-faded/index.md",
+        "image": "src/content/posts/before-the-sky-went-quiet-part-i-the-girl-who-faded/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:a390257b21bb52a55890afdcb86d5941259ec77e7d113005420ac77d8a12dc78",
+        "rawImage": "sha256:d4e126d61f38ca13db941f7719592e7009ef7ba7ab87ea4011d2ced62d345949",
+        "snapshot": "sha256:251b9beddf04eb700d6d9cfb7f8f1ae1d0c0a14cfdf95423f4ee5c93ea5ec89b",
+        "markdown": "sha256:1524157c3636c88976dbc7051bf5ce572771d83fd0d8e6d5a4edb0723da88842",
+        "image": "sha256:d4e126d61f38ca13db941f7719592e7009ef7ba7ab87ea4011d2ced62d345949",
+        "bodyText": "sha256:e8ddda1f5ecc8356eb54cb5e10c082d2615602c721979a4337933d0105944ec2"
+      },
+      "content": {
+        "subtitle": "When her voice began to disappear, everything else followed.",
+        "imageCaption": "A girl caught in the quiet between before & after, still alive, but already starting to disappear.",
+        "bodyTextSha256": "sha256:e8ddda1f5ecc8356eb54cb5e10c082d2615602c721979a4337933d0105944ec2",
+        "bodyBlockCount": 558
+      },
+      "image": {
+        "sha256": "sha256:d4e126d61f38ca13db941f7719592e7009ef7ba7ab87ea4011d2ced62d345949",
+        "mimeType": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "byteSize": 3963797,
+        "alt": null
+      }
+    },
+    {
+      "slug": "before-the-sky-went-quiet-part-ii-the-goodbye",
+      "capturedAt": "2026-07-21T22:27:52.030Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/before-the-sky-went-quiet-part-ii-the-goodbye"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/before-the-sky-went-quiet-part-ii-the-goodbye.json",
+        "markdown": "src/content/posts/before-the-sky-went-quiet-part-ii-the-goodbye/index.md",
+        "image": "src/content/posts/before-the-sky-went-quiet-part-ii-the-goodbye/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:b63ab5050dad93c6ff643b6efffbb2955f8b503a84892b87b5265070a42a569e",
+        "rawImage": "sha256:2df405ca8f9a8e0ba0185e32672f0eb2f55ef4fa77af5dcee06dd90c24944efd",
+        "snapshot": "sha256:d963bda293283067a0753b89944e13a40b486b897661eed2fea2410906e76cf0",
+        "markdown": "sha256:5d6b4f5c6a823120090349e8f589bbe31e828cd1ab3e384ba1b87908e2b2f27c",
+        "image": "sha256:2df405ca8f9a8e0ba0185e32672f0eb2f55ef4fa77af5dcee06dd90c24944efd",
+        "bodyText": "sha256:7f0bf044bce8626bb0261ed6b8cebf576f0048a93456023a0ebb1804fe00e8ca"
+      },
+      "content": {
+        "subtitle": "She chose how she would leave. They chose how they’d remember her.",
+        "imageCaption": "There were no last words. Only music. A voice recorder. A father who kept his promise.",
+        "bodyTextSha256": "sha256:7f0bf044bce8626bb0261ed6b8cebf576f0048a93456023a0ebb1804fe00e8ca",
+        "bodyBlockCount": 333
+      },
+      "image": {
+        "sha256": "sha256:2df405ca8f9a8e0ba0185e32672f0eb2f55ef4fa77af5dcee06dd90c24944efd",
+        "mimeType": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "byteSize": 1651791,
+        "alt": null
+      }
+    },
+    {
+      "slug": "before-the-sky-went-quiet-part-iii-the-echo-that-stayed",
+      "capturedAt": "2026-07-21T22:28:19.987Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/fiction/before-the-sky-went-quiet-part-iii-the-echo-that-stayed"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/before-the-sky-went-quiet-part-iii-the-echo-that-stayed.json",
+        "markdown": "src/content/posts/before-the-sky-went-quiet-part-iii-the-echo-that-stayed/index.md",
+        "image": "src/content/posts/before-the-sky-went-quiet-part-iii-the-echo-that-stayed/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:a0c8a626b8fe9fd7ce0be0a6e64bc2a750e3a8592e91871a065f70eb9f669430",
+        "rawImage": "sha256:0c92199d5febdef8fcc9b51432a246ff5e5f3afac5cf4955dfd4be44ed6df9f9",
+        "snapshot": "sha256:ef4c1521d1d720841f5942e44e75d4bdd466df3eef20a77452c87193c4c8af3b",
+        "markdown": "sha256:2b013c660ad5b1940c60330729f84b4f0061de34af779ff97483c7fc06065188",
+        "image": "sha256:0c92199d5febdef8fcc9b51432a246ff5e5f3afac5cf4955dfd4be44ed6df9f9",
+        "bodyText": "sha256:bcd6af6fcb1177234f5a9c537aea8c63bcd1edecfa3fde775b352ea5cb9435a5"
+      },
+      "content": {
+        "subtitle": "She’s gone. But the sound of her hasn’t left.",
+        "imageCaption": "Long after she vanished, her voice still lingers in the chord that cracks & the silence that follows.",
+        "bodyTextSha256": "sha256:bcd6af6fcb1177234f5a9c537aea8c63bcd1edecfa3fde775b352ea5cb9435a5",
+        "bodyBlockCount": 578
+      },
+      "image": {
+        "sha256": "sha256:0c92199d5febdef8fcc9b51432a246ff5e5f3afac5cf4955dfd4be44ed6df9f9",
+        "mimeType": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "byteSize": 4380915,
+        "alt": null
+      }
+    }
+  ]
+}
