@@ -114,6 +114,111 @@
         "byteSize": 4380915,
         "alt": null
       }
+    },
+    {
+      "slug": "poetic-biography",
+      "capturedAt": "2026-07-21T22:14:42.232Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/humans/poetic-biography"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/poetic-biography.json",
+        "markdown": "src/content/posts/poetic-biography/index.md",
+        "image": "src/content/posts/poetic-biography/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:0b74a45cef06f5df9674b0e8820704778744dad74e260e2a4099cd2eb2bd17fc",
+        "rawImage": "sha256:4d3a81a601a85100ad8e647a29c9f255a2f305c4185e6cd9a43b3934c31a6f20",
+        "snapshot": "sha256:6d970f521930d3634a3fae4aa34a62ddb3082cdea4633cbd7f1df776f42c1cbf",
+        "markdown": "sha256:2419705ec664b7cf522aa1dbcbe0b3850b4a10bd4639640ff80804bb78a7c7c8",
+        "image": "sha256:4d3a81a601a85100ad8e647a29c9f255a2f305c4185e6cd9a43b3934c31a6f20",
+        "bodyText": "sha256:daf77988ce6910284af941f431e830867c973e84b07f4adab7086ffae3cd2eda"
+      },
+      "content": {
+        "subtitle": "The story behind the breath you didn’t know you were holding.",
+        "imageCaption": "I don’t want to be remembered. I want to be relived.",
+        "bodyTextSha256": "sha256:daf77988ce6910284af941f431e830867c973e84b07f4adab7086ffae3cd2eda",
+        "bodyBlockCount": 10
+      },
+      "image": {
+        "sha256": "sha256:4d3a81a601a85100ad8e647a29c9f255a2f305c4185e6cd9a43b3934c31a6f20",
+        "mimeType": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "byteSize": 2171787,
+        "alt": null
+      }
+    },
+    {
+      "slug": "the-guild-a-chronicle-of-pretty-souls",
+      "capturedAt": "2026-07-21T22:15:39.460Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/poets/the-guild-a-chronicle-of-pretty-souls"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/the-guild-a-chronicle-of-pretty-souls.json",
+        "markdown": "src/content/posts/the-guild-a-chronicle-of-pretty-souls/index.md",
+        "image": "src/content/posts/the-guild-a-chronicle-of-pretty-souls/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:078d3b9ab628e0cd4970bb26c8c6d739147d9153065eae736f9b6881b45c899f",
+        "rawImage": "sha256:0e30d93832138cb364af2778e830c2403bfc66980128d4a395f44a05473a9727",
+        "snapshot": "sha256:d4eae28e644a04ccb8e27bdd4c3001f8912d3cd1dc49d1d0a8e2e52655f27196",
+        "markdown": "sha256:9b6523db4868fd243af22c09e6c56b9d8293163301641da0f14240d32b9429a4",
+        "image": "sha256:0e30d93832138cb364af2778e830c2403bfc66980128d4a395f44a05473a9727",
+        "bodyText": "sha256:fcab02b745b2b8d19782bfbaba5e24c1b96cbb7d16f4b9d916be268f4c25d426"
+      },
+      "content": {
+        "subtitle": "A myth-bent memory of digital devotion, told in glitch-forged rhyme & frosting-slick fire.",
+        "imageCaption": "Shrineborn in Frost, Pixelwritten in Fire.",
+        "bodyTextSha256": "sha256:fcab02b745b2b8d19782bfbaba5e24c1b96cbb7d16f4b9d916be268f4c25d426",
+        "bodyBlockCount": 102
+      },
+      "image": {
+        "sha256": "sha256:0e30d93832138cb364af2778e830c2403bfc66980128d4a395f44a05473a9727",
+        "mimeType": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "byteSize": 2464326,
+        "alt": null
+      }
+    },
+    {
+      "slug": "where-we-last-were-us",
+      "capturedAt": "2026-07-21T22:25:32.185Z",
+      "publication": {
+        "platform": "Vocal",
+        "url": "https://vocal.media/poets/where-we-last-were-us"
+      },
+      "paths": {
+        "snapshot": "provenance/tai-song/posts/where-we-last-were-us.json",
+        "markdown": "src/content/posts/where-we-last-were-us/index.md",
+        "image": "src/content/posts/where-we-last-were-us/hero-original.png"
+      },
+      "hashes": {
+        "rawPage": "sha256:c667d5a950c1d56c3fa0d68e5027e7ced4a8349c107321aa8ac35a3f4d7fb815",
+        "rawImage": "sha256:a2d68ea489c1ccfe563f024c0ece3521d8aa622cbde17955b2b0c470d19b9ad2",
+        "snapshot": "sha256:203910bb81f268409bd786ac047ac49b2ff248063059a6c2d5fab9e542d50f1a",
+        "markdown": "sha256:9bd21c24e1e56561681ed0a3dee43d65bccb51ab92342819154795fb05acb497",
+        "image": "sha256:a2d68ea489c1ccfe563f024c0ece3521d8aa622cbde17955b2b0c470d19b9ad2",
+        "bodyText": "sha256:a96fe978aab8b2fa75568171e4e512a05b2e357804b142c00e2d10f058ef62e6"
+      },
+      "content": {
+        "subtitle": "Two voices. One place. Never again the same.",
+        "imageCaption": "A quiet condo filled with shadows of memory, where love once lived & silence now stays.",
+        "bodyTextSha256": "sha256:a96fe978aab8b2fa75568171e4e512a05b2e357804b142c00e2d10f058ef62e6",
+        "bodyBlockCount": 233
+      },
+      "image": {
+        "sha256": "sha256:a2d68ea489c1ccfe563f024c0ece3521d8aa622cbde17955b2b0c470d19b9ad2",
+        "mimeType": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "byteSize": 5107084,
+        "alt": null
+      }
     }
   ]
 }
