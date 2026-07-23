@@ -61,12 +61,13 @@ pnpm lint:ci
 pnpm check
 pnpm build
 pnpm verify:site
+pnpm verify:release
 ```
 
 The complete verifier requires all 11 fixed slugs, unique historical publication URLs, exact body structure and hashes, exact PNG bytes and metadata, and matching generated outputs. It does not claim the former Vocal word-count total because Proton Docs author masters are now the text authority.
 
 ## Human review
 
-Compare every built article side-by-side with its Proton author master and record the result in [`provenance/tai-song/review-checklist.md`](../provenance/tai-song/review-checklist.md). Check title, subtitle, summary, full uncropped hero, caption, paragraph order, empty paragraphs, line breaks, emphasis, punctuation, Unicode, and ending text.
+Compare every built article side-by-side with its Proton author master and record the result in the structured [`ReviewSignoffV1` record](../provenance/tai-song/review-signoffs.json), using the [human-review checklist](../provenance/tai-song/review-checklist.md). Check title, subtitle, summary, full uncropped hero, caption, paragraph order, empty paragraphs, line breaks, emphasis, punctuation, Unicode, ending text, and rendered layout. Never generate reviewer identities or passed checks from automated results.
 
-Do not call the archive complete until the strict verifier passes and all 11 human-review rows are signed off. Never commit `.proton-import/`.
+The normal site verifier permits only the exact empty pending signoff template; malformed or partial records still fail. Do not call the archive complete or publish until `pnpm verify:release` passes with all 11 structured human-review signoffs complete. Never commit `.proton-import/`.

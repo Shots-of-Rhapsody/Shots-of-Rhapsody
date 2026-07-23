@@ -11,6 +11,7 @@
     "check": "astro check",
     "build": "astro build && pagefind --site dist",
     "verify:site": "node scripts/verify-built-site.mjs",
+    "verify:release": "node scripts/verify-built-site.mjs --require-signoff",
     "preview": "astro preview",
     "astro": "astro",
     "type-check": "tsc --noEmit --isolatedDeclarations",

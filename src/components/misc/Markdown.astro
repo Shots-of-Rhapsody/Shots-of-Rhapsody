@@ -5,11 +5,12 @@ import "@fontsource-variable/jetbrains-mono/wght-italic.css";
 interface Props {
 	class: string;
 	archiveBody?: boolean;
+	searchable?: boolean;
 }
 const className = Astro.props.class;
-const { archiveBody = false } = Astro.props;
+const { archiveBody = false, searchable = true } = Astro.props;
 ---
-<div data-pagefind-body data-archive-body={archiveBody ? "" : undefined} class={`prose dark:prose-invert prose-base !max-w-none custom-md ${className}`}>
+<div data-pagefind-body={searchable ? "" : undefined} data-archive-body={archiveBody ? "" : undefined} class={`prose dark:prose-invert prose-base !max-w-none custom-md ${className}`}>
     <slot/>
 </div>
 

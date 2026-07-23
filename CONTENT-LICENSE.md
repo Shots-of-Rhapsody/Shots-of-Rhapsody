@@ -1,23 +1,31 @@
 # Content rights and licensing
 
-The repository contains software, original writing, original media, and upstream theme assets. Those materials do not all share one license.
+Shots of Rhapsody contains software, original writing, original media, project branding, and third-party material. Those categories do not share one license.
 
-## Software and theme code
+## Software and theme code — MIT
 
-The Fuwari-derived software and repository code remain available under the root [MIT License](LICENSE).
+The root [MIT License](LICENSE) applies to repository software, configuration, and the Fuwari-derived theme code. It permits reuse of that code under the terms of the license.
 
-## Imported Tai Song articles and hero images
+The MIT License does **not** extend to article text, hero images, project artwork, branding, trademarks, or other creative media merely because those files are stored in the same repository.
 
-Articles imported from Tai Song's Proton Docs author masters and their author-controlled hero images are marked per post as **All Rights Reserved**. Copyright remains with Tai Song. No permission to copy, redistribute, adapt, train on, or commercially reuse that writing or media is granted by this repository.
+## Eleven Tai Song articles and hero images — All Rights Reserved
 
-A link to a historical Vocal publication records publication history only. It is not the authority for the imported text and does not change the license of the local article or image.
+The eleven articles recorded in `provenance/tai-song/manifest.json` and their colocated `hero-original.png` files are marked per post as **All Rights Reserved**. Copyright remains with Tai Song. No permission to copy, redistribute, adapt, train on, or commercially reuse that writing or media is granted by this repository.
 
-## Existing repository-only posts
+The authoritative migration inputs are Tai Song's Proton Docs author-master HTML exports and original image bytes. A historical Vocal link records earlier publication history only; it does not change the authority or license of the local work.
 
-Posts that do not declare a per-post license retain the site's existing fallback license, [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/), until they are separately reviewed. This scoped policy does not revoke rights already granted under a valid earlier license.
+## Repository-only drafts
+
+The four non-manifest posts are intentionally unpublished drafts. Posts without an explicit per-post license retain the site's existing [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) fallback until separately reviewed. This policy does not silently relicense the eleven manifest-controlled works and does not revoke rights already granted under a valid earlier license.
+
+## Project media and branding
+
+Project-specific artwork, favicons, names, and branding are not licensed by the root MIT License unless a file-specific notice expressly says otherwise. Do not assume that repository access grants reuse rights.
+
+The unpublished legacy podcast bundle under `legacy/podcast/` is retained for history only. It is outside the production content tree and has no publication or reuse permission implied by this repository.
 
 ## Third-party material
 
-Third-party names, trademarks, fonts, packages, and assets remain subject to their respective owners' terms. Their presence in the repository does not grant additional rights.
+Third-party names, trademarks, fonts, icon sets, dependencies, theme lineage, and externally sourced assets remain subject to their respective owners' terms. See [Third-party notices](THIRD-PARTY-NOTICES.md). Inclusion in the repository does not grant additional rights.
 
-For permission questions, contact the repository owner through the [Shots of Rhapsody GitHub organization](https://github.com/Shots-of-Rhapsody).
+For permission questions, use the [Shots-of-Rhapsody/Shots-of-Rhapsody repository](https://github.com/Shots-of-Rhapsody/Shots-of-Rhapsody).

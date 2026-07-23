@@ -1,0 +1,98 @@
+---
+import { getCollection } from "astro:content";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import {
+	getAbsolutePostUrlBySlug,
+	getPostUrlBySlug,
+	url,
+} from "@utils/url-utils";
+import manifest from "../../../provenance/tai-song/manifest.json";
+
+const EXPECTED_ARTICLE_COUNT = 11;
+if (manifest.author.name !== "Tai Song") {
+	throw new Error("The Tai Song manifest author is invalid");
+}
+if (manifest.articles.length !== EXPECTED_ARTICLE_COUNT) {
+	throw new Error(
+		`The Tai Song author page requires exactly ${EXPECTED_ARTICLE_COUNT} manifest articles`,
+	);
+}
+
+const manifestSlugs = new Set(manifest.articles.map((article) => article.slug));
+if (manifestSlugs.size !== EXPECTED_ARTICLE_COUNT) {
+	throw new Error("The Tai Song manifest contains duplicate article slugs");
+}
+
+const archiveEntries = await getCollection("posts", ({ data }) =>
+	Boolean(data.provenance),
+);
+const entriesBySlug = new Map(
+	archiveEntries.map((entry) => [entry.slug, entry]),
+);
+if (
+	archiveEntries.length !== EXPECTED_ARTICLE_COUNT ||
+	archiveEntries.some((entry) => !manifestSlugs.has(entry.slug))
+) {
+	throw new Error(
+		"The Tai Song content collection differs from the fixed manifest",
+	);
+}
+
+const articles = manifest.articles
+	.map(({ slug }) => {
+		const entry = entriesBySlug.get(slug);
+		if (!entry)
+			throw new Error(
+				`Manifest article ${slug} is missing from the content collection`,
+			);
+		return entry;
+	})
+	.sort(
+		(left, right) =>
+			right.data.published.valueOf() - left.data.published.valueOf(),
+	);
+
+const siteUrl = Astro.site ?? Astro.url;
+const authorUrl = new URL(url("/authors/tai-song/"), siteUrl).toString();
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "Person",
+	"@id": `${authorUrl}#person`,
+	name: "Tai Song",
+	url: authorUrl,
+	mainEntityOfPage: authorUrl,
+	workExample: articles.map((entry) => ({
+		"@type": "CreativeWork",
+		name: entry.data.title,
+		url: getAbsolutePostUrlBySlug(entry.slug, siteUrl).toString(),
+	})),
+};
+const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
+---
+
+<MainGridLayout
+	title="Tai Song"
+	description="The complete eleven-article Tai Song archive on Shots of Rhapsody."
+	canonicalUrl={authorUrl}
+>
+	<script is:inline slot="head" type="application/ld+json" set:html={jsonLdString}></script>
+	<article data-author-archive="Tai Song" class="card-base rounded-[var(--radius-large)] px-6 py-7 md:px-9 md:py-8">
+		<h1 class="text-3xl font-bold text-90 mb-3">Tai Song</h1>
+		<p class="text-75 mb-3">Tai Song is the author of the eleven works in this verified archive.</p>
+		<p class="text-75 mb-6">The text and hero images were reconstructed from author-master Proton Docs exports. Historical publication links are preserved on individual article pages.</p>
+
+		<h2 class="text-2xl font-bold text-90 mb-4">All eleven articles</h2>
+		<ol class="space-y-5">
+			{articles.map((entry) => (
+				<li data-author-article-slug={entry.slug}>
+					<a class="link text-lg font-bold text-[var(--primary)]" href={getPostUrlBySlug(entry.slug)}>{entry.data.title}</a>
+					<p class="text-75 mt-1">{entry.data.subtitle}</p>
+					<p class="text-sm text-50 mt-1">
+						<time datetime={entry.data.published.toISOString()}>{entry.data.published.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}</time>
+						{entry.data.category && <> · {entry.data.category}</>}
+					</p>
+				</li>
+			))}
+		</ol>
+	</article>
+</MainGridLayout>

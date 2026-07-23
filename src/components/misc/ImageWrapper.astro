@@ -8,6 +8,7 @@ interface Props {
 	basePath?: string;
 	fit?: "cover" | "contain";
 	loading?: "eager" | "lazy";
+	ariaDescribedby?: string;
 }
 
 import { Image } from "astro:assets";
@@ -26,6 +27,7 @@ const {
 	basePath = "/",
 	fit = "cover",
 	loading = "lazy",
+	ariaDescribedby,
 } = Astro.props;
 const className = Astro.props.class;
 
@@ -42,6 +44,6 @@ const altText = alt ?? "";
 ---
 <div id={id} class:list={[className, 'overflow-hidden relative']}>
     <div class="transition absolute inset-0 dark:bg-black/10 bg-opacity-50 pointer-events-none"></div>
-    {isLocal && img && <Image src={img} alt={altText} class={imageClass} style={imageStyle} loading={loading}/>}
-    {!isLocal && <img src={isPublic ? url(src) : src} alt={altText} class={imageClass} style={imageStyle} loading={loading} decoding="async"/>}
+    {isLocal && img && <Image src={img} alt={altText} aria-describedby={ariaDescribedby} class={imageClass} style={imageStyle} loading={loading}/>}
+    {!isLocal && <img src={isPublic ? url(src) : src} alt={altText} aria-describedby={ariaDescribedby} class={imageClass} style={imageStyle} loading={loading} decoding="async"/>}
 </div>

@@ -65,7 +65,7 @@ Before merging the pull request, review every upstream commit and file change. U
 
 The inherited `pnpm type-check` command runs TypeScript with `--isolatedDeclarations` even though this site does not emit a declaration package. At the reviewed upstream baseline and after the local compatibility work, it exits with 11 `TS9007`, `TS9010`, and `TS9013` annotation-inference diagnostics across the existing constants, content schema, RSS route, plugins, and utilities.
 
-This command is retained to make the upstream issue visible, but it is not a migration gate. The required gates are `pnpm check` (`astro check`), `pnpm test:archive`, `pnpm lint:ci`, `pnpm build`, `pnpm archive:verify` when a manifest exists, and `pnpm verify:site`. Do not report the standalone declaration check as passing unless its upstream contract is deliberately repaired in a separately reviewed change.
+This command is retained to make the upstream issue visible, but it is not a migration gate. The required gates are `pnpm check` (`astro check`), `pnpm test:archive`, `pnpm lint:ci`, `pnpm build`, `pnpm archive:verify` when a manifest exists, and `pnpm verify:site`. Publication additionally requires `pnpm verify:release`. Do not report the standalone declaration check as passing unless its upstream contract is deliberately repaired in a separately reviewed change.
 
 ## Prohibited shortcuts
 
