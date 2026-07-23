@@ -1,18 +1,18 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { glob } from "astro/loaders";
+import { z } from "astro/zod";
+import { generateContentId } from "./utils/content-id";
 
-const httpsUrl = z
-	.string()
-	.url()
-	.refine(
-		(value) => {
-			try {
-				return new URL(value).protocol === "https:";
-			} catch {
-				return false;
-			}
-		},
-		{ message: "URL must use HTTPS" },
-	);
+const httpsUrl = z.url().refine(
+	(value) => {
+		try {
+			return new URL(value).protocol === "https:";
+		} catch {
+			return false;
+		}
+	},
+	{ message: "URL must use HTTPS" },
+);
 
 const postSchema = z
 	.object({
@@ -31,14 +31,14 @@ const postSchema = z
 		imageAlt: z.string().nullable().optional().default(null),
 		imageCaption: z.string().optional().default(""),
 		imageSourceUrl: z
-			.union([z.literal(""), z.string().url()])
+			.union([z.literal(""), z.url()])
 			.optional()
 			.default(""),
 		provenance: z
 			.object({
 				authority: z.literal("Proton Docs"),
 				captureFormat: z.literal("html-export"),
-				capturedAt: z.string().datetime({ offset: true }),
+				capturedAt: z.iso.datetime({ offset: true }),
 				wordCount: z.number().int().nonnegative().optional(),
 				bodyTextSha256: z.string().regex(/^sha256:[0-9a-f]{64}$/),
 				bodyBlockCount: z.number().int().positive(),
@@ -55,7 +55,7 @@ const postSchema = z
 		license: z
 			.object({
 				name: z.string(),
-				url: z.string().url().optional(),
+				url: z.url().optional(),
 			})
 			.optional(),
 
@@ -160,9 +160,19 @@ const postSchema = z
 	});
 
 const postsCollection = defineCollection({
+	loader: glob({
+		base: "./src/content/posts",
+		pattern: "**/*.{md,mdx}",
+		generateId: ({ entry, data }) => generateContentId(entry, data),
+	}),
 	schema: postSchema,
 });
 const specCollection = defineCollection({
+	loader: glob({
+		base: "./src/content/spec",
+		pattern: "**/*.{md,mdx}",
+		generateId: ({ entry, data }) => generateContentId(entry, data),
+	}),
 	schema: z.object({}),
 });
 export const collections = {

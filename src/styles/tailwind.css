@@ -1,0 +1,18 @@
+@import "tailwindcss" source("../");
+@import "./main.css";
+@import "./markdown.css";
+@import "./transition.css";
+@import "./scrollbar.css";
+@import "./photoswipe.css";
+@import "./expressive-code.css";
+
+@plugin "@tailwindcss/typography";
+
+/* Preserve the existing JavaScript-controlled class dark mode. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+	--font-sans: "Roboto", "sans-serif", ui-sans-serif, system-ui, sans-serif,
+		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+		"Noto Color Emoji";
+}
