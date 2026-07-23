@@ -1,15 +1,14 @@
 ---
-import path from "node:path";
+import { render } from "astro:content";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
-import { getSortedPosts } from "@utils/content-utils";
+import { getPostAssetBasePath, getSortedPosts } from "@utils/content-utils";
 import { getAbsoluteImageUrl } from "@utils/image-utils";
 import {
 	getAbsolutePostUrlBySlug,
-	getDir,
 	getPostUrlBySlug,
 	getSiteRootUrl,
 	url,
@@ -22,17 +21,17 @@ import { licenseConfig, profileConfig, siteConfig } from "../../config";
 export async function getStaticPaths() {
 	const blogEntries = await getSortedPosts();
 	return blogEntries.map((entry) => ({
-		params: { slug: entry.slug },
+		params: { slug: entry.id },
 		props: { entry },
 	}));
 }
 
 const { entry } = Astro.props;
-const { Content, headings, remarkPluginFrontmatter } = await entry.render();
+const { Content, headings, remarkPluginFrontmatter } = await render(entry);
 const siteUrl = Astro.site ?? Astro.url;
 const siteRoot = getSiteRootUrl(siteUrl);
-const postBasePath = path.join("content/posts/", getDir(entry.id));
-const canonicalUrl = getAbsolutePostUrlBySlug(entry.slug, siteUrl).toString();
+const postBasePath = getPostAssetBasePath(entry);
+const canonicalUrl = getAbsolutePostUrlBySlug(entry.id, siteUrl).toString();
 const author = entry.data.author || profileConfig.name;
 const description =
 	entry.data.description ||
@@ -64,7 +63,7 @@ const effectiveLicense =
 	entry.data.license ?? (licenseConfig.enable ? licenseConfig : undefined);
 const coverCaptionId =
 	isArchivePost && entry.data.imageCaption
-		? `hero-caption-${entry.slug}`
+		? `hero-caption-${entry.id}`
 		: undefined;
 
 const jsonLd = {

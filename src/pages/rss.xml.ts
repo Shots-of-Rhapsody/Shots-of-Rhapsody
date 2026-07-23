@@ -1,12 +1,7 @@
-import path from "node:path";
 import rss from "@astrojs/rss";
-import { getSortedPosts } from "@utils/content-utils";
+import { getPostAssetBasePath, getSortedPosts } from "@utils/content-utils";
 import { getAbsoluteImageUrl } from "@utils/image-utils";
-import {
-	getAbsolutePostUrlBySlug,
-	getDir,
-	getSiteRootUrl,
-} from "@utils/url-utils";
+import { getAbsolutePostUrlBySlug, getSiteRootUrl } from "@utils/url-utils";
 import type { APIContext } from "astro";
 import MarkdownIt from "markdown-it";
 import sanitizeHtml from "sanitize-html";
@@ -42,8 +37,8 @@ export async function GET(context: APIContext) {
 			const content =
 				typeof post.body === "string" ? post.body : String(post.body || "");
 			const cleanedContent = stripInvalidXmlChars(content);
-			const postUrl = getAbsolutePostUrlBySlug(post.slug, site).toString();
-			const basePath = path.join("content/posts/", getDir(post.id));
+			const postUrl = getAbsolutePostUrlBySlug(post.id, site).toString();
+			const basePath = getPostAssetBasePath(post);
 			const imageUrl = post.data.image
 				? await getAbsoluteImageUrl(post.data.image, basePath, site)
 				: undefined;
@@ -72,7 +67,7 @@ export async function GET(context: APIContext) {
 			)) {
 				if (!/^(?:https?:|data:|mailto:|tel:|#)/i.test(match[1])) {
 					throw new Error(
-						`RSS content for ${post.slug} contains relative URL ${match[1]}`,
+						`RSS content for ${post.id} contains relative URL ${match[1]}`,
 					);
 				}
 			}

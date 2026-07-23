@@ -1,10 +1,10 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import path from "node:path";
+import { render } from "astro:content";
+import { getPostAssetBasePath } from "@utils/content-utils";
 import { Icon } from "astro-icon/components";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
-import { getDir } from "../utils/url-utils";
 import ImageWrapper from "./misc/ImageWrapper.astro";
 import PostMetadata from "./PostMeta.astro";
 
@@ -42,7 +42,7 @@ const hasCover = image !== undefined && image !== null && image !== "";
 
 const coverWidth = "28%";
 
-const { remarkPluginFrontmatter } = await entry.render();
+const { remarkPluginFrontmatter } = await render(entry);
 const cardSummary = summary || description || remarkPluginFrontmatter.excerpt;
 const archiveWordCount = entry.data.provenance?.wordCount;
 const displayedWordCount = archiveWordCount ?? remarkPluginFrontmatter.words;
@@ -97,7 +97,7 @@ const displayedMinutes =
                   class="transition opacity-0 group-hover:opacity-100 scale-50 group-hover:scale-100 text-white text-5xl">
             </Icon>
         </div>
-        <ImageWrapper src={image} basePath={path.join("content/posts/", getDir(entry.id))} alt=""
+		<ImageWrapper src={image} basePath={getPostAssetBasePath(entry)} alt=""
                   class="w-full h-full">
         </ImageWrapper>
     </a>}

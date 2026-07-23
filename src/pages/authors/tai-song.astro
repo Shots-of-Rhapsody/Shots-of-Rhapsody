@@ -26,12 +26,10 @@ if (manifestSlugs.size !== EXPECTED_ARTICLE_COUNT) {
 const archiveEntries = await getCollection("posts", ({ data }) =>
 	Boolean(data.provenance),
 );
-const entriesBySlug = new Map(
-	archiveEntries.map((entry) => [entry.slug, entry]),
-);
+const entriesBySlug = new Map(archiveEntries.map((entry) => [entry.id, entry]));
 if (
 	archiveEntries.length !== EXPECTED_ARTICLE_COUNT ||
-	archiveEntries.some((entry) => !manifestSlugs.has(entry.slug))
+	archiveEntries.some((entry) => !manifestSlugs.has(entry.id))
 ) {
 	throw new Error(
 		"The Tai Song content collection differs from the fixed manifest",
@@ -64,7 +62,7 @@ const jsonLd = {
 	workExample: articles.map((entry) => ({
 		"@type": "CreativeWork",
 		name: entry.data.title,
-		url: getAbsolutePostUrlBySlug(entry.slug, siteUrl).toString(),
+		url: getAbsolutePostUrlBySlug(entry.id, siteUrl).toString(),
 	})),
 };
 const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
@@ -84,8 +82,8 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 		<h2 class="text-2xl font-bold text-90 mb-4">All eleven articles</h2>
 		<ol class="space-y-5">
 			{articles.map((entry) => (
-				<li data-author-article-slug={entry.slug}>
-					<a class="link text-lg font-bold text-[var(--primary)]" href={getPostUrlBySlug(entry.slug)}>{entry.data.title}</a>
+				<li data-author-article-slug={entry.id}>
+					<a class="link text-lg font-bold text-[var(--primary)]" href={getPostUrlBySlug(entry.id)}>{entry.data.title}</a>
 					<p class="text-75 mt-1">{entry.data.subtitle}</p>
 					<p class="text-sm text-50 mt-1">
 						<time datetime={entry.data.published.toISOString()}>{entry.data.published.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}</time>
