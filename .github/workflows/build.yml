@@ -47,7 +47,7 @@ jobs:
         run: pnpm test:migration
 
       - name: Verify the complete committed author archive
-        run: pnpm archive:verify -- --require-complete
+        run: pnpm archive:verify --require-complete
 
       - name: Test release audit tooling
         run: pnpm test:release-tools

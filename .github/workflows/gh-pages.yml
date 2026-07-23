@@ -52,7 +52,7 @@ jobs:
         run: pnpm test:release-tools
 
       - name: Verify the complete committed archive
-        run: pnpm archive:verify -- --require-complete
+        run: pnpm archive:verify --require-complete
 
       - name: Run non-writing lint
         run: pnpm lint:ci

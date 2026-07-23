@@ -29,7 +29,7 @@ After reviewing the plan, write the deterministic outputs:
 
 ```sh
 pnpm archive:import -- --slug <slug> --captured-at <UTC-ISO-TIMESTAMP> --write
-pnpm archive:verify -- --slug <slug> --with-raw
+pnpm archive:verify --slug <slug> --with-raw
 pnpm check
 pnpm build
 pnpm verify:site
@@ -56,7 +56,7 @@ After all 11 articles have been imported, run:
 
 ```sh
 pnpm test:archive
-pnpm archive:verify -- --with-raw --require-complete
+pnpm archive:verify --with-raw --require-complete
 pnpm lint:ci
 pnpm check
 pnpm build
