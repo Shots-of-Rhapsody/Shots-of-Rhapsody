@@ -51,6 +51,24 @@
 			"reason": "Immutable scanner source containing its own detection expressions."
 		},
 		{
+			"rules": [
+				"github-token",
+				"provider-token",
+				"private-key",
+				"local-user-path",
+				"email-address-review"
+			],
+			"path": "scripts/release/audit-repository.mjs",
+			"blob": "84c34f152c7d734d95d51724d3097754ad53effa",
+			"reason": "Immutable scanner source containing its own detection expressions."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "pnpm-lock.yaml",
+			"blob": "935d8687a7a935506794a429caa95cb1be366b7c",
+			"reason": "Immutable lockfile blob containing only reviewed public package metadata."
+		},
+		{
 			"rule": "email-address-review",
 			"path": "pnpm-lock.yaml",
 			"blob": "57492cff4268cb3d6316db5a4607587e199b44ec",

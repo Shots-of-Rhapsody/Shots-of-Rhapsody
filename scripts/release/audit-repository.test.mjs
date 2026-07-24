@@ -6,7 +6,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import { auditRepository } from "./audit-repository.mjs";
+import { auditGitMetadata, auditRepository } from "./audit-repository.mjs";
 
 const scriptPath = fileURLToPath(
 	new URL("./audit-repository.mjs", import.meta.url),
@@ -75,11 +75,10 @@ test("repository audit binds an accepted renamed blob to its current path, bytes
 		await mkdir(repository);
 		git(repository, ["init", "--initial-branch=main"]);
 		git(repository, ["config", "user.name", "Release Test"]);
-		git(repository, [
-			"config",
-			"user.email",
-			["123+release-test", "users.noreply.github.com"].join("@"),
-		]);
+		const publicEmail = ["123+release-test", "users.noreply.github.com"].join(
+			"@",
+		);
+		git(repository, ["config", "user.email", publicEmail]);
 
 		const bytes = Buffer.from([0, 1, 2, 3, 254, 255]);
 		await writeFile(path.join(repository, "podcast.bin"), bytes);
@@ -232,7 +231,8 @@ test("repository audit redacts and exact-scopes unreviewed Git identities", asyn
 			review.findings.some(
 				(finding) =>
 					finding.commit === identityCommit &&
-					finding.rule === "commit-author-email-review",
+					finding.rule === "commit-author-email-review" &&
+					finding.blocking,
 			),
 		);
 		assert.ok(
@@ -251,6 +251,21 @@ test("repository audit redacts and exact-scopes unreviewed Git identities", asyn
 		const serialized = JSON.stringify(review);
 		assert.equal(serialized.includes(privateName), false);
 		assert.equal(serialized.includes(privateEmail), false);
+		const metadataOnly = await auditGitMetadata({
+			cwd: repository,
+			policy,
+			revisions: ["HEAD"],
+			includeRefMetadata: false,
+		});
+		assert.ok(
+			metadataOnly.findings.some(
+				(finding) =>
+					finding.commit === identityCommit &&
+					finding.rule === "commit-author-email-review" &&
+					finding.blocking,
+			),
+			"the fast CI policy must enforce the same project identity boundary",
+		);
 
 		await writePolicy(policy, null, null, [
 			{
@@ -307,11 +322,10 @@ test("repository audit scans redacted commit and annotated-tag messages", async 
 		await mkdir(repository);
 		git(repository, ["init", "--initial-branch=main"]);
 		git(repository, ["config", "user.name", "Release Test"]);
-		git(repository, [
-			"config",
-			"user.email",
-			["123+release-test", "users.noreply.github.com"].join("@"),
-		]);
+		const publicEmail = ["123+release-test", "users.noreply.github.com"].join(
+			"@",
+		);
+		git(repository, ["config", "user.email", publicEmail]);
 		await writeFile(path.join(repository, "fixture.txt"), "fixture\n");
 		git(repository, ["add", "fixture.txt"]);
 		const secret = ["github", "pat", "A".repeat(24)].join("_");
@@ -321,7 +335,7 @@ test("repository audit scans redacted commit and annotated-tag messages", async 
 			"-m",
 			`Synthetic ${secret}`,
 			"-m",
-			`Reviewed-by: ${messageEmail}`,
+			`Reviewed-by: ${messageEmail}\n\nSigned-off-by: Release Test <${publicEmail}>`,
 		]);
 		const upstreamTip = git(repository, ["rev-parse", "HEAD"]);
 		await writeFile(path.join(repository, "project.txt"), "project\n");
@@ -334,6 +348,19 @@ test("repository audit scans redacted commit and annotated-tag messages", async 
 			`Signed-off-by: Release Fixture <${messageEmail}>`,
 		]);
 		const projectCommit = git(repository, ["rev-parse", "HEAD"]);
+		await writeFile(
+			path.join(repository, "project-noreply.txt"),
+			"project noreply\n",
+		);
+		git(repository, ["add", "project-noreply.txt"]);
+		git(repository, [
+			"commit",
+			"-m",
+			"Add noreply trailer fixture",
+			"-m",
+			`Signed-off-by: Release Test <${publicEmail}>`,
+		]);
+		const noreplySignedOffCommit = git(repository, ["rev-parse", "HEAD"]);
 		const protonUrl = [
 			"https://docs.proton.me/u/1/document",
 			"synthetic-document-id",
@@ -388,8 +415,35 @@ test("repository audit scans redacted commit and annotated-tag messages", async 
 			report.findings.some(
 				(finding) =>
 					finding.rule === "commit-message-email-review" &&
-					finding.commit === projectCommit,
+					finding.commit === projectCommit &&
+					finding.blocking,
 			),
+		);
+		assert.ok(
+			report.findings.some(
+				(finding) =>
+					finding.rule === "commit-signed-off-by" &&
+					finding.commit === projectCommit &&
+					finding.blocking,
+			),
+		);
+		assert.ok(
+			report.findings.some(
+				(finding) =>
+					finding.rule === "commit-signed-off-by" &&
+					finding.commit === noreplySignedOffCommit &&
+					finding.blocking,
+			),
+			"noreply addresses must not make project Signed-off-by trailers acceptable",
+		);
+		assert.equal(
+			report.findings.some(
+				(finding) =>
+					finding.rule === "commit-signed-off-by" &&
+					finding.commit === upstreamTip,
+			),
+			false,
+			"the exact reviewed upstream ancestry must remain exempt",
 		);
 		assert.ok(
 			report.findings.some(
@@ -454,6 +508,14 @@ test("repository audit scans redacted commit and annotated-tag messages", async 
 					finding.commit === projectCommit,
 			),
 			false,
+		);
+		assert.ok(
+			approvedMessages.findings.some(
+				(finding) =>
+					finding.rule === "commit-signed-off-by" &&
+					finding.commit === projectCommit,
+			),
+			"an exact message-email exception must not approve a project Signed-off-by trailer",
 		);
 		assert.equal(
 			approvedMessages.findings.some(

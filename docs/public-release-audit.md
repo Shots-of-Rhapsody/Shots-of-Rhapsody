@@ -23,6 +23,32 @@ run from being mistaken for release approval.
   including visible focus, logical tab order, menus, search, and both themes:
   pending
 
+## Private identity-rewrite evidence
+
+The approved project-history rewrite is complete, but it is not public-release
+approval:
+
+- An immutable private mirror of every pre-rewrite branch, tag, and ref is
+  retained as recovery evidence and passed strict object-integrity checks.
+- The rewrite mapped 90 project commits. Every mapped commit retained its file
+  tree, mapped parent topology, and author/committer timestamps.
+- All 337 commits in the reviewed Fuwari ancestry remained byte-identical.
+  The imported baseline `415fb97054e57bb85da86e2ca4ea4a1ae7266219`
+  and reviewed upstream tip `6d39b0dec41282e7852e23e032998a5789abee28`
+  remain exact.
+- Rewriting project commit metadata necessarily invalidated 31 existing GitHub
+  commit signatures. No replacement attestations were fabricated.
+- The maintained remote heads were reduced to `main` and the current release
+  branch. Obsolete identity-bearing branches and tags are not maintained.
+- The independent repository audit reported zero blocking and zero review
+  findings against the sanitized refs.
+
+Public release remains blocked until GitHub Support confirms that historical
+pull-request refs and cached commit views containing the superseded metadata
+have been purged. It also remains blocked until all 11 structured article
+signoffs are complete against the final release-candidate commit. Until both
+conditions pass, the repository must remain private.
+
 ## Accepted disclosures
 
 The repository owner has accepted public disclosure of these materials after
@@ -46,15 +72,16 @@ their original hero images remain All Rights Reserved.
   private and requires an explicit history-remediation decision.
 - Review-only findings, including email-address locations, must be classified
   as public project data or removed before this report can be marked passed.
-- The preliminary metadata scan has two redacted owner-review
-  classifications. One unapproved project name appears in author/committer
-  roles; its associated email metadata is GitHub noreply. A separate
-  non-GitHub-noreply `Signed-off-by` identity currently appears in 20 commit
-  messages. Both values are deliberately omitted. The exact finding count is
-  candidate-dependent and is emitted by the audit. Public disclosure or
-  history remediation requires explicit owner decisions. Commit-message
-  identity exceptions must be exact-object scoped; no global message-email
-  exception is permitted.
+- Project-owned commits must use an approved public project or GitHub-generated
+  identity. Personal mail domains and project `Signed-off-by` trailers are
+  blocking findings. The reviewed Fuwari ancestry is exempt only through its
+  exact pinned tip; secret and private-data rules still apply to every commit.
+- Routine pull-request CI enforces that identity policy for commits reachable
+  from the candidate `HEAD`. The final disclosure workflow separately fetches
+  and audits every provider branch, tag, note, and pull-request ref.
+- Commit-message identity exceptions must be exact-object scoped; no global
+  message-email exception is permitted, and an exception cannot permit a
+  project `Signed-off-by` trailer.
 
 The final completed report will record tool versions, commands, checksums,
 audited refs, accepted disclosures, and the audited tree SHA without including

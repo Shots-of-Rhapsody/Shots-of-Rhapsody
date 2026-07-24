@@ -575,11 +575,24 @@ function scanUnapprovedMessageEmails(
 				rule: `${location.kind}-message-email-review`,
 				path: location.path,
 				commit: location.commit ?? null,
-				blocking: false,
+				blocking: true,
 			},
 		];
 	}
 	return [];
+}
+
+function scanProjectSignedOffBy(message, location) {
+	if (!/^Signed-off-by\s*:/imu.test(message)) return [];
+	return [
+		{
+			type: location.type,
+			rule: `${location.kind}-signed-off-by`,
+			path: location.path,
+			commit: location.commit ?? null,
+			blocking: true,
+		},
+	];
 }
 
 function scanCommitMetadata(cwd, commits, policy) {
@@ -644,7 +657,7 @@ function scanCommitMetadata(cwd, commits, policy) {
 					rule: `commit-${role}-email-review`,
 					path: "commit-metadata",
 					commit,
-					blocking: false,
+					blocking: true,
 				});
 			}
 			if (allowedPublicNames.has(name) || identityObjectAllowed) {
@@ -656,7 +669,7 @@ function scanCommitMetadata(cwd, commits, policy) {
 					rule: `commit-${role}-name-review`,
 					path: "commit-metadata",
 					commit,
-					blocking: false,
+					blocking: true,
 				});
 			}
 		}
@@ -680,7 +693,7 @@ function scanCommitMetadata(cwd, commits, policy) {
 						rule: "commit-mergetag-email-review",
 						path: "commit-mergetag",
 						commit,
-						blocking: false,
+						blocking: true,
 					});
 				}
 				if (!allowedPublicNames.has(identity.name) && !identityObjectAllowed) {
@@ -689,7 +702,7 @@ function scanCommitMetadata(cwd, commits, policy) {
 						rule: "commit-mergetag-name-review",
 						path: "commit-mergetag",
 						commit,
-						blocking: false,
+						blocking: true,
 					});
 				}
 				const mergetagSeparator = mergetag.indexOf("\n\n");
@@ -697,6 +710,14 @@ function scanCommitMetadata(cwd, commits, policy) {
 					throw new Error(`Malformed mergetag payload in commit ${commit}`);
 				}
 				const mergetagMessage = mergetag.slice(mergetagSeparator + 2);
+				for (const finding of scanProjectSignedOffBy(mergetagMessage, {
+					type: "commit-metadata",
+					kind: "commit-mergetag",
+					path: "commit-mergetag",
+					commit,
+				})) {
+					findings.set(`${finding.rule}\0${commit}`, finding);
+				}
 				if (!allowedMessageEmailObjects.has(`${commit}\0mergetag-message`)) {
 					for (const finding of scanUnapprovedMessageEmails(mergetagMessage, {
 						type: "commit-metadata",
@@ -723,6 +744,16 @@ function scanCommitMetadata(cwd, commits, policy) {
 			!allowedMessageEmailObjects.has(`${commit}\0commit-message`)
 		) {
 			for (const finding of scanUnapprovedMessageEmails(message, {
+				type: "commit-metadata",
+				kind: "commit",
+				path: "commit-message",
+				commit,
+			})) {
+				findings.set(`${finding.rule}\0${commit}`, finding);
+			}
+		}
+		if (!trustedCommits.has(commit)) {
+			for (const finding of scanProjectSignedOffBy(message, {
 				type: "commit-metadata",
 				kind: "commit",
 				path: "commit-message",
@@ -787,7 +818,7 @@ function scanAnnotatedTagMetadata(cwd, repositoryRefs, policy) {
 				rule: "tagger-email-review",
 				path: "annotated-tag",
 				object: tag.object,
-				blocking: false,
+				blocking: true,
 			});
 		}
 		if (!allowedPublicNames.has(identity.name) && !identityObjectAllowed) {
@@ -796,7 +827,7 @@ function scanAnnotatedTagMetadata(cwd, repositoryRefs, policy) {
 				rule: "tagger-name-review",
 				path: "annotated-tag",
 				object: tag.object,
-				blocking: false,
+				blocking: true,
 			});
 		}
 		for (const finding of [
@@ -817,6 +848,46 @@ function scanAnnotatedTagMetadata(cwd, repositoryRefs, policy) {
 		}
 	}
 	return findings;
+}
+
+export async function auditGitMetadata(options) {
+	const cwd = path.resolve(options.cwd);
+	const policy =
+		typeof options.policy === "string"
+			? JSON.parse(await readFile(options.policy, "utf8"))
+			: options.policy;
+	const includeRefMetadata = options.includeRefMetadata !== false;
+	const repositoryRefs = includeRefMetadata ? refs(cwd) : [];
+	const revisions = options.revisions ?? ["--all"];
+	const commits = runGit(["rev-list", ...revisions], { cwd })
+		.split(/\r?\n/)
+		.filter(Boolean);
+	const commitMetadata = scanCommitMetadata(cwd, commits, policy);
+	const findings = [
+		...(includeRefMetadata ? scanRefMetadata(repositoryRefs) : []),
+		...commitMetadata.findings,
+		...(includeRefMetadata
+			? scanAnnotatedTagMetadata(cwd, repositoryRefs, policy)
+			: []),
+	].sort((left, right) =>
+		`${left.rule}:${left.path}:${left.commit ?? ""}`.localeCompare(
+			`${right.rule}:${right.path}:${right.commit ?? ""}`,
+		),
+	);
+	return {
+		repositoryRefs,
+		commits,
+		findings,
+		summary: {
+			...commitMetadata.summary,
+			annotatedTagCount: repositoryRefs.filter(
+				(ref) => ref.name.startsWith("refs/tags/") && ref.type === "tag",
+			).length,
+			lightweightTagCount: repositoryRefs.filter(
+				(ref) => ref.name.startsWith("refs/tags/") && ref.type !== "tag",
+			).length,
+		},
+	};
 }
 
 function validateAcceptedDisclosures(cwd, policy, objects) {
@@ -866,30 +937,19 @@ export async function auditRepository(options) {
 	).trim();
 	const head = runGit(["rev-parse", "HEAD"], { cwd }).trim();
 	const tree = runGit(["rev-parse", "HEAD^{tree}"], { cwd }).trim();
-	const repositoryRefs = refs(cwd);
-	const commits = runGit(["rev-list", "--all"], { cwd })
-		.split(/\r?\n/)
-		.filter(Boolean);
+	const gitMetadataAudit = await auditGitMetadata({ cwd, policy });
+	const { commits, repositoryRefs } = gitMetadataAudit;
 	const objects = enumerateObjects(cwd);
 	const historicalPaths = enumerateHistoricalPaths(cwd);
 	const pathFindings = scanPaths(historicalPaths);
 	const contentFindings = scanContent(cwd, commits, policy);
-	const refMetadataFindings = scanRefMetadata(repositoryRefs);
-	const commitMetadata = scanCommitMetadata(cwd, commits, policy);
-	const tagMetadataFindings = scanAnnotatedTagMetadata(
-		cwd,
-		repositoryRefs,
-		policy,
-	);
 	const gitleaksFindings = await parseGitleaksReport(options.gitleaksReport);
 	const disclosureFindings = validateAcceptedDisclosures(cwd, policy, objects);
 	const findings = redactFindingPaths(
 		[
 			...pathFindings,
 			...contentFindings,
-			...refMetadataFindings,
-			...commitMetadata.findings,
-			...tagMetadataFindings,
+			...gitMetadataAudit.findings,
 			...gitleaksFindings,
 			...disclosureFindings,
 		].sort((left, right) =>
@@ -924,13 +984,7 @@ export async function auditRepository(options) {
 		blobCount: objects.length,
 		historicalPathCount: historicalPaths.size,
 		gitMetadata: {
-			...commitMetadata.summary,
-			annotatedTagCount: repositoryRefs.filter(
-				(ref) => ref.name.startsWith("refs/tags/") && ref.type === "tag",
-			).length,
-			lightweightTagCount: repositoryRefs.filter(
-				(ref) => ref.name.startsWith("refs/tags/") && ref.type !== "tag",
-			).length,
+			...gitMetadataAudit.summary,
 		},
 		largestBlobs,
 		acceptedDisclosures: policy.acceptedDisclosures ?? [],
