@@ -7,13 +7,13 @@ import { parse, parseFragment } from "parse5";
 import { inspectPng, sha256 } from "./archive/lib/integrity.js";
 import { bodyTextSha256, renderBodyHtml } from "./archive/lib/render.js";
 import { evaluateReviewSignoffs } from "./archive/lib/review-signoff.js";
+import { inspectBuiltImages } from "./verify-images.mjs";
 
 const DEFAULT_DIST = "dist";
 const DEFAULT_SITE = "https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/";
 const EXPECTED_ARCHIVE_COUNT = 11;
 const REQUIRED_NON_POST_ROUTES = [
 	"",
-	"2/",
 	"about/",
 	"archive/",
 	"authors/tai-song/",
@@ -85,17 +85,6 @@ function escapeRegExp(value) {
 	return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-function markedField(html, field) {
-	const escapedField = escapeRegExp(field);
-	const match = html.match(
-		new RegExp(
-			`<([a-z][a-z0-9]*)\\b[^>]*data-archive-field=["']${escapedField}["'][^>]*>([\\s\\S]*?)<\\/\\1>`,
-			"i",
-		),
-	);
-	return match ? visibleText(match[2]) : undefined;
-}
-
 function elementsWithAttribute(root, name) {
 	const matches = [];
 	const visit = (node) => {
@@ -106,6 +95,52 @@ function elementsWithAttribute(root, name) {
 	};
 	visit(root);
 	return matches;
+}
+
+function attributeValue(node, name) {
+	return node.attrs?.find((attribute) => attribute.name === name)?.value;
+}
+
+function nodeText(node) {
+	if (node.nodeName === "#text") return node.value ?? "";
+	return (node.childNodes ?? []).map(nodeText).join("");
+}
+
+function trimSerializationBoundaryWhitespace(value) {
+	return value.replace(/^[\t\n\r ]+|[\t\n\r ]+$/gu, "");
+}
+
+function markedFieldFromDocument(document, field) {
+	const matches = elementsWithAttribute(document, "data-archive-field").filter(
+		(node) => attributeValue(node, "data-archive-field") === field,
+	);
+	return matches.length === 1
+		? trimSerializationBoundaryWhitespace(nodeText(matches[0]))
+		: undefined;
+}
+
+export function markedField(html, field) {
+	return markedFieldFromDocument(parse(html), field);
+}
+
+function verifyPublicationTime(
+	container,
+	marker,
+	expectedPublished,
+	expectedText,
+	label,
+	failures,
+) {
+	const times = elementsWithAttribute(container, marker).filter(
+		(node) => node.tagName === "time",
+	);
+	if (
+		times.length !== 1 ||
+		attributeValue(times[0], "datetime") !== expectedPublished ||
+		nodeText(times[0]).trim() !== expectedText
+	) {
+		failures.push(`${label}: visible publication date differs from snapshot`);
+	}
 }
 
 function normalizedArchiveNode(node) {
@@ -189,6 +224,10 @@ const PRIVATE_BUILD_REFERENCE_PATTERNS = [
 	/https?:\/\/[^\s"'<>]*proton[^\s"'<>]*/iu,
 	/\bprotonusercontent\.(?:com|ch)\b/iu,
 	/\.proton-import(?:[\\/]|\b)/iu,
+	/\bfile:\/\/[^\s"'<>]*/iu,
+	/\b(?:localhost|127\.0\.0\.1)(?::[0-9]+)?\b/iu,
+	/\b[A-Za-z]:[\\/]Users[\\/][^\\/\s]+/iu,
+	/(?:^|[\s"'(])\/(?:home|Users)\/[^/\s]+\//u,
 ];
 
 function normalizedReferenceText(value) {
@@ -1060,6 +1099,25 @@ async function verifyArchiveManifest(
 		const html = await readFile(pagePath, "utf8");
 		const document = parse(html);
 		const expectedUrl = new URL(`posts/${slug}/`, site).toString();
+		if (expectedPublished) {
+			const expectedDateOnly = expectedPublished.slice(0, 10);
+			verifyPublicationTime(
+				document,
+				"data-post-published",
+				expectedPublished,
+				expectedDateOnly,
+				`${label} metadata`,
+				failures,
+			);
+			verifyPublicationTime(
+				document,
+				"data-license-published",
+				expectedPublished,
+				expectedDateOnly,
+				`${label} license`,
+				failures,
+			);
+		}
 		const canonical = getCanonical(html, label, failures);
 		if (canonical !== expectedUrl)
 			failures.push(`${label}: canonical URL is not the expected local route`);
@@ -1093,7 +1151,7 @@ async function verifyArchiveManifest(
 			["author", `By ${post.author}`],
 			["image-caption", expectedCaption],
 		]) {
-			if (markedField(html, field) !== expected)
+			if (markedFieldFromDocument(document, field) !== expected)
 				failures.push(`${label}: visible ${field} differs from snapshot`);
 		}
 		const authorField = html.match(
@@ -1124,8 +1182,10 @@ async function verifyArchiveManifest(
 				`${label}: unexpected historical publication link is visible`,
 			);
 		}
-		const licenseBlocks = tags(html, "div").filter((tag) =>
-			Object.hasOwn(tag.attributes, "data-license-name"),
+		const licenseBlocks = ["aside", "div"].flatMap((tagName) =>
+			tags(html, tagName).filter((tag) =>
+				Object.hasOwn(tag.attributes, "data-license-name"),
+			),
 		);
 		if (
 			licenseBlocks.length !== 1 ||
@@ -1171,6 +1231,9 @@ async function verifyArchiveManifest(
 				["category", jsonLd.articleSection, post.category],
 				["license", jsonLd.copyrightNotice, "All Rights Reserved"],
 				["caption", jsonLd.image?.caption, expectedCaption],
+				["image MIME type", jsonLd.image?.encodingFormat, "image/jpeg"],
+				["image width", jsonLd.image?.width, 1200],
+				["image height", jsonLd.image?.height, 1200],
 			];
 			if (provenance?.wordCount !== undefined) {
 				expectedValues.push([
@@ -1202,6 +1265,18 @@ async function verifyArchiveManifest(
 				if (values.length !== 1 || values[0] !== expectedAlt)
 					failures.push(`${label}: ${selector} differs from the alt contract`);
 			}
+			for (const [selector, expected] of [
+				["og:image:type", "image/jpeg"],
+				["og:image:width", "1200"],
+				["og:image:height", "1200"],
+			]) {
+				const values = metaContent(html, selector);
+				if (values.length !== 1 || values[0] !== expected) {
+					failures.push(
+						`${label}: ${selector} differs from social image metadata`,
+					);
+				}
+			}
 		}
 
 		const heroMatch = html.match(
@@ -1215,6 +1290,47 @@ async function verifyArchiveManifest(
 			failures.push(`${label}: visible hero or its alt text differs`);
 		} else {
 			const hero = heroImages[0];
+			const heroSources = heroMatch ? tags(heroMatch[1], "source") : [];
+			const expectedHeroWidths = [640, 960, 1280, 1600, 2048].filter(
+				(width) => width <= entry.image?.width,
+			);
+			if (!expectedHeroWidths.includes(entry.image?.width)) {
+				expectedHeroWidths.push(entry.image?.width);
+			}
+			const srcsetWidths = (value = "") =>
+				value
+					.split(",")
+					.map((candidate) => Number(candidate.trim().match(/\s(\d+)w$/u)?.[1]))
+					.filter(Number.isFinite);
+			const expectedHeroSizes = hero.attributes.sizes;
+			if (
+				heroSources.length !== 1 ||
+				heroSources[0].attributes.type !== "image/avif" ||
+				!expectedHeroSizes?.includes("100vw") ||
+				heroSources[0].attributes.sizes !== expectedHeroSizes ||
+				JSON.stringify(srcsetWidths(heroSources[0].attributes.srcset)) !==
+					JSON.stringify(expectedHeroWidths) ||
+				!heroSources[0].attributes.srcset
+					?.split(",")
+					.every((candidate) => /\.avif\s+\d+w$/u.test(candidate.trim()))
+			) {
+				failures.push(`${label}: hero AVIF source contract is invalid`);
+			}
+			if (
+				hero.attributes.sizes !== expectedHeroSizes ||
+				JSON.stringify(srcsetWidths(hero.attributes.srcset)) !==
+					JSON.stringify(expectedHeroWidths) ||
+				!hero.attributes.src?.endsWith(".webp") ||
+				!hero.attributes.srcset
+					?.split(",")
+					.every((candidate) => /\.webp\s+\d+w$/u.test(candidate.trim())) ||
+				hero.attributes.loading !== "eager" ||
+				hero.attributes.fetchpriority !== "high"
+			) {
+				failures.push(
+					`${label}: hero WebP fallback, responsive sizes, or LCP priority is invalid`,
+				);
+			}
 			const captionTags = heroMatch
 				? tags(heroMatch[1], "figcaption").filter(
 						(tag) => tag.attributes["data-archive-field"] === "image-caption",
@@ -1277,6 +1393,12 @@ async function verifyArchiveManifest(
 				mediaImages[0].attributes.url !== jsonLd?.image?.url
 			) {
 				failures.push(`${label}: RSS hero URL differs from the local page`);
+			} else if (
+				mediaImages[0].attributes.type !== "image/jpeg" ||
+				mediaImages[0].attributes.width !== "1200" ||
+				mediaImages[0].attributes.height !== "1200"
+			) {
+				failures.push(`${label}: RSS social image metadata is invalid`);
 			}
 			if (xmlElementText(item, "media:description") !== post.imageCaption) {
 				failures.push(`${label}: RSS image caption differs from snapshot`);
@@ -1438,6 +1560,77 @@ async function verifyLaunchRss(distRoot, manifest, site, failures) {
 	return items.length;
 }
 
+async function readManifestPublicationDates(repoRoot, manifest, failures) {
+	const result = new Map();
+	for (const article of manifest.articles) {
+		const snapshotPath = resolveManifestPath(
+			repoRoot,
+			article.paths?.snapshot,
+			`Author-master ${article.slug} snapshot`,
+			failures,
+		);
+		if (!snapshotPath || !(await isFile(snapshotPath))) continue;
+		try {
+			const snapshot = JSON.parse(await readFile(snapshotPath, "utf8"));
+			const published = isoString(snapshot.published);
+			if (!published || published !== snapshot.published) {
+				failures.push(
+					`Author-master ${article.slug} snapshot publication date is not canonical UTC`,
+				);
+				continue;
+			}
+			result.set(article.slug, published);
+		} catch (error) {
+			failures.push(
+				`Author-master ${article.slug} snapshot cannot supply a publication date (${error.message})`,
+			);
+		}
+	}
+	return result;
+}
+
+async function verifyHomePublicationDates(
+	repoRoot,
+	distRoot,
+	manifest,
+	failures,
+) {
+	const publishedBySlug = await readManifestPublicationDates(
+		repoRoot,
+		manifest,
+		failures,
+	);
+	const cards = [];
+	for (const relativePath of ["index.html", path.join("2", "index.html")]) {
+		const pagePath = path.join(distRoot, relativePath);
+		if (!(await isFile(pagePath))) continue;
+		const document = parse(await readFile(pagePath, "utf8"));
+		cards.push(...elementsWithAttribute(document, "data-post-card-slug"));
+	}
+	const slugs = cards.map((card) =>
+		attributeValue(card, "data-post-card-slug"),
+	);
+	compareExactValues(
+		slugs,
+		manifest.articles.map((article) => article.slug),
+		"home publication-date cards",
+		failures,
+	);
+	for (const card of cards) {
+		const slug = attributeValue(card, "data-post-card-slug");
+		const published = publishedBySlug.get(slug);
+		if (!published) continue;
+		verifyPublicationTime(
+			card,
+			"data-post-published",
+			published,
+			published.slice(0, 10),
+			`home card ${slug}`,
+			failures,
+		);
+	}
+}
+
 async function verifyArchiveIndex(distRoot, manifest, site, failures) {
 	const archivePath = path.join(distRoot, "archive", "index.html");
 	if (!(await isFile(archivePath))) {
@@ -1464,26 +1657,10 @@ async function verifyArchiveIndex(distRoot, manifest, site, failures) {
 			);
 		}
 	}
-	const islands = tags(html, "astro-island").filter((tag) =>
-		String(tag.attributes["component-url"] ?? "").includes("ArchivePanel"),
-	);
-	if (islands.length !== 1) {
-		failures.push("archive route must contain exactly one ArchivePanel island");
-	} else {
-		for (const attributeName of [
-			"component-url",
-			"renderer-url",
-			"before-hydration-url",
-		]) {
-			await resolveBuiltUrl(
-				islands[0].attributes[attributeName],
-				new URL("archive/", site),
-				distRoot,
-				site,
-				`archive Astro island ${attributeName}`,
-				failures,
-			);
-		}
+	if (tags(html, "astro-island").length !== 0) {
+		failures.push(
+			"archive route must be server-rendered without client islands",
+		);
 	}
 	return entries.length;
 }
@@ -1546,6 +1723,11 @@ async function verifyAuthorPage(repoRoot, distRoot, manifest, site, failures) {
 		failures,
 	);
 	const titles = await readManifestTitles(repoRoot, manifest, failures);
+	const publishedBySlug = await readManifestPublicationDates(
+		repoRoot,
+		manifest,
+		failures,
+	);
 	for (const node of articleNodes) {
 		const slug = node.attrs?.find(
 			(attribute) => attribute.name === "data-author-article-slug",
@@ -1576,6 +1758,23 @@ async function verifyAuthorPage(repoRoot, distRoot, manifest, site, failures) {
 		) {
 			failures.push(
 				`Tai Song author work ${slug} has an incorrect link or title`,
+			);
+		}
+		const published = publishedBySlug.get(slug);
+		if (published) {
+			const expectedText = new Intl.DateTimeFormat("en-US", {
+				year: "numeric",
+				month: "long",
+				day: "numeric",
+				timeZone: "UTC",
+			}).format(new Date(published));
+			verifyPublicationTime(
+				node,
+				"data-author-published",
+				published,
+				expectedText,
+				`Tai Song author work ${slug}`,
+				failures,
 			);
 		}
 	}
@@ -1737,7 +1936,7 @@ export async function verifyNoPrivateBuildReferences(files, failures) {
 		try {
 			if (artifactBufferHasPrivateReference(await readFile(file))) {
 				failures.push(
-					`built artifact ${index + 1} contains a private Proton or raw-source reference`,
+					`built artifact ${index + 1} contains a private, raw-source, or local-runtime reference`,
 				);
 			}
 		} catch {
@@ -1805,6 +2004,7 @@ export async function verifyBuiltSite({
 			failures,
 		);
 		rssItems = await verifyLaunchRss(distRoot, manifest, site, failures);
+		await verifyHomePublicationDates(repoRoot, distRoot, manifest, failures);
 		archiveEntries = await verifyArchiveIndex(
 			distRoot,
 			manifest,
@@ -1831,6 +2031,12 @@ export async function verifyBuiltSite({
 	await verifyRobots(distRoot, site, failures);
 	await verifyNoPrivateBuildReferences(files, failures);
 	verifyNoPodcastArtifacts(files, distRoot, failures);
+	const imageVerification = await inspectBuiltImages({
+		dist: distRoot,
+		repoRoot,
+		files,
+	});
+	failures.push(...imageVerification.failures);
 
 	if (failures.length > 0) {
 		throw new Error(
@@ -1844,6 +2050,7 @@ export async function verifyBuiltSite({
 		pagefindRecords,
 		archiveEntries,
 		authorWorks,
+		imageStats: imageVerification.stats,
 		notices,
 	};
 }

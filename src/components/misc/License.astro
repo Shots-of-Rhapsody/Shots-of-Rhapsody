@@ -1,18 +1,12 @@
 ---
-import { Icon } from "astro-icon/components";
-import { licenseConfig, profileConfig } from "../../config";
-import I18nKey from "../../i18n/i18nKey";
-import { i18n } from "../../i18n/translation";
-import { formatDateToYYYYMMDD } from "../../utils/date-utils";
+import { formatDateToYYYYMMDD } from "@utils/date-utils";
+import { licenseConfig, profileConfig } from "@/config";
 
 interface Props {
 	title: string;
 	pubDate: Date;
 	author?: string;
-	license?: {
-		name: string;
-		url?: string;
-	};
+	license?: { name: string; url?: string };
 	canonicalUrl: string;
 	class?: string;
 }
@@ -21,34 +15,48 @@ const { title, pubDate, author, license, canonicalUrl } = Astro.props;
 const className = Astro.props.class;
 const authorName = author || profileConfig.name;
 const licenseDetails = license ?? licenseConfig;
-const isCreativeCommons = licenseDetails.name
-	.toLowerCase()
-	.includes("creative commons");
 ---
-<div data-license-name={licenseDetails.name} class={`relative transition overflow-hidden bg-[var(--license-block-bg)] py-5 px-6 ${className}`}>
-    <div class="transition font-bold text-black/75 dark:text-white/75">
-        {title}
-    </div>
-    <a href={canonicalUrl} class="link text-[var(--primary)]">
-        {canonicalUrl}
-    </a>
-    <div class="flex flex-wrap gap-6 mt-2">
-        <div>
-            <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.author)}</div>
-            <div class="transition text-black/75 dark:text-white/75 line-clamp-2">{authorName}</div>
-        </div>
-        <div>
-            <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.publishedAt)}</div>
-            <div class="transition text-black/75 dark:text-white/75 line-clamp-2">{formatDateToYYYYMMDD(pubDate)}</div>
-        </div>
-        <div>
-            <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.license)}</div>
-			{licenseDetails.url ? (
-				<a href={licenseDetails.url} target="_blank" rel="noopener noreferrer" class="link text-[var(--primary)] line-clamp-2">{licenseDetails.name}</a>
-			) : (
-				<div class="transition text-black/75 dark:text-white/75 line-clamp-2">{licenseDetails.name}</div>
-			)}
-        </div>
-    </div>
-    <Icon name={isCreativeCommons ? "fa6-brands:creative-commons" : "material-symbols:copyright-rounded"} class="transition text-[15rem] absolute pointer-events-none right-6 top-1/2 -translate-y-1/2 text-black/5 dark:text-white/5"></Icon>
-</div>
+
+<aside data-license-name={licenseDetails.name} class:list={["rights-note", className]}>
+	<p class="rights-note__label">Publication and rights</p>
+	<p><strong>{title}</strong> by {authorName}</p>
+	<p>
+		Published <time datetime={pubDate.toISOString()} data-license-published>{formatDateToYYYYMMDD(pubDate)}</time>
+		· {licenseDetails.url ? (
+			<a href={licenseDetails.url} rel="noopener noreferrer">{licenseDetails.name}</a>
+		) : licenseDetails.name}
+	</p>
+	<a class="rights-note__canonical" href={canonicalUrl}>{canonicalUrl}</a>
+</aside>
+
+<style>
+	.rights-note {
+		max-width: 66ch;
+		margin-inline: auto;
+		border-inline-start: 3px solid var(--seal);
+		background: var(--license-block-bg);
+		padding: 1rem 1.2rem;
+		color: var(--ink-soft);
+		font-size: 0.76rem;
+	}
+
+	.rights-note p {
+		margin: 0.15rem 0;
+	}
+
+	.rights-note__label {
+		color: var(--seal);
+		font-weight: 750;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+
+	.rights-note a {
+		color: var(--celadon);
+	}
+
+	.rights-note__canonical {
+		display: block;
+		overflow-wrap: anywhere;
+	}
+</style>

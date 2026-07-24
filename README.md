@@ -38,20 +38,43 @@ The strict release verifier reconciles the eleven manifest entries with built ro
 
 ## Development
 
-The project uses Astro and the Fuwari theme foundation. Use the pinned package manager and lockfile:
+The project uses Astro's static output and retains the reviewed Fuwari Git
+lineage, while the public interface is a project-specific Song-literati reading
+system. It uses one self-hosted Latin Noto Serif family, native browser
+controls, responsive Astro images, and Pagefind's static search index. There is
+no client framework, CMS, database, analytics service, or application server.
+
+Use Node.js 24 and the pinned package manager and lockfile:
 
 ```shell
 pnpm install --frozen-lockfile
-pnpm check
 pnpm test:archive
+pnpm archive:verify --require-complete
+pnpm lint:ci
+pnpm type-check
 pnpm build
 pnpm verify:site
 pnpm verify:release
+pnpm test:e2e
 ```
 
 `pnpm verify:site` validates the complete built archive while permitting the exact empty human-review template and reporting it as pending. `pnpm verify:release` is the publication gate: it fails closed until all eleven structured human-review signoffs are genuine and complete.
 
 Fuwari's pinned lineage and review-only update procedure are documented in [Fuwari upstream synchronization](docs/upstream-sync.md). Upstream is fetch-only; project changes are pushed only to the Shots of Rhapsody repository.
+
+## Hosting independence
+
+GitHub Actions builds the site from a clean checkout and the frozen lockfile.
+GitHub Pages receives only the generated static artifact: HTML, CSS, small
+browser modules, Pagefind data, responsive image derivatives, RSS, sitemap,
+robots policy, and JSON-LD. The live site needs no environment secret, local
+path, local process, Proton export, Python utility, API, or database. Once a
+verified artifact is deployed, the development computer can be offline without
+affecting the website.
+
+Raw author-master exports remain ignored local verification evidence. They are
+required only for the optional private raw-backed comparison—not to build,
+deploy, search, or serve the public site.
 
 ## Repository
 

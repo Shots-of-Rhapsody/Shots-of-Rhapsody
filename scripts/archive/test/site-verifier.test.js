@@ -11,6 +11,7 @@ import {
 	frontmatterDraftValue,
 	hasPrivateProtonReference,
 	markedAttributeValues,
+	markedField,
 	parseArguments,
 	validateRobotsText,
 	verifyNoPrivateBuildReferences,
@@ -46,6 +47,23 @@ test("built-site body comparison retains exact text, marks, and blocks", () => {
 	assert.notDeepEqual(
 		archiveBodyStructure("<p>Exact text</p>"),
 		archiveBodyStructure(source),
+	);
+});
+
+test("visible archive fields ignore only serialization boundary whitespace", () => {
+	const html = `<!doctype html><html><body>
+		<h1 data-archive-field="title">
+			The  Seventh Skin
+		</h1>
+	</body></html>`;
+	assert.equal(markedField(html, "title"), "The  Seventh Skin");
+	assert.equal(markedField(html, "missing"), undefined);
+	assert.equal(
+		markedField(
+			'<p data-archive-field="author">\nBy <a href="/author/">Tai Song</a>\n</p>',
+			"author",
+		),
+		"By Tai Song",
 	);
 });
 
@@ -139,6 +157,20 @@ test("full decoded Pagefind records reject nested private source data", () => {
 		hasPrivateProtonReference({ rawSourcePath: "redacted-but-forbidden" }),
 		true,
 	);
+	assert.equal(
+		hasPrivateProtonReference("http://localhost:4321/preview"),
+		true,
+	);
+	assert.equal(
+		hasPrivateProtonReference("file:///synthetic/local-preview"),
+		true,
+	);
+	assert.equal(
+		hasPrivateProtonReference(
+			["C:", "Users", "synthetic", "preview"].join("\\"),
+		),
+		true,
+	);
 });
 
 test("all built artifacts are scanned as bytes without exposing leak details", async (context) => {
@@ -165,7 +197,7 @@ test("all built artifacts are scanned as bytes without exposing leak details", a
 	const failures = [];
 	await verifyNoPrivateBuildReferences([cleanFile, privateFile], failures);
 	assert.deepEqual(failures, [
-		"built artifact 2 contains a private Proton or raw-source reference",
+		"built artifact 2 contains a private, raw-source, or local-runtime reference",
 	]);
 	assert.equal(failures[0].includes(rawSourcePath), false);
 	assert.equal(failures[0].includes(path.basename(privateFile)), false);

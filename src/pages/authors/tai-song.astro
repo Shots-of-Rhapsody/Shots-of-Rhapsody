@@ -1,54 +1,29 @@
 ---
 import { getCollection } from "astro:content";
+import EditorialWorkCard from "@components/EditorialWorkCard.astro";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import {
 	getAbsolutePostUrlBySlug,
 	getPostUrlBySlug,
 	url,
 } from "@utils/url-utils";
-import manifest from "../../../provenance/tai-song/manifest.json";
-
-const EXPECTED_ARTICLE_COUNT = 11;
-if (manifest.author.name !== "Tai Song") {
-	throw new Error("The Tai Song manifest author is invalid");
-}
-if (manifest.articles.length !== EXPECTED_ARTICLE_COUNT) {
-	throw new Error(
-		`The Tai Song author page requires exactly ${EXPECTED_ARTICLE_COUNT} manifest articles`,
-	);
-}
-
-const manifestSlugs = new Set(manifest.articles.map((article) => article.slug));
-if (manifestSlugs.size !== EXPECTED_ARTICLE_COUNT) {
-	throw new Error("The Tai Song manifest contains duplicate article slugs");
-}
+import {
+	EDITORIAL_GROUPS,
+	entriesForSlugs,
+	getFeaturedEntries,
+	indexEditorialEntries,
+} from "@/data/editorial";
 
 const archiveEntries = await getCollection("posts", ({ data }) =>
 	Boolean(data.provenance),
 );
-const entriesBySlug = new Map(archiveEntries.map((entry) => [entry.id, entry]));
-if (
-	archiveEntries.length !== EXPECTED_ARTICLE_COUNT ||
-	archiveEntries.some((entry) => !manifestSlugs.has(entry.id))
-) {
-	throw new Error(
-		"The Tai Song content collection differs from the fixed manifest",
-	);
-}
-
-const articles = manifest.articles
-	.map(({ slug }) => {
-		const entry = entriesBySlug.get(slug);
-		if (!entry)
-			throw new Error(
-				`Manifest article ${slug} is missing from the content collection`,
-			);
-		return entry;
-	})
-	.sort(
-		(left, right) =>
-			right.data.published.valueOf() - left.data.published.valueOf(),
-	);
+const indexedEntries = indexEditorialEntries(archiveEntries);
+const featuredEntries = getFeaturedEntries(indexedEntries);
+const groups = EDITORIAL_GROUPS.map((group) => ({
+	...group,
+	entries: entriesForSlugs(indexedEntries, group.slugs),
+}));
+const articles = groups.flatMap((group) => group.entries);
 
 const siteUrl = Astro.site ?? Astro.url;
 const authorUrl = new URL(url("/authors/tai-song/"), siteUrl).toString();
@@ -70,27 +45,206 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 
 <MainGridLayout
 	title="Tai Song"
-	description="The complete eleven-article Tai Song archive on Shots of Rhapsody."
+	description="The complete eleven-work Tai Song archive on Shots of Rhapsody."
 	canonicalUrl={authorUrl}
 >
 	<script is:inline slot="head" type="application/ld+json" set:html={jsonLdString}></script>
-	<article data-author-archive="Tai Song" class="card-base rounded-[var(--radius-large)] px-6 py-7 md:px-9 md:py-8">
-		<h1 class="text-3xl font-bold text-90 mb-3">Tai Song</h1>
-		<p class="text-75 mb-3">Tai Song is the author of the eleven works in this verified archive.</p>
-		<p class="text-75 mb-6">The text and hero images were reconstructed from author-master Proton Docs exports. Historical publication links are preserved on individual article pages.</p>
+	<article data-author-archive="Tai Song" class="author-page">
+		<header class="author-intro manuscript-panel">
+			<p class="author-intro__kicker">Author</p>
+			<h1>Tai Song</h1>
+			<p>
+				Tai Song is the author of the eleven works collected in Shots of
+				Rhapsody—fiction, poetry, and reflections shaped by memory, change,
+				kinship, and imagination.
+			</p>
+		</header>
 
-		<h2 class="text-2xl font-bold text-90 mb-4">All eleven articles</h2>
-		<ol class="space-y-5">
-			{articles.map((entry) => (
-				<li data-author-article-slug={entry.id}>
-					<a class="link text-lg font-bold text-[var(--primary)]" href={getPostUrlBySlug(entry.id)}>{entry.data.title}</a>
-					<p class="text-75 mt-1">{entry.data.subtitle}</p>
-					<p class="text-sm text-50 mt-1">
-						<time datetime={entry.data.published.toISOString()}>{entry.data.published.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}</time>
-						{entry.data.category && <> · {entry.data.category}</>}
-					</p>
-				</li>
-			))}
-		</ol>
+		<nav class="author-start" aria-labelledby="author-start-title">
+			<div>
+				<p class="author-intro__kicker">Three entrances</p>
+				<h2 id="author-start-title">Start here</h2>
+			</div>
+			<ol>
+				{featuredEntries.map((entry) => (
+					<li>
+						<a href={getPostUrlBySlug(entry.id)}>
+							<span>{entry.data.title}</span>
+							<span aria-hidden="true">→</span>
+						</a>
+					</li>
+				))}
+			</ol>
+		</nav>
+
+		<section class="author-works" aria-labelledby="author-works-title" data-pagefind-ignore>
+			<header class="author-works__heading">
+				<p class="author-intro__kicker">Complete archive</p>
+				<h2 id="author-works-title">All eleven works</h2>
+			</header>
+
+			<div class="author-groups">
+				{groups.map((group) => (
+					<section class="author-group" aria-labelledby={`author-group-${group.id}`}>
+						<header>
+							<h3 id={`author-group-${group.id}`}>{group.title}</h3>
+							<p>{group.description}</p>
+						</header>
+						<div class="author-group__cards">
+							{group.entries.map((entry) => (
+								<EditorialWorkCard
+									entry={entry}
+									variant="catalog"
+									context="author"
+								/>
+							))}
+						</div>
+					</section>
+				))}
+			</div>
+		</section>
 	</article>
 </MainGridLayout>
+
+<style>
+	.author-page,
+	.author-works,
+	.author-groups,
+	.author-group,
+	.author-group__cards {
+		display: grid;
+	}
+
+	.author-page {
+		gap: clamp(2.75rem, 7vw, 5.5rem);
+	}
+
+	.manuscript-panel {
+		background: var(--card-bg);
+		border: 1px solid var(--line-divider);
+		border-radius: var(--radius-large);
+	}
+
+	.author-intro {
+		padding: clamp(2rem, 7vw, 5rem);
+	}
+
+	.author-intro__kicker {
+		margin: 0 0 0.65rem;
+		color: var(--primary);
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		font-size: 0.76rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+
+	.author-intro h1 {
+		margin: 0;
+		font-size: clamp(2.7rem, 8vw, 5.5rem);
+		font-weight: 620;
+		line-height: 1;
+	}
+
+	.author-intro > p:last-child {
+		max-width: 56ch;
+		margin: 1.5rem 0 0;
+		font-size: clamp(1.05rem, 2vw, 1.25rem);
+		line-height: 1.7;
+		opacity: 0.76;
+	}
+
+	.author-start {
+		display: grid;
+		grid-template-columns: minmax(9rem, 0.32fr) minmax(0, 1fr);
+		gap: 1.5rem;
+		align-items: start;
+	}
+
+	.author-start h2,
+	.author-works h2,
+	.author-group h3 {
+		margin: 0;
+		font-weight: 620;
+		line-height: 1.15;
+	}
+
+	.author-start h2,
+	.author-works h2 {
+		font-size: clamp(1.8rem, 5vw, 3rem);
+	}
+
+	.author-start ol {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		border-top: 1px solid var(--line-divider);
+	}
+
+	.author-start li {
+		border-bottom: 1px solid var(--line-divider);
+	}
+
+	.author-start a {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		min-height: 3.5rem;
+		padding: 0.8rem 0.2rem;
+		color: inherit;
+		font-size: clamp(1rem, 2vw, 1.2rem);
+		font-weight: 620;
+		text-decoration: none;
+	}
+
+	.author-start a:hover,
+	.author-start a:focus-visible {
+		color: var(--primary);
+	}
+
+	.author-start a:focus-visible {
+		outline: 3px solid var(--primary);
+		outline-offset: 3px;
+	}
+
+	.author-works,
+	.author-groups,
+	.author-group,
+	.author-group__cards {
+		gap: clamp(1.25rem, 3vw, 2rem);
+	}
+
+	.author-groups {
+		gap: clamp(2.5rem, 6vw, 4.5rem);
+	}
+
+	.author-group {
+		grid-template-columns: minmax(11rem, 0.32fr) minmax(0, 1fr);
+		align-items: start;
+		padding-top: 2rem;
+		border-top: 1px solid var(--line-divider);
+	}
+
+	.author-group h3 {
+		font-size: clamp(1.3rem, 3vw, 1.85rem);
+	}
+
+	.author-group header p {
+		max-width: 34ch;
+		margin: 0.7rem 0 0;
+		line-height: 1.6;
+		opacity: 0.65;
+	}
+
+	.author-group__cards {
+		gap: 0.85rem;
+	}
+
+	@media (max-width: 48rem) {
+		.author-start,
+		.author-group {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

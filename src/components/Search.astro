@@ -1,0 +1,75 @@
+---
+import { url } from "@utils/url-utils";
+
+const pagefindUrl = url("/pagefind/pagefind.js");
+---
+
+<button id="search-switch" class="icon-button" type="button" aria-label="Search" aria-haspopup="dialog" aria-controls="search-panel">
+	<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4 4" /></svg>
+</button>
+<dialog id="search-panel" class="search-dialog" aria-labelledby="search-dialog-title">
+	<form method="dialog" class="search-heading">
+		<label id="search-dialog-title" for="site-search">Search the archive</label>
+		<button class="icon-button" value="close" aria-label="Close search" type="submit">×</button>
+	</form>
+	<input id="site-search" type="search" placeholder="Search" autocomplete="off" />
+	<p id="search-status" class="search-status" aria-live="polite">Type a title, phrase, or theme.</p>
+	<div id="search-results" class="search-results"></div>
+</dialog>
+
+<script is:inline define:vars={{ pagefindUrl }}>
+	(() => {
+		const button = document.querySelector("#search-switch");
+		const dialog = document.querySelector("#search-panel");
+		const input = document.querySelector("#site-search");
+		const results = document.querySelector("#search-results");
+		const status = document.querySelector("#search-status");
+		let pagefindPromise;
+
+		const loadPagefind = () => {
+			if (!pagefindPromise) {
+				pagefindPromise = import(pagefindUrl).then(async (pagefind) => {
+					await pagefind.options({ excerptLength: 24 });
+					return pagefind;
+				});
+			}
+			return pagefindPromise;
+		};
+
+		button?.addEventListener("click", () => {
+			dialog?.showModal();
+			input?.focus();
+		});
+		input?.addEventListener("focus", loadPagefind, { once: true });
+		input?.addEventListener("input", async () => {
+			const query = input.value.trim();
+			results.replaceChildren();
+			if (!query) {
+				status.textContent = "Type a title, phrase, or theme.";
+				return;
+			}
+			status.textContent = "Searching…";
+			try {
+				const pagefind = await loadPagefind();
+				const response = await pagefind.search(query);
+				const records = await Promise.all(response.results.slice(0, 8).map((item) => item.data()));
+				status.textContent = records.length === 1 ? "1 work found." : `${records.length} works found.`;
+				for (const record of records) {
+					const link = document.createElement("a");
+					link.href = record.url;
+					const title = document.createElement("strong");
+					title.textContent = record.meta.title || "Untitled";
+					const excerpt = document.createElement("span");
+					excerpt.textContent = record.excerpt.replace(/<[^>]*>/g, "");
+					link.append(title, excerpt);
+					results.append(link);
+				}
+			} catch {
+				status.textContent = "Search is unavailable. Browse Works instead.";
+			}
+		});
+		dialog?.addEventListener("click", (event) => {
+			if (event.target === dialog) dialog.close();
+		});
+	})();
+</script>

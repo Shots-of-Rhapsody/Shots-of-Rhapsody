@@ -9,6 +9,10 @@ import {
 	type TestInfo,
 	test,
 } from "@playwright/test";
+import {
+	FEATURED_IMAGE_SIZES,
+	HERO_IMAGE_SIZES,
+} from "../../src/utils/image-policy";
 
 interface ArchiveArticle {
 	slug: string;
@@ -54,21 +58,28 @@ const articles: ArchiveArticle[] = manifest.articles.map((entry) => {
 	};
 });
 const expectedSlugs = articles.map(({ slug }) => slug).toSorted();
-const chronologicalArticles = articles.toSorted(
-	(left, right) => Date.parse(right.published) - Date.parse(left.published),
-);
-const navigationBySlug = new Map(
-	chronologicalArticles.map((article, index) => [
-		article.slug,
-		{
-			next: index > 0 ? chronologicalArticles[index - 1].slug : null,
-			previous:
-				index < chronologicalArticles.length - 1
-					? chronologicalArticles[index + 1].slug
-					: null,
-		},
-	]),
-);
+const continuationBySlug = new Map<string, string>([
+	[
+		"before-the-sky-went-quiet-part-i-the-girl-who-faded",
+		"before-the-sky-went-quiet-part-ii-the-goodbye",
+	],
+	[
+		"before-the-sky-went-quiet-part-ii-the-goodbye",
+		"before-the-sky-went-quiet-part-iii-the-echo-that-stayed",
+	],
+	[
+		"before-the-sky-went-quiet-part-iii-the-echo-that-stayed",
+		"the-seventh-skin",
+	],
+	["the-seventh-skin", "cold-children"],
+	["cold-children", "lanterns-for-the-unreturning"],
+	["lanterns-for-the-unreturning", "the-khan-who-chose-the-grain"],
+	["the-khan-who-chose-the-grain", "eggasaurus-rex"],
+	["eggasaurus-rex", "before-the-sky-went-quiet-part-i-the-girl-who-faded"],
+	["poetic-biography", "the-guild-a-chronicle-of-pretty-souls"],
+	["the-guild-a-chronicle-of-pretty-souls", "where-we-last-were-us"],
+	["where-we-last-were-us", "poetic-biography"],
+]);
 const draftSlugs = [
 	"guide",
 	"video",
@@ -102,6 +113,10 @@ class RedactedRuntimeRecorder {
 	};
 	private readonly onRequestFailed = (request: Request) => {
 		this.recordPrivateReference("failed-request", request.url());
+		// Chromium may cancel a lower-priority responsive-image candidate after
+		// selecting a better source. It received no HTTP failure, and every final
+		// image is separately required to complete with nonzero dimensions.
+		if (request.failure()?.errorText === "net::ERR_ABORTED") return;
 		this.record("failed-request");
 	};
 
@@ -188,10 +203,11 @@ function sitePath(relativePath = "") {
 
 async function setTheme(page: Page, theme: "light" | "dark") {
 	await page.emulateMedia({ colorScheme: theme });
-	await page.goto("./", { waitUntil: "networkidle" });
+	await page.goto("./", { waitUntil: "domcontentloaded" });
 	await page.evaluate((selectedTheme) => {
 		localStorage.setItem("theme", selectedTheme);
 	}, theme);
+	await page.reload({ waitUntil: "networkidle" });
 }
 
 async function expectTheme(page: Page, theme: "light" | "dark") {
@@ -211,15 +227,22 @@ async function expectHealthyPage(page: Page, relativePath: string) {
 	await expectPrivacySafeState(page, `Page ${relativePath || "/"}`);
 	expect(await page.locator(".vite-error-overlay").count()).toBe(0);
 
-	const imageFailureCount = await page.locator("img").evaluateAll(
+	const images = page.locator("img");
+	await images.evaluateAll((elements) => {
+		for (const image of elements) {
+			(image as HTMLImageElement).loading = "eager";
+		}
+	});
+	await page.waitForFunction(
+		() => [...document.images].every((image) => image.complete),
+		undefined,
+		{ timeout: 10_000 },
+	);
+	const imageFailureCount = await images.evaluateAll(
 		(images) =>
 			images.filter((image) => {
 				const htmlImage = image as HTMLImageElement;
-				return (
-					!htmlImage.complete ||
-					htmlImage.naturalWidth === 0 ||
-					htmlImage.naturalHeight === 0
-				);
+				return htmlImage.naturalWidth === 0 || htmlImage.naturalHeight === 0;
 			}).length,
 	);
 	expect(imageFailureCount, `Broken image count on ${relativePath}`).toBe(0);
@@ -278,25 +301,23 @@ async function screenshot(
 }
 
 test.describe("public release inventory", () => {
-	test("home pagination exposes all and only the 11 manifest articles", async ({
+	test("home catalog exposes all and only the 11 manifest articles", async ({
 		page,
+		request,
 	}) => {
+		await expectHealthyPage(page, "");
 		const discovered = new Set<string>();
-		for (const route of ["", "2/"]) {
-			const response = await page.goto(route || "./", {
-				waitUntil: "networkidle",
-			});
-			if (route && response?.status() === 404) continue;
-			for (const href of await page
-				.locator('a[href*="/posts/"]')
-				.evaluateAll((links) =>
-					links.map((link) => (link as HTMLAnchorElement).pathname),
-				)) {
-				const match = href.match(/\/posts\/([^/]+)\/?$/);
-				if (match) discovered.add(decodeURIComponent(match[1]));
-			}
+		for (const href of await page
+			.locator('[data-post-card-slug] a[href*="/posts/"]')
+			.evaluateAll((links) =>
+				links.map((link) => (link as HTMLAnchorElement).pathname),
+			)) {
+			const match = href.match(/\/posts\/([^/]+)\/?$/);
+			if (match) discovered.add(decodeURIComponent(match[1]));
 		}
 		expect([...discovered].toSorted()).toEqual(expectedSlugs);
+		expect(await page.locator("[data-featured-card-slug]").count()).toBe(3);
+		expect((await request.get(sitePath("2/"))).status()).toBe(404);
 	});
 
 	test("archive, author, RSS, sitemap, and robots expose exactly 11 articles", async ({
@@ -371,16 +392,156 @@ test.describe("public release inventory", () => {
 	}
 });
 
+test("archive dates retain their UTC calendar day in UTC and Pacific time", async ({
+	browser,
+}) => {
+	for (const timeZone of ["UTC", "America/Los_Angeles"]) {
+		const context = await browser.newContext({
+			baseURL: `${previewOrigin}/Shots-of-Rhapsody/`,
+			timezoneId: timeZone,
+			viewport: { width: 1280, height: 900 },
+		});
+		const page = await context.newPage();
+		const recorder = runtimeRecorder(page);
+		try {
+			await expectHealthyPage(page, "archive/");
+			for (const article of articles) {
+				const entry = page.locator(
+					`[data-archive-entry-slug="${article.slug}"]`,
+				);
+				await expect(entry).toHaveCount(1);
+				const published = entry.locator("[data-archive-published]");
+				await expect(published).toHaveAttribute("datetime", article.published);
+				await expect(published).toHaveText(article.published.slice(5, 10));
+			}
+			await expect(
+				page.getByText("2025", { exact: true }).first(),
+			).toBeVisible();
+			recorder.assertClean(`Archive publication dates in ${timeZone}`);
+		} finally {
+			recorder.stop();
+			runtimeRecorders.delete(page);
+			await context.close();
+		}
+	}
+});
+
+test("responsive manuscript layout and initial images meet the release matrix", async ({
+	browser,
+}, testInfo) => {
+	test.skip(
+		testInfo.project.name !== "desktop-chromium",
+		"The focused responsive matrix runs once.",
+	);
+
+	for (const width of [360, 768, 1024, 1440, 1920]) {
+		for (const theme of ["light", "dark"] as const) {
+			const context = await browser.newContext({
+				baseURL: `${previewOrigin}/Shots-of-Rhapsody/`,
+				colorScheme: theme,
+				viewport: { width, height: 1000 },
+			});
+			await context.addInitScript((selectedTheme) => {
+				localStorage.setItem("theme", selectedTheme);
+			}, theme);
+			const page = await context.newPage();
+			const recorder = runtimeRecorder(page);
+			const imageBodies: Promise<number>[] = [];
+			const captureImage = (response: import("@playwright/test").Response) => {
+				if (response.request().resourceType() === "image") {
+					imageBodies.push(response.body().then((body) => body.byteLength));
+				}
+			};
+			page.on("response", captureImage);
+
+			try {
+				await page.goto("./", { waitUntil: "networkidle" });
+				page.off("response", captureImage);
+				await expectTheme(page, theme);
+				expect(
+					await page.evaluate(
+						() =>
+							document.documentElement.scrollWidth -
+							document.documentElement.clientWidth,
+					),
+				).toBeLessThanOrEqual(1);
+
+				const priorityImages = page.locator(
+					'img[fetchpriority="high"], img[loading="eager"]',
+				);
+				await expect(priorityImages).toHaveCount(1);
+				const featuredPictures = page.locator(
+					'[data-editorial-card="featured"] picture',
+				);
+				await expect(featuredPictures).toHaveCount(3);
+				for (const picture of await featuredPictures.all()) {
+					await expect(picture.locator("source")).toHaveAttribute(
+						"sizes",
+						FEATURED_IMAGE_SIZES,
+					);
+					await expect(picture.locator("img")).toHaveAttribute(
+						"sizes",
+						FEATURED_IMAGE_SIZES,
+					);
+					await expect(picture.locator("img")).toHaveAttribute(
+						"srcset",
+						/320w.+480w.+640w/u,
+					);
+				}
+
+				const initialImageBytes = (await Promise.all(imageBodies)).reduce(
+					(total, bytes) => total + bytes,
+					0,
+				);
+				const imageBudget = width <= 767 ? 750 * 1024 : 1.25 * 1024 * 1024;
+				expect(
+					initialImageBytes,
+					`${width}px ${theme} homepage initial image bytes`,
+				).toBeLessThanOrEqual(imageBudget);
+
+				const representative = articles[0];
+				await page.goto(`posts/${representative.slug}/`, {
+					waitUntil: "networkidle",
+				});
+				await expectTheme(page, theme);
+				expect(
+					await page.evaluate(
+						() =>
+							document.documentElement.scrollWidth -
+							document.documentElement.clientWidth,
+					),
+				).toBeLessThanOrEqual(1);
+				const heroPicture = page.locator("[data-archive-hero] picture");
+				await expect(heroPicture.locator("source")).toHaveAttribute(
+					"sizes",
+					HERO_IMAGE_SIZES,
+				);
+				await expect(heroPicture.locator("img")).toHaveCSS(
+					"object-fit",
+					"contain",
+				);
+				recorder.assertClean(`${width}px ${theme} responsive matrix`);
+			} finally {
+				page.off("response", captureImage);
+				recorder.stop();
+				runtimeRecorders.delete(page);
+				await context.close();
+			}
+		}
+	}
+});
+
 test.describe("article release contract", () => {
 	for (const article of articles) {
 		test(article.title, async ({ page }, testInfo) => {
-			const navigation = navigationBySlug.get(article.slug);
-			if (!navigation)
-				throw new Error(`${article.slug}: navigation is missing`);
+			const continuation = continuationBySlug.get(article.slug);
+			if (!continuation)
+				throw new Error(`${article.slug}: continuation is missing`);
 			for (const theme of ["light", "dark"] as const) {
 				await setTheme(page, theme);
 				await expectHealthyPage(page, `posts/${article.slug}/`);
 				await expectTheme(page, theme);
+				const expectedDateOnly = article.published.slice(0, 10);
 				await expect(page.locator("h1")).toHaveText(article.title);
 				await expect(
 					page.locator('[data-archive-field="subtitle"]'),
@@ -391,6 +552,20 @@ test.describe("article release contract", () => {
 				await expect(
 					page.locator("[data-archive-publication-url]"),
 				).toHaveAttribute("href", article.publication.url);
+				await expect(page.locator("[data-post-published]")).toHaveAttribute(
+					"datetime",
+					article.published,
+				);
+				await expect(page.locator("[data-post-published]")).toHaveText(
+					expectedDateOnly,
+				);
+				await expect(page.locator("[data-license-published]")).toHaveAttribute(
+					"datetime",
+					article.published,
+				);
+				await expect(page.locator("[data-license-published]")).toHaveText(
+					expectedDateOnly,
+				);
 				const hero = page.locator("[data-archive-hero] img");
 				await expect(hero).toHaveAttribute("alt", article.imageAlt ?? "");
 				await expect(hero).toHaveCSS("object-fit", "contain");
@@ -427,23 +602,24 @@ test.describe("article release contract", () => {
 				);
 				expect(jsonLd.headline).toBe(article.title);
 				expect(jsonLd.alternativeHeadline).toBe(article.subtitle);
+				expect(jsonLd.datePublished).toBe(article.published);
 				expect(jsonLd.author).toMatchObject({
 					name: "Tai Song",
 					url: "https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/authors/tai-song/",
 				});
 				expect(jsonLd.isBasedOn).toBe(article.publication.url);
-				for (const direction of ["next", "previous"] as const) {
-					const link = page.locator(`[data-post-navigation="${direction}"]`);
-					const target = navigation[direction];
-					if (target) {
-						await expect(link).toHaveAttribute(
-							"href",
-							sitePath(`posts/${target}/`),
-						);
-					} else {
-						await expect(link).toHaveCount(0);
-					}
-				}
+				const continuationSection = page.locator(
+					`[data-editorial-continuation-from="${article.slug}"]`,
+				);
+				await expect(continuationSection).toHaveAttribute(
+					"data-editorial-continue-slug",
+					continuation,
+				);
+				await expect(
+					continuationSection.locator(
+						`[data-continuation-slug="${continuation}"] a`,
+					),
+				).toHaveAttribute("href", sitePath(`posts/${continuation}/`));
 				await expectNoSeriousAxeViolations(page);
 
 				if (testInfo.project.name === "mobile-chromium") {
@@ -484,8 +660,11 @@ test("theme, search, navigation history, keyboard focus, and release screenshots
 	await setTheme(page, "light");
 	await expectHealthyPage(page, "");
 	await expectTheme(page, "light");
-	await page.getByRole("button", { name: "Light/Dark Mode" }).click();
+	await page.getByRole("button", { name: "Switch to dark theme" }).click();
 	await expectTheme(page, "dark");
+	await expect(
+		page.getByRole("button", { name: "Switch to light theme" }),
+	).toHaveAttribute("aria-pressed", "true");
 
 	if (testInfo.project.name === "mobile-chromium") {
 		await page.getByRole("button", { name: "Menu" }).click();
@@ -493,16 +672,16 @@ test("theme, search, navigation history, keyboard focus, and release screenshots
 			/float-panel-closed/,
 		);
 		await expectNoSeriousAxeViolations(page);
-		await page.getByRole("button", { name: "Menu" }).click();
+		await page.keyboard.press("Escape");
 		await expect(page.locator("#nav-menu-panel")).toHaveClass(
 			/float-panel-closed/,
 		);
-		await page.getByRole("button", { name: "Search Panel" }).click();
-		await expect(page.locator("#search-panel")).not.toHaveClass(
-			/float-panel-closed/,
-		);
-		await expectNoSeriousAxeViolations(page);
+		await expect(page.getByRole("button", { name: "Menu" })).toBeFocused();
 	}
+
+	await page.getByRole("button", { name: "Search", exact: true }).click();
+	await expect(page.locator("#search-panel")).toBeVisible();
+	await expectNoSeriousAxeViolations(page);
 
 	await page
 		.locator('input[placeholder="Search"]:visible')
@@ -527,12 +706,6 @@ test("theme, search, navigation history, keyboard focus, and release screenshots
 	await page.goto("./", { waitUntil: "networkidle" });
 	await expectPrivacySafeState(page, "Keyboard navigation home page");
 	await page.keyboard.press("Tab");
-	const focused = await page.evaluate(() => ({
-		tag: document.activeElement?.tagName,
-		visible: document.activeElement
-			? Boolean((document.activeElement as HTMLElement).offsetParent)
-			: false,
-	}));
-	expect(focused.tag).not.toBe("BODY");
-	expect(focused.visible).toBe(true);
+	await expect(page.locator(".skip-link")).toBeFocused();
+	await expect(page.locator(".skip-link")).toBeInViewport();
 });

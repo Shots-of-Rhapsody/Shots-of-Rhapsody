@@ -1,121 +1,81 @@
 .custom-md {
-    h1 {
-        @apply text-3xl;
-    }
+	max-width: 66ch !important;
+	margin-inline: auto;
+	color: var(--ink);
+	font-family: "Noto Serif Variable", Georgia, "Times New Roman", serif;
+	font-size: clamp(1rem, 0.96rem + 0.18vw, 1.125rem);
+	font-weight: 410;
+	line-height: 1.65;
+	text-align: left;
+}
 
-    h1, h2, h3, h4, h5, h6 {
-        .anchor {
-			@apply transition! -m-0.5! ml-[0.2ch]! p-0.5! select-none! opacity-0! no-underline!;
+.custom-md :where(h1, h2, h3, h4) {
+	color: var(--ink);
+	font-family: inherit;
+	font-weight: 690;
+	letter-spacing: -0.015em;
+}
 
-            .anchor-icon {
-				@apply mx-[0.45ch]!;
-            }
-        }
+.custom-md :where(h2, h3) {
+	margin-top: 2.2em;
+}
 
-        &:hover {
-            .anchor {
-				@apply opacity-100!;
-            }
-        }
-    }
+.custom-md p {
+	margin-block: 1.05em;
+}
 
-    a:not(.no-styling) {
-        @apply relative bg-none link font-medium text-[var(--primary)]
-        underline decoration-[var(--link-underline)] decoration-1 decoration-dashed underline-offset-4;
-        box-decoration-break: clone;
-        -webkit-box-decoration-break: clone;
-        display: inline-block;
-    
-        &:hover, &:active {
-            @apply decoration-transparent;
-            background: var(--btn-plain-bg-hover);
-            border-bottom: 1px dashed var(--link-hover);
-            text-decoration: none;
-        }
-    }
+/* Source blank paragraphs remain present, but contribute exactly one line. */
+.custom-md[data-archive-body] p:empty,
+.custom-md[data-archive-body] p:has(> br:only-child) {
+	min-height: 1.65em;
+	margin-block: 0;
+}
 
-    code {
-        @apply bg-[var(--inline-code-bg)] text-[var(--inline-code-color)] px-1 py-0.5 rounded-md overflow-hidden;
+.custom-md :where(a:not(.no-styling)) {
+	color: var(--celadon);
+	font-weight: 560;
+	text-decoration-color: color-mix(in srgb, var(--celadon) 50%, transparent);
+}
 
-        font-family: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
-        &:before {
-            content:none;
-        }
-        &:after {
-            content:none;
-        }
+.custom-md :where(strong) {
+	color: inherit;
+	font-weight: 700;
+}
 
-        counter-reset: line;
-        span.line {
-            &:before {
-                @apply text-white/25 mr-4 w-4 inline-block;
-                content: counter(line);
-                counter-increment: line;
-                direction: rtl;
-            }
-            &:last-child:empty, &:last-child:has(> span:empty:only-child) {
-                display: none;
-            }
-        }
-    }
+.custom-md :where(em) {
+	color: inherit;
+}
 
-    .copy-btn {
-        all: initial;
-        @apply btn-regular-dark opacity-0 shadow-lg shadow-black/50 absolute active:scale-90 h-8 w-8 top-3 right-3 text-sm rounded-lg transition-all ease-in-out z-20 cursor-pointer;
-    }
-    .frame:hover .copy-btn {
-        opacity: 1;
-    }
+.custom-md :where(blockquote) {
+	border-inline-start: 3px solid var(--seal);
+	color: var(--ink-soft);
+	font-style: normal;
+	padding-inline-start: 1.2rem;
+}
 
-    .copy-btn-icon {
-        @apply absolute top-1/2 left-1/2 transition -translate-x-1/2 -translate-y-1/2 w-4 h-4 fill-white pointer-events-none;
-    }
-    .copy-btn .copy-icon {
-        @apply opacity-100 fill-white dark:fill-white/75;
-    }
-    .copy-btn.success .copy-icon {
-        @apply opacity-0 fill-[var(--deep-text)]
-    }
-    .copy-btn .success-icon {
-        @apply opacity-0 fill-white;
-    }
-    .copy-btn.success .success-icon {
-        @apply opacity-100
-    }
+.custom-md :where(hr) {
+	border: 0;
+	border-top: 1px solid var(--rule);
+}
 
-    .expressive-code {
-        @apply my-4;
-        ::selection {
-            @apply bg-[var(--codeblock-selection)];
-        }
-    }
+.custom-md :where(code) {
+	border-radius: 0.2rem;
+	background: var(--paper-muted);
+	color: var(--ink);
+	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	font-size: 0.86em;
+	padding: 0.12em 0.3em;
+}
 
+.custom-md :where(pre) {
+	overflow-x: auto;
+	border: 1px solid var(--rule);
+	border-radius: 0.35rem;
+	background: var(--paper-muted);
+	padding: 1rem;
+}
 
-    ul, ol {
-        li::marker {
-            @apply text-[var(--primary)];
-        }
-    }
-
-    blockquote {
-        @apply not-italic border-transparent relative;
-        font-weight: inherit;
-
-        &:before {
-            @apply content-[''] absolute -left-1 block transition bg-[var(--btn-regular-bg)] h-full w-1 rounded-full;
-        }
-
-        /* Remove the double quotes from default styles */
-        p:before, p:after {
-            @apply content-none;
-        }
-
-    }
-
-    .katex-display-container {
-        max-width: 100%;
-        overflow-x: auto;
-        margin: 1em 0;
-    }
-    
+.custom-md :where(img) {
+	height: auto;
+	max-width: 100%;
 }
