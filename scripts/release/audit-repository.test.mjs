@@ -11,6 +11,10 @@ import { auditGitMetadata, auditRepository } from "./audit-repository.mjs";
 const scriptPath = fileURLToPath(
 	new URL("./audit-repository.mjs", import.meta.url),
 );
+const identityScriptPath = fileURLToPath(
+	new URL("./verify-git-identity.mjs", import.meta.url),
+);
+const repositoryRoot = fileURLToPath(new URL("../..", import.meta.url));
 
 function git(cwd, args) {
 	const result = spawnSync("git", args, { cwd, encoding: "utf8" });
@@ -23,6 +27,61 @@ function gitInput(cwd, args, input) {
 	assert.equal(result.status, 0, result.stderr || result.stdout);
 	return result.stdout.trim();
 }
+
+test("identity policy audits an explicit maintained tip instead of a synthetic merge", async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), "shots-identity-test-"));
+	try {
+		const repository = path.join(root, "repository");
+		git(root, ["clone", "--shared", repositoryRoot, repository]);
+		git(repository, ["config", "user.name", "Shots of Rhapsody"]);
+		git(repository, [
+			"config",
+			"user.email",
+			["shots-of-rhapsody", "users.noreply.github.com"].join("@"),
+		]);
+		const maintainedTip = git(repository, ["rev-parse", "HEAD"]);
+
+		await writeFile(
+			path.join(repository, "synthetic-merge.txt"),
+			"merge\n",
+			"utf8",
+		);
+		git(repository, ["add", "synthetic-merge.txt"]);
+		git(repository, [
+			"-c",
+			"user.name=Unreviewed Identity",
+			"-c",
+			`user.email=${["synthetic-merge", "users.noreply.github.com"].join("@")}`,
+			"commit",
+			"-m",
+			"Create synthetic merge fixture",
+		]);
+
+		const maintained = spawnSync(
+			process.execPath,
+			[identityScriptPath, maintainedTip],
+			{ cwd: repository, encoding: "utf8" },
+		);
+		assert.equal(maintained.status, 0, maintained.stderr || maintained.stdout);
+
+		const syntheticHead = spawnSync(process.execPath, [identityScriptPath], {
+			cwd: repository,
+			encoding: "utf8",
+		});
+		assert.equal(syntheticHead.status, 1);
+		assert.match(syntheticHead.stdout, /[1-9]\d* blocking/u);
+
+		const malformed = spawnSync(
+			process.execPath,
+			[identityScriptPath, "not-a-commit"],
+			{ cwd: repository, encoding: "utf8" },
+		);
+		assert.equal(malformed.status, 2);
+		assert.match(malformed.stderr, /Usage:/u);
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
 
 async function writePolicy(
 	file,

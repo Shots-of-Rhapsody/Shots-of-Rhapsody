@@ -4,11 +4,23 @@ import { auditGitMetadata } from "./audit-repository.mjs";
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_POLICY = path.join(SCRIPT_DIR, "audit-policy.json");
+const [requestedRevision = "HEAD", ...unexpectedArguments] =
+	process.argv.slice(2);
+
+if (
+	unexpectedArguments.length > 0 ||
+	!(/^[0-9a-f]{40}$/u.test(requestedRevision) || requestedRevision === "HEAD")
+) {
+	console.error(
+		"Usage: node scripts/release/verify-git-identity.mjs [HEAD|40-character-commit-sha]",
+	);
+	process.exit(2);
+}
 
 const audit = await auditGitMetadata({
 	cwd: process.cwd(),
 	policy: DEFAULT_POLICY,
-	revisions: ["HEAD"],
+	revisions: [requestedRevision],
 	includeRefMetadata: false,
 });
 
@@ -18,7 +30,7 @@ const blockingFindings = audit.findings.filter(
 const reviewFindings = audit.findings.length - blockingFindings;
 
 console.log(
-	`Verified Git identity metadata across ${audit.commits.length} commits reachable from HEAD.`,
+	`Verified Git identity metadata across ${audit.commits.length} commits reachable from ${requestedRevision}.`,
 );
 console.log(
 	`Git identity findings: ${blockingFindings} blocking, ${reviewFindings} requiring review.`,

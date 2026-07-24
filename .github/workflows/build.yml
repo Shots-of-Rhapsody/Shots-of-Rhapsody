@@ -58,7 +58,9 @@ jobs:
         run: pnpm test:release-tools
 
       - name: Enforce project Git identity policy
-        run: node scripts/release/verify-git-identity.mjs
+        env:
+          PROJECT_HISTORY_TIP: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/release/verify-git-identity.mjs "$PROJECT_HISTORY_TIP"
 
       - name: Check patch whitespace
         run: git diff --check HEAD^
