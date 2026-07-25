@@ -6,7 +6,10 @@ import { gunzipSync } from "node:zlib";
 import { parse, parseFragment } from "parse5";
 import { inspectPng, sha256 } from "./archive/lib/integrity.js";
 import { bodyTextSha256, renderBodyHtml } from "./archive/lib/render.js";
-import { evaluateReviewSignoffs } from "./archive/lib/review-signoff.js";
+import {
+	evaluateReviewSignoffs,
+	validateReviewSignoffCommitBinding,
+} from "./archive/lib/review-signoff.js";
 import { inspectBuiltImages } from "./verify-images.mjs";
 
 const DEFAULT_DIST = "dist";
@@ -19,6 +22,9 @@ const REQUIRED_NON_POST_ROUTES = [
 	"authors/tai-song/",
 	"content-license/",
 ];
+const REQUIRED_NON_INDEXABLE_HTML_ROUTES = ["404.html"];
+const HOME_DESCRIPTION =
+	"Enter the eleven-work Shots of Rhapsody archive: fiction, poetry, and reflections by Tai Song.";
 const EXPECTED_DRAFT_POST_PATHS = [
 	"src/content/posts/guide/index.md",
 	"src/content/posts/video.md",
@@ -334,23 +340,15 @@ export function markedAttributeValues(html, tagName, attributeName) {
 		.filter((value) => typeof value === "string" && value.length > 0);
 }
 
-export function validateRobotsText(text, siteValue = DEFAULT_SITE) {
-	const site = new URL(siteValue);
-	if (!site.pathname.endsWith("/")) site.pathname += "/";
-	const expectedSitemap = new URL("sitemap-index.xml", site).toString();
-	const failures = [];
-	const normalized = String(text).replace(/\r\n?/gu, "\n").trim();
-	const expected = `User-agent: *\nAllow: /\n\nSitemap: ${expectedSitemap}`;
-	if (normalized !== expected) {
-		failures.push("robots.txt does not match the base-aware launch policy");
-	}
-	if (/^\s*Disallow:/gimu.test(normalized)) {
-		failures.push("robots.txt must not disallow public site resources");
-	}
-	if (/_astro/iu.test(normalized)) {
-		failures.push("robots.txt must not block Astro assets");
-	}
-	return failures;
+export function validateNoProjectRobots(relativePaths) {
+	const robotsFiles = relativePaths.filter((relativePath) =>
+		/(?:^|\/)robots\.txt$/iu.test(normalizedPath(relativePath)),
+	);
+	return robotsFiles.length === 0
+		? []
+		: [
+				"the project artifact must not emit robots.txt because only the GitHub Pages host-root file can control crawling",
+			];
 }
 
 function expectedPageUrl(filePath, distRoot, site) {
@@ -804,6 +802,14 @@ async function verifyArchiveManifest(
 			});
 			for (const failure of review.failures) {
 				failures.push(`Human review: ${failure}`);
+			}
+			if (review.status === "complete") {
+				for (const failure of validateReviewSignoffCommitBinding({
+					record: reviewRecord,
+					repoRoot,
+				})) {
+					failures.push(`Human review: ${failure}`);
+				}
 			}
 			if (review.status === "pending") {
 				notices.push(
@@ -1456,17 +1462,93 @@ async function verifyArchiveManifest(
 	return manifest;
 }
 
-async function verifyRobots(distRoot, site, failures) {
-	const robotsPath = path.join(distRoot, "robots.txt");
-	if (!(await isFile(robotsPath))) {
-		failures.push("robots.txt is missing");
+async function verifyHomepageMetadata(distRoot, site, failures) {
+	const homepagePath = path.join(distRoot, "index.html");
+	if (!(await isFile(homepagePath))) {
+		failures.push("homepage is missing");
 		return;
 	}
-	for (const failure of validateRobotsText(
-		await readFile(robotsPath, "utf8"),
-		site.toString(),
-	)) {
-		failures.push(failure);
+	const html = await readFile(homepagePath, "utf8");
+	const homepageUrl = site.toString();
+	const authorUrl = new URL("authors/tai-song/", site).toString();
+	const socialImageUrl = new URL("social/site.jpg", site).toString();
+	const socialImageAlt =
+		"Shots of Rhapsody — Stories, poems, and reflections by Tai Song";
+	const jsonLd = extractJsonLd(html, "homepage", failures);
+	if (jsonLd) {
+		const expectedValues = [
+			["context", jsonLd["@context"], "https://schema.org"],
+			["type", jsonLd["@type"], "WebSite"],
+			["ID", jsonLd["@id"], `${homepageUrl}#website`],
+			["name", jsonLd.name, "Shots of Rhapsody"],
+			["description", jsonLd.description, HOME_DESCRIPTION],
+			["URL", jsonLd.url, homepageUrl],
+			["language", jsonLd.inLanguage, "en"],
+			["author type", jsonLd.author?.["@type"], "Person"],
+			["author ID", jsonLd.author?.["@id"], `${authorUrl}#person`],
+			["author name", jsonLd.author?.name, "Tai Song"],
+			["author URL", jsonLd.author?.url, authorUrl],
+			["image type", jsonLd.image?.["@type"], "ImageObject"],
+			["image URL", jsonLd.image?.url, socialImageUrl],
+			["image content URL", jsonLd.image?.contentUrl, socialImageUrl],
+			["image MIME type", jsonLd.image?.encodingFormat, "image/jpeg"],
+			["image width", jsonLd.image?.width, 1200],
+			["image height", jsonLd.image?.height, 630],
+			["image description", jsonLd.image?.description, socialImageAlt],
+		];
+		for (const [field, actual, expected] of expectedValues) {
+			if (actual !== expected) {
+				failures.push(`homepage: WebSite JSON-LD ${field} is incorrect`);
+			}
+		}
+	}
+	for (const [selector, expected] of [
+		["og:image", socialImageUrl],
+		["twitter:image", socialImageUrl],
+		["og:image:alt", socialImageAlt],
+		["twitter:image:alt", socialImageAlt],
+		["og:image:type", "image/jpeg"],
+		["og:image:width", "1200"],
+		["og:image:height", "630"],
+	]) {
+		const values = metaContent(html, selector);
+		if (values.length !== 1 || values[0] !== expected) {
+			failures.push(`homepage: ${selector} does not match the site card`);
+		}
+	}
+}
+
+async function verifyCustomNotFound(distRoot, site, failures) {
+	const notFoundPath = path.join(distRoot, "404.html");
+	if (!(await isFile(notFoundPath))) {
+		failures.push("custom 404 route is missing");
+		return;
+	}
+	const html = await readFile(notFoundPath, "utf8");
+	const document = parse(html);
+	const markers = elementsWithAttribute(document, "data-custom-404");
+	if (markers.length !== 1) {
+		failures.push("custom 404 must contain one branded error-page marker");
+	}
+	const robots = metaContent(html, "robots");
+	if (robots.length !== 1 || robots[0] !== "noindex") {
+		failures.push("custom 404 must have one noindex directive");
+	}
+	for (const [attribute, expectedUrl] of [
+		["data-404-home", site.toString()],
+		["data-404-archive", new URL("archive/", site).toString()],
+	]) {
+		const links = elementsWithAttribute(document, attribute).filter(
+			(node) => node.tagName === "a",
+		);
+		const href = links[0] ? attributeValue(links[0], "href") : undefined;
+		if (
+			links.length !== 1 ||
+			!href ||
+			new URL(href, site).toString() !== expectedUrl
+		) {
+			failures.push(`custom 404 has an invalid ${attribute} link`);
+		}
 	}
 }
 
@@ -1519,9 +1601,15 @@ async function verifyLaunchRoutes(
 		"built post routes",
 		failures,
 	);
-	const expectedHtmlUrls = [
+	const expectedIndexableHtmlUrls = [
 		...REQUIRED_NON_POST_ROUTES.map((route) => new URL(route, site).toString()),
 		...expectedPostUrls,
+	];
+	const expectedHtmlUrls = [
+		...expectedIndexableHtmlUrls,
+		...REQUIRED_NON_INDEXABLE_HTML_ROUTES.map((route) =>
+			new URL(route, site).toString(),
+		),
 	];
 	const actualHtmlUrls = htmlFiles
 		.filter(
@@ -1535,7 +1623,7 @@ async function verifyLaunchRoutes(
 		"built HTML routes",
 		failures,
 	);
-	return expectedHtmlUrls;
+	return expectedIndexableHtmlUrls;
 }
 
 async function verifyLaunchRss(distRoot, manifest, site, failures) {
@@ -2027,8 +2115,14 @@ export async function verifyBuiltSite({
 		);
 		await verifyDraftSources(repoRoot, manifest, failures);
 	}
+	await verifyHomepageMetadata(distRoot, site, failures);
+	await verifyCustomNotFound(distRoot, site, failures);
 	await verifySitemap(distRoot, site, expectedPageUrls, failures);
-	await verifyRobots(distRoot, site, failures);
+	for (const failure of validateNoProjectRobots(
+		files.map((file) => normalizedPath(path.relative(distRoot, file))),
+	)) {
+		failures.push(failure);
+	}
 	await verifyNoPrivateBuildReferences(files, failures);
 	verifyNoPodcastArtifacts(files, distRoot, failures);
 	const imageVerification = await inspectBuiltImages({

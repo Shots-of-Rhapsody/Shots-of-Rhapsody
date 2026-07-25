@@ -13,7 +13,7 @@ import {
 	markedAttributeValues,
 	markedField,
 	parseArguments,
-	validateRobotsText,
+	validateNoProjectRobots,
 	verifyNoPrivateBuildReferences,
 } from "../../verify-built-site.mjs";
 
@@ -67,21 +67,14 @@ test("visible archive fields ignore only serialization boundary whitespace", () 
 	);
 });
 
-test("robots policy requires the base-aware sitemap and allows Astro assets", () => {
-	const site = "https://example.test/project/";
+test("project artifact omits non-authoritative robots files", () => {
 	assert.deepEqual(
-		validateRobotsText(
-			"User-agent: *\nAllow: /\n\nSitemap: https://example.test/project/sitemap-index.xml\n",
-			site,
-		),
+		validateNoProjectRobots(["index.html", "sitemap-index.xml"]),
 		[],
 	);
 	assert.match(
-		validateRobotsText(
-			"User-agent: *\nDisallow: /_astro/\n\nSitemap: https://example.test/sitemap-index.xml",
-			site,
-		).join("\n"),
-		/base-aware|must not disallow|must not block/u,
+		validateNoProjectRobots(["nested\\robots.txt"]).join("\n"),
+		/host-root file can control crawling/u,
 	);
 });
 

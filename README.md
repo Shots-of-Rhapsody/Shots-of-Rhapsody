@@ -67,10 +67,11 @@ Fuwari's pinned lineage and review-only update procedure are documented in [Fuwa
 GitHub Actions builds the site from a clean checkout and the frozen lockfile.
 GitHub Pages receives only the generated static artifact: HTML, CSS, small
 browser modules, Pagefind data, responsive image derivatives, RSS, sitemap,
-robots policy, and JSON-LD. The live site needs no environment secret, local
-path, local process, Proton export, Python utility, API, or database. Once a
-verified artifact is deployed, the development computer can be offline without
-affecting the website.
+and JSON-LD. Release verification also ensures the artifact does not emit a
+misleading project-path `robots.txt`. The live site needs no environment
+secret, local path, local process, Proton export, Python utility, API, or
+database. Once a verified artifact is deployed, the development computer can
+be offline without affecting the website.
 
 Raw author-master exports remain ignored local verification evidence. They are
 required only for the optional private raw-backed comparison—not to build,

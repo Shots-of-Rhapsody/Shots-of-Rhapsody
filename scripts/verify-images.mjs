@@ -9,6 +9,7 @@ import sharp from "sharp";
 
 const DEFAULT_DIST = "dist";
 const EXPECTED_ARTICLE_COUNT = 11;
+const SITE_SOCIAL_IMAGE = "social/site.jpg";
 const IMAGE_EXTENSION = /\.(?:avif|gif|jpe?g|png|svg|webp)$/iu;
 const TEXT_EXTENSION = /\.(?:css|html|js|json|map|mjs|svg|txt|xml)$/iu;
 const RESPONSIVE_WIDTHS = new Set([320, 480, 640, 960, 1024, 1280, 1600, 2048]);
@@ -386,6 +387,23 @@ export async function inspectBuiltImages({
 		}
 
 		if (relative === "mark.svg") continue;
+		if (relative === SITE_SOCIAL_IMAGE) {
+			const metadata = await sharp(bytes).metadata();
+			socialBytes += bytes.byteLength;
+			if (
+				metadata.format !== "jpeg" ||
+				metadata.width !== 1200 ||
+				metadata.height !== 630
+			) {
+				failures.push(`site social image must be 1200x630 JPEG: ${relative}`);
+			}
+			if (bytes.byteLength > limits.socialBytes) {
+				failures.push(
+					`site social image exceeds ${limits.socialBytes} bytes: ${relative} (${bytes.byteLength})`,
+				);
+			}
+			continue;
+		}
 		if (expectedSocialImages.has(relative)) {
 			const metadata = await sharp(bytes).metadata();
 			socialBytes += bytes.byteLength;
@@ -438,6 +456,11 @@ export async function inspectBuiltImages({
 		if (!emittedImageSet.has(relative)) {
 			failures.push(`required social image is missing: ${relative}`);
 		}
+	}
+	if (!emittedImageSet.has(SITE_SOCIAL_IMAGE)) {
+		failures.push(
+			`required site social image is missing: ${SITE_SOCIAL_IMAGE}`,
+		);
 	}
 	if (!emittedImageSet.has("mark.svg")) {
 		failures.push("vector project mark is missing: mark.svg");

@@ -179,6 +179,8 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout the dispatched release commit
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -197,3 +199,79 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+
+  production-smoke:
+    name: Verify the deployed production site
+    needs: deploy
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    env:
+      TZ: UTC
+      PLAYWRIGHT_BASE_URL: ${{ needs.deploy.outputs.page_url }}
+    steps:
+      - name: Checkout the deployed test contract
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        with:
+          version: 11.16.0
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install the pinned Chromium browser
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Wait for the deployed Pages URL
+        shell: bash
+        run: |
+          expected_url="https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/"
+          normalized_url="${PLAYWRIGHT_BASE_URL%/}/"
+          if [ "${normalized_url}" != "${expected_url}" ]; then
+            echo "The Pages deployment returned an unexpected URL" >&2
+            exit 1
+          fi
+          echo "PLAYWRIGHT_BASE_URL=${normalized_url}" >> "${GITHUB_ENV}"
+
+          for attempt in $(seq 1 30); do
+            if curl \
+              --fail \
+              --silent \
+              --show-error \
+              --location \
+              --max-time 15 \
+              --output /dev/null \
+              "${PLAYWRIGHT_BASE_URL}"; then
+              exit 0
+            fi
+            if [ "${attempt}" -eq 30 ]; then
+              echo "Pages did not become available after 30 attempts" >&2
+              exit 1
+            fi
+            sleep 10
+          done
+
+      - name: Run production browser and accessibility smoke tests
+        run: pnpm test:e2e
+
+      - name: Upload privacy-verified production screenshots
+        if: success()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-production-evidence
+          path: test-results/**/*.png
+          if-no-files-found: error
+          retention-days: 14

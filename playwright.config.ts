@@ -1,15 +1,16 @@
 import { defineConfig, devices } from "@playwright/test";
+import {
+	hasExternalPlaywrightBaseURL,
+	playwrightBaseURL,
+	playwrightPort,
+} from "./tests/e2e/base-url";
 
 // Playwright otherwise writes an automatic accessibility snapshot of the page
 // to error-context.md on failure, even when screenshots and traces are off.
 process.env.PLAYWRIGHT_NO_COPY_PROMPT = "1";
 
-// Use a dedicated port and always own the preview process. Reusing an arbitrary
-// local server can silently test a different checkout or a development build.
-const port = Number(process.env.PLAYWRIGHT_PORT ?? 4387);
-const origin = `http://127.0.0.1:${port}`;
-const baseURL = `${origin}/Shots-of-Rhapsody/`;
-
+// Local runs own a dedicated preview process. A deliberate PLAYWRIGHT_BASE_URL
+// targets an already-deployed site and disables the local web server.
 export default defineConfig({
 	testDir: "./tests/e2e",
 	outputDir: "test-results",
@@ -21,7 +22,7 @@ export default defineConfig({
 	expect: { timeout: 10_000 },
 	reporter: "list",
 	use: {
-		baseURL,
+		baseURL: playwrightBaseURL,
 		// Failure artifacts can preserve page content before the privacy assertions
 		// have had a chance to stop the test. Release screenshots are captured
 		// explicitly only after the privacy-safe state check passes.
@@ -29,12 +30,14 @@ export default defineConfig({
 		screenshot: "off",
 		video: "off",
 	},
-	webServer: {
-		command: `pnpm preview --host 127.0.0.1 --port ${port}`,
-		url: baseURL,
-		reuseExistingServer: false,
-		timeout: 120_000,
-	},
+	webServer: hasExternalPlaywrightBaseURL
+		? undefined
+		: {
+				command: `pnpm preview --host 127.0.0.1 --port ${playwrightPort}`,
+				url: playwrightBaseURL,
+				reuseExistingServer: false,
+				timeout: 120_000,
+			},
 	projects: [
 		{
 			name: "desktop-chromium",

@@ -68,6 +68,17 @@ async function createFixture() {
 	})
 		.jpeg({ quality: 40, mozjpeg: true })
 		.toBuffer();
+	const siteSocialJpeg = await sharp({
+		create: {
+			width: 1200,
+			height: 630,
+			channels: 3,
+			background: "#efe8d5",
+		},
+	})
+		.jpeg({ quality: 40, mozjpeg: true })
+		.toBuffer();
+	await writeFile(path.join(dist, "social", "site.jpg"), siteSocialJpeg);
 	for (const slug of slugs) {
 		await writeFile(path.join(dist, "social", `${slug}.jpg`), socialJpeg);
 		const postDirectory = path.join(dist, "posts", slug);
@@ -85,7 +96,7 @@ async function createFixture() {
 	);
 	await writeFile(
 		path.join(dist, "index.html"),
-		`<!doctype html><html><head><link rel="icon" href="/mark.svg"><script>window.__fixture=true</script></head><body><article data-editorial-slug="${slugs[0]}">${pictureMarkup({ priority: true })}</article></body></html>`,
+		`<!doctype html><html><head><link rel="icon" href="/mark.svg"><meta property="og:image" content="/social/site.jpg"><script>window.__fixture=true</script></head><body><article data-editorial-slug="${slugs[0]}">${pictureMarkup({ priority: true })}</article></body></html>`,
 	);
 
 	return { root, dist, originalBytes, slugs };
@@ -105,7 +116,7 @@ test("accepts an allowlisted responsive publication artifact", async (t) => {
 		dist: fixture.dist,
 		repoRoot: fixture.root,
 	});
-	assert.equal(stats.imageCount, 14);
+	assert.equal(stats.imageCount, 15);
 	assert.ok(stats.initialJavaScriptGzipBytes > 0);
 	assert.ok(stats.initialJavaScriptGzipBytes < 1024);
 	assert.ok(stats.homepageInitialImageBytes > 0);

@@ -54,6 +54,7 @@ export default function publicationAssets() {
 				const expectedSocialImages = new Set(
 					articles.map((article) => `social/${article.slug}.jpg`),
 				);
+				expectedSocialImages.add("social/site.jpg");
 
 				const sourceAssetStems = new Set();
 				const foundOriginalHashes = new Set();

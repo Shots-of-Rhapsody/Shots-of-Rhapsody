@@ -13,6 +13,11 @@ import {
 	FEATURED_IMAGE_SIZES,
 	HERO_IMAGE_SIZES,
 } from "../../src/utils/image-policy";
+import {
+	playwrightBasePathname,
+	playwrightBaseURL,
+	playwrightOrigin,
+} from "./base-url";
 
 interface ArchiveArticle {
 	slug: string;
@@ -88,8 +93,6 @@ const draftSlugs = [
 ];
 const privateReference =
 	/(\.proton-import|protonusercontent\.(?:com|ch)|docs\.proton\.me\/u\/\d+\/)/i;
-const previewOrigin = `http://127.0.0.1:${process.env.PLAYWRIGHT_PORT ?? 4387}`;
-
 class RedactedRuntimeRecorder {
 	private readonly issues = new Map<string, number>();
 	private readonly onConsole = (message: ConsoleMessage) => {
@@ -104,8 +107,13 @@ class RedactedRuntimeRecorder {
 		const requestUrl = request.url();
 		this.recordPrivateReference("request", requestUrl);
 		try {
-			if (new URL(requestUrl).origin !== previewOrigin) {
-				this.record("cross-origin-request");
+			const parsed = new URL(requestUrl);
+			if (
+				(parsed.protocol === "http:" || parsed.protocol === "https:") &&
+				(parsed.origin !== playwrightOrigin ||
+					!parsed.pathname.startsWith(playwrightBasePathname))
+			) {
+				this.record("request-outside-project-base");
 			}
 		} catch {
 			this.record("malformed-request-url");
@@ -199,6 +207,10 @@ test.afterEach(async ({ page }, testInfo) => {
 
 function sitePath(relativePath = "") {
 	return `/Shots-of-Rhapsody/${relativePath}`.replace(/\/{2,}/g, "/");
+}
+
+function absoluteSiteUrl(relativePath = "") {
+	return new URL(relativePath, playwrightBaseURL).toString();
 }
 
 async function setTheme(page: Page, theme: "light" | "dark") {
@@ -318,9 +330,71 @@ test.describe("public release inventory", () => {
 		expect([...discovered].toSorted()).toEqual(expectedSlugs);
 		expect(await page.locator("[data-featured-card-slug]").count()).toBe(3);
 		expect((await request.get(sitePath("2/"))).status()).toBe(404);
+
+		const websiteJsonLd = (
+			await page.locator('script[type="application/ld+json"]').allTextContents()
+		)
+			.map((value) => JSON.parse(value))
+			.find((value) => value["@type"] === "WebSite");
+		const canonicalSiteUrl =
+			"https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/";
+		const canonicalSocialImageUrl = new URL(
+			"social/site.jpg",
+			canonicalSiteUrl,
+		).toString();
+		const servedSocialImageUrl = absoluteSiteUrl("social/site.jpg");
+		expect(websiteJsonLd).toMatchObject({
+			"@context": "https://schema.org",
+			"@type": "WebSite",
+			"@id": `${canonicalSiteUrl}#website`,
+			name: "Shots of Rhapsody",
+			url: canonicalSiteUrl,
+			author: {
+				"@type": "Person",
+				name: "Tai Song",
+				url: new URL("authors/tai-song/", canonicalSiteUrl).toString(),
+			},
+			image: {
+				"@type": "ImageObject",
+				url: canonicalSocialImageUrl,
+				contentUrl: canonicalSocialImageUrl,
+				encodingFormat: "image/jpeg",
+				width: 1200,
+				height: 630,
+			},
+		});
+		for (const selector of [
+			'meta[property="og:image"]',
+			'meta[name="twitter:image"]',
+		]) {
+			await expect(page.locator(selector)).toHaveAttribute(
+				"content",
+				canonicalSocialImageUrl,
+			);
+		}
+		const socialImage = await request.get(sitePath("social/site.jpg"));
+		expect(socialImage.status()).toBe(200);
+		expect(socialImage.headers()["content-type"]).toContain("image/jpeg");
+		expect((await socialImage.body()).byteLength).toBeGreaterThan(0);
+		expect(
+			await page.evaluate(
+				(src) =>
+					new Promise<[number, number]>((resolve, reject) => {
+						const image = new Image();
+						image.addEventListener("load", () =>
+							resolve([image.naturalWidth, image.naturalHeight]),
+						);
+						image.addEventListener("error", () =>
+							reject(new Error("site social image failed to load")),
+						);
+						image.src = src;
+					}),
+				servedSocialImageUrl,
+			),
+		).toEqual([1200, 630]);
 	});
 
-	test("archive, author, RSS, sitemap, and robots expose exactly 11 articles", async ({
+	test("archive, author, RSS, sitemap, and reader pages expose exactly 11 articles", async ({
 		page,
 		request,
 	}) => {
@@ -353,12 +427,7 @@ test.describe("public release inventory", () => {
 		expectNoPrivateReference(rssBody, "RSS response");
 		expect(rssBody.match(/<item>/g) ?? []).toHaveLength(11);
 
-		for (const route of [
-			"sitemap-index.xml",
-			"robots.txt",
-			"about/",
-			"content-license/",
-		]) {
+		for (const route of ["sitemap-index.xml", "about/", "content-license/"]) {
 			const response = await request.get(sitePath(route));
 			expect(response.status(), route).toBe(200);
 			expectNoPrivateReference(await response.text(), `${route} response`);
@@ -390,6 +459,32 @@ test.describe("public release inventory", () => {
 			expect(response.status()).toBe(404);
 		});
 	}
+
+	test("unknown routes use the branded, non-indexable 404 page", async ({
+		page,
+		request,
+	}) => {
+		const missing = await request.get(sitePath("missing-folio/"));
+		expect(missing.status()).toBe(404);
+		expect(await missing.text()).toContain("data-custom-404");
+
+		await expectHealthyPage(page, "404.html");
+		await expect(page.locator("[data-custom-404]")).toHaveCount(1);
+		await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+			"content",
+			"noindex",
+		);
+		await expect(page.locator("[data-404-home]")).toHaveAttribute(
+			"href",
+			sitePath(),
+		);
+		await expect(page.locator("[data-404-archive]")).toHaveAttribute(
+			"href",
+			sitePath("archive/"),
+		);
+		await expectPrivacySafeState(page, "Custom 404 page");
+		await expectNoSeriousAxeViolations(page);
+	});
 });
 
 test("archive dates retain their UTC calendar day in UTC and Pacific time", async ({
@@ -397,7 +492,7 @@ test("archive dates retain their UTC calendar day in UTC and Pacific time", asyn
 }) => {
 	for (const timeZone of ["UTC", "America/Los_Angeles"]) {
 		const context = await browser.newContext({
-			baseURL: `${previewOrigin}/Shots-of-Rhapsody/`,
+			baseURL: playwrightBaseURL,
 			timezoneId: timeZone,
 			viewport: { width: 1280, height: 900 },
 		});
@@ -434,10 +529,10 @@ test("responsive manuscript layout and initial images meet the release matrix", 
 		"The focused responsive matrix runs once.",
 	);
 
-	for (const width of [360, 768, 1024, 1440, 1920]) {
+	for (const width of [320, 360, 768, 1024, 1440, 1920]) {
 		for (const theme of ["light", "dark"] as const) {
 			const context = await browser.newContext({
-				baseURL: `${previewOrigin}/Shots-of-Rhapsody/`,
+				baseURL: playwrightBaseURL,
 				colorScheme: theme,
 				viewport: { width, height: 1000 },
 			});
@@ -488,6 +583,28 @@ test("responsive manuscript layout and initial images meet the release matrix", 
 						/320w.+480w.+640w/u,
 					);
 				}
+				if (width === 320) {
+					await expect(page.locator("#works")).toBeVisible();
+					await expect(
+						page.locator("[data-post-card-slug]").first(),
+					).toBeVisible();
+					const menuButton = page.getByRole("button", { name: "Menu" });
+					await expect(menuButton).toBeVisible();
+					await menuButton.click();
+					await expect(menuButton).toHaveAttribute("aria-expanded", "true");
+					await expect(
+						page
+							.locator("#nav-menu-panel")
+							.getByRole("link", { name: "Works" }),
+					).toBeVisible();
+					await page.keyboard.press("Escape");
+					await expect(menuButton).toHaveAttribute("aria-expanded", "false");
+					await page.getByRole("button", { name: "Search" }).click();
+					await expect(page.getByRole("dialog")).toBeVisible();
+					await expect(page.getByRole("searchbox")).toBeFocused();
+					await page.getByRole("button", { name: "Close search" }).click();
+					await expect(page.getByRole("dialog")).toBeHidden();
+				}
 
 				const initialImageBytes = (await Promise.all(imageBodies)).reduce(
 					(total, bytes) => total + bytes,
@@ -520,6 +637,16 @@ test("responsive manuscript layout and initial images meet the release matrix", 
 					"object-fit",
 					"contain",
 				);
+				if (width === 320) {
+					await expect(page.locator("[data-archive-body]")).toBeVisible();
+					const continuation = page.locator(
+						"[data-editorial-continuation-from]",
+					);
+					await expect(continuation).toBeVisible();
+					await expect(
+						continuation.locator('a[href*="/posts/"]').first(),
+					).toBeVisible();
+				}
 				recorder.assertClean(`${width}px ${theme} responsive matrix`);
 			} finally {
 				page.off("response", captureImage);
@@ -528,6 +655,75 @@ test("responsive manuscript layout and initial images meet the release matrix", 
 				await context.close();
 			}
 		}
+	}
+});
+
+test("primary reading surfaces remain usable at 200% root text size", async ({
+	browser,
+}, testInfo) => {
+	test.skip(
+		testInfo.project.name !== "desktop-chromium",
+		"The focused text-resize check runs once.",
+	);
+
+	const context = await browser.newContext({
+		baseURL: playwrightBaseURL,
+		viewport: { width: 1280, height: 900 },
+	});
+	await context.addInitScript(() => {
+		document.addEventListener(
+			"DOMContentLoaded",
+			() => {
+				document.documentElement.style.fontSize = "200%";
+			},
+			{ once: true },
+		);
+	});
+	const page = await context.newPage();
+	const recorder = runtimeRecorder(page);
+	try {
+		for (const route of ["", `posts/${articles[0].slug}/`]) {
+			await expectHealthyPage(page, route);
+			const bodyFontSize = await page.evaluate(() =>
+				Number.parseFloat(getComputedStyle(document.body).fontSize),
+			);
+			expect(
+				bodyFontSize,
+				`${route || "/"}: resized body font`,
+			).toBeGreaterThanOrEqual(32);
+			expect(
+				await page.evaluate(
+					() =>
+						document.documentElement.scrollWidth -
+						document.documentElement.clientWidth,
+				),
+				`${route || "/"}: horizontal overflow at 200% text size`,
+			).toBeLessThanOrEqual(1);
+			await expect(page.locator("main")).toBeVisible();
+			await expect(page.locator("h1").first()).toBeVisible();
+			if (route === "") {
+				await expect(
+					page.getByRole("link", { name: "Works", exact: true }).first(),
+				).toBeVisible();
+				await expect(
+					page.locator("[data-post-card-slug]").first(),
+				).toBeVisible();
+				await page.getByRole("button", { name: "Search" }).click();
+				await expect(page.getByRole("dialog")).toBeVisible();
+				await expect(page.getByRole("searchbox")).toBeFocused();
+				await page.getByRole("button", { name: "Close search" }).click();
+			} else {
+				await expect(page.locator("[data-archive-body]")).toBeVisible();
+				await expect(
+					page.locator("[data-editorial-continuation-from]"),
+				).toBeVisible();
+			}
+			recorder.assertClean(`${route || "/"} at 200% root text size`);
+		}
+	} finally {
+		recorder.stop();
+		runtimeRecorders.delete(page);
+		await context.close();
 	}
 });
 

@@ -2,6 +2,8 @@
 import { getCollection } from "astro:content";
 import EditorialWorkCard from "@components/EditorialWorkCard.astro";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getSiteRootUrl, url } from "@utils/url-utils";
+import { siteConfig } from "@/config";
 import {
 	EDITORIAL_GROUPS,
 	entriesForSlugs,
@@ -22,12 +24,52 @@ const groups = EDITORIAL_GROUPS.map((group) => ({
 	...group,
 	entries: entriesForSlugs(indexedEntries, group.slugs),
 }));
+const description =
+	"Enter the eleven-work Shots of Rhapsody archive: fiction, poetry, and reflections by Tai Song.";
+const siteUrl = Astro.site ?? Astro.url;
+const siteRootUrl = getSiteRootUrl(siteUrl).toString();
+const authorUrl = new URL(url("/authors/tai-song/"), siteUrl).toString();
+const socialImageUrl = new URL(url("/social/site.jpg"), siteUrl).toString();
+const socialImageAlt =
+	"Shots of Rhapsody — Stories, poems, and reflections by Tai Song";
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "WebSite",
+	"@id": `${siteRootUrl}#website`,
+	name: siteConfig.title,
+	description,
+	url: siteRootUrl,
+	inLanguage: siteConfig.lang,
+	author: {
+		"@type": "Person",
+		"@id": `${authorUrl}#person`,
+		name: "Tai Song",
+		url: authorUrl,
+	},
+	image: {
+		"@type": "ImageObject",
+		url: socialImageUrl,
+		contentUrl: socialImageUrl,
+		encodingFormat: "image/jpeg",
+		width: 1200,
+		height: 630,
+		description: socialImageAlt,
+	},
+};
+const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 ---
 
 <MainGridLayout
 	title="Stories, poems, and reflections by Tai Song"
-	description="Enter the eleven-work Shots of Rhapsody archive: fiction, poetry, and reflections by Tai Song."
+	description={description}
+	canonicalUrl={siteRootUrl}
+	socialImage={socialImageUrl}
+	socialImageAlt={socialImageAlt}
+	socialImageWidth={1200}
+	socialImageHeight={630}
+	socialImageType="image/jpeg"
 >
+	<script is:inline slot="head" type="application/ld+json" set:html={jsonLdString}></script>
 	<div class="home-archive" data-public-article-count="11">
 		<header class="home-intro manuscript-panel">
 			<p class="home-intro__kicker">Stories, poems, and reflections by Tai Song</p>
