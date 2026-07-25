@@ -1,0 +1,25 @@
+---
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { url } from "@utils/url-utils";
+---
+
+<MainGridLayout
+	title="Rights"
+	description="Rights for writing and original creative work presented by Shots of Rhapsody."
+>
+	<article class="rights-page custom-md prose dark:prose-invert">
+		<h1>Rights</h1>
+		<p>© Tai Song and Shots of Rhapsody. All writing, original artwork, audio, and transcripts are <strong>All Rights Reserved</strong> unless a page states otherwise. Linking is welcome; reproduction or redistribution requires written permission.</p>
+		<p><a href={url("/")}>Return to Shots of Rhapsody</a></p>
+	</article>
+</MainGridLayout>
+
+<style>
+	.rights-page {
+		border: 1px solid var(--rule);
+		border-radius: 0.5rem;
+		background: var(--paper-raised);
+		box-shadow: var(--shadow);
+		padding: clamp(1.4rem, 6vw, 4.5rem);
+	}
+</style>

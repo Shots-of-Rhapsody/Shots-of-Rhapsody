@@ -60,7 +60,6 @@ const siteLang = (lang || siteConfig.lang).replace("_", "-");
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={metadataDescription} />
 		<meta name="author" content={metadataAuthor} />
 		<meta name="theme-color" content="#f5efdf" media="(prefers-color-scheme: light)" />
@@ -85,13 +84,6 @@ const siteLang = (lang || siteConfig.lang).replace("_", "-");
 		{setOGTypeArticle && metadataAuthor && <meta property="article:author" content={metadataAuthor} />}
 		{setOGTypeArticle && category && <meta property="article:section" content={category} />}
 		{setOGTypeArticle && tags.map((tag) => <meta property="article:tag" content={tag} />)}
-
-		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:url" content={canonical} />
-		<meta name="twitter:title" content={metadataTitle} />
-		<meta name="twitter:description" content={metadataDescription} />
-		{socialImage && <meta name="twitter:image" content={socialImage} />}
-		{socialImage && <meta name="twitter:image:alt" content={socialImageAlt ?? ""} />}
 
 		<script is:inline>
 			(() => {

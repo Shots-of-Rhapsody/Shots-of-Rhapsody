@@ -7,11 +7,10 @@ interface Props {
 	pubDate: Date;
 	author?: string;
 	license?: { name: string; url?: string };
-	canonicalUrl: string;
 	class?: string;
 }
 
-const { title, pubDate, author, license, canonicalUrl } = Astro.props;
+const { title, pubDate, author, license } = Astro.props;
 const className = Astro.props.class;
 const authorName = author || profileConfig.name;
 const licenseDetails = license ?? licenseConfig;
@@ -26,7 +25,6 @@ const licenseDetails = license ?? licenseConfig;
 			<a href={licenseDetails.url} rel="noopener noreferrer">{licenseDetails.name}</a>
 		) : licenseDetails.name}
 	</p>
-	<a class="rights-note__canonical" href={canonicalUrl}>{canonicalUrl}</a>
 </aside>
 
 <style>
@@ -55,8 +53,4 @@ const licenseDetails = license ?? licenseConfig;
 		color: var(--celadon);
 	}
 
-	.rights-note__canonical {
-		display: block;
-		overflow-wrap: anywhere;
-	}
 </style>

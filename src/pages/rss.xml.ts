@@ -73,9 +73,6 @@ export async function GET(context: APIContext) {
 				post.data.updated
 					? `<dcterms:modified>${escapeXml(post.data.updated.toISOString())}</dcterms:modified>`
 					: "",
-				post.data.publication?.url
-					? `<dc:relation>${escapeXml(post.data.publication.url)}</dc:relation>`
-					: "",
 				`<media:content url="${escapeXml(imageUrl)}" medium="image" type="${image.mimeType}" width="${image.width}" height="${image.height}" />`,
 				imageUrl && post.data.imageCaption
 					? `<media:description type="plain">${escapeXml(post.data.imageCaption)}</media:description>`

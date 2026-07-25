@@ -20,11 +20,13 @@ const REQUIRED_NON_POST_ROUTES = [
 	"about/",
 	"archive/",
 	"authors/tai-song/",
-	"content-license/",
+	"rights/",
 ];
 const REQUIRED_NON_INDEXABLE_HTML_ROUTES = ["404.html"];
 const HOME_DESCRIPTION =
 	"Enter the eleven-work Shots of Rhapsody archive: fiction, poetry, and reflections by Tai Song.";
+const AUTHOR_BIO =
+	"Tai Song is a Singapore-based commodity trader and trade strategist whose writing spans fiction, poetry, reflection, and nonfiction. Across global markets and imagined futures, Tai explores power, policy, inequality, memory, the consequences of invention, and the fragile things people try to preserve.";
 const EXPECTED_DRAFT_POST_PATHS = [
 	"src/content/posts/guide/index.md",
 	"src/content/posts/video.md",
@@ -235,6 +237,116 @@ const PRIVATE_BUILD_REFERENCE_PATTERNS = [
 	/\b[A-Za-z]:[\\/]Users[\\/][^\\/\s]+/iu,
 	/(?:^|[\s"'(])\/(?:home|Users)\/[^/\s]+\//u,
 ];
+
+const SITE_COPY_BRAND_PATTERN =
+	/\b(?:GitHub|Vocal|Medium|Proton|Fuwari|Astro|Twitter)\b/iu;
+const SITE_COPY_INTERNAL_PATTERN =
+	/\b(?:repository|manifest|upstream|deployment|backend|system-level)\b|\b(?:source|content)\s+(?:hash|path|import)\b/iu;
+const BLOCKED_PUBLIC_LINK_HOSTS = new Set([
+	"github.com",
+	"medium.com",
+	"vocal.media",
+	"proton.me",
+	"docs.proton.me",
+	"fuwari.vercel.app",
+]);
+const AUTHORED_CONTENT_MARKERS = new Set([
+	"data-archive-body",
+	"data-archive-field",
+	"data-archive-hero",
+	"data-post-card-slug",
+	"data-featured-card-slug",
+	"data-author-article-slug",
+	"data-archive-entry-slug",
+]);
+
+function publicCopyIssues(value) {
+	const issues = [];
+	if (SITE_COPY_BRAND_PATTERN.test(value)) {
+		issues.push("site-authored copy contains third-party platform branding");
+	}
+	if (SITE_COPY_INTERNAL_PATTERN.test(value)) {
+		issues.push("site-authored copy contains internal implementation language");
+	}
+	if (/shots-of-rhapsody\.github\.io/iu.test(value)) {
+		issues.push(
+			"site-authored visible copy exposes the temporary hosting address",
+		);
+	}
+	return issues;
+}
+
+export function publicFacingCopyViolations(html) {
+	const document = parse(String(html));
+	const violations = [];
+	const visit = (node, { authored = false, visible = true } = {}) => {
+		const attributesByName = Object.fromEntries(
+			(node.attrs ?? []).map((attribute) => [attribute.name, attribute.value]),
+		);
+		const isAuthored =
+			authored ||
+			(node.attrs ?? []).some((attribute) =>
+				AUTHORED_CONTENT_MARKERS.has(attribute.name),
+			);
+		if (isAuthored) return;
+
+		const tagName = node.tagName?.toLowerCase();
+		const isVisible =
+			visible &&
+			!["head", "script", "style", "template", "noscript"].includes(tagName);
+		if (tagName === "meta") {
+			const name = attributesByName.name?.toLowerCase();
+			if (name === "generator") {
+				violations.push("framework generator metadata is public");
+			}
+			if (name?.startsWith("twitter:")) {
+				violations.push("platform-specific social metadata is public");
+			}
+		}
+		if (
+			tagName === "script" &&
+			attributesByName.type === "application/ld+json"
+		) {
+			try {
+				const jsonLd = JSON.parse(nodeText(node));
+				if (Object.hasOwn(jsonLd, "isBasedOn")) {
+					violations.push(
+						"structured data exposes historical-source provenance",
+					);
+				}
+			} catch {
+				// JSON-LD syntax is reported by the dedicated metadata verifier.
+			}
+		}
+		if (tagName === "a" && attributesByName.href) {
+			try {
+				const target = new URL(attributesByName.href, "https://shots.invalid/");
+				if (BLOCKED_PUBLIC_LINK_HOSTS.has(target.hostname.toLowerCase())) {
+					violations.push(
+						"site-authored navigation exposes a third-party platform link",
+					);
+				}
+			} catch {
+				// Invalid URLs are reported by the dedicated URL verifier.
+			}
+		}
+		if (node.nodeName === "#text" && visible) {
+			violations.push(...publicCopyIssues(node.value ?? ""));
+		}
+		if (isVisible) {
+			for (const attributeName of ["alt", "aria-label", "title"]) {
+				violations.push(
+					...publicCopyIssues(attributesByName[attributeName] ?? ""),
+				);
+			}
+		}
+		for (const child of node.childNodes ?? []) {
+			visit(child, { authored: false, visible: isVisible });
+		}
+	};
+	visit(document);
+	return sortedUnique(violations);
+}
 
 function normalizedReferenceText(value) {
 	return value
@@ -492,6 +604,9 @@ async function verifyHtml(filePath, distRoot, site, failures, postPages) {
 	if (hasPrivateProtonReference(html)) {
 		failures.push(`${relativePath}: output exposes a private Proton URL or ID`);
 	}
+	for (const violation of publicFacingCopyViolations(html)) {
+		failures.push(`${relativePath}: ${violation}`);
+	}
 
 	for (const selector of [
 		"description",
@@ -507,7 +622,7 @@ async function verifyHtml(filePath, distRoot, site, failures, postPages) {
 			);
 		}
 	}
-	for (const selector of ["og:url", "twitter:url"]) {
+	for (const selector of ["og:url"]) {
 		const values = metaContent(html, selector);
 		if (values.length !== 1 || values[0] !== canonical) {
 			failures.push(
@@ -515,7 +630,7 @@ async function verifyHtml(filePath, distRoot, site, failures, postPages) {
 			);
 		}
 	}
-	for (const selector of ["og:image", "twitter:image"]) {
+	for (const selector of ["og:image"]) {
 		for (const imageUrl of metaContent(html, selector)) {
 			await resolveBuiltUrl(
 				imageUrl,
@@ -606,6 +721,8 @@ async function verifyRss(distRoot, site, failures, postPages) {
 		failures.push("rss.xml is not an RSS channel");
 	if (/<dc:source(?:\s|>)/i.test(xml))
 		failures.push("rss.xml must not publish dc:source provenance");
+	if (/<dc:relation(?:\s|>)/i.test(xml))
+		failures.push("rss.xml must not publish historical-source provenance");
 	if (hasPrivateProtonReference(xml))
 		failures.push("rss.xml exposes a private Proton URL or ID");
 	const itemBlocks = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map(
@@ -1131,9 +1248,7 @@ async function verifyArchiveManifest(
 			["author", post.author],
 			["description", post.description],
 			["og:title", post.title],
-			["twitter:title", post.title],
 			["og:description", post.description],
-			["twitter:description", post.description],
 			["article:published_time", expectedPublished],
 			["article:section", post.category],
 		]) {
@@ -1176,16 +1291,9 @@ async function verifyArchiveManifest(
 		const publicationLinks = tags(html, "a").filter((tag) =>
 			Object.hasOwn(tag.attributes, "data-archive-publication-url"),
 		);
-		if (expectedPublication) {
-			if (
-				publicationLinks.length !== 1 ||
-				publicationLinks[0].attributes.href !== expectedPublication.url
-			) {
-				failures.push(`${label}: historical Vocal link differs from snapshot`);
-			}
-		} else if (publicationLinks.length !== 0) {
+		if (publicationLinks.length !== 0) {
 			failures.push(
-				`${label}: unexpected historical publication link is visible`,
+				`${label}: historical publication provenance must not be visible`,
 			);
 		}
 		const licenseBlocks = ["aside", "div"].flatMap((tagName) =>
@@ -1233,7 +1341,6 @@ async function verifyArchiveManifest(
 				["dateModified", jsonLd.dateModified, expectedModified],
 				["url", jsonLd.url, expectedUrl],
 				["mainEntityOfPage", jsonLd.mainEntityOfPage?.["@id"], expectedUrl],
-				["source", jsonLd.isBasedOn, expectedPublication?.url],
 				["category", jsonLd.articleSection, post.category],
 				["license", jsonLd.copyrightNotice, "All Rights Reserved"],
 				["caption", jsonLd.image?.caption, expectedCaption],
@@ -1255,18 +1362,21 @@ async function verifyArchiveManifest(
 			if (Object.hasOwn(jsonLd.image ?? {}, "sameAs")) {
 				failures.push(`${label}: JSON-LD image must not publish a source URL`);
 			}
+			if (Object.hasOwn(jsonLd, "isBasedOn")) {
+				failures.push(`${label}: JSON-LD must not publish source provenance`);
+			}
 			if (!sameStringArray(jsonLd.keywords, expectedTags))
 				failures.push(`${label}: JSON-LD tag order differs from snapshot`);
 			if (jsonLd.image?.description !== expectedImageDescription)
 				failures.push(`${label}: JSON-LD image alt differs from snapshot`);
 			if (jsonLd.image?.url !== jsonLd.image?.contentUrl)
 				failures.push(`${label}: JSON-LD image must use one local emitted URL`);
-			for (const selector of ["og:image", "twitter:image"]) {
+			for (const selector of ["og:image"]) {
 				const values = metaContent(html, selector);
 				if (values.length !== 1 || values[0] !== jsonLd.image?.url)
 					failures.push(`${label}: ${selector} does not match JSON-LD image`);
 			}
-			for (const selector of ["og:image:alt", "twitter:image:alt"]) {
+			for (const selector of ["og:image:alt"]) {
 				const values = metaContent(html, selector);
 				if (values.length !== 1 || values[0] !== expectedAlt)
 					failures.push(`${label}: ${selector} differs from the alt contract`);
@@ -1385,10 +1495,8 @@ async function verifyArchiveManifest(
 				new Date(post.published).toUTCString()
 			)
 				failures.push(`${label}: RSS publication date differs from snapshot`);
-			if (xmlElementText(item, "dc:relation") !== expectedPublication?.url)
-				failures.push(
-					`${label}: RSS publication relation differs from snapshot`,
-				);
+			if (xmlElementText(item, "dc:relation") !== undefined)
+				failures.push(`${label}: RSS must not publish source provenance`);
 			if (xmlElementText(item, "dc:source") !== undefined)
 				failures.push(`${label}: RSS must not publish dc:source provenance`);
 			if (xmlElementText(item, "dcterms:modified") !== undefined)
@@ -1504,9 +1612,7 @@ async function verifyHomepageMetadata(distRoot, site, failures) {
 	}
 	for (const [selector, expected] of [
 		["og:image", socialImageUrl],
-		["twitter:image", socialImageUrl],
 		["og:image:alt", socialImageAlt],
-		["twitter:image:alt", socialImageAlt],
 		["og:image:type", "image/jpeg"],
 		["og:image:width", "1200"],
 		["og:image:height", "630"],
@@ -1783,6 +1889,11 @@ async function verifyAuthorPage(repoRoot, distRoot, manifest, site, failures) {
 	}
 	const html = await readFile(authorPath, "utf8");
 	const document = parse(html);
+	if (!nodeText(document).includes(AUTHOR_BIO)) {
+		failures.push(
+			"Tai Song author page does not display the approved biography",
+		);
+	}
 	const authorMarkers = elementsWithAttribute(document, "data-author-archive");
 	if (
 		authorMarkers.length !== 1 ||
@@ -1871,14 +1982,24 @@ async function verifyAuthorPage(repoRoot, distRoot, manifest, site, failures) {
 	const jsonLd = extractJsonLd(html, "Tai Song author page", failures);
 	if (jsonLd) {
 		if (
-			jsonLd["@type"] !== "Person" ||
-			jsonLd.name !== "Tai Song" ||
+			jsonLd["@type"] !== "ProfilePage" ||
+			jsonLd.name !== "Tai Song — Shots of Rhapsody" ||
 			jsonLd.url !== authorUrl ||
-			jsonLd["@id"] !== `${authorUrl}#person`
+			jsonLd["@id"] !== `${authorUrl}#profile` ||
+			jsonLd.description !== AUTHOR_BIO ||
+			jsonLd.inLanguage !== "en" ||
+			jsonLd.mainEntity?.["@type"] !== "Person" ||
+			jsonLd.mainEntity?.name !== "Tai Song" ||
+			jsonLd.mainEntity?.url !== authorUrl ||
+			jsonLd.mainEntity?.["@id"] !== `${authorUrl}#person` ||
+			jsonLd.mainEntity?.description !== AUTHOR_BIO ||
+			jsonLd.mainEntity?.mainEntityOfPage?.["@id"] !== `${authorUrl}#profile`
 		) {
 			failures.push("Tai Song author JSON-LD identity is incorrect");
 		}
-		const works = Array.isArray(jsonLd.workExample) ? jsonLd.workExample : [];
+		const works = Array.isArray(jsonLd.mainEntity?.workExample)
+			? jsonLd.mainEntity.workExample
+			: [];
 		const actualWorks = works.map((work) => `${work.url}\n${work.name}`);
 		const expectedWorks = manifest.articles.map(
 			(article) =>

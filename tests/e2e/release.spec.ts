@@ -26,7 +26,6 @@ interface ArchiveArticle {
 	author: string;
 	imageAlt: string | null;
 	imageCaption: string;
-	publication: { platform: "Vocal"; url: string };
 	image: { width: number; height: number };
 	published: string;
 	ending: string;
@@ -56,7 +55,6 @@ const articles: ArchiveArticle[] = manifest.articles.map((entry) => {
 		author: snapshot.author,
 		imageAlt: snapshot.imageAlt,
 		imageCaption: snapshot.imageCaption,
-		publication: snapshot.publication,
 		image: entry.image,
 		published: snapshot.published,
 		ending,
@@ -91,6 +89,8 @@ const draftSlugs = [
 	"modular-ethics/modular-ethics",
 	"the-last-cup/the-last-cup",
 ];
+const authorBio =
+	"Tai Song is a Singapore-based commodity trader and trade strategist whose writing spans fiction, poetry, reflection, and nonfiction. Across global markets and imagined futures, Tai explores power, policy, inequality, memory, the consequences of invention, and the fragile things people try to preserve.";
 const privateReference =
 	/(\.proton-import|protonusercontent\.(?:com|ch)|docs\.proton\.me\/u\/\d+\/)/i;
 class RedactedRuntimeRecorder {
@@ -363,10 +363,7 @@ test.describe("public release inventory", () => {
 				height: 630,
 			},
 		});
-		for (const selector of [
-			'meta[property="og:image"]',
-			'meta[name="twitter:image"]',
-		]) {
+		for (const selector of ['meta[property="og:image"]']) {
 			await expect(page.locator(selector)).toHaveAttribute(
 				"content",
 				canonicalSocialImageUrl,
@@ -427,11 +424,99 @@ test.describe("public release inventory", () => {
 		expectNoPrivateReference(rssBody, "RSS response");
 		expect(rssBody.match(/<item>/g) ?? []).toHaveLength(11);
 
-		for (const route of ["sitemap-index.xml", "about/", "content-license/"]) {
+		for (const route of ["sitemap-index.xml", "about/", "rights/"]) {
 			const response = await request.get(sitePath(route));
 			expect(response.status(), route).toBe(200);
 			expectNoPrivateReference(await response.text(), `${route} response`);
 		}
+	});
+
+	test("reader-facing pages use only Shots of Rhapsody branding", async ({
+		page,
+		request,
+	}) => {
+		for (const route of [
+			"",
+			"archive/",
+			"authors/tai-song/",
+			"about/",
+			"rights/",
+			`posts/${articles[0].slug}/`,
+		]) {
+			await expectHealthyPage(page, route);
+			await expect(page.locator('meta[name="generator"]')).toHaveCount(0);
+			await expect(page.locator('meta[name^="twitter:"]')).toHaveCount(0);
+			const publicSurface = await page.evaluate(() => {
+				const copy = document.body.cloneNode(true) as HTMLElement;
+				for (const selector of [
+					"[data-archive-body]",
+					"[data-archive-field]",
+					"[data-archive-hero]",
+					"[data-post-card-slug]",
+					"[data-featured-card-slug]",
+					"[data-author-article-slug]",
+					"[data-archive-entry-slug]",
+				]) {
+					for (const element of copy.querySelectorAll(selector))
+						element.remove();
+				}
+				return {
+					text: copy.innerText,
+					hrefs: [...copy.querySelectorAll("a[href]")].map(
+						(link) => (link as HTMLAnchorElement).href,
+					),
+				};
+			});
+			expect(publicSurface.text).not.toMatch(
+				/\b(?:GitHub|Vocal|Medium|Proton|Fuwari|Astro|Twitter|repository|manifest|upstream|deployment|backend|system-level)\b/i,
+			);
+			expect(publicSurface.text).not.toContain("shots-of-rhapsody.github.io");
+			expect(publicSurface.hrefs).not.toEqual(
+				expect.arrayContaining([
+					expect.stringMatching(
+						/^https:\/\/(?:github\.com|medium\.com|vocal\.media|(?:docs\.)?proton\.me)\//i,
+					),
+				]),
+			);
+		}
+
+		await expectHealthyPage(page, "");
+		await expect(page.locator(".nav-links a")).toHaveText(["Works", "About"]);
+		await expect(page.locator(".site-footer nav a")).toHaveText([
+			"Rights",
+			"Subscribe",
+		]);
+
+		await expectHealthyPage(page, "about/");
+		await expect(page.getByText(authorBio, { exact: true })).toBeVisible();
+
+		await expectHealthyPage(page, "authors/tai-song/");
+		await expect(page.getByText(authorBio, { exact: true })).toBeVisible();
+		const profile = JSON.parse(
+			(await page
+				.locator('script[type="application/ld+json"]')
+				.textContent()) ?? "",
+		);
+		expect(profile).toMatchObject({
+			"@type": "ProfilePage",
+			description: authorBio,
+			mainEntity: {
+				"@type": "Person",
+				name: "Tai Song",
+				description: authorBio,
+			},
+		});
+
+		await expectHealthyPage(page, "rights/");
+		await expect(
+			page.getByText(
+				"© Tai Song and Shots of Rhapsody. All writing, original artwork, audio, and transcripts are All Rights Reserved unless a page states otherwise. Linking is welcome; reproduction or redistribution requires written permission.",
+				{ exact: true },
+			),
+		).toBeVisible();
+		expect((await request.get(sitePath("content-license/"))).status()).toBe(
+			404,
+		);
 	});
 
 	for (const { name, route } of [
@@ -439,7 +524,7 @@ test.describe("public release inventory", () => {
 		{ name: "archive", route: "archive/" },
 		{ name: "author", route: "authors/tai-song/" },
 		{ name: "about", route: "about/" },
-		{ name: "rights", route: "content-license/" },
+		{ name: "rights", route: "rights/" },
 	]) {
 		test(`${name} page has no serious accessibility violations`, async ({
 			page,
@@ -747,7 +832,7 @@ test.describe("article release contract", () => {
 				).toContainText(`By ${article.author}`);
 				await expect(
 					page.locator("[data-archive-publication-url]"),
-				).toHaveAttribute("href", article.publication.url);
+				).toHaveCount(0);
 				await expect(page.locator("[data-post-published]")).toHaveAttribute(
 					"datetime",
 					article.published,
@@ -803,7 +888,7 @@ test.describe("article release contract", () => {
 					name: "Tai Song",
 					url: "https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/authors/tai-song/",
 				});
-				expect(jsonLd.isBasedOn).toBe(article.publication.url);
+				expect(jsonLd).not.toHaveProperty("isBasedOn");
 				const continuationSection = page.locator(
 					`[data-editorial-continuation-from="${article.slug}"]`,
 				);
@@ -837,7 +922,7 @@ test.describe("article release contract", () => {
 				await screenshot(
 					page,
 					testInfo,
-					`${article.slug}-ending-license-source`,
+					`${article.slug}-ending-license-rights`,
 				);
 			}
 		});

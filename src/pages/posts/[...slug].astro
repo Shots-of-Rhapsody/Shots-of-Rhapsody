@@ -109,7 +109,6 @@ const jsonLd = {
 		description: imageDescription,
 		caption: entry.data.imageCaption || undefined,
 	},
-	isBasedOn: entry.data.publication?.url,
 	articleSection: entry.data.category || undefined,
 	wordCount: displayedWordCount,
 	license: effectiveLicense?.url ?? effectiveLicense?.name,
@@ -226,30 +225,12 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 			</section>
 		)}
 
-		{entry.data.publication && (
-			<aside class="publication-provenance" data-pagefind-ignore>
-				<div>
-					<p class="publication-provenance__label">Publication history</p>
-					<p>This work was originally published on {entry.data.publication.platform}.</p>
-				</div>
-				<a
-					data-archive-publication-url
-					href={entry.data.publication.url}
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					View the historical publication <span aria-hidden="true">↗</span>
-				</a>
-			</aside>
-		)}
-
 		{showLicense && (
 			<License
 				title={entry.data.title}
 				pubDate={entry.data.published}
 				author={author}
 				license={entry.data.license}
-				canonicalUrl={canonicalUrl}
 				class="license-container"
 			/>
 		)}
@@ -349,8 +330,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 		border-top: 1px solid var(--line-divider);
 	}
 
-	.post-continuation__kicker,
-	.publication-provenance__label {
+	.post-continuation__kicker {
 		margin: 0;
 		color: var(--primary);
 		font-family: ui-sans-serif, system-ui, sans-serif;
@@ -367,47 +347,9 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 		line-height: 1.15;
 	}
 
-	.publication-provenance {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 1rem;
-		max-width: 66ch;
-		margin: 2rem auto 1rem;
-		padding: 1.1rem 1.25rem;
-		font-family: ui-sans-serif, system-ui, sans-serif;
-		font-size: 0.84rem;
-		background: color-mix(in srgb, var(--primary) 5%, transparent);
-		border: 1px solid var(--line-divider);
-		border-radius: 0.8rem;
-	}
-
-	.publication-provenance p:last-child {
-		margin: 0.3rem 0 0;
-		color: var(--ink-soft);
-	}
-
-	.publication-provenance a {
-		flex: none;
-		color: var(--primary);
-		font-weight: 700;
-		text-decoration-thickness: 1px;
-		text-underline-offset: 0.2em;
-	}
-
-	.publication-provenance a:focus-visible {
-		outline: 3px solid var(--primary);
-		outline-offset: 3px;
-	}
-
 	@media (max-width: 42rem) {
 		.article-shell {
 			padding-inline: 0.75rem;
-		}
-
-		.publication-provenance {
-			align-items: flex-start;
-			flex-direction: column;
 		}
 	}
 </style>

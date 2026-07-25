@@ -13,9 +13,41 @@ import {
 	markedAttributeValues,
 	markedField,
 	parseArguments,
+	publicFacingCopyViolations,
 	validateNoProjectRobots,
 	verifyNoPrivateBuildReferences,
 } from "../../verify-built-site.mjs";
+
+test("public-copy checks allow authored text and required self-canonical URLs", () => {
+	const html = `<!doctype html><html><head>
+		<link rel="canonical" href="https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/posts/example/">
+		<meta property="og:url" content="https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/posts/example/">
+	</head><body>
+		<nav><a href="/archive/">Works</a></nav>
+		<h1 data-archive-field="title">A Story About GitHub and Medium</h1>
+		<div data-archive-body><p>A repository appears in the authored story.</p></div>
+	</body></html>`;
+	assert.deepEqual(publicFacingCopyViolations(html), []);
+});
+
+test("public-copy checks reject platform branding and implementation language", () => {
+	const html = `<!doctype html><html><head>
+		<meta name="generator" content="Astro">
+		<meta name="twitter:card" content="summary_large_image">
+		<script type="application/ld+json">{"@type":"BlogPosting","isBasedOn":"https://vocal.media/example"}</script>
+	</head><body>
+		<p>Read the repository manifest on GitHub.</p>
+		<a href="https://medium.com/example">Source</a>
+	</body></html>`;
+	assert.deepEqual(publicFacingCopyViolations(html), [
+		"framework generator metadata is public",
+		"platform-specific social metadata is public",
+		"site-authored copy contains internal implementation language",
+		"site-authored copy contains third-party platform branding",
+		"site-authored navigation exposes a third-party platform link",
+		"structured data exposes historical-source provenance",
+	]);
+});
 
 test("built-site CLI enables signoff enforcement only when requested", () => {
 	assert.equal(parseArguments([]).requireSignoff, false);

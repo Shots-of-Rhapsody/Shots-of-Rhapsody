@@ -27,25 +27,38 @@ const articles = groups.flatMap((group) => group.entries);
 
 const siteUrl = Astro.site ?? Astro.url;
 const authorUrl = new URL(url("/authors/tai-song/"), siteUrl).toString();
+const authorBio =
+	"Tai Song is a Singapore-based commodity trader and trade strategist whose writing spans fiction, poetry, reflection, and nonfiction. Across global markets and imagined futures, Tai explores power, policy, inequality, memory, the consequences of invention, and the fragile things people try to preserve.";
 const jsonLd = {
 	"@context": "https://schema.org",
-	"@type": "Person",
-	"@id": `${authorUrl}#person`,
-	name: "Tai Song",
+	"@type": "ProfilePage",
+	"@id": `${authorUrl}#profile`,
+	name: "Tai Song — Shots of Rhapsody",
+	description: authorBio,
 	url: authorUrl,
-	mainEntityOfPage: authorUrl,
-	workExample: articles.map((entry) => ({
-		"@type": "CreativeWork",
-		name: entry.data.title,
-		url: getAbsolutePostUrlBySlug(entry.id, siteUrl).toString(),
-	})),
+	inLanguage: "en",
+	mainEntity: {
+		"@type": "Person",
+		"@id": `${authorUrl}#person`,
+		name: "Tai Song",
+		description: authorBio,
+		url: authorUrl,
+		mainEntityOfPage: {
+			"@id": `${authorUrl}#profile`,
+		},
+		workExample: articles.map((entry) => ({
+			"@type": "CreativeWork",
+			name: entry.data.title,
+			url: getAbsolutePostUrlBySlug(entry.id, siteUrl).toString(),
+		})),
+	},
 };
 const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 ---
 
 <MainGridLayout
 	title="Tai Song"
-	description="The complete eleven-work Tai Song archive on Shots of Rhapsody."
+	description="Stories, poems, reflections, and nonfiction by Tai Song."
 	canonicalUrl={authorUrl}
 >
 	<script is:inline slot="head" type="application/ld+json" set:html={jsonLdString}></script>
@@ -53,11 +66,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 		<header class="author-intro manuscript-panel">
 			<p class="author-intro__kicker">Author</p>
 			<h1>Tai Song</h1>
-			<p>
-				Tai Song is the author of the eleven works collected in Shots of
-				Rhapsody—fiction, poetry, and reflections shaped by memory, change,
-				kinship, and imagination.
-			</p>
+			<p>{authorBio}</p>
 		</header>
 
 		<nav class="author-start" aria-labelledby="author-start-title">
