@@ -18,6 +18,7 @@ jobs:
     name: Content integrity and Astro check
     env:
       TZ: UTC
+      PROJECT_HISTORY_TIP: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -58,8 +59,6 @@ jobs:
         run: pnpm test:release-tools
 
       - name: Enforce project Git identity policy
-        env:
-          PROJECT_HISTORY_TIP: ${{ github.event.pull_request.head.sha || github.sha }}
         run: node scripts/release/verify-git-identity.mjs "$PROJECT_HISTORY_TIP"
 
       - name: Check patch whitespace

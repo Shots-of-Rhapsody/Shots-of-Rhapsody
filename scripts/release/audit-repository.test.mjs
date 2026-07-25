@@ -33,14 +33,15 @@ test("identity policy audits an explicit maintained tip instead of a synthetic m
 	try {
 		const repository = path.join(root, "repository");
 		git(root, ["clone", "--shared", repositoryRoot, repository]);
+		const maintainedTip =
+			process.env.PROJECT_HISTORY_TIP ?? git(repository, ["rev-parse", "HEAD"]);
+		git(repository, ["checkout", "--detach", maintainedTip]);
 		git(repository, ["config", "user.name", "Shots of Rhapsody"]);
 		git(repository, [
 			"config",
 			"user.email",
 			["shots-of-rhapsody", "users.noreply.github.com"].join("@"),
 		]);
-		const maintainedTip = git(repository, ["rev-parse", "HEAD"]);
-
 		await writeFile(
 			path.join(repository, "synthetic-merge.txt"),
 			"merge\n",
