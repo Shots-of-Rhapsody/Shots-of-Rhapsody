@@ -65,6 +65,12 @@
 		{
 			"rule": "email-address-review",
 			"path": "pnpm-lock.yaml",
+			"blob": "ec76b3305480b30e75ef753c1581cbdfba729d3a",
+			"reason": "Immutable lockfile blob containing only reviewed public package metadata."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "pnpm-lock.yaml",
 			"blob": "935d8687a7a935506794a429caa95cb1be366b7c",
 			"reason": "Immutable lockfile blob containing only reviewed public package metadata."
 		},

@@ -1,3 +1,5 @@
+autoInstallPeers: false
+
 # pnpm 11 build-script policy: allow required native/tool installs only.
 allowBuilds:
   '@parcel/watcher': true
