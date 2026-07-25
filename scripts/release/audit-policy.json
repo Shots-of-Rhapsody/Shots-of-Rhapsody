@@ -64,6 +64,12 @@
 		},
 		{
 			"rule": "email-address-review",
+			"path": "scripts/content/test/presentation.test.js",
+			"blob": "2985bab94477aa67ae90d636b2d1c74be51abb24",
+			"reason": "Immutable test fixture using the reserved .invalid domain; it is not a deliverable address."
+		},
+		{
+			"rule": "email-address-review",
 			"path": "pnpm-lock.yaml",
 			"blob": "ec76b3305480b30e75ef753c1581cbdfba729d3a",
 			"reason": "Immutable lockfile blob containing only reviewed public package metadata."
@@ -161,11 +167,11 @@
 	],
 	"acceptedDisclosures": [
 		{
-			"path": "legacy/podcast/Podcast Ep 1.mp3",
+			"path": "public/media/podcast/episode-001-modular-ethics.mp3",
 			"gitBlob": "69314c9f79c84e58cec118bdb2e4269aab2c737f",
 			"sha256": "b4ec04aa9f99b0c52c3bd77123962cd7d7a49b316147bd293ad011698d232dc3",
 			"bytes": 57831360,
-			"reason": "Accepted legacy podcast source; intentionally tracked but excluded from the built site."
+			"reason": "Author-controlled podcast source at its permanent path; deployment remains gated by content and presentation approval."
 		}
 	]
 }
