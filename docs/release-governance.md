@@ -43,6 +43,10 @@ passed the archive, browser, dependency, human-signoff, and disclosure gates.
    ref-name finding. Identity exceptions are bound to one immutable Git object
    and role. The documented Fuwari ancestry is trusted only through its pinned
    upstream commit; secret-like metadata remains blocking everywhere.
+7. In an unauthenticated browser, confirm that deleted-repository and
+   superseded commit URLs do not expose old private content. Repository
+   recreation removed those provider refs from the current canonical
+   repository; contact GitHub Support only if an old URL remains accessible.
 
 ## First public conversion
 
@@ -77,12 +81,17 @@ audit report. Do not record tokens or collaborator email addresses.
 3. Protect the `github-pages` environment so only `main` can deploy.
 4. Dispatch **Deploy Astro to GitHub Pages** from the approved `main` SHA. The
    workflow is intentionally manual and refuses to deploy any other ref.
-5. Verify `https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/` using the
-   production acceptance checklist and save browser evidence as workflow
-   artifacts.
-6. If the production smoke passes, add the `main` push trigger in a one-purpose
+5. Require the post-deployment job to validate the Pages output URL, wait for
+   it with bounded polling, and run the same privacy, route, image,
+   accessibility, and interaction suite against production. It uploads only
+   deliberate privacy-reviewed screenshots after the full suite passes.
+6. Independently open
+   `https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/` from a device that
+   is not serving the local preview and complete the production acceptance
+   checklist.
+7. If the production smoke passes, add the `main` push trigger in a one-purpose
    pull request. Keep `workflow_dispatch` for recovery.
-7. Tag the deployed commit `v1.0.0`, publish the release notes, and submit the
+8. Tag the deployed commit `v1.0.0`, publish the release notes, and submit the
    sitemap index to Google Search Console.
 
 Browser evidence is fail-closed for privacy: Playwright's automatic traces,

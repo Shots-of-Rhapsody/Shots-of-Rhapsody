@@ -43,11 +43,14 @@ approval:
 - The independent repository audit reported zero blocking and zero review
   findings against the sanitized refs.
 
-Public release remains blocked until GitHub Support confirms that historical
-pull-request refs and cached commit views containing the superseded metadata
-have been purged. It also remains blocked until all 11 structured article
-signoffs are complete against the final release-candidate commit. Until both
-conditions pass, the repository must remain private.
+The sanitized repository was recreated under the canonical owner and name, so
+the superseded provider-side pull-request refs are not part of the current
+repository. Public release remains blocked until an unauthenticated check
+confirms that deleted-repository and superseded commit URLs expose no old
+private material, and until all 11 structured article signoffs are complete
+against the final release-candidate commit. GitHub Support is a fallback only
+if an old URL still exposes deleted private data. Until the checks pass, the
+repository must remain private.
 
 ## Accepted disclosures
 
