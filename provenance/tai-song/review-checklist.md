@@ -4,6 +4,8 @@ An automated verification pass is necessary but not sufficient. For each article
 
 The structured record currently remains `pending`. Do not add a reviewer identity or passed decision unless a human actually performed the side-by-side comparison. `pnpm verify:site` reports the exact empty template as pending while still checking the built archive; `pnpm verify:release` fails closed until all eleven manifest-bound signoffs are genuine and complete.
 
+All records bind to one frozen candidate commit. A changed source hash identifies the exact article whose evidence is stale; separately, any post-review rendering or release-file change invalidates the frozen presentation candidate for all eleven works. Only the structured signoff and redacted audit evidence may change afterward. Rebuild and review a new clean candidate rather than carrying presentation approval across code or content changes.
+
 Automated integrity was verified for all 11 articles with the ignored raw author-master bundles present by running `pnpm archive:verify --with-raw --require-complete`.
 
 | Order | Article | Automated integrity | Human visual/text review | Reviewer | Reviewed at (UTC) | Notes |

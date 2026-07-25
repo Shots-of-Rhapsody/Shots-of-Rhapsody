@@ -65,6 +65,19 @@ test("ReviewSignoffV1 accepts exact per-article hash-bound reviews", () => {
 	);
 });
 
+test("ReviewSignoffV1 requires one reviewed commit for the complete review", () => {
+	const record = completeRecord();
+	record.articles[1].reviewedCommit = "b".repeat(40);
+	assert.deepEqual(
+		validateReviewSignoffs({
+			record,
+			manifest,
+			now: new Date("2026-01-04T00:00:00.000Z"),
+		}),
+		["human review signoffs must all use the same reviewedCommit"],
+	);
+});
+
 test("ReviewSignoffV1 fails closed while the pending template is empty", () => {
 	assert.match(
 		validateReviewSignoffs({
@@ -93,7 +106,7 @@ test("ReviewSignoffV1 requires Tai Song, passed reviews, and canonical evidence"
 	);
 });
 
-test("ReviewSignoffV1 invalidates only the article whose evidence changed", () => {
+test("ReviewSignoffV1 identifies the exact article whose evidence changed", () => {
 	const changedManifest = structuredClone(manifest);
 	changedManifest.unrelatedMetadata = "does not invalidate reviews";
 	assert.deepEqual(
