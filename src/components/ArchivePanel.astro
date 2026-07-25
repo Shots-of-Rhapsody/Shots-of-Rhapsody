@@ -21,7 +21,11 @@ for (const post of sortedPosts) {
 	<header class="archive-heading">
 		<p class="eyebrow">The complete collection</p>
 		<h1 id="archive-title">Works</h1>
-		<p>Eleven stories, poems, and reflections, arranged by original publication date.</p>
+		<p>
+			{sortedPosts.length === 11
+				? "Eleven stories, poems, and reflections, arranged by original publication date."
+				: `${sortedPosts.length} works across fiction, poetry, reflection, and nonfiction, arranged by original publication date.`}
+		</p>
 	</header>
 	<div data-archive-entry-index>
 		{[...groups].map(([year, posts]) => (

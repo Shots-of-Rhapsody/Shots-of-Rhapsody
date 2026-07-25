@@ -19,9 +19,13 @@ async function createFixture() {
 	const root = await mkdtemp(path.join(os.tmpdir(), "shots-images-"));
 	const dist = path.join(root, "dist");
 	const provenance = path.join(root, "provenance", "tai-song");
+	const mediumProvenance = path.join(root, "provenance", "medium");
+	const firstPartyProvenance = path.join(root, "provenance", "first-party");
 	await mkdir(path.join(dist, "_astro"), { recursive: true });
 	await mkdir(path.join(dist, "social"), { recursive: true });
 	await mkdir(provenance, { recursive: true });
+	await mkdir(mediumProvenance, { recursive: true });
+	await mkdir(firstPartyProvenance, { recursive: true });
 
 	const originalBytes = Buffer.from("archival-original-fixture");
 	const slugs = Array.from(
@@ -31,17 +35,38 @@ async function createFixture() {
 	const manifest = {
 		articles: slugs.map((slug, index) => ({
 			slug,
-			hashes: {
-				image:
+			image: {
+				sha256:
 					index === 0
 						? `sha256:${sha256(originalBytes)}`
 						: `sha256:${String(index).padStart(64, "0")}`,
+				width: 2048,
+				height: 2048,
 			},
 		})),
 	};
 	await writeFile(
 		path.join(provenance, "manifest.json"),
 		JSON.stringify(manifest),
+	);
+	await writeFile(
+		path.join(mediumProvenance, "manifest.json"),
+		JSON.stringify({
+			schemaVersion: 1,
+			state: "awaiting-export",
+			articles: [],
+		}),
+	);
+	await writeFile(
+		path.join(firstPartyProvenance, "manifest.json"),
+		JSON.stringify({ schemaVersion: 1, state: "active", articles: [] }),
+	);
+	await writeFile(
+		path.join(root, "provenance", "publication-catalog.json"),
+		JSON.stringify({
+			schemaVersion: 1,
+			entries: slugs.map((slug) => ({ slug, source: "tai-song" })),
+		}),
 	);
 
 	const responsiveInput = randomBytes(320 * 320 * 3);

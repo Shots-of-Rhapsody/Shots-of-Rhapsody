@@ -1,0 +1,210 @@
+---
+import { readFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { url } from "@utils/url-utils";
+import { PODCAST_SHOW, type PodcastEpisode } from "@/data/podcast";
+import { getApprovedPodcastEpisodes } from "@/data/podcast-approval";
+
+interface IndexProps {
+	kind: "index";
+	episodes: PodcastEpisode[];
+}
+
+interface TranscriptProps {
+	kind: "transcript";
+	episode: PodcastEpisode;
+	transcriptHtml: string;
+}
+
+type Props = IndexProps | TranscriptProps;
+
+export async function getStaticPaths() {
+	const episodes = getApprovedPodcastEpisodes();
+	if (episodes.length === 0) return [];
+	const repositoryRoot = fileURLToPath(new URL("../../../", import.meta.url));
+	const transcriptPaths = await Promise.all(
+		episodes.map(async (episode) => {
+			if (episode.transcript === null)
+				throw new Error(
+					`Published episode lacks a transcript: ${episode.slug}`,
+				);
+			return {
+				params: { index: `${episode.slug}/transcript` },
+				props: {
+					kind: "transcript" as const,
+					episode,
+					transcriptHtml: await readFile(
+						`${repositoryRoot}/${episode.transcript.sourcePath}`,
+						"utf8",
+					),
+				},
+			};
+		}),
+	);
+	return [
+		{
+			params: { index: undefined },
+			props: { kind: "index" as const, episodes },
+		},
+		...transcriptPaths,
+	];
+}
+
+const props = Astro.props as Props;
+const isIndex = props.kind === "index";
+const title = isIndex
+	? PODCAST_SHOW.title
+	: `${props.episode.title} — Transcript`;
+const description = isIndex
+	? PODCAST_SHOW.description
+	: `A complete transcript of ${props.episode.title}.`;
+if (description === null)
+	throw new Error("Published podcast pages require a show description");
+const canonicalUrl = new URL(
+	isIndex ? url("/podcast/") : url(props.episode.transcript?.publicPath ?? "/"),
+	Astro.site ?? Astro.url,
+).toString();
+const jsonLd = isIndex
+	? {
+			"@context": "https://schema.org",
+			"@type": "PodcastSeries",
+			"@id": `${canonicalUrl}#series`,
+			name: PODCAST_SHOW.title,
+			description,
+			url: canonicalUrl,
+			author: { "@type": "Person", name: PODCAST_SHOW.author },
+		}
+	: null;
+const jsonLdString = jsonLd
+	? JSON.stringify(jsonLd).replace(/</g, "\\u003c")
+	: null;
+---
+
+<MainGridLayout title={title} description={description} canonicalUrl={canonicalUrl}>
+	{jsonLdString && (
+		<script is:inline slot="head" type="application/ld+json" set:html={jsonLdString}></script>
+	)}
+	{isIndex ? (
+		<main class="podcast-index">
+			<header class="podcast-heading">
+				<p class="podcast-kicker">Listen</p>
+				<h1>{PODCAST_SHOW.title}</h1>
+				<p>{description}</p>
+			</header>
+			<ol class="episode-list">
+				{props.episodes.map((episode) => (
+					<li>
+						<a href={url(`/podcast/${episode.slug}/`)}>
+							<span>Episode {episode.episodeNumber}</span>
+							<strong>{episode.title}</strong>
+							{episode.description && <small>{episode.description}</small>}
+						</a>
+					</li>
+				))}
+			</ol>
+		</main>
+	) : (
+		<article class="transcript-page">
+			<header class="podcast-heading">
+				<p class="podcast-kicker" data-pagefind-meta="type">Podcast</p>
+				<h1 data-pagefind-body data-pagefind-meta="title">{props.episode.title} — Transcript</h1>
+				<p>
+					By {props.episode.author} · <a href={url(`/podcast/${props.episode.slug}/`)}>Return to episode</a>
+				</p>
+			</header>
+			<div
+				class="transcript-body"
+				data-pagefind-body
+				data-authored-content
+				data-podcast-transcript
+				set:html={props.transcriptHtml}
+			></div>
+			<footer class="transcript-rights">
+				<a href={url("/rights/")}>Rights and permissions</a>
+			</footer>
+		</article>
+	)}
+</MainGridLayout>
+
+<style>
+	.podcast-index,
+	.transcript-page {
+		width: min(100%, 66ch);
+		margin-inline: auto;
+	}
+
+	.podcast-heading {
+		padding-block: clamp(1rem, 4vw, 2.5rem);
+		border-bottom: 1px solid var(--line-divider);
+	}
+
+	.podcast-kicker {
+		margin: 0 0 0.55rem;
+		color: var(--primary);
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+
+	.podcast-heading h1 {
+		margin: 0;
+		font-size: clamp(2.15rem, 7vw, 4.75rem);
+		font-weight: 640;
+		letter-spacing: -0.025em;
+		line-height: 1.03;
+		text-wrap: balance;
+	}
+
+	.podcast-heading > p:not(.podcast-kicker) {
+		color: var(--ink-soft);
+		line-height: 1.7;
+	}
+
+	.episode-list {
+		display: grid;
+		gap: 1rem;
+		padding: 0;
+		list-style: none;
+	}
+
+	.episode-list a {
+		display: grid;
+		gap: 0.35rem;
+		min-height: 44px;
+		padding: 1rem;
+		color: inherit;
+		background: var(--card-bg);
+		border: 1px solid var(--line-divider);
+		border-radius: var(--radius-large);
+	}
+
+	.episode-list span,
+	.episode-list small,
+	.transcript-rights {
+		color: var(--ink-soft);
+		font-family: ui-sans-serif, system-ui, sans-serif;
+	}
+
+	.episode-list strong {
+		font-size: 1.35rem;
+	}
+
+	.transcript-body {
+		padding-block: clamp(1.5rem, 4vw, 3rem);
+		font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+		line-height: 1.65;
+	}
+
+	.transcript-rights {
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--line-divider);
+	}
+
+	.transcript-page a,
+	.episode-list a:hover strong {
+		color: var(--primary);
+	}
+</style>

@@ -5,6 +5,7 @@ import { getPostUrlBySlug } from "@utils/url-utils";
 import {
 	EDITORIAL_METADATA,
 	type EditorialMetadata,
+	getWritingTypeLabel,
 	isManifestSlug,
 } from "@/data/editorial";
 import ImageWrapper from "./misc/ImageWrapper.astro";
@@ -25,11 +26,9 @@ const {
 	label,
 } = Astro.props;
 
-if (!isManifestSlug(entry.id)) {
-	throw new Error(`Editorial card received a non-manifest post: ${entry.id}`);
-}
-
-const editorial: EditorialMetadata = EDITORIAL_METADATA[entry.id];
+const editorial: EditorialMetadata | undefined = isManifestSlug(entry.id)
+	? EDITORIAL_METADATA[entry.id]
+	: undefined;
 const minutes = Math.max(
 	1,
 	Math.round((entry.data.provenance?.wordCount ?? 0) / 200),
@@ -45,9 +44,9 @@ const publishedText =
 		: formatDateToYYYYMMDD(entry.data.published);
 const eyebrow =
 	label ??
-	(editorial.series
+	(editorial?.series
 		? `${editorial.series.name} · Part ${editorial.series.position} of ${editorial.series.total}`
-		: entry.data.category || "Work");
+		: getWritingTypeLabel(entry.id, entry.data.category ?? ""));
 const TitleTag = variant === "catalog" ? "h4" : "h3";
 const imageVariant = variant === "catalog" ? "card" : variant;
 const cardDescription =
@@ -59,6 +58,11 @@ const cardDescription =
 	data-editorial-slug={entry.id}
 	data-post-card-slug={
 		context === "home" && variant === "catalog" ? entry.id : undefined
+	}
+	data-home-nonfiction-slug={
+		context === "home" && entry.data.section === "nonfiction"
+			? entry.id
+			: undefined
 	}
 	data-featured-card-slug={variant === "featured" ? entry.id : undefined}
 	data-continuation-slug={variant === "continuation" ? entry.id : undefined}

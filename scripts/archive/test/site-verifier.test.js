@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -10,13 +11,20 @@ import {
 	decodePagefindFragment,
 	frontmatterDraftValue,
 	hasPrivateProtonReference,
+	loadPublicationManifest,
 	markedAttributeValues,
 	markedField,
 	parseArguments,
 	publicFacingCopyViolations,
 	validateNoProjectRobots,
+	verifyMediumRenderedBodies,
 	verifyNoPrivateBuildReferences,
+	verifyPodcastArtifacts,
 } from "../../verify-built-site.mjs";
+
+function testSha256(bytes) {
+	return `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
+}
 
 test("public-copy checks allow authored text and required self-canonical URLs", () => {
 	const html = `<!doctype html><html><head>
@@ -28,6 +36,34 @@ test("public-copy checks allow authored text and required self-canonical URLs", 
 		<div data-archive-body><p>A repository appears in the authored story.</p></div>
 	</body></html>`;
 	assert.deepEqual(publicFacingCopyViolations(html), []);
+});
+
+test("public-copy checks exempt generic authored work without exempting its page", () => {
+	const html = `<!doctype html><html><body>
+		<article data-authored-content><p>A Medium repository appears in the author's exact text.</p></article>
+		<footer>Rights and permissions</footer>
+	</body></html>`;
+	assert.deepEqual(publicFacingCopyViolations(html), []);
+	assert.match(
+		publicFacingCopyViolations(
+			html.replace("Rights and permissions", "GitHub repository"),
+		).join("\n"),
+		/platform branding|implementation language/u,
+	);
+});
+
+test("public-copy checks scan site-created card controls around authored fields", () => {
+	const html = `<!doctype html><html><body>
+		<article data-post-card-slug="example">
+			<h3 class="editorial-card__title">A Medium Story</h3>
+			<p class="editorial-card__subtitle">An authored repository.</p>
+			<span class="editorial-card__action">Open the GitHub repository</span>
+		</article>
+	</body></html>`;
+	assert.match(
+		publicFacingCopyViolations(html).join("\n"),
+		/platform branding|implementation language/u,
+	);
 });
 
 test("public-copy checks reject platform branding and implementation language", () => {
@@ -51,8 +87,206 @@ test("public-copy checks reject platform branding and implementation language", 
 
 test("built-site CLI enables signoff enforcement only when requested", () => {
 	assert.equal(parseArguments([]).requireSignoff, false);
+	assert.equal(parseArguments([]).releaseTarget, "v1.0.0");
 	assert.equal(parseArguments(["--require-signoff"]).requireSignoff, true);
+	assert.equal(
+		parseArguments(["--release-target", "v1.1.0"]).releaseTarget,
+		"v1.1.0",
+	);
+	assert.throws(
+		() => parseArguments(["--release-target", "v2.0.0"]),
+		/Unsupported release target/u,
+	);
 	assert.throws(() => parseArguments(["--unknown"]), /Unknown argument/u);
+});
+
+test("v1.1 publication catalog preserves the sealed archive and exact contract", async (context) => {
+	const root = await mkdtemp(path.join(tmpdir(), "publication-catalog-"));
+	context.after(() => rm(root, { recursive: true, force: true }));
+	const articles = [];
+	const entries = [];
+	for (let index = 1; index <= 11; index += 1) {
+		const slug = `archive-${index}`;
+		const markdown = `src/content/posts/${slug}/index.md`;
+		await mkdir(path.join(root, "src", "content", "posts", slug), {
+			recursive: true,
+		});
+		await writeFile(
+			path.join(root, ...markdown.split("/")),
+			`---\ntitle: ${JSON.stringify(`Archive ${index}`)}\npublished: ${JSON.stringify(`2026-07-${String(index).padStart(2, "0")}T00:00:00.000Z`)}\n---\n`,
+		);
+		articles.push({ slug, paths: { markdown } });
+		entries.push({ slug, source: "tai-song", markdown, section: "fiction" });
+	}
+	await mkdir(path.join(root, "provenance"), { recursive: true });
+	await writeFile(
+		path.join(root, "provenance", "publication-catalog.json"),
+		JSON.stringify({ schemaVersion: 1, entries }),
+	);
+	const failures = [];
+	const manifest = await loadPublicationManifest(
+		root,
+		{ articles },
+		"v1.1.0",
+		failures,
+	);
+	assert.deepEqual(failures, []);
+	assert.equal(manifest.articles.length, 11);
+
+	await writeFile(
+		path.join(root, "provenance", "publication-catalog.json"),
+		JSON.stringify({
+			schemaVersion: 1,
+			entries: [{ ...entries[0], unexpected: true }, ...entries.slice(1)],
+		}),
+	);
+	const malformedFailures = [];
+	await loadPublicationManifest(
+		root,
+		{ articles },
+		"v1.1.0",
+		malformedFailures,
+	);
+	assert.match(malformedFailures.join("\n"), /entry contract is invalid/u);
+
+	const mediumSlug = "medium-essay";
+	const mediumMarkdown = `src/content/posts/${mediumSlug}/index.md`;
+	await mkdir(path.join(root, "src", "content", "posts", mediumSlug), {
+		recursive: true,
+	});
+	await writeFile(
+		path.join(root, ...mediumMarkdown.split("/")),
+		'---\ntitle: "Medium Essay"\npublished: "2026-07-25T00:00:00.000Z"\ndraft: false\nsection: "fiction"\n---\n',
+	);
+	await writeFile(
+		path.join(root, "provenance", "publication-catalog.json"),
+		JSON.stringify({
+			schemaVersion: 1,
+			entries: [
+				...entries,
+				{
+					slug: mediumSlug,
+					source: "medium",
+					markdown: mediumMarkdown,
+					section: "fiction",
+				},
+			],
+		}),
+	);
+	const classificationFailures = [];
+	await loadPublicationManifest(
+		root,
+		{ articles },
+		"v1.1.0",
+		classificationFailures,
+	);
+	assert.match(classificationFailures.join("\n"), /entry contract is invalid/u);
+});
+
+test("Medium rendered-body verification binds exact snapshot bytes and HTML", async (context) => {
+	const root = await mkdtemp(path.join(tmpdir(), "medium-built-body-"));
+	context.after(() => rm(root, { recursive: true, force: true }));
+	const slug = "verified-essay";
+	const snapshotRelative = `provenance/medium/posts/${slug}.json`;
+	const snapshot = {
+		slug,
+		bodyHtml: "<p>Exact <em>authored</em> text.</p><p></p>",
+	};
+	const snapshotBytes = Buffer.from(JSON.stringify(snapshot), "utf8");
+	await mkdir(path.join(root, "provenance", "medium", "posts"), {
+		recursive: true,
+	});
+	await mkdir(path.join(root, "dist", "posts", slug), { recursive: true });
+	await writeFile(
+		path.join(root, ...snapshotRelative.split("/")),
+		snapshotBytes,
+	);
+	const mediumManifest = {
+		state: "active",
+		articles: [
+			{
+				slug,
+				paths: { snapshot: snapshotRelative },
+				hashes: { snapshot: testSha256(snapshotBytes) },
+			},
+		],
+	};
+	await writeFile(
+		path.join(root, "provenance", "medium", "manifest.json"),
+		JSON.stringify(mediumManifest),
+	);
+	const pagePath = path.join(root, "dist", "posts", slug, "index.html");
+	await writeFile(
+		pagePath,
+		`<div class="article-body" data-authored-content>${snapshot.bodyHtml}</div>`,
+	);
+	const publicationManifest = { articles: [{ slug, source: "medium" }] };
+	const failures = [];
+	await verifyMediumRenderedBodies(
+		root,
+		path.join(root, "dist"),
+		publicationManifest,
+		failures,
+	);
+	assert.deepEqual(failures, []);
+
+	await writeFile(
+		pagePath,
+		'<div class="article-body" data-authored-content><p>Edited text.</p><p></p></div>',
+	);
+	const editedFailures = [];
+	await verifyMediumRenderedBodies(
+		root,
+		path.join(root, "dist"),
+		publicationManifest,
+		editedFailures,
+	);
+	assert.match(editedFailures.join("\n"), /rendered body differs/u);
+
+	mediumManifest.articles[0].hashes.snapshot = `sha256:${"0".repeat(64)}`;
+	await writeFile(
+		path.join(root, "provenance", "medium", "manifest.json"),
+		JSON.stringify(mediumManifest),
+	);
+	const staleFailures = [];
+	await verifyMediumRenderedBodies(
+		root,
+		path.join(root, "dist"),
+		publicationManifest,
+		staleFailures,
+	);
+	assert.match(staleFailures.join("\n"), /snapshot hash differs/u);
+});
+
+test("podcast artifact allowlist accepts only approved routes, audio, cover, and VTT", () => {
+	const distRoot = path.resolve("synthetic-dist");
+	const episode = {
+		slug: "episode-one",
+		audio: { publicPath: "/media/podcast/episode-one.mp3" },
+		transcript: {
+			publicPath: "/podcast/episode-one/transcript/",
+			vttPath: "/podcast/episode-one/transcript.vtt",
+		},
+	};
+	const expected = [
+		"podcast/index.html",
+		"podcast/episode-one/index.html",
+		"podcast/episode-one/transcript/index.html",
+		"podcast/episode-one/transcript.vtt",
+		"media/podcast/episode-one.mp3",
+		"media/podcast/shots-of-rhapsody-podcast-cover.png",
+	].map((relative) => path.join(distRoot, ...relative.split("/")));
+	const failures = [];
+	verifyPodcastArtifacts(expected, distRoot, [episode], failures);
+	assert.deepEqual(failures, []);
+
+	verifyPodcastArtifacts(
+		[...expected, path.join(distRoot, "media", "podcast", "unapproved.mp3")],
+		distRoot,
+		[episode],
+		failures,
+	);
+	assert.match(failures.join("\n"), /unexpectedly includes/u);
 });
 
 test("built-site body comparison normalizes HTML serialization only", () => {

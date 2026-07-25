@@ -12,7 +12,7 @@ Shots of Rhapsody moves between imagined futures and remembered rooms, gentle le
 - [The Seventh Skin](../posts/the-seventh-skin/) enters a future where eternal youth changes the meaning of being human.
 - [Where We Last Were Us](../posts/where-we-last-were-us/) follows two voices through memory, place, and silence.
 
-Or browse [all eleven works by Tai Song](../authors/tai-song/).
+Or browse [all works by Tai Song](../authors/tai-song/).
 
 ## Tai Song
 

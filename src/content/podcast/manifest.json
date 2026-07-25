@@ -1,0 +1,66 @@
+{
+	"show": {
+		"status": "draft",
+		"title": "Shots of Rhapsody Podcast",
+		"description": null,
+		"author": "Tai Song",
+		"language": "en-US",
+		"explicit": null,
+		"feedPath": "/podcast/feed.xml",
+		"artwork": {
+			"sourcePath": "src/assets/podcast/shots-of-rhapsody-podcast-cover.svg",
+			"sourceSha256": "sha256:73a5d2ffd2e952323a90d4b05a00f0da41e958bc72471cd0aaa53b84d1958baa",
+			"archivePath": "src/assets/podcast/shots-of-rhapsody-podcast-cover.png",
+			"publicPath": "/media/podcast/shots-of-rhapsody-podcast-cover.png",
+			"sha256": "sha256:293125a3959b91fd3f263905c3f67e360fdb0f62d784653d10311486b0008c70",
+			"mimeType": "image/png",
+			"width": 3000,
+			"height": 3000,
+			"approved": false
+		}
+	},
+	"episodes": [
+		{
+			"id": "modular-ethics",
+			"slug": "modular-ethics",
+			"status": "draft",
+			"title": "Episode 1: Modular Ethics",
+			"description": null,
+			"author": "Tai Song",
+			"publishedAt": null,
+			"explicit": null,
+			"episodeType": "full",
+			"episodeNumber": 1,
+			"guid": "urn:uuid:6f80fb49-6912-4544-8994-1ab5ca4a682d",
+			"rightsCleared": true,
+			"audio": {
+				"publicPath": "/media/podcast/episode-001-modular-ethics.mp3",
+				"mimeType": "audio/mpeg",
+				"byteLength": 57831360,
+				"sha256": "sha256:b4ec04aa9f99b0c52c3bd77123962cd7d7a49b316147bd293ad011698d232dc3",
+				"duration": "00:24:05.784",
+				"durationSeconds": 1445.784,
+				"codec": "MPEG-1 Layer III",
+				"sampleRateHz": 48000,
+				"channels": 2,
+				"channelMode": "Joint stereo",
+				"bitrateBps": 320000,
+				"loudnessLkfs": -27,
+				"truePeakDbfs": -6.9,
+				"qualityApproved": false
+			},
+			"artwork": {
+				"sourcePath": "src/assets/podcast/shots-of-rhapsody-podcast-cover.svg",
+				"sourceSha256": "sha256:73a5d2ffd2e952323a90d4b05a00f0da41e958bc72471cd0aaa53b84d1958baa",
+				"archivePath": "src/assets/podcast/shots-of-rhapsody-podcast-cover.png",
+				"publicPath": "/media/podcast/shots-of-rhapsody-podcast-cover.png",
+				"sha256": "sha256:293125a3959b91fd3f263905c3f67e360fdb0f62d784653d10311486b0008c70",
+				"mimeType": "image/png",
+				"width": 3000,
+				"height": 3000,
+				"approved": false
+			},
+			"transcript": null
+		}
+	]
+}

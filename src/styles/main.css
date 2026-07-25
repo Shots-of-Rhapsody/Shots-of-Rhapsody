@@ -342,6 +342,14 @@ a {
 	font-family: "Noto Serif Variable", Georgia, serif;
 }
 
+.search-results small {
+	color: var(--primary);
+	font-size: 0.68rem;
+	font-weight: 750;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
 .search-results span {
 	color: var(--ink-soft);
 	font-size: 0.8rem;

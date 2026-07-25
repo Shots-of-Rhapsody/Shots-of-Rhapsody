@@ -49,11 +49,22 @@ jobs:
       - name: Run author archive importer tests
         run: pnpm test:archive
 
+      - name: Test future writing and podcast boundaries
+        run: pnpm test:future-content
+
       - name: Run Astro migration regression tests
         run: pnpm test:migration
 
       - name: Verify the complete committed author archive
         run: pnpm archive:verify --require-complete
+
+      - name: Verify the aggregate writing catalog
+        run: pnpm content:verify --require-complete
+
+      - name: Verify unpublished Medium and podcast boundaries
+        run: |
+          pnpm medium:verify
+          pnpm podcast:verify
 
       - name: Test release audit tooling
         run: pnpm test:release-tools
@@ -95,6 +106,9 @@ jobs:
 
       - name: Verify built routes and metadata
         run: pnpm verify:site
+
+      - name: Verify built podcast publication boundary
+        run: pnpm podcast:verify --with-built
 
   dependency-security:
     runs-on: ubuntu-latest

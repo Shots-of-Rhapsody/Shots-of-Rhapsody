@@ -57,11 +57,13 @@ const pagefindUrl = url("/pagefind/pagefind.js");
 				for (const record of records) {
 					const link = document.createElement("a");
 					link.href = record.url;
+					const type = document.createElement("small");
+					type.textContent = record.meta.type || "Work";
 					const title = document.createElement("strong");
 					title.textContent = record.meta.title || "Untitled";
 					const excerpt = document.createElement("span");
 					excerpt.textContent = record.excerpt.replace(/<[^>]*>/g, "");
-					link.append(title, excerpt);
+					link.append(type, title, excerpt);
 					results.append(link);
 				}
 			} catch {

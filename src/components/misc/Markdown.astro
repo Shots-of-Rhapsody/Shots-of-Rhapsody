@@ -2,16 +2,22 @@
 interface Props {
 	class?: string;
 	archiveBody?: boolean;
+	authoredContent?: boolean;
 	searchable?: boolean;
 }
 
 const className = Astro.props.class;
-const { archiveBody = false, searchable = true } = Astro.props;
+const {
+	archiveBody = false,
+	authoredContent = true,
+	searchable = true,
+} = Astro.props;
 ---
 
 <div
 	data-pagefind-body={searchable ? "" : undefined}
 	data-archive-body={archiveBody ? "" : undefined}
+	data-authored-content={authoredContent ? "" : undefined}
 	class:list={["prose dark:prose-invert custom-md", className]}
 >
 	<slot />

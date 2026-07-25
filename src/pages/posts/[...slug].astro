@@ -13,6 +13,7 @@ import {
 } from "@utils/url-utils";
 import {
 	EDITORIAL_METADATA,
+	getWritingTypeLabel,
 	indexEditorialEntries,
 	isManifestSlug,
 } from "@/data/editorial";
@@ -23,18 +24,33 @@ import { licenseConfig, profileConfig, siteConfig } from "../../config";
 export async function getStaticPaths() {
 	const blogEntries = await getSortedPosts();
 	const indexedEntries = indexEditorialEntries(blogEntries);
+	const nonfictionEntries = blogEntries
+		.filter((entry) => entry.data.section === "nonfiction")
+		.toSorted(
+			(left, right) =>
+				left.data.published.valueOf() - right.data.published.valueOf(),
+		);
+	const nonfictionContinuation = new Map(
+		nonfictionEntries.map((entry, index) => [
+			entry.id,
+			nonfictionEntries[index + 1],
+		]),
+	);
 	return blogEntries.map((entry) => ({
 		params: { slug: entry.id },
 		props: {
 			entry,
 			continuationEntry: isManifestSlug(entry.id)
 				? indexedEntries.get(EDITORIAL_METADATA[entry.id].continueSlug)
-				: undefined,
+				: nonfictionContinuation.get(entry.id),
+			returnToNonfiction:
+				entry.data.section === "nonfiction" &&
+				!nonfictionContinuation.get(entry.id),
 		},
 	}));
 }
 
-const { entry, continuationEntry } = Astro.props;
+const { entry, continuationEntry, returnToNonfiction } = Astro.props;
 const { Content, headings, remarkPluginFrontmatter } = await render(entry);
 const siteUrl = Astro.site ?? Astro.url;
 const siteRoot = getSiteRootUrl(siteUrl);
@@ -47,15 +63,16 @@ const description =
 	entry.data.title;
 const socialImage = getSocialImage(entry.id, siteUrl);
 const coverUrl = socialImage.url;
-const isArchivePost = Boolean(entry.data.provenance);
+const isSourceVerifiedPost = Boolean(entry.data.provenance);
+const isSealedArchivePost = entry.data.provenance?.authority === "Proton Docs";
 const authorUrl =
-	isArchivePost && author === "Tai Song"
+	author === "Tai Song"
 		? new URL(url("/authors/tai-song/"), siteUrl).toString()
 		: undefined;
-const coverAlt = isArchivePost
+const coverAlt = isSourceVerifiedPost
 	? (entry.data.imageAlt ?? "")
 	: (entry.data.imageAlt ?? `Cover image for “${entry.data.title}”`);
-const imageDescription = isArchivePost
+const imageDescription = isSourceVerifiedPost
 	? (entry.data.imageAlt ?? undefined)
 	: coverAlt;
 const archiveWordCount = entry.data.provenance?.wordCount;
@@ -64,11 +81,12 @@ const displayedMinutes =
 	archiveWordCount !== undefined
 		? Math.max(1, Math.round(archiveWordCount / 200))
 		: remarkPluginFrontmatter.minutes;
+const writingType = getWritingTypeLabel(entry.id, entry.data.category ?? "");
 const showLicense = Boolean(entry.data.license) || licenseConfig.enable;
 const effectiveLicense =
 	entry.data.license ?? (licenseConfig.enable ? licenseConfig : undefined);
 const coverCaptionId =
-	isArchivePost && entry.data.imageCaption
+	isSourceVerifiedPost && entry.data.imageCaption
 		? `hero-caption-${entry.id}`
 		: undefined;
 
@@ -140,6 +158,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 	<script is:inline slot="head" type="application/ld+json" set:html={jsonLdString}></script>
 	<article id="post-container" class="article-shell">
 		<header class="article-header">
+			<p class="article-type" data-pagefind-meta="type">{writingType}</p>
 			<div class="post-reading-meta" data-pagefind-ignore>
 				<span>{displayedWordCount} {displayedWordCount === 1 ? "word" : "words"}</span>
 				<span aria-hidden="true">·</span>
@@ -149,20 +168,20 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 				data-pagefind-body
 				data-pagefind-weight="10"
 				data-pagefind-meta="title"
-				data-archive-field={isArchivePost ? "title" : undefined}
+				data-archive-field={isSealedArchivePost ? "title" : undefined}
 			>
 				{entry.data.title}
 			</h1>
 			{entry.data.subtitle && (
 				<p
-					data-archive-field={isArchivePost ? "subtitle" : undefined}
+					data-archive-field={isSealedArchivePost ? "subtitle" : undefined}
 					class="article-subtitle"
 				>
 					{entry.data.subtitle}
 				</p>
 			)}
 			<div class="article-byline" data-pagefind-ignore>
-				<span data-archive-field={isArchivePost ? "author" : undefined}>
+				<span data-archive-field={isSealedArchivePost ? "author" : undefined}>
 					By {authorUrl ? <a href={url("/authors/tai-song/")}>{author}</a> : author}
 				</span>
 			</div>
@@ -178,7 +197,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 
 		{entry.data.image && (
 			<figure
-				data-archive-hero={isArchivePost ? "" : undefined}
+				data-archive-hero={isSealedArchivePost ? "" : undefined}
 				class="article-hero"
 			>
 				<ImageWrapper
@@ -194,7 +213,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 				{entry.data.imageCaption && (
 					<figcaption
 						id={coverCaptionId}
-						data-archive-field={isArchivePost ? "image-caption" : undefined}
+						data-archive-field={isSealedArchivePost ? "image-caption" : undefined}
 						class="article-caption"
 					>
 						{entry.data.imageCaption}
@@ -203,7 +222,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 			</figure>
 		)}
 
-		<Markdown archiveBody={isArchivePost} class="article-body markdown-content">
+		<Markdown archiveBody={isSealedArchivePost} class="article-body markdown-content">
 			<Content />
 		</Markdown>
 
@@ -223,6 +242,12 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 					context="article"
 				/>
 			</section>
+		)}
+		{returnToNonfiction && (
+			<nav class="post-continuation post-continuation--index" aria-label="Continue reading" data-pagefind-ignore>
+				<p class="post-continuation__kicker">More essays</p>
+				<a href={url("/nonfiction/")}>Return to the Nonfiction collection <span aria-hidden="true">→</span></a>
+			</nav>
 		)}
 
 		{showLicense && (
@@ -260,6 +285,16 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 		letter-spacing: -0.025em;
 		line-height: 1.03;
 		text-wrap: balance;
+	}
+
+	.article-type {
+		margin: 0 0 0.5rem;
+		color: var(--primary);
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		font-size: 0.72rem;
+		font-weight: 750;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
 	}
 
 	.article-subtitle {
@@ -345,6 +380,16 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 		font-size: clamp(1.55rem, 4vw, 2.35rem);
 		font-weight: 620;
 		line-height: 1.15;
+	}
+
+	.post-continuation--index a {
+		display: inline-flex;
+		min-height: 44px;
+		align-items: center;
+		gap: 0.5rem;
+		color: var(--primary);
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		font-weight: 700;
 	}
 
 	@media (max-width: 42rem) {

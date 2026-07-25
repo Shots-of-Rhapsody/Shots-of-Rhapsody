@@ -4,6 +4,8 @@ import process from "node:process";
 import { pathToFileURL } from "node:url";
 import { gunzipSync } from "node:zlib";
 import { parse, parseFragment } from "parse5";
+import { PODCAST_SHOW } from "../src/data/podcast.ts";
+import { getApprovedPodcastEpisodes } from "../src/data/podcast-approval.ts";
 import { inspectPng, sha256 } from "./archive/lib/integrity.js";
 import { bodyTextSha256, renderBodyHtml } from "./archive/lib/render.js";
 import {
@@ -15,6 +17,7 @@ import { inspectBuiltImages } from "./verify-images.mjs";
 const DEFAULT_DIST = "dist";
 const DEFAULT_SITE = "https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/";
 const EXPECTED_ARCHIVE_COUNT = 11;
+const RELEASE_TARGETS = new Set(["v1.0.0", "v1.1.0"]);
 const REQUIRED_NON_POST_ROUTES = [
 	"",
 	"about/",
@@ -27,12 +30,6 @@ const HOME_DESCRIPTION =
 	"Enter the eleven-work Shots of Rhapsody archive: fiction, poetry, and reflections by Tai Song.";
 const AUTHOR_BIO =
 	"Tai Song is a Singapore-based commodity trader and trade strategist whose writing spans fiction, poetry, reflection, and nonfiction. Across global markets and imagined futures, Tai explores power, policy, inequality, memory, the consequences of invention, and the fragile things people try to preserve.";
-const EXPECTED_DRAFT_POST_PATHS = [
-	"src/content/posts/guide/index.md",
-	"src/content/posts/video.md",
-	"src/content/posts/Modular Ethics/Modular Ethics.md",
-	"src/content/posts/The Last Cup/The Last Cup.md",
-];
 const AUDIO_ARTIFACT_PATTERN = /\.(?:aac|flac|m4a|mp3|ogg|opus|wav)$/iu;
 
 export function parseArguments(argv) {
@@ -40,6 +37,7 @@ export function parseArguments(argv) {
 		dist: DEFAULT_DIST,
 		site: DEFAULT_SITE,
 		requireSignoff: false,
+		releaseTarget: "v1.0.0",
 	};
 	for (let index = 0; index < argv.length; index += 1) {
 		const argument = argv[index];
@@ -47,15 +45,23 @@ export function parseArguments(argv) {
 			options.requireSignoff = true;
 			continue;
 		}
-		if (argument === "--dist" || argument === "--site") {
+		if (
+			argument === "--dist" ||
+			argument === "--site" ||
+			argument === "--release-target"
+		) {
 			const value = argv[index + 1];
 			if (!value) throw new Error(`${argument} requires a value`);
-			options[argument.slice(2)] = value;
+			const key =
+				argument === "--release-target" ? "releaseTarget" : argument.slice(2);
+			options[key] = value;
 			index += 1;
 			continue;
 		}
 		throw new Error(`Unknown argument: ${argument}`);
 	}
+	if (!RELEASE_TARGETS.has(options.releaseTarget))
+		throw new Error(`Unsupported release target: ${options.releaseTarget}`);
 	return options;
 }
 
@@ -199,6 +205,15 @@ function isPlainObject(value) {
 	return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
+function hasExactKeys(value, expectedKeys) {
+	if (!isPlainObject(value)) return false;
+	const keys = Object.keys(value);
+	return (
+		keys.length === expectedKeys.size &&
+		keys.every((key) => expectedKeys.has(key))
+	);
+}
+
 function samePublication(left, right) {
 	if (left === undefined || right === undefined) return left === right;
 	return (
@@ -251,13 +266,16 @@ const BLOCKED_PUBLIC_LINK_HOSTS = new Set([
 	"fuwari.vercel.app",
 ]);
 const AUTHORED_CONTENT_MARKERS = new Set([
+	"data-authored-content",
 	"data-archive-body",
 	"data-archive-field",
 	"data-archive-hero",
-	"data-post-card-slug",
-	"data-featured-card-slug",
-	"data-author-article-slug",
 	"data-archive-entry-slug",
+]);
+const AUTHORED_CONTENT_CLASSES = new Set([
+	"editorial-card__title",
+	"editorial-card__subtitle",
+	"editorial-card__meta",
 ]);
 
 function publicCopyIssues(value) {
@@ -283,11 +301,13 @@ export function publicFacingCopyViolations(html) {
 		const attributesByName = Object.fromEntries(
 			(node.attrs ?? []).map((attribute) => [attribute.name, attribute.value]),
 		);
+		const classes = new Set((attributesByName.class ?? "").split(/\s+/u));
 		const isAuthored =
 			authored ||
 			(node.attrs ?? []).some((attribute) =>
 				AUTHORED_CONTENT_MARKERS.has(attribute.name),
-			);
+			) ||
+			[...AUTHORED_CONTENT_CLASSES].some((className) => classes.has(className));
 		if (isAuthored) return;
 
 		const tagName = node.tagName?.toLowerCase();
@@ -444,6 +464,156 @@ export function frontmatterDraftValue(markdown) {
 	const values = [...match[1].matchAll(/^draft:\s*(true|false)\s*$/gmu)];
 	if (values.length !== 1) return undefined;
 	return values[0][1] === "true";
+}
+
+function frontmatterJsonValue(markdown, field, label, failures) {
+	const match = String(markdown).match(
+		/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/u,
+	);
+	if (!match) {
+		failures.push(`${label}: Markdown frontmatter is missing`);
+		return undefined;
+	}
+	const expression = new RegExp(`^${field}:\\s*(.+?)\\s*$`, "gmu");
+	const values = [...match[1].matchAll(expression)];
+	if (values.length !== 1) {
+		failures.push(`${label}: frontmatter ${field} must occur exactly once`);
+		return undefined;
+	}
+	try {
+		return JSON.parse(values[0][1]);
+	} catch {
+		failures.push(`${label}: frontmatter ${field} must use JSON string syntax`);
+		return undefined;
+	}
+}
+
+export async function loadPublicationManifest(
+	repoRoot,
+	archiveManifest,
+	releaseTarget,
+	failures,
+) {
+	if (releaseTarget === "v1.0.0") return archiveManifest;
+	const catalogPath = path.join(
+		repoRoot,
+		"provenance",
+		"publication-catalog.json",
+	);
+	let catalog;
+	try {
+		catalog = JSON.parse(await readFile(catalogPath, "utf8"));
+	} catch (error) {
+		failures.push(`Publication catalog is invalid (${error.message})`);
+		return archiveManifest;
+	}
+	if (
+		!hasExactKeys(catalog, new Set(["schemaVersion", "entries"])) ||
+		catalog.schemaVersion !== 1 ||
+		!Array.isArray(catalog.entries) ||
+		catalog.entries.length < EXPECTED_ARCHIVE_COUNT
+	) {
+		failures.push(
+			"Publication catalog must use the exact version 1 contract and preserve the sealed archive",
+		);
+		return archiveManifest;
+	}
+	const allowedSources = new Set(["tai-song", "medium", "first-party"]);
+	const allowedSections = new Set([
+		"fiction",
+		"poetry-reflection",
+		"nonfiction",
+	]);
+	const articles = [];
+	const seenSlugs = new Set();
+	for (const entry of catalog.entries) {
+		const label = `Publication catalog ${entry?.slug ?? "<missing>"}`;
+		if (
+			!hasExactKeys(
+				entry,
+				new Set(["slug", "source", "markdown", "section"]),
+			) ||
+			typeof entry.slug !== "string" ||
+			!/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(entry.slug) ||
+			seenSlugs.has(entry.slug) ||
+			!allowedSources.has(entry.source) ||
+			!allowedSections.has(entry.section) ||
+			(entry.source === "medium" && entry.section !== "nonfiction") ||
+			entry.markdown !== `src/content/posts/${entry.slug}/index.md`
+		) {
+			failures.push(`${label}: entry contract is invalid or duplicated`);
+			continue;
+		}
+		seenSlugs.add(entry.slug);
+		const markdownPath = resolveManifestPath(
+			repoRoot,
+			entry.markdown,
+			`${label} Markdown`,
+			failures,
+		);
+		if (!markdownPath || !(await isFile(markdownPath))) {
+			failures.push(`${label}: Markdown is missing`);
+			continue;
+		}
+		const markdown = await readFile(markdownPath, "utf8");
+		const draft = frontmatterDraftValue(markdown);
+		if (
+			(entry.source === "tai-song" && draft === true) ||
+			(entry.source !== "tai-song" && draft !== false)
+		) {
+			failures.push(
+				entry.source === "tai-song"
+					? `${label}: sealed archive writing must not be a draft`
+					: `${label}: new cataloged writing must declare draft: false`,
+			);
+		}
+		const title = frontmatterJsonValue(markdown, "title", label, failures);
+		const published = frontmatterJsonValue(
+			markdown,
+			"published",
+			label,
+			failures,
+		);
+		const section =
+			entry.source === "tai-song"
+				? entry.section
+				: frontmatterJsonValue(markdown, "section", label, failures);
+		if (typeof title !== "string" || title.length === 0)
+			failures.push(`${label}: title is invalid`);
+		if (
+			typeof published !== "string" ||
+			Number.isNaN(Date.parse(published)) ||
+			new Date(published).toISOString() !== published
+		)
+			failures.push(`${label}: publication date is not canonical UTC`);
+		if (entry.source !== "tai-song" && section !== entry.section)
+			failures.push(`${label}: Markdown section differs from the catalog`);
+		articles.push({
+			slug: entry.slug,
+			source: entry.source,
+			section: entry.section,
+			title,
+			published,
+			paths: { markdown: entry.markdown },
+		});
+	}
+	const sealedBySlug = new Map(
+		archiveManifest.articles.map((article) => [article.slug, article]),
+	);
+	const sealedEntries = articles.filter(
+		(article) => article.source === "tai-song",
+	);
+	if (
+		sealedEntries.length !== EXPECTED_ARCHIVE_COUNT ||
+		sealedEntries.some(
+			(article) =>
+				sealedBySlug.get(article.slug)?.paths.markdown !==
+				article.paths.markdown,
+		)
+	) {
+		failures.push("Publication catalog changed the sealed eleven-work archive");
+	}
+	return { articles };
 }
 
 export function markedAttributeValues(html, tagName, attributeName) {
@@ -855,7 +1025,7 @@ async function verifyArchiveManifest(
 	distRoot,
 	site,
 	failures,
-	{ requireSignoff, notices },
+	{ requireSignoff, notices, validateReviewCommitBinding = true },
 ) {
 	const manifestPath = path.join(
 		repoRoot,
@@ -920,7 +1090,7 @@ async function verifyArchiveManifest(
 			for (const failure of review.failures) {
 				failures.push(`Human review: ${failure}`);
 			}
-			if (review.status === "complete") {
+			if (review.status === "complete" && validateReviewCommitBinding) {
 				for (const failure of validateReviewSignoffCommitBinding({
 					record: reviewRecord,
 					repoRoot,
@@ -1570,7 +1740,13 @@ async function verifyArchiveManifest(
 	return manifest;
 }
 
-async function verifyHomepageMetadata(distRoot, site, failures) {
+function expectedHomeDescription(manifest) {
+	return manifest.articles.some((article) => article.section === "nonfiction")
+		? `Enter the ${manifest.articles.length}-work Shots of Rhapsody collection: fiction, poetry, reflections, and nonfiction by Tai Song.`
+		: HOME_DESCRIPTION;
+}
+
+async function verifyHomepageMetadata(distRoot, site, manifest, failures) {
 	const homepagePath = path.join(distRoot, "index.html");
 	if (!(await isFile(homepagePath))) {
 		failures.push("homepage is missing");
@@ -1589,7 +1765,7 @@ async function verifyHomepageMetadata(distRoot, site, failures) {
 			["type", jsonLd["@type"], "WebSite"],
 			["ID", jsonLd["@id"], `${homepageUrl}#website`],
 			["name", jsonLd.name, "Shots of Rhapsody"],
-			["description", jsonLd.description, HOME_DESCRIPTION],
+			["description", jsonLd.description, expectedHomeDescription(manifest)],
 			["URL", jsonLd.url, homepageUrl],
 			["language", jsonLd.inLanguage, "en"],
 			["author type", jsonLd.author?.["@type"], "Person"],
@@ -1663,32 +1839,25 @@ async function verifyDraftSources(repoRoot, manifest, failures) {
 	const markdownFiles = (await walk(postsRoot)).filter((file) =>
 		file.toLowerCase().endsWith(".md"),
 	);
-	const draftPaths = [];
+	const publishedPaths = new Set(
+		manifest.articles.map((article) =>
+			normalizedPath(
+				path.resolve(repoRoot, ...article.paths.markdown.split("/")),
+			),
+		),
+	);
 	for (const file of markdownFiles) {
 		const draft = frontmatterDraftValue(await readFile(file, "utf8"));
-		if (draft === true) {
-			draftPaths.push(normalizedPath(path.relative(repoRoot, file)));
-		}
-	}
-	compareExactValues(
-		draftPaths,
-		EXPECTED_DRAFT_POST_PATHS,
-		"draft source allowlist",
-		failures,
-	);
-	for (const article of manifest.articles) {
-		const markdownPath = resolveManifestPath(
-			repoRoot,
-			article.paths?.markdown,
-			`Author-master ${article.slug} Markdown`,
-			failures,
-		);
-		if (
-			markdownPath &&
-			frontmatterDraftValue(await readFile(markdownPath, "utf8")) === true
-		) {
-			failures.push(`Author-master ${article.slug} must not be a draft`);
-		}
+		const normalized = normalizedPath(path.resolve(file));
+		const cataloged = publishedPaths.has(normalized);
+		if (cataloged && draft === true)
+			failures.push(
+				`Cataloged writing must not be a draft: ${normalizedPath(path.relative(repoRoot, file))}`,
+			);
+		if (!cataloged && draft !== true)
+			failures.push(
+				`Uncataloged writing must remain an explicit draft: ${normalizedPath(path.relative(repoRoot, file))}`,
+			);
 	}
 }
 
@@ -1699,6 +1868,7 @@ async function verifyLaunchRoutes(
 	manifest,
 	site,
 	failures,
+	additionalRoutes = [],
 ) {
 	const expectedPostUrls = manifestPostUrls(manifest, site);
 	compareExactValues(
@@ -1709,6 +1879,7 @@ async function verifyLaunchRoutes(
 	);
 	const expectedIndexableHtmlUrls = [
 		...REQUIRED_NON_POST_ROUTES.map((route) => new URL(route, site).toString()),
+		...additionalRoutes.map((route) => new URL(route, site).toString()),
 		...expectedPostUrls,
 	];
 	const expectedHtmlUrls = [
@@ -1748,8 +1919,10 @@ async function verifyLaunchRss(distRoot, manifest, site, failures) {
 		"RSS items",
 		failures,
 	);
-	if (items.length !== EXPECTED_ARCHIVE_COUNT) {
-		failures.push(`RSS must contain exactly ${EXPECTED_ARCHIVE_COUNT} items`);
+	if (items.length !== manifest.articles.length) {
+		failures.push(
+			`RSS must contain exactly ${manifest.articles.length} approved writing items`,
+		);
 	}
 	return items.length;
 }
@@ -1757,6 +1930,10 @@ async function verifyLaunchRss(distRoot, manifest, site, failures) {
 async function readManifestPublicationDates(repoRoot, manifest, failures) {
 	const result = new Map();
 	for (const article of manifest.articles) {
+		if (typeof article.published === "string") {
+			result.set(article.slug, article.published);
+			continue;
+		}
 		const snapshotPath = resolveManifestPath(
 			repoRoot,
 			article.paths?.snapshot,
@@ -1795,31 +1972,56 @@ async function verifyHomePublicationDates(
 		failures,
 	);
 	const cards = [];
+	const nonfictionCards = [];
 	for (const relativePath of ["index.html", path.join("2", "index.html")]) {
 		const pagePath = path.join(distRoot, relativePath);
 		if (!(await isFile(pagePath))) continue;
 		const document = parse(await readFile(pagePath, "utf8"));
 		cards.push(...elementsWithAttribute(document, "data-post-card-slug"));
+		nonfictionCards.push(
+			...elementsWithAttribute(document, "data-home-nonfiction-slug"),
+		);
 	}
 	const slugs = cards.map((card) =>
 		attributeValue(card, "data-post-card-slug"),
 	);
 	compareExactValues(
 		slugs,
-		manifest.articles.map((article) => article.slug),
+		manifest.articles
+			.filter((article) => article.section !== "nonfiction")
+			.map((article) => article.slug),
 		"home publication-date cards",
 		failures,
 	);
-	for (const card of cards) {
+	const expectedRecentNonfiction = manifest.articles
+		.filter((article) => article.section === "nonfiction")
+		.toSorted(
+			(left, right) =>
+				new Date(right.published).valueOf() -
+				new Date(left.published).valueOf(),
+		)
+		.slice(0, 3)
+		.map((article) => article.slug);
+	compareExactValues(
+		nonfictionCards.map((card) =>
+			attributeValue(card, "data-home-nonfiction-slug"),
+		),
+		expectedRecentNonfiction,
+		"home recent nonfiction cards",
+		failures,
+	);
+	for (const card of [...cards, ...nonfictionCards]) {
 		const slug = attributeValue(card, "data-post-card-slug");
-		const published = publishedBySlug.get(slug);
+		const effectiveSlug =
+			slug ?? attributeValue(card, "data-home-nonfiction-slug");
+		const published = publishedBySlug.get(effectiveSlug);
 		if (!published) continue;
 		verifyPublicationTime(
 			card,
 			"data-post-published",
 			published,
 			published.slice(0, 10),
-			`home card ${slug}`,
+			`home card ${effectiveSlug}`,
 			failures,
 		);
 	}
@@ -1859,9 +2061,137 @@ async function verifyArchiveIndex(distRoot, manifest, site, failures) {
 	return entries.length;
 }
 
+async function verifyNonfictionIndex(distRoot, manifest, failures) {
+	const expected = manifest.articles
+		.filter((article) => article.section === "nonfiction")
+		.map((article) => article.slug);
+	if (expected.length === 0) return 0;
+	const indexPath = path.join(distRoot, "nonfiction", "index.html");
+	if (!(await isFile(indexPath))) {
+		failures.push("Nonfiction index route is missing");
+		return 0;
+	}
+	const document = parse(await readFile(indexPath, "utf8"));
+	if (elementsWithAttribute(document, "data-nonfiction-index").length !== 1)
+		failures.push("Nonfiction index must contain one approved-list marker");
+	const slugs = elementsWithAttribute(document, "data-editorial-slug").map(
+		(node) => attributeValue(node, "data-editorial-slug"),
+	);
+	compareExactValues(slugs, expected, "nonfiction index entries", failures);
+	return slugs.length;
+}
+
+export async function verifyMediumRenderedBodies(
+	repoRoot,
+	distRoot,
+	publicationManifest,
+	failures,
+) {
+	const expectedSlugs = publicationManifest.articles
+		.filter((article) => article.source === "medium")
+		.map((article) => article.slug);
+	if (expectedSlugs.length === 0) return;
+	let mediumManifest;
+	try {
+		mediumManifest = JSON.parse(
+			await readFile(
+				path.join(repoRoot, "provenance", "medium", "manifest.json"),
+				"utf8",
+			),
+		);
+	} catch (error) {
+		failures.push(`Medium manifest is invalid (${error.message})`);
+		return;
+	}
+	if (
+		mediumManifest?.state !== "active" ||
+		!Array.isArray(mediumManifest.articles)
+	) {
+		failures.push(
+			"Medium manifest must be active before Medium writing is rendered",
+		);
+		return;
+	}
+	const manifestSlugs = mediumManifest.articles.map((article) => article?.slug);
+	compareExactValues(
+		manifestSlugs.filter((slug) => typeof slug === "string"),
+		expectedSlugs,
+		"Medium manifest articles",
+		failures,
+	);
+	if (manifestSlugs.some((slug) => typeof slug !== "string")) {
+		failures.push("Medium manifest contains an article without a valid slug");
+	}
+	const bySlug = new Map(
+		mediumManifest.articles.map((article) => [article?.slug, article]),
+	);
+	for (const slug of expectedSlugs) {
+		const article = bySlug.get(slug);
+		const snapshotPath = article
+			? resolveManifestPath(
+					repoRoot,
+					article.paths?.snapshot,
+					`Medium ${slug} snapshot`,
+					failures,
+				)
+			: undefined;
+		if (!article || !snapshotPath || !(await isFile(snapshotPath))) {
+			failures.push(`Medium ${slug}: snapshot evidence is missing`);
+			continue;
+		}
+		let snapshot;
+		try {
+			const snapshotBytes = await readFile(snapshotPath);
+			if (sha256(snapshotBytes) !== exactSha256(article.hashes?.snapshot)) {
+				failures.push(
+					`Medium ${slug}: snapshot hash differs from its manifest`,
+				);
+			}
+			snapshot = JSON.parse(snapshotBytes.toString("utf8"));
+		} catch (error) {
+			failures.push(`Medium ${slug}: snapshot is invalid (${error.message})`);
+			continue;
+		}
+		if (
+			snapshot?.slug !== slug ||
+			typeof snapshot.bodyHtml !== "string" ||
+			snapshot.bodyHtml.length === 0
+		) {
+			failures.push(`Medium ${slug}: snapshot body contract is invalid`);
+			continue;
+		}
+		const pagePath = path.join(distRoot, "posts", slug, "index.html");
+		if (!(await isFile(pagePath))) {
+			failures.push(`Medium ${slug}: built page is missing`);
+			continue;
+		}
+		const document = parse(await readFile(pagePath, "utf8"));
+		const bodies = elementsWithAttribute(
+			document,
+			"data-authored-content",
+		).filter((node) =>
+			(attributeValue(node, "class") ?? "")
+				.split(/\s+/u)
+				.includes("article-body"),
+		);
+		if (bodies.length !== 1) {
+			failures.push(`Medium ${slug}: rendered authored body is ambiguous`);
+			continue;
+		}
+		const actual = archiveBodyStructureFromNodes(bodies[0].childNodes ?? []);
+		const expected = archiveBodyStructure(snapshot.bodyHtml);
+		if (JSON.stringify(actual) !== JSON.stringify(expected))
+			failures.push(`Medium ${slug}: rendered body differs from its snapshot`);
+	}
+}
+
 async function readManifestTitles(repoRoot, manifest, failures) {
 	const result = new Map();
 	for (const article of manifest.articles) {
+		if (typeof article.title === "string") {
+			result.set(article.slug, article.title);
+			continue;
+		}
 		const snapshotPath = resolveManifestPath(
 			repoRoot,
 			article.paths?.snapshot,
@@ -2035,7 +2365,14 @@ function pagefindResultUrl(rawUrl, site) {
 	return new URL(rawUrl.replace(/^\/+/, ""), site).toString();
 }
 
-async function verifyPagefind(repoRoot, distRoot, manifest, site, failures) {
+async function verifyPagefind(
+	repoRoot,
+	distRoot,
+	manifest,
+	site,
+	failures,
+	podcastEpisodes = [],
+) {
 	const pagefindRoot = path.join(distRoot, "pagefind");
 	let pagefindFiles;
 	try {
@@ -2079,13 +2416,15 @@ async function verifyPagefind(repoRoot, distRoot, manifest, site, failures) {
 		);
 	}
 	const languages = Object.keys(entry.languages ?? {});
+	const expectedPageCount =
+		manifest.articles.length + podcastEpisodes.length * 2;
 	if (
 		languages.length !== 1 ||
 		languages[0] !== "en" ||
-		entry.languages?.en?.page_count !== EXPECTED_ARCHIVE_COUNT
+		entry.languages?.en?.page_count !== expectedPageCount
 	) {
 		failures.push(
-			`Pagefind must contain exactly ${EXPECTED_ARCHIVE_COUNT} English pages`,
+			`Pagefind must contain exactly ${expectedPageCount} approved English pages`,
 		);
 	}
 	const fragmentFiles = pagefindFiles.filter((_, index) =>
@@ -2113,19 +2452,25 @@ async function verifyPagefind(repoRoot, distRoot, manifest, site, failures) {
 	const actualRecords = records.map(
 		(record) => `${pagefindResultUrl(record.url, site)}\n${record.meta?.title}`,
 	);
-	const expectedRecords = manifest.articles.map(
-		(article) =>
-			`${new URL(`posts/${article.slug}/`, site)}\n${titles.get(article.slug)}`,
-	);
+	const expectedRecords = [
+		...manifest.articles.map(
+			(article) =>
+				`${new URL(`posts/${article.slug}/`, site)}\n${titles.get(article.slug)}`,
+		),
+		...podcastEpisodes.flatMap((episode) => [
+			`${new URL(`podcast/${episode.slug}/`, site)}\n${episode.title}`,
+			`${new URL(`podcast/${episode.slug}/transcript/`, site)}\n${episode.title} — Transcript`,
+		]),
+	];
 	compareExactValues(
 		actualRecords,
 		expectedRecords,
 		"Pagefind records",
 		failures,
 	);
-	if (records.length !== EXPECTED_ARCHIVE_COUNT) {
+	if (records.length !== expectedPageCount) {
 		failures.push(
-			`Pagefind must emit exactly ${EXPECTED_ARCHIVE_COUNT} fragments`,
+			`Pagefind must emit exactly ${expectedPageCount} approved fragments`,
 		);
 	}
 	return records.length;
@@ -2156,18 +2501,59 @@ export async function verifyNoPrivateBuildReferences(files, failures) {
 	}
 }
 
-function verifyNoPodcastArtifacts(files, distRoot, failures) {
-	for (const file of files) {
-		const relative = normalizedPath(path.relative(distRoot, file));
-		if (
-			/(?:^|\/)podcast(?:\/|$)/iu.test(relative) ||
-			AUDIO_ARTIFACT_PATTERN.test(relative)
-		) {
-			failures.push(
-				`forbidden podcast/audio artifact was emitted: ${relative}`,
-			);
+export function verifyPodcastArtifacts(
+	files,
+	distRoot,
+	podcastEpisodes,
+	failures,
+) {
+	const expected = new Set();
+	if (podcastEpisodes.length > 0) {
+		expected.add("podcast/index.html");
+		expected.add(PODCAST_SHOW.artwork.publicPath.replace(/^\//u, ""));
+		for (const episode of podcastEpisodes) {
+			expected.add(`podcast/${episode.slug}/index.html`);
+			expected.add(`podcast/${episode.slug}/transcript/index.html`);
+			expected.add(episode.audio.publicPath.replace(/^\//u, ""));
+			if (episode.transcript === null) {
+				failures.push(
+					`Approved podcast episode lacks a transcript: ${episode.slug}`,
+				);
+				continue;
+			}
+			if (
+				episode.transcript.publicPath !== `/podcast/${episode.slug}/transcript/`
+			) {
+				failures.push(
+					`Approved podcast transcript route differs from its slug: ${episode.slug}`,
+				);
+			}
+			if (episode.transcript.vttPath) {
+				expected.add(episode.transcript.vttPath.replace(/^\//u, ""));
+			}
 		}
 	}
+	const actual = [];
+	for (const file of files) {
+		const relative = normalizedPath(path.relative(distRoot, file));
+		if (relative === "podcast/feed.xml")
+			failures.push(
+				"Podcast feed must remain private before the custom domain",
+			);
+		if (
+			/^podcast\//u.test(relative) ||
+			/^media\/podcast\//u.test(relative) ||
+			AUDIO_ARTIFACT_PATTERN.test(relative)
+		) {
+			actual.push(relative);
+		}
+	}
+	compareExactValues(
+		actual,
+		[...expected],
+		"podcast build artifacts",
+		failures,
+	);
 }
 
 export async function verifyBuiltSite({
@@ -2175,10 +2561,13 @@ export async function verifyBuiltSite({
 	site: siteValue = DEFAULT_SITE,
 	repoRoot: repoRootValue = process.cwd(),
 	requireSignoff = false,
+	releaseTarget = "v1.0.0",
 } = {}) {
 	const distRoot = path.resolve(dist);
 	const repoRoot = path.resolve(repoRootValue);
 	const site = new URL(siteValue);
+	if (!RELEASE_TARGETS.has(releaseTarget))
+		throw new Error(`Unsupported release target: ${releaseTarget}`);
 	if (!site.pathname.endsWith("/")) site.pathname += "/";
 	const files = await walk(distRoot);
 	const htmlFiles = files.filter((file) => file.endsWith(".html"));
@@ -2191,52 +2580,122 @@ export async function verifyBuiltSite({
 	for (const file of htmlFiles)
 		await verifyHtml(file, distRoot, site, failures, postPages);
 	await verifyRss(distRoot, site, failures, postPages);
-	const manifest = await verifyArchiveManifest(
+	const archiveManifest = await verifyArchiveManifest(
 		repoRoot,
 		distRoot,
 		site,
 		failures,
-		{ requireSignoff, notices },
+		{
+			requireSignoff,
+			notices,
+			validateReviewCommitBinding: releaseTarget === "v1.0.0",
+		},
 	);
 	let expectedPageUrls = [];
 	let rssItems = 0;
 	let pagefindRecords = 0;
 	let archiveEntries = 0;
 	let authorWorks = 0;
-	if (manifest) {
+	let nonfictionEntries = 0;
+	let publicationManifest = archiveManifest;
+	const podcastEpisodes =
+		releaseTarget === "v1.1.0" ? getApprovedPodcastEpisodes() : [];
+	if (archiveManifest) {
+		publicationManifest = await loadPublicationManifest(
+			repoRoot,
+			archiveManifest,
+			releaseTarget,
+			failures,
+		);
+		if (releaseTarget === "v1.1.0") {
+			if (
+				!publicationManifest.articles.some(
+					(article) => article.source === "medium",
+				)
+			) {
+				failures.push(
+					"v1.1.0 requires at least one approved Medium nonfiction article",
+				);
+			}
+			if (podcastEpisodes.length === 0) {
+				failures.push("v1.1.0 requires at least one approved podcast episode");
+			}
+		}
+		const additionalRoutes = [];
+		if (
+			publicationManifest.articles.some(
+				(article) => article.section === "nonfiction",
+			)
+		)
+			additionalRoutes.push("nonfiction/");
+		if (podcastEpisodes.length > 0) {
+			additionalRoutes.push("podcast/");
+			for (const episode of podcastEpisodes) {
+				additionalRoutes.push(`podcast/${episode.slug}/`);
+				additionalRoutes.push(`podcast/${episode.slug}/transcript/`);
+			}
+		}
 		expectedPageUrls = await verifyLaunchRoutes(
 			distRoot,
 			htmlFiles,
 			postPages,
-			manifest,
+			publicationManifest,
+			site,
+			failures,
+			additionalRoutes,
+		);
+		rssItems = await verifyLaunchRss(
+			distRoot,
+			publicationManifest,
 			site,
 			failures,
 		);
-		rssItems = await verifyLaunchRss(distRoot, manifest, site, failures);
-		await verifyHomePublicationDates(repoRoot, distRoot, manifest, failures);
+		await verifyHomePublicationDates(
+			repoRoot,
+			distRoot,
+			publicationManifest,
+			failures,
+		);
 		archiveEntries = await verifyArchiveIndex(
 			distRoot,
-			manifest,
+			publicationManifest,
 			site,
+			failures,
+		);
+		nonfictionEntries = await verifyNonfictionIndex(
+			distRoot,
+			publicationManifest,
+			failures,
+		);
+		await verifyMediumRenderedBodies(
+			repoRoot,
+			distRoot,
+			publicationManifest,
 			failures,
 		);
 		authorWorks = await verifyAuthorPage(
 			repoRoot,
 			distRoot,
-			manifest,
+			publicationManifest,
 			site,
 			failures,
 		);
 		pagefindRecords = await verifyPagefind(
 			repoRoot,
 			distRoot,
-			manifest,
+			publicationManifest,
 			site,
 			failures,
+			podcastEpisodes,
 		);
-		await verifyDraftSources(repoRoot, manifest, failures);
+		await verifyDraftSources(repoRoot, publicationManifest, failures);
 	}
-	await verifyHomepageMetadata(distRoot, site, failures);
+	await verifyHomepageMetadata(
+		distRoot,
+		site,
+		publicationManifest ?? { articles: [] },
+		failures,
+	);
 	await verifyCustomNotFound(distRoot, site, failures);
 	await verifySitemap(distRoot, site, expectedPageUrls, failures);
 	for (const failure of validateNoProjectRobots(
@@ -2245,7 +2704,7 @@ export async function verifyBuiltSite({
 		failures.push(failure);
 	}
 	await verifyNoPrivateBuildReferences(files, failures);
-	verifyNoPodcastArtifacts(files, distRoot, failures);
+	verifyPodcastArtifacts(files, distRoot, podcastEpisodes, failures);
 	const imageVerification = await inspectBuiltImages({
 		dist: distRoot,
 		repoRoot,
@@ -2265,6 +2724,8 @@ export async function verifyBuiltSite({
 		pagefindRecords,
 		archiveEntries,
 		authorWorks,
+		nonfictionEntries,
+		podcastEpisodes: podcastEpisodes.length,
 		imageStats: imageVerification.stats,
 		notices,
 	};

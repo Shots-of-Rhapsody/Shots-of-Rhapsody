@@ -12,18 +12,35 @@ import {
 	entriesForSlugs,
 	getFeaturedEntries,
 	indexEditorialEntries,
+	isManifestSlug,
 } from "@/data/editorial";
 
-const archiveEntries = await getCollection("posts", ({ data }) =>
-	Boolean(data.provenance),
-);
+const archiveEntries = await getCollection("posts");
 const indexedEntries = indexEditorialEntries(archiveEntries);
 const featuredEntries = getFeaturedEntries(indexedEntries);
 const groups = EDITORIAL_GROUPS.map((group) => ({
 	...group,
 	entries: entriesForSlugs(indexedEntries, group.slugs),
 }));
-const articles = groups.flatMap((group) => group.entries);
+const nonfictionEntries = archiveEntries
+	.filter((entry) => entry.data.section === "nonfiction")
+	.toSorted(
+		(left, right) =>
+			right.data.published.valueOf() - left.data.published.valueOf(),
+	);
+const additionalCreativeEntries = archiveEntries
+	.filter(
+		(entry) => !isManifestSlug(entry.id) && entry.data.section !== "nonfiction",
+	)
+	.toSorted(
+		(left, right) =>
+			right.data.published.valueOf() - left.data.published.valueOf(),
+	);
+const articles = [
+	...groups.flatMap((group) => group.entries),
+	...additionalCreativeEntries,
+	...nonfictionEntries,
+];
 
 const siteUrl = Astro.site ?? Astro.url;
 const authorUrl = new URL(url("/authors/tai-song/"), siteUrl).toString();
@@ -89,7 +106,9 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 		<section class="author-works" aria-labelledby="author-works-title" data-pagefind-ignore>
 			<header class="author-works__heading">
 				<p class="author-intro__kicker">Complete archive</p>
-				<h2 id="author-works-title">All eleven works</h2>
+				<h2 id="author-works-title">
+					{articles.length === 11 ? "All eleven works" : `All ${articles.length} works`}
+				</h2>
 			</header>
 
 			<div class="author-groups">
@@ -110,6 +129,32 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 						</div>
 					</section>
 				))}
+				{additionalCreativeEntries.length > 0 && (
+					<section class="author-group" aria-labelledby="author-group-new-writing">
+						<header>
+							<h3 id="author-group-new-writing">New writing</h3>
+							<p>Recently published stories and reflections.</p>
+						</header>
+						<div class="author-group__cards">
+							{additionalCreativeEntries.map((entry) => (
+								<EditorialWorkCard entry={entry} variant="catalog" context="author" />
+							))}
+						</div>
+					</section>
+				)}
+				{nonfictionEntries.length > 0 && (
+					<section class="author-group" aria-labelledby="author-group-nonfiction">
+						<header>
+							<h3 id="author-group-nonfiction">Nonfiction</h3>
+							<p>Essays grounded in source review and preserved author text.</p>
+						</header>
+						<div class="author-group__cards">
+							{nonfictionEntries.map((entry) => (
+								<EditorialWorkCard entry={entry} variant="catalog" context="author" label="Nonfiction" />
+							))}
+						</div>
+					</section>
+				)}
 			</div>
 		</section>
 	</article>

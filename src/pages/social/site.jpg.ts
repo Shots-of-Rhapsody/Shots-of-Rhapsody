@@ -1,6 +1,7 @@
 import path from "node:path";
 import type { APIRoute } from "astro";
 import sharp from "sharp";
+import { SOCIAL_IMAGE_QUALITY } from "../../utils/image-policy";
 
 const WIDTH = 1200;
 const HEIGHT = 630;
@@ -73,7 +74,7 @@ export const GET: APIRoute = async () => {
 			{ input: title, left: 344, top: 213 },
 			{ input: subtitle, left: 344, top: 330 },
 		])
-		.jpeg({ quality: 84, mozjpeg: true })
+		.jpeg({ quality: SOCIAL_IMAGE_QUALITY, mozjpeg: true })
 		.toBuffer();
 
 	return new Response(new Uint8Array(jpeg), {

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "state": "awaiting-export",
+  "authority": {
+    "platform": "Medium",
+    "captureFormat": "account-export-zip"
+  },
+  "author": {
+    "name": "Tai Song",
+    "profileUrl": "https://medium.com/@ShotsOfRhapsody"
+  },
+  "export": null,
+  "candidateCount": 0,
+  "candidateSetSha256": null,
+  "candidates": [],
+  "expectedCount": 0,
+  "articles": []
+}

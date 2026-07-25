@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import {
+	type APIRequestContext,
 	type ConsoleMessage,
 	expect,
 	type Page,
@@ -9,6 +10,8 @@ import {
 	type TestInfo,
 	test,
 } from "@playwright/test";
+import { PODCAST_EPISODES, PODCAST_SHOW } from "../../src/data/podcast";
+import { getApprovedPodcastEpisodes } from "../../src/data/podcast-approval";
 import {
 	FEATURED_IMAGE_SIZES,
 	HERO_IMAGE_SIZES,
@@ -29,6 +32,13 @@ interface ArchiveArticle {
 	image: { width: number; height: number };
 	published: string;
 	ending: string;
+}
+
+interface PublicationCatalogEntry {
+	slug: string;
+	source: "tai-song" | "medium" | "first-party";
+	markdown: string;
+	section: "fiction" | "poetry-reflection" | "nonfiction";
 }
 
 const repositoryRoot = path.resolve(import.meta.dirname, "../..");
@@ -60,7 +70,48 @@ const articles: ArchiveArticle[] = manifest.articles.map((entry) => {
 		ending,
 	};
 });
-const expectedSlugs = articles.map(({ slug }) => slug).toSorted();
+const publicationCatalog = JSON.parse(
+	readFileSync(
+		path.join(repositoryRoot, "provenance/publication-catalog.json"),
+		"utf8",
+	),
+) as { schemaVersion: number; entries: PublicationCatalogEntry[] };
+if (publicationCatalog.schemaVersion !== 1) {
+	throw new Error(
+		"Publication catalog schema is not supported by browser tests",
+	);
+}
+const catalogEntries = publicationCatalog.entries;
+const sealedArchiveSlugSet = new Set(articles.map(({ slug }) => slug));
+const expectedWritingSlugs = catalogEntries.map(({ slug }) => slug).toSorted();
+if (
+	expectedWritingSlugs.length < articles.length ||
+	new Set(expectedWritingSlugs).size !== expectedWritingSlugs.length ||
+	articles.some((article) => !expectedWritingSlugs.includes(article.slug))
+) {
+	throw new Error(
+		"Publication catalog must uniquely retain every sealed archive article",
+	);
+}
+const creativeWritingSlugs = catalogEntries
+	.filter(({ section }) => section !== "nonfiction")
+	.map(({ slug }) => slug)
+	.toSorted();
+const nonfictionEntries = catalogEntries.filter(
+	({ section }) => section === "nonfiction",
+);
+const nonfictionSlugs = nonfictionEntries.map(({ slug }) => slug).toSorted();
+const approvedPodcastEpisodes = getApprovedPodcastEpisodes();
+const approvedPodcastSlugs = approvedPodcastEpisodes
+	.map(({ slug }) => slug)
+	.toSorted();
+const approvedPodcastSlugSet = new Set(approvedPodcastSlugs);
+const expectedPrimaryNavigation = [
+	"Works",
+	...(nonfictionEntries.length > 0 ? ["Nonfiction"] : []),
+	...(approvedPodcastEpisodes.length > 0 ? ["Podcast"] : []),
+	"About",
+];
 const continuationBySlug = new Map<string, string>([
 	[
 		"before-the-sky-went-quiet-part-i-the-girl-who-faded",
@@ -312,12 +363,45 @@ async function screenshot(
 	});
 }
 
+function publicPath(value: string) {
+	return sitePath(value.replace(/^\/+/, ""));
+}
+
+async function expectAudioRange(
+	request: APIRequestContext,
+	assetPath: string,
+	range: string,
+	expectedStart: number,
+	expectedEnd: number,
+	totalBytes: number,
+) {
+	const response = await request.get(assetPath, {
+		headers: { Range: range },
+	});
+	expect(response.status(), `${range}: HTTP status`).toBe(206);
+	expect(response.headers()["content-type"]).toContain("audio/mpeg");
+	expect(response.headers()["accept-ranges"]).toBe("bytes");
+	expect(response.headers()["content-range"]).toBe(
+		`bytes ${expectedStart}-${expectedEnd}/${totalBytes}`,
+	);
+	expect(Number(response.headers()["content-length"])).toBe(
+		expectedEnd - expectedStart + 1,
+	);
+	expect((await response.body()).byteLength).toBe(
+		expectedEnd - expectedStart + 1,
+	);
+}
+
 test.describe("public release inventory", () => {
-	test("home catalog exposes all and only the 11 manifest articles", async ({
+	test("home catalog exposes only aggregate-approved writing", async ({
 		page,
 		request,
 	}) => {
 		await expectHealthyPage(page, "");
+		await expect(page.locator("[data-public-article-count]")).toHaveAttribute(
+			"data-public-article-count",
+			String(catalogEntries.length),
+		);
 		const discovered = new Set<string>();
 		for (const href of await page
 			.locator('[data-post-card-slug] a[href*="/posts/"]')
@@ -327,8 +411,29 @@ test.describe("public release inventory", () => {
 			const match = href.match(/\/posts\/([^/]+)\/?$/);
 			if (match) discovered.add(decodeURIComponent(match[1]));
 		}
-		expect([...discovered].toSorted()).toEqual(expectedSlugs);
+		expect([...discovered].toSorted()).toEqual(creativeWritingSlugs);
 		expect(await page.locator("[data-featured-card-slug]").count()).toBe(3);
+		const recentNonfictionSlugs = await page
+			.locator("#nonfiction [data-editorial-slug]")
+			.evaluateAll((items) =>
+				items
+					.map((item) => item.getAttribute("data-editorial-slug"))
+					.filter((slug): slug is string => slug !== null),
+			);
+		if (nonfictionEntries.length === 0) {
+			expect(recentNonfictionSlugs).toEqual([]);
+			await expect(page.locator('a[href$="/nonfiction/"]')).toHaveCount(0);
+		} else {
+			expect(recentNonfictionSlugs).toHaveLength(
+				Math.min(3, nonfictionEntries.length),
+			);
+			expect(
+				recentNonfictionSlugs.every((slug) => nonfictionSlugs.includes(slug)),
+			).toBe(true);
+			await expect(
+				page.getByRole("link", { name: "Explore all nonfiction" }),
+			).toHaveAttribute("href", sitePath("nonfiction/"));
+		}
 		expect((await request.get(sitePath("2/"))).status()).toBe(404);
 
 		const websiteJsonLd = (
@@ -391,7 +496,7 @@ test.describe("public release inventory", () => {
 		).toEqual([1200, 630]);
 	});
 
-	test("archive, author, RSS, sitemap, and reader pages expose exactly 11 articles", async ({
+	test("archive, author, RSS, sitemap, and reader pages match the aggregate catalog", async ({
 		page,
 		request,
 	}) => {
@@ -408,7 +513,7 @@ test.describe("public release inventory", () => {
 				)
 			).filter(Boolean),
 		);
-		expect([...archiveSlugs].toSorted()).toEqual(expectedSlugs);
+		expect([...archiveSlugs].toSorted()).toEqual(expectedWritingSlugs);
 
 		await expectHealthyPage(page, "authors/tai-song/");
 		const authorSlugs = await page
@@ -416,13 +521,28 @@ test.describe("public release inventory", () => {
 			.evaluateAll((items) =>
 				items.map((item) => item.getAttribute("data-author-article-slug")),
 			);
-		expect(authorSlugs.filter(Boolean).toSorted()).toEqual(expectedSlugs);
+		expect(authorSlugs.filter(Boolean).toSorted()).toEqual(
+			expectedWritingSlugs,
+		);
 
 		const rss = await request.get(sitePath("rss.xml"));
 		expect(rss.status()).toBe(200);
 		const rssBody = await rss.text();
 		expectNoPrivateReference(rssBody, "RSS response");
-		expect(rssBody.match(/<item>/g) ?? []).toHaveLength(11);
+		expect(rssBody.match(/<item>/g) ?? []).toHaveLength(
+			expectedWritingSlugs.length,
+		);
+		for (const slug of expectedWritingSlugs) {
+			expect(rssBody).toContain(
+				`https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/posts/${slug}/`,
+			);
+			const response = await request.get(sitePath(`posts/${slug}/`));
+			expect(response.status(), `posts/${slug}/`).toBe(200);
+			expectNoPrivateReference(
+				await response.text(),
+				`posts/${slug}/ response`,
+			);
+		}
 
 		for (const route of ["sitemap-index.xml", "about/", "rights/"]) {
 			const response = await request.get(sitePath(route));
@@ -435,20 +555,35 @@ test.describe("public release inventory", () => {
 		page,
 		request,
 	}) => {
-		for (const route of [
+		const readerRoutes = [
 			"",
 			"archive/",
 			"authors/tai-song/",
 			"about/",
 			"rights/",
 			`posts/${articles[0].slug}/`,
-		]) {
+			...catalogEntries
+				.filter(({ slug }) => !sealedArchiveSlugSet.has(slug))
+				.map(({ slug }) => `posts/${slug}/`),
+			...(nonfictionEntries.length > 0 ? ["nonfiction/"] : []),
+			...(approvedPodcastEpisodes.length > 0
+				? [
+						"podcast/",
+						...approvedPodcastEpisodes.flatMap((episode) => [
+							`podcast/${episode.slug}/`,
+							`podcast/${episode.slug}/transcript/`,
+						]),
+					]
+				: []),
+		];
+		for (const route of readerRoutes) {
 			await expectHealthyPage(page, route);
 			await expect(page.locator('meta[name="generator"]')).toHaveCount(0);
 			await expect(page.locator('meta[name^="twitter:"]')).toHaveCount(0);
 			const publicSurface = await page.evaluate(() => {
 				const copy = document.body.cloneNode(true) as HTMLElement;
 				for (const selector of [
+					"[data-authored-content]",
 					"[data-archive-body]",
 					"[data-archive-field]",
 					"[data-archive-hero]",
@@ -481,7 +616,9 @@ test.describe("public release inventory", () => {
 		}
 
 		await expectHealthyPage(page, "");
-		await expect(page.locator(".nav-links a")).toHaveText(["Works", "About"]);
+		await expect(page.locator(".nav-links a")).toHaveText(
+			expectedPrimaryNavigation,
+		);
 		await expect(page.locator(".site-footer nav a")).toHaveText([
 			"Rights",
 			"Subscribe",
@@ -519,12 +656,215 @@ test.describe("public release inventory", () => {
 		);
 	});
 
+	test("Nonfiction route exists only for aggregate-approved writing", async ({
+		page,
+		request,
+	}) => {
+		if (nonfictionEntries.length === 0) {
+			expect((await request.get(sitePath("nonfiction/"))).status()).toBe(404);
+			await expectHealthyPage(page, "");
+			await expect(
+				page.locator('.nav-links a[href$="/nonfiction/"]'),
+			).toHaveCount(0);
+			return;
+		}
+
+		await expectHealthyPage(page, "nonfiction/");
+		const listedSlugs = await page
+			.locator("[data-nonfiction-index] [data-editorial-slug]")
+			.evaluateAll((items) =>
+				items
+					.map((item) => item.getAttribute("data-editorial-slug"))
+					.filter((slug): slug is string => slug !== null),
+			);
+		expect(listedSlugs.toSorted()).toEqual(nonfictionSlugs);
+		await expect(page.locator('.nav-links a[href$="/nonfiction/"]')).toHaveText(
+			"Nonfiction",
+		);
+		await expectNoSeriousAxeViolations(page);
+	});
+
+	test("Podcast routes and media expose only fully approved episodes", async ({
+		page,
+		request,
+	}) => {
+		const unpublishedEpisodes = PODCAST_EPISODES.filter(
+			(episode) => !approvedPodcastSlugSet.has(episode.slug),
+		);
+		for (const episode of unpublishedEpisodes) {
+			expect(
+				(await request.get(sitePath(`podcast/${episode.slug}/`))).status(),
+				`${episode.slug}: unpublished episode route`,
+			).toBe(404);
+			expect(
+				(await request.get(publicPath(episode.audio.publicPath))).status(),
+				`${episode.slug}: unpublished audio`,
+			).toBe(404);
+			if (episode.transcript !== null) {
+				expect(
+					(
+						await request.get(publicPath(episode.transcript.publicPath))
+					).status(),
+					`${episode.slug}: unpublished transcript`,
+				).toBe(404);
+			}
+		}
+
+		expect(
+			(await request.get(publicPath(PODCAST_SHOW.feedPath))).status(),
+		).toBe(404);
+		if (approvedPodcastEpisodes.length === 0) {
+			expect((await request.get(sitePath("podcast/"))).status()).toBe(404);
+			expect(
+				(
+					await request.get(publicPath(PODCAST_SHOW.artwork.publicPath))
+				).status(),
+			).toBe(404);
+			await expectHealthyPage(page, "");
+			await expect(page.locator('.nav-links a[href$="/podcast/"]')).toHaveCount(
+				0,
+			);
+			return;
+		}
+
+		await expectHealthyPage(page, "podcast/");
+		const indexSlugs = await page
+			.locator('.episode-list a[href*="/podcast/"]')
+			.evaluateAll((links) =>
+				links
+					.map(
+						(link) =>
+							(link as HTMLAnchorElement).pathname.match(
+								/\/podcast\/([^/]+)\/?$/,
+							)?.[1],
+					)
+					.filter((slug): slug is string => slug !== undefined),
+			);
+		expect(indexSlugs.toSorted()).toEqual(approvedPodcastSlugs);
+		await expect(page.locator('.nav-links a[href$="/podcast/"]')).toHaveText(
+			"Podcast",
+		);
+		expect(
+			(await request.get(publicPath(PODCAST_SHOW.artwork.publicPath))).status(),
+		).toBe(200);
+
+		for (const episode of approvedPodcastEpisodes) {
+			if (episode.transcript === null) {
+				throw new Error(
+					`${episode.slug}: approved podcast episode lacks a transcript`,
+				);
+			}
+			const audioPath = publicPath(episode.audio.publicPath);
+			const transcriptPath = publicPath(episode.transcript.publicPath);
+			const audioPathname = new URL(audioPath, playwrightOrigin).pathname;
+			const prematureAudioRequests: string[] = [];
+			const recordAudioRequest = (browserRequest: Request) => {
+				if (new URL(browserRequest.url()).pathname === audioPathname) {
+					prematureAudioRequests.push(browserRequest.method());
+				}
+			};
+			page.on("request", recordAudioRequest);
+			try {
+				await expectHealthyPage(page, `podcast/${episode.slug}/`);
+				await page.waitForTimeout(250);
+				expect(
+					prematureAudioRequests,
+					`${episode.slug}: audio requested before visitor playback`,
+				).toEqual([]);
+			} finally {
+				page.off("request", recordAudioRequest);
+			}
+
+			const player = page.locator("audio[controls]");
+			await expect(player).toHaveCount(1);
+			await expect(player).toHaveAttribute("preload", "none");
+			await expect(player).not.toHaveAttribute("autoplay", /.*/u);
+			await expect(player.locator("source")).toHaveAttribute("src", audioPath);
+			await expect(player.locator("source")).toHaveAttribute(
+				"type",
+				episode.audio.mimeType,
+			);
+			await expect(
+				page.locator(`a[href="${transcriptPath}"]`).filter({
+					hasText: "Read the transcript",
+				}),
+			).toBeVisible();
+			const download = page.locator(`a[href="${audioPath}"][download]`);
+			await expect(download).toBeVisible();
+			await expect(download).toContainText("Download audio");
+			await expect(download).toContainText(
+				`${(episode.audio.byteLength / 1024 ** 2).toFixed(1)} MiB`,
+			);
+			await expectNoSeriousAxeViolations(page);
+
+			await expectHealthyPage(page, `podcast/${episode.slug}/transcript/`);
+			await expect(page.locator("[data-podcast-transcript]")).not.toBeEmpty();
+			await expectNoSeriousAxeViolations(page);
+
+			const head = await request.head(audioPath);
+			expect(head.status(), `${episode.slug}: audio HEAD`).toBe(200);
+			expect(head.headers()["content-type"]).toContain("audio/mpeg");
+			expect(head.headers()["accept-ranges"]).toBe("bytes");
+			expect(Number(head.headers()["content-length"])).toBe(
+				episode.audio.byteLength,
+			);
+
+			const rangeBytes = Math.min(1024, episode.audio.byteLength);
+			const initialEnd = rangeBytes - 1;
+			const middleStart = Math.floor(
+				(episode.audio.byteLength - rangeBytes) / 2,
+			);
+			const middleEnd = middleStart + rangeBytes - 1;
+			const suffixStart = episode.audio.byteLength - rangeBytes;
+			await expectAudioRange(
+				request,
+				audioPath,
+				`bytes=0-${initialEnd}`,
+				0,
+				initialEnd,
+				episode.audio.byteLength,
+			);
+			await expectAudioRange(
+				request,
+				audioPath,
+				`bytes=${middleStart}-${middleEnd}`,
+				middleStart,
+				middleEnd,
+				episode.audio.byteLength,
+			);
+			await expectAudioRange(
+				request,
+				audioPath,
+				`bytes=-${rangeBytes}`,
+				suffixStart,
+				episode.audio.byteLength - 1,
+				episode.audio.byteLength,
+			);
+		}
+	});
+
 	for (const { name, route } of [
 		{ name: "home", route: "" },
 		{ name: "archive", route: "archive/" },
 		{ name: "author", route: "authors/tai-song/" },
 		{ name: "about", route: "about/" },
 		{ name: "rights", route: "rights/" },
+		...(nonfictionEntries.length > 0
+			? [{ name: "nonfiction", route: "nonfiction/" }]
+			: []),
+		...(approvedPodcastEpisodes.length > 0
+			? [
+					{ name: "podcast", route: "podcast/" },
+					{
+						name: "podcast episode",
+						route: `podcast/${approvedPodcastEpisodes[0].slug}/`,
+					},
+					{
+						name: "podcast transcript",
+						route: `podcast/${approvedPodcastEpisodes[0].slug}/transcript/`,
+					},
+				]
+			: []),
 	]) {
 		test(`${name} page has no serious accessibility violations`, async ({
 			page,
@@ -653,7 +993,9 @@ test("responsive manuscript layout and initial images meet the release matrix", 
 				const featuredPictures = page.locator(
 					'[data-editorial-card="featured"] picture',
 				);
-				await expect(featuredPictures).toHaveCount(3);
+				await expect(featuredPictures).toHaveCount(
+					3 + Math.min(3, nonfictionEntries.length),
+				);
 				for (const picture of await featuredPictures.all()) {
 					await expect(picture.locator("source")).toHaveAttribute(
 						"sizes",

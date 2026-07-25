@@ -6,13 +6,20 @@ import { pathToFileURL } from "node:url";
 import { gzipSync } from "node:zlib";
 import { parse } from "parse5";
 import sharp from "sharp";
+import {
+	bodyImageOutputPath,
+	responsiveBodyImageWidths,
+} from "./medium/lib/render.js";
 
 const DEFAULT_DIST = "dist";
-const EXPECTED_ARTICLE_COUNT = 11;
 const SITE_SOCIAL_IMAGE = "social/site.jpg";
 const IMAGE_EXTENSION = /\.(?:avif|gif|jpe?g|png|svg|webp)$/iu;
+const AUDIO_EXTENSION = /\.(?:aac|flac|m4a|mp3|ogg|opus|wav)$/iu;
 const TEXT_EXTENSION = /\.(?:css|html|js|json|map|mjs|svg|txt|xml)$/iu;
 const RESPONSIVE_WIDTHS = new Set([320, 480, 640, 960, 1024, 1280, 1600, 2048]);
+const PODCAST_COVER_PATH = "media/podcast/shots-of-rhapsody-podcast-cover.png";
+const PODCAST_COVER_SHA256 =
+	"293125a3959b91fd3f263905c3f67e360fdb0f62d784653d10311486b0008c70";
 
 export const DEFAULT_IMAGE_LIMITS = Object.freeze({
 	distBytes: 15 * 1024 * 1024,
@@ -33,6 +40,11 @@ async function walk(directory) {
 		const entryPath = path.join(directory, entry.name);
 		if (entry.isDirectory()) files.push(...(await walk(entryPath)));
 		else if (entry.isFile()) files.push(entryPath);
+		else {
+			throw new Error(
+				`Built output contains a non-regular entry: ${entryPath}`,
+			);
+		}
 	}
 	return files;
 }
@@ -54,10 +66,12 @@ function visit(node, callback) {
 
 function responsiveAssetPath(value) {
 	try {
-		const pathname = new URL(
+		const parsed = new URL(
 			value.replace(/&amp;/gu, "&"),
 			"https://build.invalid/",
-		).pathname;
+		);
+		if (parsed.origin !== "https://build.invalid") return undefined;
+		const { pathname } = parsed;
 		const marker = "/_astro/";
 		const markerIndex = pathname.indexOf(marker);
 		if (markerIndex < 0) return undefined;
@@ -77,6 +91,38 @@ function responsivePathsFromNode(node) {
 			if (assetPath) paths.add(assetPath);
 		}
 		const sourcePath = responsiveAssetPath(nodeAttributes.src ?? "");
+		if (sourcePath) paths.add(sourcePath);
+	});
+	return paths;
+}
+
+function writingMediaPath(value) {
+	try {
+		const parsed = new URL(
+			value.replace(/&amp;/gu, "&"),
+			"https://build.invalid/",
+		);
+		if (parsed.origin !== "https://build.invalid") return undefined;
+		const { pathname } = parsed;
+		const marker = "/media/writing/";
+		const markerIndex = pathname.indexOf(marker);
+		if (markerIndex < 0) return undefined;
+		return `media/writing/${decodeURIComponent(pathname.slice(markerIndex + marker.length))}`;
+	} catch {
+		return undefined;
+	}
+}
+
+function writingMediaPathsFromNode(node) {
+	const paths = new Set();
+	visit(node, (descendant) => {
+		if (descendant.tagName !== "source" && descendant.tagName !== "img") return;
+		const nodeAttributes = attributes(descendant);
+		for (const candidate of (nodeAttributes.srcset ?? "").split(",")) {
+			const assetPath = writingMediaPath(candidate.trim().split(/\s+/u)[0]);
+			if (assetPath) paths.add(assetPath);
+		}
+		const sourcePath = writingMediaPath(nodeAttributes.src ?? "");
 		if (sourcePath) paths.add(sourcePath);
 	});
 	return paths;
@@ -247,31 +293,120 @@ export async function inspectBuiltImages({
 	const limits = { ...DEFAULT_IMAGE_LIMITS, ...limitOverrides };
 	const failures = [];
 	const files = providedFiles ?? (await walk(distRoot));
-	const manifest = JSON.parse(
-		await readFile(
-			path.join(repoRoot, "provenance", "tai-song", "manifest.json"),
-			"utf8",
-		),
+	const readJson = async (...segments) =>
+		JSON.parse(await readFile(path.join(repoRoot, ...segments), "utf8"));
+	const [archiveManifest, mediumManifest, firstPartyManifest, catalog] =
+		await Promise.all([
+			readJson("provenance", "tai-song", "manifest.json"),
+			readJson("provenance", "medium", "manifest.json"),
+			readJson("provenance", "first-party", "manifest.json"),
+			readJson("provenance", "publication-catalog.json"),
+		]);
+	const archiveBySlug = new Map(
+		(archiveManifest.articles ?? []).map((article) => [article.slug, article]),
 	);
-	const articles = manifest.articles ?? [];
+	const mediumBySlug = new Map(
+		(mediumManifest.articles ?? []).map((article) => [article.slug, article]),
+	);
+	const firstPartyBySlug = new Map(
+		(firstPartyManifest.articles ?? []).map((article) => [
+			article.slug,
+			article,
+		]),
+	);
+	const articles = (catalog.entries ?? []).map((entry) => {
+		let source;
+		if (entry.source === "tai-song") source = archiveBySlug.get(entry.slug);
+		else if (entry.source === "medium") source = mediumBySlug.get(entry.slug);
+		else if (entry.source === "first-party")
+			source = firstPartyBySlug.get(entry.slug);
+		else failures.push(`publication source is unsupported for ${entry.slug}`);
+		const assets =
+			entry.source === "tai-song"
+				? source
+					? [
+							{
+								id: "hero",
+								role: "hero",
+								path: source.paths?.image,
+								...source.image,
+							},
+						]
+					: []
+				: (source?.assets ?? []).map((asset) => ({
+						...asset,
+						id: asset.id ?? path.basename(asset.path, path.extname(asset.path)),
+					}));
+		const image = assets.find((asset) => asset.role === "hero");
+		if (!source || !image)
+			failures.push(`publication image evidence is missing for ${entry.slug}`);
+		return { slug: entry.slug, image, assets };
+	});
 	const slugs = articles.map((article) => article.slug);
-	if (
-		articles.length !== EXPECTED_ARTICLE_COUNT ||
-		new Set(slugs).size !== EXPECTED_ARTICLE_COUNT
-	) {
+	if (articles.length < 11 || new Set(slugs).size !== articles.length)
 		failures.push(
-			`image publication manifest must contain exactly ${EXPECTED_ARTICLE_COUNT} unique slugs`,
+			"image publication catalog must contain at least eleven unique slugs",
 		);
-	}
 
 	const originalHashes = new Set(
-		articles.map((article) =>
-			String(article.hashes?.image ?? "").replace(/^sha256:/u, ""),
-		),
+		[
+			...(archiveManifest.articles ?? []).map((article) => article.image),
+			...(mediumManifest.articles ?? []).flatMap(
+				(article) => article.assets ?? [],
+			),
+			...(firstPartyManifest.articles ?? []).flatMap(
+				(article) => article.assets ?? [],
+			),
+		]
+			.map((image) => String(image?.sha256 ?? "").replace(/^sha256:/u, ""))
+			.filter(Boolean),
 	);
 	const expectedSocialImages = new Set(
 		slugs.map((slug) => `social/${slug}.jpg`),
 	);
+	const expectedBodyImages = new Map();
+	const bodyAssetsById = new Map();
+	for (const article of articles) {
+		if (
+			!article.image ||
+			!Number.isSafeInteger(article.image.width) ||
+			article.image.width <= 0 ||
+			!Number.isSafeInteger(article.image.height) ||
+			article.image.height <= 0
+		) {
+			failures.push(
+				`publication hero dimensions are invalid for ${article.slug}`,
+			);
+		}
+		for (const asset of article.assets.filter(
+			(asset) => asset.role === "body",
+		)) {
+			const stableId = `${article.slug}/${asset.id}`;
+			if (bodyAssetsById.has(stableId))
+				failures.push(`publication body image ID is duplicated: ${stableId}`);
+			bodyAssetsById.set(stableId, asset);
+			for (const width of responsiveBodyImageWidths(asset.width)) {
+				for (const format of ["avif", "webp"]) {
+					const relative = bodyImageOutputPath(
+						article.slug,
+						asset.id,
+						width,
+						format,
+					);
+					if (expectedBodyImages.has(relative)) {
+						failures.push(
+							`publication body image path is duplicated: ${relative}`,
+						);
+					}
+					expectedBodyImages.set(relative, {
+						width,
+						ratio: asset.width / asset.height,
+						stableId,
+					});
+				}
+			}
+		}
+	}
 	const relativeByFile = new Map(
 		files.map((file) => [file, normalizePath(path.relative(distRoot, file))]),
 	);
@@ -299,12 +434,92 @@ export async function inspectBuiltImages({
 	const referenceCorpus = textParts.join("\n");
 	const manifestSlugSet = new Set(slugs);
 	const manifestResponsiveImages = new Set();
+	const responsiveImageOwners = new Map();
+	const sourceAspectRatios = new Map(
+		articles.map((article) => [
+			article.slug,
+			article.image?.width > 0 && article.image?.height > 0
+				? article.image.width / article.image.height
+				: undefined,
+		]),
+	);
+	sourceAspectRatios.set("podcast-cover", 1);
+	const bindResponsiveImage = (assetPath, slug) => {
+		manifestResponsiveImages.add(assetPath);
+		const owners = responsiveImageOwners.get(assetPath) ?? new Set();
+		owners.add(slug);
+		responsiveImageOwners.set(assetPath, owners);
+	};
 	const heroSlugs = new Set();
+	const bodyMarkerCounts = new Map();
+	const renderedBodyImages = new Set();
+	let podcastArtworkMarkers = 0;
+	const podcastRouteFile = path.join(
+		distRoot,
+		"podcast",
+		"modular-ethics",
+		"index.html",
+	);
+	const podcastPublished = htmlDocuments.has(podcastRouteFile);
 	for (const [file, document] of htmlDocuments) {
 		const relative = relativeByFile.get(file);
 		const articleMatch = relative.match(/^posts\/([^/]+)\/index\.html$/u);
 		visit(document, (node) => {
 			const nodeAttributes = attributes(node);
+			const writingAssetId = nodeAttributes["data-writing-asset-id"];
+			if (writingAssetId) {
+				bodyMarkerCounts.set(
+					writingAssetId,
+					(bodyMarkerCounts.get(writingAssetId) ?? 0) + 1,
+				);
+				if (!bodyAssetsById.has(writingAssetId)) {
+					failures.push(
+						`rendered body image lacks publication evidence: ${writingAssetId}`,
+					);
+				} else {
+					const [approvedSlug] = writingAssetId.split("/");
+					if (articleMatch?.[1] !== approvedSlug) {
+						failures.push(
+							`body image is rendered outside its approved article: ${writingAssetId}`,
+						);
+					}
+					const renderedPaths = writingMediaPathsFromNode(node);
+					if (renderedPaths.size === 0) {
+						failures.push(
+							`body image has no same-origin responsive sources: ${writingAssetId}`,
+						);
+					}
+					for (const assetPath of renderedPaths) {
+						if (expectedBodyImages.get(assetPath)?.stableId !== writingAssetId)
+							failures.push(
+								`body image path is not bound to its approved asset: ${assetPath}`,
+							);
+						else renderedBodyImages.add(assetPath);
+					}
+				}
+			}
+			const podcastArtwork = nodeAttributes["data-podcast-artwork"];
+			if (podcastArtwork !== undefined) {
+				if (podcastArtwork !== `sha256:${PODCAST_COVER_SHA256}`) {
+					failures.push("podcast artwork marker has an unapproved digest");
+					return;
+				}
+				podcastArtworkMarkers += 1;
+				if (file !== podcastRouteFile) {
+					failures.push(
+						"podcast artwork is rendered outside its episode route",
+					);
+				}
+				const responsivePaths = responsivePathsFromNode(node);
+				if (responsivePaths.size === 0) {
+					failures.push(
+						"podcast artwork has no same-origin responsive sources",
+					);
+				}
+				for (const assetPath of responsivePaths) {
+					bindResponsiveImage(assetPath, "podcast-cover");
+				}
+			}
 			const editorialSlug = nodeAttributes["data-editorial-slug"];
 			if (editorialSlug) {
 				if (!manifestSlugSet.has(editorialSlug)) {
@@ -312,8 +527,14 @@ export async function inspectBuiltImages({
 						`responsive editorial image is bound to a non-manifest slug: ${editorialSlug}`,
 					);
 				} else {
-					for (const assetPath of responsivePathsFromNode(node)) {
-						manifestResponsiveImages.add(assetPath);
+					const responsivePaths = responsivePathsFromNode(node);
+					if (responsivePaths.size === 0) {
+						failures.push(
+							`editorial image has no same-origin responsive sources: ${editorialSlug}`,
+						);
+					}
+					for (const assetPath of responsivePaths) {
+						bindResponsiveImage(assetPath, editorialSlug);
 					}
 				}
 			}
@@ -323,8 +544,14 @@ export async function inspectBuiltImages({
 				nodeAttributes["data-image-variant"] === "hero"
 			) {
 				heroSlugs.add(articleMatch[1]);
-				for (const assetPath of responsivePathsFromNode(node)) {
-					manifestResponsiveImages.add(assetPath);
+				const responsivePaths = responsivePathsFromNode(node);
+				if (responsivePaths.size === 0) {
+					failures.push(
+						`article hero has no same-origin responsive sources: ${articleMatch[1]}`,
+					);
+				}
+				for (const assetPath of responsivePaths) {
+					bindResponsiveImage(assetPath, articleMatch[1]);
 				}
 			}
 		});
@@ -336,13 +563,37 @@ export async function inspectBuiltImages({
 			);
 		}
 	}
+	for (const stableId of bodyAssetsById.keys()) {
+		if (bodyMarkerCounts.get(stableId) !== 1) {
+			failures.push(
+				`approved body image must render exactly once: ${stableId} (rendered ${bodyMarkerCounts.get(stableId) ?? 0})`,
+			);
+		}
+	}
+	for (const relative of expectedBodyImages.keys()) {
+		if (!renderedBodyImages.has(relative)) {
+			failures.push(`responsive body image is not rendered: ${relative}`);
+		}
+	}
+	if (podcastPublished && podcastArtworkMarkers !== 1) {
+		failures.push(
+			`published podcast must render one approved artwork marker (rendered ${podcastArtworkMarkers})`,
+		);
+	}
+	if (!podcastPublished && podcastArtworkMarkers !== 0) {
+		failures.push(
+			"draft podcast artwork was rendered without an episode route",
+		);
+	}
 
+	let totalDistBytes = 0;
 	let distBytes = 0;
 	let responsiveBytes = 0;
 	let socialBytes = 0;
 	for (const file of files) {
 		const fileStat = await stat(file);
-		distBytes += fileStat.size;
+		totalDistBytes += fileStat.size;
+		if (!AUDIO_EXTENSION.test(file)) distBytes += fileStat.size;
 	}
 	const initialJavaScriptGzipBytes = await initialJavaScriptBytes(
 		htmlDocuments,
@@ -356,7 +607,7 @@ export async function inspectBuiltImages({
 	);
 	if (distBytes > limits.distBytes) {
 		failures.push(
-			`built artifact is ${distBytes} bytes; budget is ${limits.distBytes} bytes`,
+			`non-audio built artifact is ${distBytes} bytes; budget is ${limits.distBytes} bytes`,
 		);
 	}
 	if (initialJavaScriptGzipBytes > limits.initialJavaScriptGzipBytes) {
@@ -387,6 +638,25 @@ export async function inspectBuiltImages({
 		}
 
 		if (relative === "mark.svg") continue;
+		if (relative === PODCAST_COVER_PATH) {
+			const metadata = await sharp(bytes).metadata();
+			if (
+				fileHash !== PODCAST_COVER_SHA256 ||
+				metadata.format !== "png" ||
+				metadata.width !== 3000 ||
+				metadata.height !== 3000 ||
+				metadata.hasAlpha === true ||
+				metadata.space !== "srgb"
+			) {
+				failures.push(
+					`podcast cover differs from approved evidence: ${relative}`,
+				);
+			}
+			if (!podcastPublished) {
+				failures.push(`draft podcast cover leaked into dist: ${relative}`);
+			}
+			continue;
+		}
 		if (relative === SITE_SOCIAL_IMAGE) {
 			const metadata = await sharp(bytes).metadata();
 			socialBytes += bytes.byteLength;
@@ -421,6 +691,24 @@ export async function inspectBuiltImages({
 			}
 			continue;
 		}
+		if (expectedBodyImages.has(relative)) {
+			const expected = expectedBodyImages.get(relative);
+			const metadata = await sharp(bytes).metadata();
+			const expectedFormat = relative.endsWith(".avif") ? "heif" : "webp";
+			const actualRatio = metadata.width / metadata.height;
+			if (
+				metadata.format !== expectedFormat ||
+				metadata.width !== expected.width ||
+				!metadata.height ||
+				Math.abs(actualRatio - expected.ratio) > 1 / metadata.height
+			) {
+				failures.push(
+					`responsive body image differs from its approved source: ${relative}`,
+				);
+			}
+			responsiveBytes += bytes.byteLength;
+			continue;
+		}
 
 		if (!/^_astro\/[^/]+\.(?:avif|webp)$/u.test(relative)) {
 			failures.push(`image is outside the publication allowlist: ${relative}`);
@@ -439,12 +727,25 @@ export async function inspectBuiltImages({
 		if (
 			!formatMatchesExtension ||
 			!RESPONSIVE_WIDTHS.has(metadata.width) ||
-			metadata.width !== metadata.height
+			!metadata.height
 		) {
 			failures.push(
 				`responsive image has an unexpected format or dimensions: ${relative}`,
 			);
 		}
+		const actualRatio = metadata.width / metadata.height;
+		const owners = [...(responsiveImageOwners.get(relative) ?? [])];
+		const ownerRatios = owners.map((slug) => sourceAspectRatios.get(slug));
+		if (
+			owners.length === 0 ||
+			ownerRatios.some((ratio) => !Number.isFinite(ratio)) ||
+			ownerRatios.some(
+				(ratio) => Math.abs(actualRatio - ratio) > 1 / metadata.height,
+			)
+		)
+			failures.push(
+				`responsive image aspect ratio differs from its approved source: ${relative}`,
+			);
 		if (metadata.width <= 640 && bytes.byteLength > limits.cardBytes) {
 			failures.push(
 				`card-sized image exceeds ${limits.cardBytes} bytes: ${relative} (${bytes.byteLength})`,
@@ -456,6 +757,22 @@ export async function inspectBuiltImages({
 		if (!emittedImageSet.has(relative)) {
 			failures.push(`required social image is missing: ${relative}`);
 		}
+	}
+	for (const relative of expectedBodyImages.keys()) {
+		if (!emittedImageSet.has(relative)) {
+			failures.push(`required responsive body image is missing: ${relative}`);
+		}
+	}
+	for (const relative of manifestResponsiveImages) {
+		if (!emittedImageSet.has(relative)) {
+			failures.push(`referenced responsive image is missing: ${relative}`);
+		}
+	}
+	if (podcastPublished && !emittedImageSet.has(PODCAST_COVER_PATH)) {
+		failures.push(`published podcast cover is missing: ${PODCAST_COVER_PATH}`);
+	}
+	if (!podcastPublished && emittedImageSet.has(PODCAST_COVER_PATH)) {
+		failures.push(`draft podcast cover is present: ${PODCAST_COVER_PATH}`);
 	}
 	if (!emittedImageSet.has(SITE_SOCIAL_IMAGE)) {
 		failures.push(
@@ -476,6 +793,7 @@ export async function inspectBuiltImages({
 		failures,
 		stats: {
 			distBytes,
+			totalDistBytes,
 			imageCount: imageFiles.length,
 			responsiveBytes,
 			socialBytes,
@@ -504,7 +822,7 @@ if (
 			parseArguments(process.argv.slice(2)),
 		);
 		console.log(
-			`Built-image verification passed: ${stats.imageCount} images, ${stats.distBytes} total bytes, ${stats.initialJavaScriptGzipBytes} compressed JavaScript bytes`,
+			`Built-image verification passed: ${stats.imageCount} images, ${stats.distBytes} non-audio bytes, ${stats.initialJavaScriptGzipBytes} compressed JavaScript bytes`,
 		);
 	} catch (error) {
 		console.error(error.message);

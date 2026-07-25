@@ -9,23 +9,38 @@ import {
 	entriesForSlugs,
 	getFeaturedEntries,
 	indexEditorialEntries,
+	isManifestSlug,
 } from "@/data/editorial";
 
 export function getStaticPaths() {
 	return [{ params: { page: undefined } }];
 }
 
-const archiveEntries = await getCollection("posts", ({ data }) =>
-	Boolean(data.provenance),
-);
+const archiveEntries = await getCollection("posts");
 const indexedEntries = indexEditorialEntries(archiveEntries);
 const featuredEntries = getFeaturedEntries(indexedEntries);
 const groups = EDITORIAL_GROUPS.map((group) => ({
 	...group,
 	entries: entriesForSlugs(indexedEntries, group.slugs),
 }));
-const description =
-	"Enter the eleven-work Shots of Rhapsody archive: fiction, poetry, and reflections by Tai Song.";
+const nonfictionEntries = archiveEntries
+	.filter((entry) => entry.data.section === "nonfiction")
+	.toSorted(
+		(left, right) =>
+			right.data.published.valueOf() - left.data.published.valueOf(),
+	);
+const additionalCreativeEntries = archiveEntries
+	.filter(
+		(entry) => !isManifestSlug(entry.id) && entry.data.section !== "nonfiction",
+	)
+	.toSorted(
+		(left, right) =>
+			right.data.published.valueOf() - left.data.published.valueOf(),
+	);
+const hasNonfiction = nonfictionEntries.length > 0;
+const description = hasNonfiction
+	? `Enter the ${archiveEntries.length}-work Shots of Rhapsody collection: fiction, poetry, reflections, and nonfiction by Tai Song.`
+	: "Enter the eleven-work Shots of Rhapsody archive: fiction, poetry, and reflections by Tai Song.";
 const siteUrl = Astro.site ?? Astro.url;
 const siteRootUrl = getSiteRootUrl(siteUrl).toString();
 const authorUrl = new URL(url("/authors/tai-song/"), siteUrl).toString();
@@ -70,7 +85,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 	socialImageType="image/jpeg"
 >
 	<script is:inline slot="head" type="application/ld+json" set:html={jsonLdString}></script>
-	<div class="home-archive" data-public-article-count="11">
+	<div class="home-archive" data-public-article-count={archiveEntries.length}>
 		<header class="home-intro manuscript-panel">
 			<p class="home-intro__kicker">Stories, poems, and reflections by Tai Song</p>
 			<h1>Shots of Rhapsody</h1>
@@ -98,11 +113,31 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 			</div>
 		</section>
 
+		{hasNonfiction && (
+			<section id="nonfiction" class="home-section" aria-labelledby="nonfiction-title" data-pagefind-ignore>
+				<div class="section-heading">
+					<p class="section-heading__kicker">Ideas and inquiry</p>
+					<h2 id="nonfiction-title">Recent nonfiction</h2>
+					<p>Essays grounded in careful source review and preserved author text.</p>
+				</div>
+				<div class="featured-grid">
+					{nonfictionEntries.slice(0, 3).map((entry) => (
+						<EditorialWorkCard entry={entry} variant="featured" label="Nonfiction" />
+					))}
+				</div>
+				<a class="home-intro__action" href={url("/nonfiction/")}>Explore all nonfiction</a>
+			</section>
+		)}
+
 		<section id="works" class="home-section" aria-labelledby="works-title" data-pagefind-ignore>
 			<div class="section-heading">
 				<p class="section-heading__kicker">The complete collection</p>
-				<h2 id="works-title">All eleven works</h2>
-				<p>Explore the whole archive here, with the trilogy kept in reading order.</p>
+				<h2 id="works-title">{hasNonfiction ? "Creative works" : "All eleven works"}</h2>
+				<p>
+					{hasNonfiction
+						? "Explore the creative archive here, with the trilogy kept in reading order."
+						: "Explore the whole archive here, with the trilogy kept in reading order."}
+				</p>
 			</div>
 
 			<div class="catalog-groups">
@@ -119,6 +154,19 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 						</div>
 					</section>
 				))}
+				{additionalCreativeEntries.length > 0 && (
+					<section class="catalog-group" aria-labelledby="group-new-writing">
+						<header class="catalog-group__heading">
+							<h3 id="group-new-writing">New writing</h3>
+							<p>Recently published stories and reflections.</p>
+						</header>
+						<div class="catalog-grid">
+							{additionalCreativeEntries.map((entry) => (
+								<EditorialWorkCard entry={entry} variant="catalog" />
+							))}
+						</div>
+					</section>
+				)}
 			</div>
 		</section>
 	</div>

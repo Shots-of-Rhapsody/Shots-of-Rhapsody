@@ -10,8 +10,8 @@ export const CONTINUATION_IMAGE_SIZES =
 export const HERO_IMAGE_SIZES =
 	"(max-width: 767px) calc(100vw - 5rem), (max-width: 1280px) calc(100vw - 8rem), 71rem";
 
-export const DISPLAY_IMAGE_QUALITY = 45;
-export const SOCIAL_IMAGE_QUALITY = 70;
+export const DISPLAY_IMAGE_QUALITY = 40;
+export const SOCIAL_IMAGE_QUALITY = 65;
 export const SOCIAL_IMAGE_MAX_WIDTH = 1200;
 
 export const MAX_DIST_BYTES = 15 * 1024 * 1024;

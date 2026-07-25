@@ -1,4 +1,5 @@
 import type { CollectionEntry } from "astro:content";
+import publicationCatalog from "../../provenance/publication-catalog.json";
 import manifest from "../../provenance/tai-song/manifest.json";
 
 export const MANIFEST_SLUGS = [
@@ -16,8 +17,10 @@ export const MANIFEST_SLUGS = [
 ] as const;
 
 export type ManifestSlug = (typeof MANIFEST_SLUGS)[number];
+export type WritingSection = "fiction" | "poetry-reflection" | "nonfiction";
 
 export interface EditorialMetadata {
+	section: WritingSection;
 	featuredOrder?: 1 | 2 | 3;
 	series?: {
 		id: "before-the-sky-went-quiet";
@@ -43,6 +46,7 @@ const SKY_PART_III =
 
 export const EDITORIAL_METADATA = {
 	[SKY_PART_I]: {
+		section: "fiction",
 		featuredOrder: 1,
 		series: {
 			id: "before-the-sky-went-quiet",
@@ -53,6 +57,7 @@ export const EDITORIAL_METADATA = {
 		continueSlug: SKY_PART_II,
 	},
 	[SKY_PART_II]: {
+		section: "fiction",
 		series: {
 			id: "before-the-sky-went-quiet",
 			name: "Before the Sky Went Quiet",
@@ -62,6 +67,7 @@ export const EDITORIAL_METADATA = {
 		continueSlug: SKY_PART_III,
 	},
 	[SKY_PART_III]: {
+		section: "fiction",
 		series: {
 			id: "before-the-sky-went-quiet",
 			name: "Before the Sky Went Quiet",
@@ -71,28 +77,36 @@ export const EDITORIAL_METADATA = {
 		continueSlug: "the-seventh-skin",
 	},
 	"cold-children": {
+		section: "fiction",
 		continueSlug: "lanterns-for-the-unreturning",
 	},
 	"eggasaurus-rex": {
+		section: "fiction",
 		continueSlug: SKY_PART_I,
 	},
 	"lanterns-for-the-unreturning": {
+		section: "fiction",
 		continueSlug: "the-khan-who-chose-the-grain",
 	},
 	"poetic-biography": {
+		section: "poetry-reflection",
 		continueSlug: "the-guild-a-chronicle-of-pretty-souls",
 	},
 	"the-guild-a-chronicle-of-pretty-souls": {
+		section: "poetry-reflection",
 		continueSlug: "where-we-last-were-us",
 	},
 	"the-khan-who-chose-the-grain": {
+		section: "fiction",
 		continueSlug: "eggasaurus-rex",
 	},
 	"the-seventh-skin": {
+		section: "fiction",
 		featuredOrder: 2,
 		continueSlug: "cold-children",
 	},
 	"where-we-last-were-us": {
+		section: "poetry-reflection",
 		featuredOrder: 3,
 		continueSlug: "poetic-biography",
 	},
@@ -133,9 +147,31 @@ export const EDITORIAL_GROUPS = [
 ] as const satisfies readonly EditorialGroup[];
 
 const manifestSlugSet = new Set<ManifestSlug>(MANIFEST_SLUGS);
+const publicationSections = new Map(
+	publicationCatalog.entries.map((entry) => [
+		entry.slug,
+		entry.section as WritingSection,
+	]),
+);
 
 export function isManifestSlug(value: string): value is ManifestSlug {
 	return manifestSlugSet.has(value as ManifestSlug);
+}
+
+export function getWritingSection(slug: string): WritingSection | undefined {
+	return publicationSections.get(slug);
+}
+
+export function getWritingTypeLabel(
+	slug: string,
+	category = "",
+): "Fiction" | "Poetry" | "Reflection" | "Nonfiction" | "Work" {
+	const section = getWritingSection(slug);
+	if (section === "fiction") return "Fiction";
+	if (section === "nonfiction") return "Nonfiction";
+	if (section === "poetry-reflection")
+		return category.toLowerCase().includes("poet") ? "Poetry" : "Reflection";
+	return "Work";
 }
 
 export function indexEditorialEntries(
@@ -209,4 +245,12 @@ if (
 	throw new Error(
 		"Editorial metadata and the Tai Song provenance manifest do not describe the same eleven articles",
 	);
+}
+
+for (const slug of MANIFEST_SLUGS) {
+	if (publicationSections.get(slug) !== EDITORIAL_METADATA[slug].section) {
+		throw new Error(
+			`Publication catalog and editorial metadata disagree for ${slug}`,
+		);
+	}
 }

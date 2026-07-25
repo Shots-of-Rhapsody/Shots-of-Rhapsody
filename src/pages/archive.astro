@@ -4,8 +4,12 @@ import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getSortedPostsList } from "../utils/content-utils";
 
 const sortedPostsList = await getSortedPostsList();
+const archiveDescription =
+	sortedPostsList.length === 11
+		? "All eleven works by Tai Song in chronological order."
+		: `All ${sortedPostsList.length} works by Tai Song in chronological order.`;
 ---
 
-<MainGridLayout title="Works" description="All eleven works by Tai Song in chronological order.">
+<MainGridLayout title="Works" description={archiveDescription}>
 	<ArchivePanel sortedPosts={sortedPostsList} />
 </MainGridLayout>
