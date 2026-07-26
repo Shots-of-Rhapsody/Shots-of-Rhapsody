@@ -163,6 +163,258 @@
 			"path": "pnpm-lock.yaml",
 			"blob": "ab6bfc03ef1a8bf074e720c2de55bfe95de885a5",
 			"reason": "Immutable lockfile blob containing only reviewed public package Git resolution syntax."
+		},
+		{
+			"rule": "proton-content-url",
+			"path": "scripts/content/proton-master.js",
+			"blob": "00aef00f0406cf12b91bb9dacc7020454562fa47",
+			"reason": "Immutable Proton-master validator source naming a prohibited content hostname so imported document URLs can be rejected; it contains no document URL."
+		},
+		{
+			"rule": "proton-content-url",
+			"path": "scripts/content/proton-master.js",
+			"blob": "8d3246c2393004574105388d3f1b76749072c3c3",
+			"reason": "Immutable Proton-master validator source naming a prohibited content hostname so imported document URLs can be rejected; it contains no document URL."
+		},
+		{
+			"rule": "proton-content-url",
+			"path": "scripts/content/proton-master.js",
+			"blob": "c83087b498502fb7a4a56d0647300202cef6653f",
+			"reason": "Immutable Proton-master validator source naming a prohibited content hostname so imported document URLs can be rejected; it contains no document URL."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/hero-assets.v1.json",
+			"blob": "6282820d615e4fc1dc5867d1b3b54ee5987b2dac",
+			"reason": "Immutable Medium evidence containing @2x image-density filenames; the tokens are asset names, not email addresses."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/inventory.json",
+			"blob": "f83ef7e03ccf60865fc05dc2ce362fbc4ee3082a",
+			"reason": "Immutable Medium evidence containing @2x image-density filenames; the tokens are asset names, not email addresses."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/beyond-scarcity-how-automation-ai-could-end-economic-struggle.json",
+			"blob": "6e1de7bbfe71b196d178b58c82025b1bce6f795c",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/closing-the-gap-how-a-fairer-global-economy-could-lift-billions.json",
+			"blob": "53c6cd45f9e008b8755a5dd525b537f2e84060a8",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/debt-as-destiny-how-the-credit-system-controls-lives.json",
+			"blob": "7aff8691c808591c7d0fd4c16b7d4d89aae6e779",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/origins-orders.json",
+			"blob": "4bc3d069f0de54d5903df5ea8578f6695eb96ad5",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/the-aspiration-economy.json",
+			"blob": "1720d2ec3fea740e3abda22c5d6ae42a581f3da0",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/the-collateral-shift.json",
+			"blob": "8b24faf6a21fa595721925c708b827f4392aefcc",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/the-economics-of-loneliness-how-disconnection-became-a-market-failure.json",
+			"blob": "11c84691de920debe93fdcc8c4270ad2ca7a8316",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/the-economy-is-built-on-nature-we-just-dont-count-it.json",
+			"blob": "d5b7f1726729001176633d1262affd5966edcec6",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/the-education-illusion.json",
+			"blob": "f5385912c47abf71a9fd8a2fd8baa949dd1021e3",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking.json",
+			"blob": "f587c3e395016620401c1afb1bb14f66f31a7f48",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/the-identity-economy.json",
+			"blob": "a7f7a0f39251cb3ea0686fd51334f36ff2cd674a",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/the-informal-majority.json",
+			"blob": "e52d70936ddbf7c7eed4001cbdd6c1bb56291729",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/the-invisible-ledger.json",
+			"blob": "88ee4aafad086b2fec721cfe45a64c7cb5f66df0",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/the-next-leap-from-global-competition-to-human-cooperation.json",
+			"blob": "2bc8614c68a44d5b5f82cc62b5f7e1e6ad2036cb",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/the-psychology-of-belief-why-humans-prefer-comfort-over-truth.json",
+			"blob": "9585b56ab192f243994cd12e1e03b7416d56e66a",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/the-remittance-paradox.json",
+			"blob": "c20dd305b7942f41fa54ecf07e42bbf875f8afa2",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/the-rise-of-zero-cost-economies-what-happens-when-prices-disappear.json",
+			"blob": "2e658280e821205b2c4cc2f913bd932cfc977ba4",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/the-shadow-subsidy.json",
+			"blob": "7d03bcf051a125f4853c9289acef99a02750a913",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/the-trillion-dollar-economy-no-one-talks-about.json",
+			"blob": "ad5893a77ae147338932c87c2b10a31237926fcd",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/the-water-economy.json",
+			"blob": "19c7386eb77ec18aab043aa32be081b1228dc390",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/what-comes-after-work-designing-a-purpose-driven-life.json",
+			"blob": "3c609e7d514ef5326ff2f4356ea1d18995e0d780",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/what-we-call-freedom-isnt-really-freedom.json",
+			"blob": "b04b1a997b0b75278afa48d2396827c4d8e61043",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource.json",
+			"blob": "07e0a9767c2871e7b72057787d3e382d78ab24d7",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "provenance/medium/posts/why-family-is-not-sacred-by-default.json",
+			"blob": "a8d53dcba0c4b015673ce0f88a3e4fcf0690be36",
+			"reason": "Immutable Medium evidence containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/medium/test/acquisition.test.js",
+			"blob": "67d5aa1ea3ed64e12ddfa95507a0acb91e33f1c8",
+			"reason": "Immutable synthetic test fixture containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/medium/test/acquisition.test.js",
+			"blob": "7c37fab2d007aeb84d5c3869f5e16f2e829c3a7e",
+			"reason": "Immutable synthetic test fixture containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/medium/test/acquisition.test.js",
+			"blob": "da122056d25ee25ef785cfe1fc8eb539f7f4c184",
+			"reason": "Immutable synthetic test fixture containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/medium/test/assets.test.js",
+			"blob": "135103807c3e7ae7a894c338dc30c2b7f3a075ab",
+			"reason": "Immutable synthetic test fixture containing @2x image-density filenames; the tokens are asset names, not email addresses."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/medium/test/assets.test.js",
+			"blob": "598d74db72e46ef873bfc506910b185a3649bf60",
+			"reason": "Immutable synthetic test fixture containing @2x image-density filenames; the tokens are asset names, not email addresses."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/medium/test/assets.test.js",
+			"blob": "61273c91744a295530007d3877e4df7f8f11c565",
+			"reason": "Immutable synthetic test fixture containing @2x image-density filenames; the tokens are asset names, not email addresses."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/medium/test/assets.test.js",
+			"blob": "8c49a564f41716af19d40926f934e1b0ab0d4d21",
+			"reason": "Immutable synthetic test fixture containing @2x image-density filenames; the tokens are asset names, not email addresses."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/medium/test/foundation.test.js",
+			"blob": "2ef15f3d0df4b8aadae2ca55072bfb26cd8daeb7",
+			"reason": "Immutable synthetic test fixture containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/medium/test/foundation.test.js",
+			"blob": "a9495288ac1d5d5e048b0399509415fac3a14abb",
+			"reason": "Immutable synthetic test fixture containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/medium/test/foundation.test.js",
+			"blob": "d2856ccc613fdc250cd700a8fadcb172abab9983",
+			"reason": "Immutable synthetic test fixture containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/medium/test/foundation.test.js",
+			"blob": "f9e47010bdb0bd04bd13114f74d3c6059faebab8",
+			"reason": "Immutable synthetic test fixture containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/release/release-target.test.mjs",
+			"blob": "256b93f7bfba6c65556fae0cf74205d67ce5b69f",
+			"reason": "Immutable synthetic test fixture using the reserved .invalid domain; it is not a deliverable address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/release/release-target.test.mjs",
+			"blob": "8e745eebece0422759876faeecacff5273b0b8ad",
+			"reason": "Immutable synthetic test fixture using the reserved .invalid domain; it is not a deliverable address."
 		}
 	],
 	"acceptedDisclosures": [
