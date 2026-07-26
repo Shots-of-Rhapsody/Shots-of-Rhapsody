@@ -6,6 +6,12 @@ the show and episode are drafts, the transcript is not human-reviewed, the
 audio requires a lossless-master quality decision, the cover awaits visual
 approval, and no audio file or podcast feed is emitted in the built site.
 
+Episode 1 belongs to the combined v1.0.0 launch alongside the 11 existing
+works and 24 approved Medium essays. There is no earlier writing-only release
+or separate later podcast rollout: the combined release remains blocked until
+all 35 written works and Episode 1 satisfy their respective accuracy, rights,
+presentation, and publication gates.
+
 ## Current evidence
 
 - Permanent tracked source:
@@ -26,6 +32,13 @@ approval, and no audio file or podcast feed is emitted in the built site.
   `00:24:05.784`, integrated loudness `-27.00` LUFS, true peak `-6.90` dBTP.
 - The MP3 contains no embedded title, artist, or album tags. Legacy player
   labels are not part of the audio bytes and will not be imported.
+
+- A privately retained 96 kHz, 16-bit stereo PCM candidate was compared with
+  the MP3. Its central program aligns closely, but its opening, ending,
+  duration, and mastering differ. It is therefore related source evidence,
+  not the authoritative lossless final master, and must not be used to
+  regenerate the MP3. A future remaster requires a lossless source matching
+  the approved final edit and a new complete listening review.
 
 The exact Git blob now lives at its permanent ASCII-only path. The build
 integration removes it from draft artifacts and permits those bytes only when
@@ -48,11 +61,11 @@ reports any publication blocker.
    file when timed text is available.
 4. Approve the show description, episode description, explicit-content values,
    publication date, immutable GUID, and cover artwork. The publication date
-   is the UTC calendar date intended for the first v1.1 production dispatch,
-   encoded at midnight UTC immediately before the candidate is frozen. If the
-   first successful deployment occurs on a later UTC date, update the date,
-   freeze a new candidate, and repeat the affected metadata and presentation
-   review; never backdate a failed release.
+   is the UTC calendar date intended for the combined v1.0.0 production
+   dispatch, encoded at midnight UTC immediately before the candidate is
+   frozen. If the first successful deployment occurs on a later UTC date,
+   update the date, freeze a new candidate, and repeat the affected metadata
+   and presentation review; never backdate a failed release.
 5. Export an opaque 3000 by 3000 RGB JPEG or PNG from the committed SVG source.
    Do not replace the SVG mark with generated artwork.
 6. Reverify the single tracked MP3 at its permanent ASCII-only path. Never
@@ -69,9 +82,10 @@ reports any publication blocker.
    actual `Content-Type`. Validate the public feed in Apple Podcasts Connect
    before directory submission.
 10. Perform keyboard, screen-reader, 320 CSS-pixel reflow, 200 percent text
-    resize, and transcript review before adding global navigation.
+    resize, and transcript review before enabling Podcast navigation in the
+    combined v1.0.0 candidate.
 11. Bind the final built routes and shared renderer to Tai Song's genuine
-    `PresentationSignoffV2` for `v1.1.0`; the built podcast verifier checks its
+    `PresentationSignoffV2` for `v1.0.0`; the built podcast verifier checks its
     hashes and reviewed-commit ancestry without creating the record.
 
 ## Player and hosting policy
@@ -102,7 +116,8 @@ Primary references:
 
 Podcast boundary tests and the draft verifier run in normal CI. Complete
 publication verification remains intentionally fail-closed until the reviewed
-transcript, corrected master, approved metadata, and content signoff exist.
+transcript, final audio quality decision, approved metadata, and content
+signoff exist.
 
 ```powershell
 pnpm test:future-content

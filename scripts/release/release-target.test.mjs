@@ -5,63 +5,64 @@ import path from "node:path";
 import test from "node:test";
 import {
 	requirePresentationTarget,
+	validateCombinedReleaseSummary,
 	validateReleaseTarget,
-	validateV1SiteSummary,
-	validateV11ReleaseSummary,
 	verifyRelease,
 } from "./verify-release.mjs";
 
-const V1_SITE = Object.freeze({
-	htmlPages: 17,
-	postPages: 11,
-	rssItems: 11,
-	pagefindRecords: 11,
-	archiveEntries: 11,
-	authorWorks: 11,
-	nonfictionEntries: 0,
-	podcastEpisodes: 0,
+const TARGET = Object.freeze({
+	schemaVersion: 2,
+	release: "v1.0.0",
+	expected: Object.freeze({
+		archiveWriting: 11,
+		mediumWriting: 24,
+		podcastEpisodes: 1,
+	}),
 });
 
-const V11_SITE = Object.freeze({
-	htmlPages: 22,
-	postPages: 12,
-	rssItems: 12,
-	pagefindRecords: 14,
-	archiveEntries: 12,
-	authorWorks: 12,
-	nonfictionEntries: 1,
+const SITE = Object.freeze({
+	htmlPages: 45,
+	postPages: 35,
+	rssItems: 35,
+	pagefindRecords: 37,
+	archiveEntries: 35,
+	authorWorks: 35,
+	nonfictionEntries: 24,
 	podcastEpisodes: 1,
 });
 
-const V11_AGGREGATE = Object.freeze({
+const AGGREGATE = Object.freeze({
 	complete: true,
-	publishedCount: 12,
+	publishedCount: 35,
 	sources: {
 		archive: { importedCount: 11, complete: true },
-		medium: { importedCount: 1, complete: true },
+		medium: { importedCount: 24, complete: true },
 		firstParty: { importedCount: 0, complete: true },
 	},
 });
 
-const V11_MEDIUM = Object.freeze({
+const MEDIUM = Object.freeze({
 	complete: true,
-	expectedCount: 1,
-	importedCount: 1,
+	expectedCount: 24,
+	importedCount: 24,
 });
 
-const V11_PODCAST = Object.freeze({
+const PODCAST = Object.freeze({
 	complete: true,
 	episodes: 1,
 	builtArtifactsChecked: true,
 });
 
-async function createReleaseFixture(context, release, presentationRelease) {
+async function createReleaseFixture(
+	context,
+	{ target = TARGET, presentationRelease = "v1.0.0" } = {},
+) {
 	const root = await mkdtemp(path.join(tmpdir(), "release-target-"));
 	context.after(() => rm(root, { recursive: true, force: true }));
 	await mkdir(path.join(root, "provenance", "reviews"), { recursive: true });
 	await writeFile(
 		path.join(root, "provenance", "release-target.json"),
-		JSON.stringify({ schemaVersion: 1, release }),
+		JSON.stringify(target),
 	);
 	const releases = presentationRelease
 		? [
@@ -84,146 +85,205 @@ async function createReleaseFixture(context, release, presentationRelease) {
 	return root;
 }
 
-test("release target explicitly selects v1 or v1.1", () => {
-	assert.equal(
-		validateReleaseTarget({ schemaVersion: 1, release: "v1.0.0" }),
-		"v1.0.0",
-	);
-	assert.equal(
-		validateReleaseTarget({ schemaVersion: 1, release: "v1.1.0" }),
-		"v1.1.0",
-	);
-});
-
-test("release target rejects inferred or expanded modes", () => {
+test("release target accepts only the exact combined v1.0.0 contract", () => {
+	assert.deepEqual(validateReleaseTarget(TARGET), TARGET);
 	for (const value of [
 		{},
-		{ schemaVersion: 1, release: "v1.2.0" },
-		{ schemaVersion: 1, release: "v1.0.0", draft: true },
+		{ ...TARGET, schemaVersion: 1 },
+		{ ...TARGET, release: "v1.1.0" },
+		{ ...TARGET, draft: true },
+		{ ...TARGET, expected: { ...TARGET.expected, mediumWriting: 23 } },
+		{ ...TARGET, expected: { ...TARGET.expected, podcastEpisodes: 2 } },
+		{
+			...TARGET,
+			expected: { ...TARGET.expected, unexpectedWriting: 1 },
+		},
 	]) {
 		assert.throws(() => validateReleaseTarget(value), /Release target/u);
 	}
 });
 
-test("v1 release remains fixed at eleven works and seventeen HTML pages", async (context) => {
-	const repoRoot = await createReleaseFixture(context, "v1.0.0");
+test("combined release runs every content and presentation gate", async (context) => {
+	const repoRoot = await createReleaseFixture(context);
 	let builtOptions;
+	let aggregateOptions;
+	let mediumOptions;
+	let podcastOptions;
 	const result = await verifyRelease({
 		repoRoot,
 		dependencies: {
 			verifyBuiltSite: async (options) => {
 				builtOptions = options;
-				return V1_SITE;
+				return SITE;
 			},
-			verifyAggregateContent: async () => assert.fail("v1 ran v1.1 content"),
-			verifyMediumArticles: async () => assert.fail("v1 ran Medium"),
-			verifyPodcastRelease: async () => assert.fail("v1 ran podcast"),
-		},
-	});
-	assert.equal(result.target, "v1.0.0");
-	assert.deepEqual(result.site, V1_SITE);
-	assert.deepEqual(builtOptions, {
-		repoRoot,
-		requireSignoff: true,
-		releaseTarget: "v1.0.0",
-	});
-	assert.throws(
-		() => validateV1SiteSummary({ ...V1_SITE, htmlPages: 18 }),
-		/requires 17 htmlPages/u,
-	);
-});
-
-test("v1.1 release requires reconciled writing, podcast, and presentation gates", async (context) => {
-	const repoRoot = await createReleaseFixture(context, "v1.1.0", "v1.1.0");
-	let podcastOptions;
-	const result = await verifyRelease({
-		repoRoot,
-		dependencies: {
-			verifyBuiltSite: async () => V11_SITE,
 			verifyAggregateContent: async (options) => {
-				assert.deepEqual(options, { repoRoot, requireComplete: true });
-				return V11_AGGREGATE;
+				aggregateOptions = options;
+				return AGGREGATE;
 			},
 			verifyMediumArticles: async (options) => {
-				assert.deepEqual(options, { repoRoot, requireComplete: true });
-				return V11_MEDIUM;
+				mediumOptions = options;
+				return MEDIUM;
 			},
 			verifyPodcastRelease: async (options) => {
 				podcastOptions = options;
-				return V11_PODCAST;
+				return PODCAST;
 			},
 		},
 	});
-	assert.equal(result.target, "v1.1.0");
-	assert.deepEqual(podcastOptions, { withBuilt: true });
-	assert.deepEqual(result.site, V11_SITE);
+	assert.equal(result.target, "v1.0.0");
+	assert.deepEqual(result.site, SITE);
+	assert.deepEqual(builtOptions, {
+		repoRoot,
+		requireSignoff: true,
+		releaseTarget: "catalog",
+	});
+	assert.deepEqual(aggregateOptions, { repoRoot, requireComplete: true });
+	assert.deepEqual(mediumOptions, { repoRoot, requireComplete: true });
+	assert.deepEqual(podcastOptions, {
+		withBuilt: true,
+		release: "v1.0.0",
+	});
 	assert.doesNotThrow(() =>
-		validateV11ReleaseSummary({
-			site: V11_SITE,
-			aggregate: V11_AGGREGATE,
-			medium: V11_MEDIUM,
-			podcast: V11_PODCAST,
+		validateCombinedReleaseSummary({
+			target: TARGET,
+			site: SITE,
+			aggregate: AGGREGATE,
+			medium: MEDIUM,
+			podcast: PODCAST,
 		}),
 	);
 });
 
-test("v1.1 release rejects a missing target-specific presentation approval", async (context) => {
-	const repoRoot = await createReleaseFixture(context, "v1.1.0", "v1.0.0");
+test("combined release rejects missing target-specific presentation approval", async (context) => {
+	const repoRoot = await createReleaseFixture(context, {
+		presentationRelease: "v1.1.0",
+	});
 	await assert.rejects(
 		verifyRelease({
 			repoRoot,
 			dependencies: {
-				verifyBuiltSite: async () => V11_SITE,
-				verifyAggregateContent: async () => V11_AGGREGATE,
-				verifyMediumArticles: async () => V11_MEDIUM,
-				verifyPodcastRelease: async () => V11_PODCAST,
+				verifyBuiltSite: async () => SITE,
+				verifyAggregateContent: async () => AGGREGATE,
+				verifyMediumArticles: async () => MEDIUM,
+				verifyPodcastRelease: async () => PODCAST,
 			},
 		}),
-		/Presentation signoff is missing for v1\.1\.0/u,
+		/Presentation signoff is missing for v1\.0\.0/u,
 	);
 });
 
-test("v1.1 release summary fails closed on inventory and surface drift", () => {
-	assert.throws(
-		() =>
-			validateV11ReleaseSummary({
-				site: V11_SITE,
-				aggregate: V11_AGGREGATE,
-				medium: { ...V11_MEDIUM, expectedCount: 0, importedCount: 0 },
-				podcast: V11_PODCAST,
-			}),
-		/at least one complete/u,
-	);
-	assert.throws(
-		() =>
-			validateV11ReleaseSummary({
-				site: { ...V11_SITE, pagefindRecords: 13 },
-				aggregate: V11_AGGREGATE,
-				medium: V11_MEDIUM,
-				podcast: V11_PODCAST,
-			}),
-		/PagefindRecords|pagefindRecords/u,
-	);
-	assert.throws(
-		() =>
-			validateV11ReleaseSummary({
-				site: V11_SITE,
-				aggregate: V11_AGGREGATE,
-				medium: V11_MEDIUM,
-				podcast: { ...V11_PODCAST, builtArtifactsChecked: false },
-			}),
-		/built artifacts/u,
-	);
+test("combined release rejects missing or extra Medium inventory", () => {
+	for (const medium of [
+		{ ...MEDIUM, expectedCount: 23, importedCount: 23 },
+		{ ...MEDIUM, expectedCount: 25, importedCount: 25 },
+	]) {
+		assert.throws(
+			() =>
+				validateCombinedReleaseSummary({
+					target: TARGET,
+					site: SITE,
+					aggregate: AGGREGATE,
+					medium,
+					podcast: PODCAST,
+				}),
+			/exactly 24/u,
+		);
+	}
+	for (const importedCount of [23, 25]) {
+		assert.throws(
+			() =>
+				validateCombinedReleaseSummary({
+					target: TARGET,
+					site: SITE,
+					aggregate: {
+						...AGGREGATE,
+						sources: {
+							...AGGREGATE.sources,
+							medium: { importedCount, complete: true },
+						},
+					},
+					medium: MEDIUM,
+					podcast: PODCAST,
+				}),
+			/Medium inventory and aggregate catalog disagree/u,
+		);
+	}
+});
+
+test("combined release rejects missing or extra podcast episodes", () => {
+	for (const episodes of [0, 2]) {
+		assert.throws(
+			() =>
+				validateCombinedReleaseSummary({
+					target: TARGET,
+					site: SITE,
+					aggregate: AGGREGATE,
+					medium: MEDIUM,
+					podcast: { ...PODCAST, episodes },
+				}),
+			/exactly 1 complete podcast/u,
+		);
+	}
+});
+
+test("combined release rejects writing-source and public-surface drift", () => {
+	for (const aggregate of [
+		{ ...AGGREGATE, publishedCount: 34 },
+		{ ...AGGREGATE, publishedCount: 36 },
+		{
+			...AGGREGATE,
+			sources: {
+				...AGGREGATE.sources,
+				firstParty: { importedCount: 1, complete: true },
+			},
+		},
+	]) {
+		assert.throws(
+			() =>
+				validateCombinedReleaseSummary({
+					target: TARGET,
+					site: SITE,
+					aggregate,
+					medium: MEDIUM,
+					podcast: PODCAST,
+				}),
+			/exact approved writing sources/u,
+		);
+	}
+	for (const site of [
+		{ ...SITE, htmlPages: 44 },
+		{ ...SITE, postPages: 36 },
+		{ ...SITE, rssItems: 34 },
+		{ ...SITE, pagefindRecords: 38 },
+		{ ...SITE, archiveEntries: 34 },
+		{ ...SITE, authorWorks: 36 },
+		{ ...SITE, nonfictionEntries: 23 },
+		{ ...SITE, podcastEpisodes: 2 },
+	]) {
+		assert.throws(
+			() =>
+				validateCombinedReleaseSummary({
+					target: TARGET,
+					site,
+					aggregate: AGGREGATE,
+					medium: MEDIUM,
+					podcast: PODCAST,
+				}),
+			/release surfaces disagree/u,
+		);
+	}
 });
 
 test("presentation target validation rejects malformed or wrong-release ledgers", async (context) => {
-	const validRoot = await createReleaseFixture(context, "v1.1.0", "v1.1.0");
+	const validRoot = await createReleaseFixture(context);
 	await assert.doesNotReject(
-		requirePresentationTarget({ repoRoot: validRoot, release: "v1.1.0" }),
+		requirePresentationTarget({ repoRoot: validRoot, release: "v1.0.0" }),
 	);
-	const wrongRoot = await createReleaseFixture(context, "v1.1.0", "v1.0.0");
+	const wrongRoot = await createReleaseFixture(context, {
+		presentationRelease: "v1.1.0",
+	});
 	await assert.rejects(
-		requirePresentationTarget({ repoRoot: wrongRoot, release: "v1.1.0" }),
-		/missing for v1\.1\.0/u,
+		requirePresentationTarget({ repoRoot: wrongRoot, release: "v1.0.0" }),
+		/missing for v1\.0\.0/u,
 	);
 });

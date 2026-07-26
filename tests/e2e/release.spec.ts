@@ -142,6 +142,10 @@ const draftSlugs = [
 ];
 const authorBio =
 	"Tai Song is a Singapore-based commodity trader and trade strategist whose writing spans fiction, poetry, reflection, and nonfiction. Across global markets and imagined futures, Tai explores power, policy, inequality, memory, the consequences of invention, and the fragile things people try to preserve.";
+const nonfictionDescription =
+	"Essays on markets, power, policy, inequality, and a changing world.";
+const forbiddenReaderProcessCopy =
+	/\b(?:author-approved sources?|(?:careful\s+)?source review|preserved author text|reviewed claim by claim|human-reviewed transcripts?)\b/i;
 const privateReference =
 	/(\.proton-import|protonusercontent\.(?:com|ch)|docs\.proton\.me\/u\/\d+\/)/i;
 class RedactedRuntimeRecorder {
@@ -605,6 +609,7 @@ test.describe("public release inventory", () => {
 			expect(publicSurface.text).not.toMatch(
 				/\b(?:GitHub|Vocal|Medium|Proton|Fuwari|Astro|Twitter|repository|manifest|upstream|deployment|backend|system-level)\b/i,
 			);
+			expect(publicSurface.text).not.toMatch(forbiddenReaderProcessCopy);
 			expect(publicSurface.text).not.toContain("shots-of-rhapsody.github.io");
 			expect(publicSurface.hrefs).not.toEqual(
 				expect.arrayContaining([
@@ -669,7 +674,24 @@ test.describe("public release inventory", () => {
 			return;
 		}
 
+		await expectHealthyPage(page, "");
+		await expect(
+			page.locator("#nonfiction").getByText(nonfictionDescription, {
+				exact: true,
+			}),
+		).toBeVisible();
+		await expectHealthyPage(page, "authors/tai-song/");
+		await expect(
+			page.getByText(nonfictionDescription, { exact: true }),
+		).toBeVisible();
 		await expectHealthyPage(page, "nonfiction/");
+		await expect(
+			page.getByText(nonfictionDescription, { exact: true }),
+		).toBeVisible();
+		await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+			"content",
+			nonfictionDescription,
+		);
 		const listedSlugs = await page
 			.locator("[data-nonfiction-index] [data-editorial-slug]")
 			.evaluateAll((items) =>
@@ -784,11 +806,10 @@ test.describe("public release inventory", () => {
 				"type",
 				episode.audio.mimeType,
 			);
-			await expect(
-				page.locator(`a[href="${transcriptPath}"]`).filter({
-					hasText: "Read the transcript",
-				}),
-			).toBeVisible();
+			await expect(page.locator(`a[href="${transcriptPath}"]`)).toHaveText([
+				"Read transcript",
+				"Read transcript",
+			]);
 			const download = page.locator(`a[href="${audioPath}"][download]`);
 			await expect(download).toBeVisible();
 			await expect(download).toContainText("Download audio");

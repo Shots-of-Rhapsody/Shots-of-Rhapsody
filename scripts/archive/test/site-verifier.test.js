@@ -30,6 +30,7 @@ test("public-copy checks allow authored text and required self-canonical URLs", 
 	const html = `<!doctype html><html><head>
 		<link rel="canonical" href="https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/posts/example/">
 		<meta property="og:url" content="https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/posts/example/">
+		<script type="application/ld+json">{"@type":"WebSite","url":"https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/","image":{"url":"https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/social/site.jpg"}}</script>
 	</head><body>
 		<nav><a href="/archive/">Works</a></nav>
 		<h1 data-archive-field="title">A Story About GitHub and Medium</h1>
@@ -40,7 +41,7 @@ test("public-copy checks allow authored text and required self-canonical URLs", 
 
 test("public-copy checks exempt generic authored work without exempting its page", () => {
 	const html = `<!doctype html><html><body>
-		<article data-authored-content><p>A Medium repository appears in the author's exact text.</p></article>
+		<article data-authored-content><p>A Medium repository, source review, and human-reviewed transcript appear in the author's exact text.</p></article>
 		<footer>Rights and permissions</footer>
 	</body></html>`;
 	assert.deepEqual(publicFacingCopyViolations(html), []);
@@ -50,6 +51,92 @@ test("public-copy checks exempt generic authored work without exempting its page
 		).join("\n"),
 		/platform branding|implementation language/u,
 	);
+});
+
+test("public-copy checks reject editorial process language outside authored text", () => {
+	for (const phrase of [
+		"author-approved sources",
+		"careful source review",
+		"preserved author text",
+		"reviewed claim by claim",
+		"human-reviewed transcript",
+	]) {
+		assert.deepEqual(
+			publicFacingCopyViolations(
+				`<!doctype html><html><body><p>${phrase}</p></body></html>`,
+			),
+			["site-authored copy contains editorial process language"],
+			phrase,
+		);
+	}
+});
+
+test("public-copy checks reject metadata and structured-data copy leaks", () => {
+	const html = `<!doctype html><html><head>
+		<meta name="description" content="Read the GitHub repository manifest.">
+		<script type="application/ld+json">{"@type":"WebSite","description":"Essays preserved from author-approved sources.","publisher":{"name":"Medium"}}</script>
+	</head><body><p>Reader page</p></body></html>`;
+	assert.deepEqual(publicFacingCopyViolations(html), [
+		"site-authored copy contains editorial process language",
+		"site-authored copy contains internal implementation language",
+		"site-authored copy contains third-party platform branding",
+	]);
+});
+
+test("public-copy metadata checks exempt only authored article fields", () => {
+	const html = `<!doctype html><html><head>
+		<title>A GitHub Repository — Shots of Rhapsody</title>
+		<meta name="description" content="Preserved author text from source review.">
+		<meta property="og:title" content="A GitHub Repository">
+		<meta property="og:description" content="Preserved author text from source review.">
+		<meta property="og:image:alt" content="A human-reviewed transcript">
+		<meta property="og:url" content="https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/posts/example/">
+		<meta property="article:tag" content="Proton">
+		<script type="application/ld+json">{
+			"@type":"BlogPosting",
+			"@id":"https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/posts/example/#article",
+			"headline":"A GitHub Repository",
+			"alternativeHeadline":"A Medium subtitle",
+			"description":"Preserved author text from source review.",
+			"keywords":["Proton","reviewed claim by claim"],
+			"publisher":{"name":"Shots of Rhapsody","url":"https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/"},
+			"image":{"description":"A human-reviewed transcript","caption":"A Fuwari caption"}
+		}</script>
+	</head><body>
+		<h1 data-archive-field="title">A GitHub Repository</h1>
+		<div data-archive-body><p>A Medium repository appears in the authored story.</p></div>
+	</body></html>`;
+	assert.deepEqual(publicFacingCopyViolations(html), []);
+	assert.match(
+		publicFacingCopyViolations(
+			html.replace(
+				'"name":"Shots of Rhapsody"',
+				'"name":"GitHub repository manifest"',
+			),
+		).join("\n"),
+		/platform branding|implementation language/u,
+	);
+	assert.match(
+		publicFacingCopyViolations(
+			html.replace(
+				'<meta name="description" content="Preserved author text from source review.">',
+				'<meta name="description" content="Read the GitHub repository manifest.">',
+			),
+		).join("\n"),
+		/platform branding|implementation language/u,
+	);
+});
+
+test("public-copy checks preserve authored titles in collection structured data", () => {
+	for (const [type, property] of [
+		["CollectionPage", "itemListElement"],
+		["ProfilePage", "workExample"],
+	]) {
+		const html = `<!doctype html><html><head>
+			<script type="application/ld+json">{"@type":"${type}","name":"Shots of Rhapsody","mainEntity":{"${property}":[{"@type":"CreativeWork","name":"A Medium Repository"}]}}</script>
+		</head><body></body></html>`;
+		assert.deepEqual(publicFacingCopyViolations(html), [], type);
+	}
 });
 
 test("public-copy checks scan site-created card controls around authored fields", () => {
@@ -87,20 +174,20 @@ test("public-copy checks reject platform branding and implementation language", 
 
 test("built-site CLI enables signoff enforcement only when requested", () => {
 	assert.equal(parseArguments([]).requireSignoff, false);
-	assert.equal(parseArguments([]).releaseTarget, "v1.0.0");
+	assert.equal(parseArguments([]).releaseTarget, "catalog");
 	assert.equal(parseArguments(["--require-signoff"]).requireSignoff, true);
 	assert.equal(
-		parseArguments(["--release-target", "v1.1.0"]).releaseTarget,
-		"v1.1.0",
+		parseArguments(["--release-target", "archive"]).releaseTarget,
+		"archive",
 	);
 	assert.throws(
-		() => parseArguments(["--release-target", "v2.0.0"]),
+		() => parseArguments(["--release-target", "v1.1.0"]),
 		/Unsupported release target/u,
 	);
 	assert.throws(() => parseArguments(["--unknown"]), /Unknown argument/u);
 });
 
-test("v1.1 publication catalog preserves the sealed archive and exact contract", async (context) => {
+test("catalog publication mode preserves the sealed archive and exact contract", async (context) => {
 	const root = await mkdtemp(path.join(tmpdir(), "publication-catalog-"));
 	context.after(() => rm(root, { recursive: true, force: true }));
 	const articles = [];
@@ -127,7 +214,7 @@ test("v1.1 publication catalog preserves the sealed archive and exact contract",
 	const manifest = await loadPublicationManifest(
 		root,
 		{ articles },
-		"v1.1.0",
+		"catalog",
 		failures,
 	);
 	assert.deepEqual(failures, []);
@@ -144,7 +231,7 @@ test("v1.1 publication catalog preserves the sealed archive and exact contract",
 	await loadPublicationManifest(
 		root,
 		{ articles },
-		"v1.1.0",
+		"catalog",
 		malformedFailures,
 	);
 	assert.match(malformedFailures.join("\n"), /entry contract is invalid/u);
@@ -177,7 +264,7 @@ test("v1.1 publication catalog preserves the sealed archive and exact contract",
 	await loadPublicationManifest(
 		root,
 		{ articles },
-		"v1.1.0",
+		"catalog",
 		classificationFailures,
 	);
 	assert.match(classificationFailures.join("\n"), /entry contract is invalid/u);

@@ -3,6 +3,7 @@ import { type CollectionEntry, getCollection } from "astro:content";
 import EditorialWorkCard from "@components/EditorialWorkCard.astro";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getAbsolutePostUrlBySlug, url } from "@utils/url-utils";
+import { siteConfig } from "@/config";
 
 interface Props {
 	entries: CollectionEntry<"posts">[];
@@ -23,8 +24,7 @@ export async function getStaticPaths() {
 const { entries } = Astro.props;
 const siteUrl = Astro.site ?? Astro.url;
 const canonicalUrl = new URL(url("/nonfiction/"), siteUrl).toString();
-const description =
-	"Nonfiction by Tai Song, preserved from author-approved sources and reviewed claim by claim.";
+const description = siteConfig.nonfictionDescription;
 const jsonLd = {
 	"@context": "https://schema.org",
 	"@type": "CollectionPage",

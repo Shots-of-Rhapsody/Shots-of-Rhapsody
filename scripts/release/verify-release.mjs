@@ -12,15 +12,10 @@ import { verifyPodcastRelease } from "../podcast/verify.mjs";
 import { verifyBuiltSite } from "../verify-built-site.mjs";
 
 const repositoryRoot = fileURLToPath(new URL("../../", import.meta.url));
-const V1_SITE_SUMMARY = Object.freeze({
-	htmlPages: 17,
-	postPages: 11,
-	rssItems: 11,
-	pagefindRecords: 11,
-	archiveEntries: 11,
-	authorWorks: 11,
-	nonfictionEntries: 0,
-	podcastEpisodes: 0,
+const RELEASE_EXPECTATIONS = Object.freeze({
+	archiveWriting: 11,
+	mediumWriting: 24,
+	podcastEpisodes: 1,
 });
 
 const defaultDependencies = Object.freeze({
@@ -35,15 +30,29 @@ export function validateReleaseTarget(value) {
 		value === null ||
 		typeof value !== "object" ||
 		Array.isArray(value) ||
-		Object.keys(value).length !== 2 ||
-		value.schemaVersion !== 1 ||
-		(value.release !== "v1.0.0" && value.release !== "v1.1.0")
+		!hasExactKeys(value, new Set(["schemaVersion", "release", "expected"])) ||
+		value.schemaVersion !== 2 ||
+		value.release !== "v1.0.0" ||
+		value.expected === null ||
+		typeof value.expected !== "object" ||
+		Array.isArray(value.expected) ||
+		!hasExactKeys(value.expected, new Set(Object.keys(RELEASE_EXPECTATIONS))) ||
+		Object.entries(RELEASE_EXPECTATIONS).some(
+			([field, expected]) => value.expected[field] !== expected,
+		)
 	) {
 		throw new Error(
-			"Release target must be the exact version 1 contract for v1.0.0 or v1.1.0",
+			"Release target must be the exact schema version 2 contract for the combined v1.0.0 release",
 		);
 	}
-	return value.release;
+	return value;
+}
+
+function hasExactKeys(value, expected) {
+	const keys = Object.keys(value);
+	return (
+		keys.length === expected.size && keys.every((key) => expected.has(key))
+	);
 }
 
 function assertInteger(value, label) {
@@ -52,23 +61,15 @@ function assertInteger(value, label) {
 	return value;
 }
 
-export function validateV1SiteSummary(site) {
-	for (const [field, expected] of Object.entries(V1_SITE_SUMMARY)) {
-		if (site?.[field] !== expected) {
-			throw new Error(
-				`v1.0.0 requires ${expected} ${field}; received ${site?.[field] ?? "missing"}`,
-			);
-		}
-	}
-	return site;
-}
-
-export function validateV11ReleaseSummary({
+export function validateCombinedReleaseSummary({
+	target,
 	site,
 	aggregate,
 	medium,
 	podcast,
 }) {
+	const { archiveWriting, mediumWriting, podcastEpisodes } = target.expected;
+	const publishedWriting = archiveWriting + mediumWriting;
 	const publishedCount = assertInteger(
 		aggregate?.publishedCount,
 		"aggregate published count",
@@ -82,64 +83,60 @@ export function validateV11ReleaseSummary({
 		"podcast episode count",
 	);
 	if (aggregate?.complete !== true)
-		throw new Error("v1.1.0 aggregate content verification is incomplete");
-	if (medium?.complete !== true || mediumCount < 1)
+		throw new Error("v1.0.0 aggregate content verification is incomplete");
+	if (
+		medium?.complete !== true ||
+		mediumCount !== mediumWriting ||
+		medium?.importedCount !== mediumWriting
+	)
 		throw new Error(
-			"v1.1.0 requires at least one complete, approved Medium article",
+			`v1.0.0 requires exactly ${mediumWriting} complete, approved Medium articles`,
 		);
 	if (
-		medium?.importedCount !== mediumCount ||
-		aggregate?.sources?.medium?.importedCount !== mediumCount ||
+		aggregate?.sources?.medium?.importedCount !== mediumWriting ||
 		aggregate?.sources?.medium?.complete !== true
 	) {
-		throw new Error("v1.1.0 Medium inventory and aggregate catalog disagree");
+		throw new Error("v1.0.0 Medium inventory and aggregate catalog disagree");
 	}
 	const firstPartyCount = assertInteger(
 		aggregate?.sources?.firstParty?.importedCount,
 		"first-party writing count",
 	);
 	if (
-		aggregate?.sources?.archive?.importedCount !== 11 ||
+		aggregate?.sources?.archive?.importedCount !== archiveWriting ||
 		aggregate?.sources?.archive?.complete !== true ||
+		firstPartyCount !== 0 ||
 		aggregate?.sources?.firstParty?.complete !== true ||
-		publishedCount !== 11 + mediumCount + firstPartyCount
+		publishedCount !== publishedWriting
 	) {
 		throw new Error(
-			"v1.1.0 aggregate catalog does not reconcile its approved writing sources",
+			"v1.0.0 aggregate catalog does not reconcile its exact approved writing sources",
 		);
 	}
 	if (
 		podcast?.complete !== true ||
 		podcast?.builtArtifactsChecked !== true ||
-		podcastCount < 1
+		podcastCount !== podcastEpisodes
 	) {
 		throw new Error(
-			"v1.1.0 requires at least one complete podcast episode with built artifacts",
+			`v1.0.0 requires exactly ${podcastEpisodes} complete podcast episode with built artifacts`,
 		);
 	}
 	for (const [field, expected] of [
-		["postPages", publishedCount],
-		["rssItems", publishedCount],
-		["archiveEntries", publishedCount],
-		["authorWorks", publishedCount],
-		["podcastEpisodes", podcastCount],
-		["pagefindRecords", publishedCount + podcastCount * 2],
-		["htmlPages", publishedCount + podcastCount * 2 + 8],
+		["postPages", publishedWriting],
+		["rssItems", publishedWriting],
+		["archiveEntries", publishedWriting],
+		["authorWorks", publishedWriting],
+		["nonfictionEntries", mediumWriting],
+		["podcastEpisodes", podcastEpisodes],
+		["pagefindRecords", publishedWriting + podcastEpisodes * 2],
+		["htmlPages", publishedWriting + podcastEpisodes * 2 + 8],
 	]) {
 		if (site?.[field] !== expected) {
 			throw new Error(
-				`v1.1.0 release surfaces disagree: expected ${expected} ${field}, received ${site?.[field] ?? "missing"}`,
+				`v1.0.0 release surfaces disagree: expected ${expected} ${field}, received ${site?.[field] ?? "missing"}`,
 			);
 		}
-	}
-	if (
-		!Number.isInteger(site?.nonfictionEntries) ||
-		site.nonfictionEntries < mediumCount ||
-		site.nonfictionEntries > publishedCount
-	) {
-		throw new Error(
-			"v1.1.0 nonfiction entries do not cover the approved Medium inventory",
-		);
 	}
 	return { site, aggregate, medium, podcast };
 }
@@ -193,13 +190,8 @@ export async function verifyRelease({
 	const site = await dependencies.verifyBuiltSite({
 		repoRoot,
 		requireSignoff: true,
-		releaseTarget: target,
+		releaseTarget: "catalog",
 	});
-	if (target === "v1.0.0") {
-		validateV1SiteSummary(site);
-		return { target, site };
-	}
-
 	const aggregate = await dependencies.verifyAggregateContent({
 		repoRoot,
 		requireComplete: true,
@@ -208,10 +200,19 @@ export async function verifyRelease({
 		repoRoot,
 		requireComplete: true,
 	});
-	await requirePresentationTarget({ repoRoot, release: target });
-	const podcast = await dependencies.verifyPodcastRelease({ withBuilt: true });
-	validateV11ReleaseSummary({ site, aggregate, medium, podcast });
-	return { target, site, aggregate, medium, podcast };
+	await requirePresentationTarget({ repoRoot, release: target.release });
+	const podcast = await dependencies.verifyPodcastRelease({
+		withBuilt: true,
+		release: target.release,
+	});
+	validateCombinedReleaseSummary({
+		target,
+		site,
+		aggregate,
+		medium,
+		podcast,
+	});
+	return { target: target.release, site, aggregate, medium, podcast };
 }
 
 if (path.resolve(process.argv[1] ?? "") === fileURLToPath(import.meta.url)) {

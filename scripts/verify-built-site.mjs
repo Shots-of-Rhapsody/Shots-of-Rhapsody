@@ -17,7 +17,7 @@ import { inspectBuiltImages } from "./verify-images.mjs";
 const DEFAULT_DIST = "dist";
 const DEFAULT_SITE = "https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/";
 const EXPECTED_ARCHIVE_COUNT = 11;
-const RELEASE_TARGETS = new Set(["v1.0.0", "v1.1.0"]);
+const RELEASE_TARGETS = new Set(["archive", "catalog"]);
 const REQUIRED_NON_POST_ROUTES = [
 	"",
 	"about/",
@@ -37,7 +37,7 @@ export function parseArguments(argv) {
 		dist: DEFAULT_DIST,
 		site: DEFAULT_SITE,
 		requireSignoff: false,
-		releaseTarget: "v1.0.0",
+		releaseTarget: "catalog",
 	};
 	for (let index = 0; index < argv.length; index += 1) {
 		const argument = argv[index];
@@ -257,6 +257,8 @@ const SITE_COPY_BRAND_PATTERN =
 	/\b(?:GitHub|Vocal|Medium|Proton|Fuwari|Astro|Twitter)\b/iu;
 const SITE_COPY_INTERNAL_PATTERN =
 	/\b(?:repository|manifest|upstream|deployment|backend|system-level)\b|\b(?:source|content)\s+(?:hash|path|import)\b/iu;
+const SITE_COPY_EDITORIAL_PROCESS_PATTERN =
+	/\b(?:author-approved sources?|(?:careful\s+)?source review|preserved author text|reviewed claim by claim|human-reviewed transcripts?)\b/iu;
 const BLOCKED_PUBLIC_LINK_HOSTS = new Set([
 	"github.com",
 	"medium.com",
@@ -277,6 +279,14 @@ const AUTHORED_CONTENT_CLASSES = new Set([
 	"editorial-card__subtitle",
 	"editorial-card__meta",
 ]);
+const BLOG_POSTING_AUTHORED_JSON_LD_FIELDS = new Set([
+	"headline",
+	"alternativeHeadline",
+	"description",
+	"keywords",
+	"articleSection",
+]);
+const BLOG_POSTING_AUTHORED_IMAGE_FIELDS = new Set(["description", "caption"]);
 
 function publicCopyIssues(value) {
 	const issues = [];
@@ -286,6 +296,9 @@ function publicCopyIssues(value) {
 	if (SITE_COPY_INTERNAL_PATTERN.test(value)) {
 		issues.push("site-authored copy contains internal implementation language");
 	}
+	if (SITE_COPY_EDITORIAL_PROCESS_PATTERN.test(value)) {
+		issues.push("site-authored copy contains editorial process language");
+	}
 	if (/shots-of-rhapsody\.github\.io/iu.test(value)) {
 		issues.push(
 			"site-authored visible copy exposes the temporary hosting address",
@@ -294,9 +307,139 @@ function publicCopyIssues(value) {
 	return issues;
 }
 
+function isRequiredSelfHostedUrl(value) {
+	try {
+		const parsed = new URL(value);
+		return (
+			(parsed.protocol === "https:" || parsed.protocol === "http:") &&
+			parsed.hostname.toLowerCase() === "shots-of-rhapsody.github.io"
+		);
+	} catch {
+		return false;
+	}
+}
+
+function publicMetadataCopyIssues(value) {
+	return isRequiredSelfHostedUrl(value) ? [] : publicCopyIssues(value);
+}
+
+function blogPostingAuthoredMetaValues(posting, field) {
+	const keywords = Array.isArray(posting.keywords)
+		? posting.keywords.filter((value) => typeof value === "string")
+		: typeof posting.keywords === "string"
+			? [posting.keywords]
+			: [];
+	const authorName = isPlainObject(posting.author)
+		? posting.author.name
+		: undefined;
+	const image = isPlainObject(posting.image) ? posting.image : undefined;
+	switch (field) {
+		case "description":
+		case "og:description":
+			return [posting.description];
+		case "og:title":
+			return [posting.headline];
+		case "author":
+		case "article:author":
+			return [authorName];
+		case "keywords":
+		case "article:tag":
+			return keywords;
+		case "article:section":
+			return [posting.articleSection];
+		case "og:image:alt":
+			return [image?.description, image?.caption];
+		default:
+			return [];
+	}
+}
+
+function isAuthoredBlogPostingMetaValue(postings, field, value) {
+	return postings.some((posting) =>
+		blogPostingAuthoredMetaValues(posting, field).some(
+			(candidate) => typeof candidate === "string" && candidate === value,
+		),
+	);
+}
+
+function publicTitleCopyIssues(value, blogPostings) {
+	for (const posting of blogPostings) {
+		if (typeof posting.headline !== "string") continue;
+		if (value === posting.headline) return [];
+		const authoredPrefix = `${posting.headline} — `;
+		if (value.startsWith(authoredPrefix)) {
+			return publicMetadataCopyIssues(value.slice(authoredPrefix.length));
+		}
+	}
+	return publicMetadataCopyIssues(value);
+}
+
+function isAuthoredStructuredDataPath(rootType, pathParts) {
+	const [rootField, nestedField] = pathParts;
+	if (rootType === "BlogPosting") {
+		return (
+			BLOG_POSTING_AUTHORED_JSON_LD_FIELDS.has(rootField) ||
+			(rootField === "image" &&
+				BLOG_POSTING_AUTHORED_IMAGE_FIELDS.has(nestedField))
+		);
+	}
+	if (rootType === "CollectionPage") {
+		return (
+			pathParts[0] === "mainEntity" &&
+			pathParts[1] === "itemListElement" &&
+			typeof pathParts[2] === "number" &&
+			pathParts[3] === "name"
+		);
+	}
+	if (rootType === "ProfilePage") {
+		return (
+			pathParts[0] === "mainEntity" &&
+			pathParts[1] === "workExample" &&
+			typeof pathParts[2] === "number" &&
+			pathParts[3] === "name"
+		);
+	}
+	return false;
+}
+
+function structuredDataCopyIssues(value, rootType, pathParts = []) {
+	if (typeof value === "string") {
+		if (isAuthoredStructuredDataPath(rootType, pathParts)) {
+			return [];
+		}
+		return publicMetadataCopyIssues(value);
+	}
+	if (Array.isArray(value)) {
+		return value.flatMap((child, index) =>
+			structuredDataCopyIssues(child, rootType, [...pathParts, index]),
+		);
+	}
+	if (!isPlainObject(value)) return [];
+	return Object.entries(value).flatMap(([key, child]) =>
+		structuredDataCopyIssues(child, rootType, [...pathParts, key]),
+	);
+}
+
 export function publicFacingCopyViolations(html) {
 	const document = parse(String(html));
 	const violations = [];
+	const structuredData = new Map();
+	for (const node of elementsWithAttribute(document, "type")) {
+		if (
+			node.tagName?.toLowerCase() !== "script" ||
+			attributeValue(node, "type") !== "application/ld+json"
+		) {
+			continue;
+		}
+		try {
+			structuredData.set(node, JSON.parse(nodeText(node)));
+		} catch {
+			// JSON-LD syntax is reported by the dedicated metadata verifier.
+		}
+	}
+	const blogPostings = [...structuredData.values()].filter(
+		(value) => isPlainObject(value) && value["@type"] === "BlogPosting",
+	);
 	const visit = (node, { authored = false, visible = true } = {}) => {
 		const attributesByName = Object.fromEntries(
 			(node.attrs ?? []).map((attribute) => [attribute.name, attribute.value]),
@@ -316,26 +459,41 @@ export function publicFacingCopyViolations(html) {
 			!["head", "script", "style", "template", "noscript"].includes(tagName);
 		if (tagName === "meta") {
 			const name = attributesByName.name?.toLowerCase();
+			const property = attributesByName.property?.toLowerCase();
+			const field = name ?? property;
 			if (name === "generator") {
 				violations.push("framework generator metadata is public");
 			}
 			if (name?.startsWith("twitter:")) {
 				violations.push("platform-specific social metadata is public");
 			}
+			if (
+				attributesByName.content !== undefined &&
+				!isAuthoredBlogPostingMetaValue(
+					blogPostings,
+					field,
+					attributesByName.content,
+				)
+			) {
+				violations.push(...publicMetadataCopyIssues(attributesByName.content));
+			}
+		}
+		if (tagName === "title") {
+			violations.push(...publicTitleCopyIssues(nodeText(node), blogPostings));
 		}
 		if (
 			tagName === "script" &&
 			attributesByName.type === "application/ld+json"
 		) {
-			try {
-				const jsonLd = JSON.parse(nodeText(node));
-				if (Object.hasOwn(jsonLd, "isBasedOn")) {
+			const jsonLd = structuredData.get(node);
+			if (jsonLd !== undefined) {
+				if (isPlainObject(jsonLd) && Object.hasOwn(jsonLd, "isBasedOn")) {
 					violations.push(
 						"structured data exposes historical-source provenance",
 					);
 				}
-			} catch {
-				// JSON-LD syntax is reported by the dedicated metadata verifier.
+				const rootType = isPlainObject(jsonLd) ? jsonLd["@type"] : undefined;
+				violations.push(...structuredDataCopyIssues(jsonLd, rootType));
 			}
 		}
 		if (tagName === "a" && attributesByName.href) {
@@ -494,7 +652,7 @@ export async function loadPublicationManifest(
 	releaseTarget,
 	failures,
 ) {
-	if (releaseTarget === "v1.0.0") return archiveManifest;
+	if (releaseTarget === "archive") return archiveManifest;
 	const catalogPath = path.join(
 		repoRoot,
 		"provenance",
@@ -2561,7 +2719,7 @@ export async function verifyBuiltSite({
 	site: siteValue = DEFAULT_SITE,
 	repoRoot: repoRootValue = process.cwd(),
 	requireSignoff = false,
-	releaseTarget = "v1.0.0",
+	releaseTarget = "catalog",
 } = {}) {
 	const distRoot = path.resolve(dist);
 	const repoRoot = path.resolve(repoRootValue);
@@ -2588,7 +2746,7 @@ export async function verifyBuiltSite({
 		{
 			requireSignoff,
 			notices,
-			validateReviewCommitBinding: releaseTarget === "v1.0.0",
+			validateReviewCommitBinding: true,
 		},
 	);
 	let expectedPageUrls = [];
@@ -2599,7 +2757,7 @@ export async function verifyBuiltSite({
 	let nonfictionEntries = 0;
 	let publicationManifest = archiveManifest;
 	const podcastEpisodes =
-		releaseTarget === "v1.1.0" ? getApprovedPodcastEpisodes() : [];
+		releaseTarget === "catalog" ? getApprovedPodcastEpisodes() : [];
 	if (archiveManifest) {
 		publicationManifest = await loadPublicationManifest(
 			repoRoot,
@@ -2607,20 +2765,6 @@ export async function verifyBuiltSite({
 			releaseTarget,
 			failures,
 		);
-		if (releaseTarget === "v1.1.0") {
-			if (
-				!publicationManifest.articles.some(
-					(article) => article.source === "medium",
-				)
-			) {
-				failures.push(
-					"v1.1.0 requires at least one approved Medium nonfiction article",
-				);
-			}
-			if (podcastEpisodes.length === 0) {
-				failures.push("v1.1.0 requires at least one approved podcast episode");
-			}
-		}
 		const additionalRoutes = [];
 		if (
 			publicationManifest.articles.some(

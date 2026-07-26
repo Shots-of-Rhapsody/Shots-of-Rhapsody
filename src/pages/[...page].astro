@@ -118,7 +118,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 				<div class="section-heading">
 					<p class="section-heading__kicker">Ideas and inquiry</p>
 					<h2 id="nonfiction-title">Recent nonfiction</h2>
-					<p>Essays grounded in careful source review and preserved author text.</p>
+					<p>{siteConfig.nonfictionDescription}</p>
 				</div>
 				<div class="featured-grid">
 					{nonfictionEntries.slice(0, 3).map((entry) => (

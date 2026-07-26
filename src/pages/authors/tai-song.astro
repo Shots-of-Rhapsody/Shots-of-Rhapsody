@@ -7,6 +7,7 @@ import {
 	getPostUrlBySlug,
 	url,
 } from "@utils/url-utils";
+import { siteConfig } from "@/config";
 import {
 	EDITORIAL_GROUPS,
 	entriesForSlugs,
@@ -146,7 +147,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 					<section class="author-group" aria-labelledby="author-group-nonfiction">
 						<header>
 							<h3 id="author-group-nonfiction">Nonfiction</h3>
-							<p>Essays grounded in source review and preserved author text.</p>
+							<p>{siteConfig.nonfictionDescription}</p>
 						</header>
 						<div class="author-group__cards">
 							{nonfictionEntries.map((entry) => (

@@ -196,6 +196,13 @@ test("complete verification rejects the unreviewed draft", async () => {
 	);
 });
 
+test("podcast verification accepts only the combined first-release target", async () => {
+	await assert.rejects(
+		verifyPodcastRelease({ release: "v1.1.0" }),
+		/Unsupported podcast release target/u,
+	);
+});
+
 test("the native player never preloads audio", async () => {
 	const source = await readFile(
 		new URL(

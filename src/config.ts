@@ -1,6 +1,8 @@
 export const siteConfig = {
 	title: "Shots of Rhapsody",
 	subtitle: "Stories, poems, and reflections",
+	nonfictionDescription:
+		"Essays on markets, power, policy, inequality, and a changing world.",
 	lang: "en",
 } as const;
 

@@ -262,7 +262,12 @@ export async function verifyPodcastDraft() {
 	};
 }
 
-export async function verifyPodcastRelease({ withBuilt = false } = {}) {
+export async function verifyPodcastRelease({
+	withBuilt = false,
+	release = "v1.0.0",
+} = {}) {
+	if (release !== "v1.0.0")
+		throw new Error(`Unsupported podcast release target: ${release}`);
 	const evidence = await verifyTrackedPodcastEvidence();
 	const contentSignoffs = {
 		version: 2,
@@ -389,7 +394,7 @@ export async function verifyPodcastRelease({ withBuilt = false } = {}) {
 			ledger: JSON.parse(await readFile(presentationSignoffsPath, "utf8")),
 			repoRoot: repositoryRoot,
 			distRoot: path.join(repositoryRoot, "dist"),
-			release: "v1.1.0",
+			release,
 		});
 	}
 

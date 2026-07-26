@@ -131,10 +131,8 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 		<section class="podcast-episode__transcript" aria-labelledby="transcript-title">
 			<p class="podcast-episode__kicker">Accessible text</p>
 			<h2 id="transcript-title">Transcript</h2>
-			<p>
-				The complete, human-reviewed transcript is available as a static page.
-			</p>
-			<a href={url(episode.transcript.publicPath)}>Read the episode transcript</a>
+			<p>Follow the episode in text.</p>
+			<a href={url(episode.transcript.publicPath)}>Read transcript</a>
 		</section>
 	</article>
 </MainGridLayout>
