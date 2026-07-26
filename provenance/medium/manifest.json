@@ -570,6 +570,43 @@
       ]
     },
     {
+      "slug": "the-shadow-subsidy",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-shadow-subsidy-90d432a7abea",
+      "paths": {
+        "snapshot": "provenance/medium/posts/the-shadow-subsidy.json",
+        "markdown": "src/content/posts/the-shadow-subsidy/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:1e943769e137c3a3a830bbc79712192fc5d0fccc45cfa4597f47f9f68e0c2454",
+        "snapshot": "sha256:8b5c65c5c512a683c9827d6b1eaec2661fa587d07cbd609901449e764e4d474e",
+        "markdown": "sha256:99dcbefd0212e1c171995a83a64a31df172240dd0204bbe6e00235d8ae8cfefd",
+        "bodyText": "sha256:4244abd9c034a6fbd40c5704d9b23dc063fa04fbd6f0e23227dbcd2317d56e1c"
+      },
+      "content": {
+        "title": "The Shadow Subsidy",
+        "subtitle": "In a system where wealth is preserved by policy, the poor pay for the price of protection.",
+        "seriesLine": "A Ledger Series article on how fiscal structures quietly redistribute upward.",
+        "bodyBlockCount": 39
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/the-shadow-subsidy/hero.webp",
+          "sha256": "sha256:d55db095becfbbec09940097d3ac46e1eef9bbb13dc5f56d59def3354880ef55",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:6cdc734c01dc7b5b355d1db61de9d74acf3027731c1e8cbfe6f4eab2ab124596",
+          "pixelSha256": "sha256:1ff9412fe032040323cdf6d25f2bb54edcf4fce110d1479e5586cb6d00e05e03",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 3164556
+        }
+      ]
+    },
+    {
       "slug": "the-trillion-dollar-economy-no-one-talks-about",
       "capturedAt": "2026-07-25T14:11:15.789Z",
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-trillion-dollar-economy-no-one-talks-about-b1810889d3b6",

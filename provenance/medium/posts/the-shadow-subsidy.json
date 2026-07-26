@@ -1,0 +1,473 @@
+{
+  "schemaVersion": 1,
+  "slug": "the-shadow-subsidy",
+  "exportTitle": "The Shadow Subsidy",
+  "exportSummary": "In a system where wealth is preserved by policy, the poor pay for the price of protection.",
+  "title": "The Shadow Subsidy",
+  "subtitle": "In a system where wealth is preserved by policy, the poor pay for the price of protection.",
+  "seriesLine": "A Ledger Series article on how fiscal structures quietly redistribute upward.",
+  "summary": "In a system where wealth is preserved by policy, the poor pay for the price of protection.",
+  "description": "In a system where wealth is preserved by policy, the poor pay for the price of protection.",
+  "author": "Tai Song",
+  "published": "2025-04-22T05:19:03.091Z",
+  "category": "Nonfiction",
+  "tags": [],
+  "imageAlt": null,
+  "imageCaption": "",
+  "provenance": {
+    "authority": "Medium account export",
+    "captureFormat": "account-export-html",
+    "capturedAt": "2026-07-25T14:11:15.789Z",
+    "sourcePath": "posts/2025-04-22_The-Shadow-Subsidy-90d432a7abea.html",
+    "sourceSha256": "sha256:1e943769e137c3a3a830bbc79712192fc5d0fccc45cfa4597f47f9f68e0c2454",
+    "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-shadow-subsidy-90d432a7abea",
+    "presentationSetVersion": 1,
+    "presentationSetSha256": "sha256:ef4258dc651853433de14371682bb3603c7e58852672587fc6f0a9ce8e1484a2"
+  },
+  "hero": {
+    "id": "hero",
+    "outputFile": "hero.webp",
+    "sha256": "sha256:d55db095becfbbec09940097d3ac46e1eef9bbb13dc5f56d59def3354880ef55",
+    "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+    "captureSha256": "sha256:6cdc734c01dc7b5b355d1db61de9d74acf3027731c1e8cbfe6f4eab2ab124596",
+    "pixelSha256": "sha256:1ff9412fe032040323cdf6d25f2bb54edcf4fce110d1479e5586cb6d00e05e03",
+    "mimeType": "image/webp",
+    "width": 1800,
+    "height": 1800,
+    "byteSize": 3164556
+  },
+  "assets": [
+    {
+      "id": "hero",
+      "role": "hero",
+      "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*AZSPqZgUJppV9llQe8aVfQ@2x.jpeg",
+      "rawFile": "hero-medium.webp",
+      "siteReadyFile": "hero-sanitized.webp",
+      "outputFile": "hero.webp",
+      "sha256": "sha256:d55db095becfbbec09940097d3ac46e1eef9bbb13dc5f56d59def3354880ef55",
+      "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+      "captureSha256": "sha256:6cdc734c01dc7b5b355d1db61de9d74acf3027731c1e8cbfe6f4eab2ab124596",
+      "pixelSha256": "sha256:1ff9412fe032040323cdf6d25f2bb54edcf4fce110d1479e5586cb6d00e05e03",
+      "mimeType": "image/webp",
+      "width": 1800,
+      "height": 1800,
+      "byteSize": 3164556,
+      "alt": null,
+      "caption": ""
+    }
+  ],
+  "bodyDocument": {
+    "blocks": [
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Cost of What Isn’t Counted",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In 2012, Indonesia allocated more than one-fifth of its central government budget to energy subsidies. That amount was over three times what it spent on health and infrastructure combined.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Subsidies are often portrayed as tools to assist the poor. However, some of the most substantial subsidies operate subtly, benefiting those who need them least.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Across various economies, mechanisms like tax breaks, discounted utilities, and land deals are implemented under the guise of “development incentives.” These benefits frequently favor the affluent, while their costs are distributed across the broader population.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "These are not unintended consequences. They are deliberate policy choices.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Because they are labeled as “market stabilizers” or “investment incentives,” many fail to recognize them as subsidies that advantage the already privileged.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "What We Call a Subsidy",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The term “subsidy” often conjures images of direct financial aid or fuel discounts. Yet many significant subsidies appear as tax exemptions, underpriced land leases, or corporate bailouts. These are costs absorbed by the state under the banner of economic growth.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Egypt: In 2013, over 90 percent of gasoline subsidies benefited the wealthiest 20 percent of the population. This disparity arose because higher-income individuals consumed more fuel, which led to a disproportionate share of the subsidy.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Indonesia: Before reforms in 2014, fossil fuel subsidies consumed a significant portion of the national budget, exceeding expenditures on education and health. The wealthiest households received nearly five times more in fuel subsidies than the poorest, highlighting how regressive the structure had become.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In many nations, what is labeled as “stimulus” or “development strategy” functions as reverse redistribution. Public funds are quietly redirected to private interests.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Who It Serves, Quietly",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Subsidies are often justified as tools to help the vulnerable. But in practice, the largest benefits often flow to those already protected. This happens quietly and by design.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Nigeria: The government has historically spent billions on fuel subsidies that primarily benefited urban drivers and car owners. The poorest Nigerians, who rely on informal transit or walk, received the least. When subsidies were removed in 2023, public outcry was swift. Not because they were well-targeted, but because they had become politically embedded.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Argentina: Agricultural subsidies have long favored large landowners and agribusiness over smallholder farmers. Though originally justified to stabilize food prices, the bulk of the support has gone to export-oriented producers with significant land assets and market power.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Gulf States: In countries like Oman and the UAE, citizens have historically enjoyed subsidized electricity, fuel, and water, even during periods of fiscal strain. Meanwhile, migrant workers, who make up the majority of the labor force, are excluded from these benefits and often face additional levies and fees.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Across regions, the pattern holds. The closer you are to power, the more policy protects your position. And the less it looks like a subsidy.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "What It Replaces",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Every subsidy comes at a cost. Not just in accounting, but in opportunity.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "When public funds are used to protect private wealth, they are no longer available for what most citizens actually need. Roads, schools, clinics, housing, and transit systems all become harder to fund when state budgets are stretched by incentives for the already advantaged.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Indonesia: Before its fuel subsidy reform in 2014, the government spent more on energy subsidies than on education, health, and infrastructure combined. The poorest Indonesians, who used little subsidized fuel, saw their access to services decline while state resources flowed toward wealthier households with cars and generators.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Egypt: Energy subsidies in several fiscal years cost more than the country’s total spending on health and education. During that time, public schools deteriorated, and health systems strained under the pressure of population growth.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The cost is not just financial. It is structural. When budgets are designed to shield the top, entire populations are left exposed at the bottom.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Rhetoric of Risk",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "When subsidies flow to the poor, they are scrutinized. When they flow to the rich, they are rebranded.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Across countries, the language around fiscal support changes depending on who receives it. Programs for the poor are labeled as handouts. Programs for corporations are framed as investments. Social protections are viewed as drains. Tax breaks for the elite are justified as economic strategy.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Pakistan: Tax amnesty schemes have repeatedly allowed wealthy individuals and corporations to declare unreported income with little penalty. Each round is promoted as a way to expand the tax base or stimulate investment, even as the country continues to collect minimal tax revenue from its highest earners.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Kenya: The government has faced criticism for offering extensive tax relief and infrastructure access to large multinationals, while increasing VAT on basic goods and phasing out fuel subsidies. Pro-business incentives are promoted as essential for growth, despite growing public debt and inequality.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The message is clear. When wealth is subsidized, it is called confidence. When poverty is supported, it is called dependency.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "What Happens When Extraction Is Policy",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Subsidies are not inherently unjust. But when they are structured to reward wealth and stabilize privilege, they become something else entirely. They function as a hidden mechanism of economic extraction.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Across the Global South, governments face real pressures to attract investment, maintain energy access, and stimulate growth. But when those goals are pursued by prioritizing elite gain over public need, the system does not lift people up. It locks them in.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The poor do not just receive less. They subsidize those who receive more.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And the deeper cost is harder to measure: lost trust, hollowed services, and a population asked to sacrifice while watching advantage get institutionalized at the top.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“The issue is not whether to subsidize, but who we’re really subsidizing, and what we’re giving up in return.”",
+            "marks": [
+              "italic"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "-International Institute for Sustainable Development, 2023",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "What if inequality is not just a failure of redistribution, but a function of who policy is built to serve?",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "What would our budgets look like if they were measured not just by line items, but by who they actually protect?",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And how much longer can we afford to call this normal?",
+            "marks": []
+          }
+        ]
+      }
+    ]
+  },
+  "bodyHtml": "<p><strong>The Cost of What Isn’t Counted</strong></p>\n<p>In 2012, Indonesia allocated more than one-fifth of its central government budget to energy subsidies. That amount was over three times what it spent on health and infrastructure combined.</p>\n<p>Subsidies are often portrayed as tools to assist the poor. However, some of the most substantial subsidies operate subtly, benefiting those who need them least.</p>\n<p>Across various economies, mechanisms like tax breaks, discounted utilities, and land deals are implemented under the guise of “development incentives.” These benefits frequently favor the affluent, while their costs are distributed across the broader population.</p>\n<p>These are not unintended consequences. They are deliberate policy choices.</p>\n<p>Because they are labeled as “market stabilizers” or “investment incentives,” many fail to recognize them as subsidies that advantage the already privileged.</p>\n<p><strong>What We Call a Subsidy</strong></p>\n<p>The term “subsidy” often conjures images of direct financial aid or fuel discounts. Yet many significant subsidies appear as tax exemptions, underpriced land leases, or corporate bailouts. These are costs absorbed by the state under the banner of economic growth.</p>\n<p>Egypt: In 2013, over 90 percent of gasoline subsidies benefited the wealthiest 20 percent of the population. This disparity arose because higher-income individuals consumed more fuel, which led to a disproportionate share of the subsidy.</p>\n<p>Indonesia: Before reforms in 2014, fossil fuel subsidies consumed a significant portion of the national budget, exceeding expenditures on education and health. The wealthiest households received nearly five times more in fuel subsidies than the poorest, highlighting how regressive the structure had become.</p>\n<p>In many nations, what is labeled as “stimulus” or “development strategy” functions as reverse redistribution. Public funds are quietly redirected to private interests.</p>\n<p><strong>Who It Serves, Quietly</strong></p>\n<p>Subsidies are often justified as tools to help the vulnerable. But in practice, the largest benefits often flow to those already protected. This happens quietly and by design.</p>\n<p>Nigeria: The government has historically spent billions on fuel subsidies that primarily benefited urban drivers and car owners. The poorest Nigerians, who rely on informal transit or walk, received the least. When subsidies were removed in 2023, public outcry was swift. Not because they were well-targeted, but because they had become politically embedded.</p>\n<p>Argentina: Agricultural subsidies have long favored large landowners and agribusiness over smallholder farmers. Though originally justified to stabilize food prices, the bulk of the support has gone to export-oriented producers with significant land assets and market power.</p>\n<p>Gulf States: In countries like Oman and the UAE, citizens have historically enjoyed subsidized electricity, fuel, and water, even during periods of fiscal strain. Meanwhile, migrant workers, who make up the majority of the labor force, are excluded from these benefits and often face additional levies and fees.</p>\n<p>Across regions, the pattern holds. The closer you are to power, the more policy protects your position. And the less it looks like a subsidy.</p>\n<p><strong>What It Replaces</strong></p>\n<p>Every subsidy comes at a cost. Not just in accounting, but in opportunity.</p>\n<p>When public funds are used to protect private wealth, they are no longer available for what most citizens actually need. Roads, schools, clinics, housing, and transit systems all become harder to fund when state budgets are stretched by incentives for the already advantaged.</p>\n<p>Indonesia: Before its fuel subsidy reform in 2014, the government spent more on energy subsidies than on education, health, and infrastructure combined. The poorest Indonesians, who used little subsidized fuel, saw their access to services decline while state resources flowed toward wealthier households with cars and generators.</p>\n<p>Egypt: Energy subsidies in several fiscal years cost more than the country’s total spending on health and education. During that time, public schools deteriorated, and health systems strained under the pressure of population growth.</p>\n<p>The cost is not just financial. It is structural. When budgets are designed to shield the top, entire populations are left exposed at the bottom.</p>\n<p><strong>The Rhetoric of Risk</strong></p>\n<p>When subsidies flow to the poor, they are scrutinized. When they flow to the rich, they are rebranded.</p>\n<p>Across countries, the language around fiscal support changes depending on who receives it. Programs for the poor are labeled as handouts. Programs for corporations are framed as investments. Social protections are viewed as drains. Tax breaks for the elite are justified as economic strategy.</p>\n<p>Pakistan: Tax amnesty schemes have repeatedly allowed wealthy individuals and corporations to declare unreported income with little penalty. Each round is promoted as a way to expand the tax base or stimulate investment, even as the country continues to collect minimal tax revenue from its highest earners.</p>\n<p>Kenya: The government has faced criticism for offering extensive tax relief and infrastructure access to large multinationals, while increasing VAT on basic goods and phasing out fuel subsidies. Pro-business incentives are promoted as essential for growth, despite growing public debt and inequality.</p>\n<p>The message is clear. When wealth is subsidized, it is called confidence. When poverty is supported, it is called dependency.</p>\n<p><strong>What Happens When Extraction Is Policy</strong></p>\n<p>Subsidies are not inherently unjust. But when they are structured to reward wealth and stabilize privilege, they become something else entirely. They function as a hidden mechanism of economic extraction.</p>\n<p>Across the Global South, governments face real pressures to attract investment, maintain energy access, and stimulate growth. But when those goals are pursued by prioritizing elite gain over public need, the system does not lift people up. It locks them in.</p>\n<p>The poor do not just receive less. They subsidize those who receive more.</p>\n<p>And the deeper cost is harder to measure: lost trust, hollowed services, and a population asked to sacrifice while watching advantage get institutionalized at the top.</p>\n<p><em>“The issue is not whether to subsidize, but who we’re really subsidizing, and what we’re giving up in return.”</em></p>\n<p>-International Institute for Sustainable Development, 2023</p>\n<p>What if inequality is not just a failure of redistribution, but a function of who policy is built to serve?</p>\n<p>What would our budgets look like if they were measured not just by line items, but by who they actually protect?</p>\n<p>And how much longer can we afford to call this normal?</p>",
+  "bodyTextSha256": "sha256:4244abd9c034a6fbd40c5704d9b23dc063fa04fbd6f0e23227dbcd2317d56e1c",
+  "bodyBlockCount": 39,
+  "license": {
+    "name": "All Rights Reserved"
+  }
+}
