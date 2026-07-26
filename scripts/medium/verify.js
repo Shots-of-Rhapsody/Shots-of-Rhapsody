@@ -56,6 +56,9 @@ export async function main(argv = process.argv.slice(2)) {
 			console.log(
 				`Verified ${result.importedCount}/${result.expectedCount} Medium articles; complete=${result.complete}`,
 			);
+			console.log(
+				`Durably bound Medium hero assets: ${result.plannedAssetCount}`,
+			);
 		}
 		return 0;
 	} catch (error) {

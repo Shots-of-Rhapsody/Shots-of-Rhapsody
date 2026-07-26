@@ -8,6 +8,7 @@ import {
 } from "../lib/acquisition.js";
 import { DEFAULT_REPO_ROOT, serializeJson } from "../lib/contract.js";
 import { sha256 } from "../lib/integrity.js";
+import { verifyMediumArticles } from "../lib/pipeline.js";
 
 const approvedPath = path.join(
 	DEFAULT_REPO_ROOT,
@@ -194,4 +195,15 @@ test("acquisition manifest hash must equal the durable anchor", async () => {
 			}),
 		/acquisition manifest SHA-256 differs/u,
 	);
+});
+
+test("asset planning cannot impersonate imported article completeness", async () => {
+	const result = await verifyMediumArticles({
+		repoRoot: DEFAULT_REPO_ROOT,
+		requireComplete: false,
+	});
+	assert.equal(result.importedCount, 0);
+	assert.equal(result.expectedCount, 0);
+	assert.equal(result.plannedAssetCount, 24);
+	assert.equal(result.complete, false);
 });

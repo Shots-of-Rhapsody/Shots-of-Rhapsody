@@ -1153,7 +1153,8 @@ export async function verifyMediumArticles({
 			articles: [],
 			complete: false,
 			importedCount: 0,
-			expectedCount: heroAssetLedger.itemCount,
+			expectedCount: 0,
+			plannedAssetCount: heroAssetLedger.itemCount,
 		};
 	}
 	if (manifest.state !== "active") {
@@ -1313,6 +1314,7 @@ export async function verifyMediumArticles({
 		complete,
 		importedCount: manifest.articles.length,
 		expectedCount: inventory.expectedCount,
+		plannedAssetCount: heroAssetLedger.itemCount,
 	};
 }
 
