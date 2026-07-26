@@ -8,6 +8,7 @@ import sharp from "sharp";
 import {
 	embeddedRasterContainerMetadata,
 	embeddedRasterMetadata,
+	validAvifPixelInformation,
 	verifyBuiltImages,
 } from "../../verify-images.mjs";
 
@@ -353,6 +354,25 @@ test("rejects unknown payload containers across public raster formats", async ()
 			expected,
 			metadata.format,
 		);
+	}
+});
+
+test("accepts only exact 8-bit AVIF pixel-information layouts", () => {
+	assert.equal(
+		validAvifPixelInformation(Buffer.from("000000000108", "hex")),
+		true,
+	);
+	assert.equal(
+		validAvifPixelInformation(Buffer.from("0000000003080808", "hex")),
+		true,
+	);
+	for (const invalid of [
+		Buffer.from("00000000020808", "hex"),
+		Buffer.from("000000000308080810", "hex"),
+		Buffer.from("00000000010a", "hex"),
+		Buffer.from("000000010108", "hex"),
+	]) {
+		assert.equal(validAvifPixelInformation(invalid), false);
 	}
 });
 

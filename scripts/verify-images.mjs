@@ -374,6 +374,24 @@ function boxPayload(bytes, box) {
 	return bytes.subarray(box.dataStart, box.end);
 }
 
+export function validAvifPixelInformation(payload) {
+	if (
+		!Buffer.isBuffer(payload) ||
+		payload.byteLength < 6 ||
+		!payload.subarray(0, 4).equals(Buffer.alloc(4))
+	) {
+		return false;
+	}
+	const channelCount = payload[4];
+	if (
+		(channelCount !== 1 && channelCount !== 3) ||
+		payload.byteLength !== 5 + channelCount
+	) {
+		return false;
+	}
+	return payload.subarray(5).every((bitDepth) => bitDepth === 8);
+}
+
 function inspectAvifContainer(bytes, metadata) {
 	const failures = [];
 	const top = parseIsoBoxes(bytes, 0, bytes.byteLength, "AVIF");
@@ -487,9 +505,7 @@ function inspectAvifContainer(bytes, metadata) {
 			failures.push("AVIF codec configuration is unexpected");
 		if (
 			!pixelInformation ||
-			!boxPayload(bytes, pixelInformation).equals(
-				Buffer.from("000000000108", "hex"),
-			)
+			!validAvifPixelInformation(boxPayload(bytes, pixelInformation))
 		) {
 			failures.push("AVIF pixel information is unexpected");
 		}
