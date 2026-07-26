@@ -496,6 +496,43 @@
       ]
     },
     {
+      "slug": "the-water-economy",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-water-economy-2bb7ef210efd",
+      "paths": {
+        "snapshot": "provenance/medium/posts/the-water-economy.json",
+        "markdown": "src/content/posts/the-water-economy/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:db0ec3592d86f7bb8b550203a65458fe3837fed7c500aca2a847ada90dc64c38",
+        "snapshot": "sha256:87d5c1f43666550a1c7cc531de633471456326726a52138cc3749612e9bf81c4",
+        "markdown": "sha256:782d14300ed3698f55a0ce79fea990d9815e7457d2819961b0909cb53e5201ba",
+        "bodyText": "sha256:3d7cca5e42724f68d63437a6b10b78700c86628e8bd688d5e6728087239d5594"
+      },
+      "content": {
+        "title": "The Water Economy",
+        "subtitle": "In a system where scarcity is profitable, even survival comes with a price.",
+        "seriesLine": "A Ledger Series article on the global cost of water access and the systems that profit from scarcity.",
+        "bodyBlockCount": 45
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/the-water-economy/hero.webp",
+          "sha256": "sha256:cc36ae521f3823f0444ebc18ac6bd4f4396ddf461d9c3db62c9e16434aab89f9",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:752f074c19c46dd2d841e58950ba0495330b4bbb5b359127eab86d5e20054826",
+          "pixelSha256": "sha256:eb0065a7a87b49e8c4b97af60302d26fc8cadf3ee71aaee75431765c09bc83a9",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 3206976
+        }
+      ]
+    },
+    {
       "slug": "what-comes-after-work-designing-a-purpose-driven-life",
       "capturedAt": "2026-07-25T14:11:15.789Z",
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/what-comes-after-work-designing-a-purpose-driven-life-06fcd3447f09",
