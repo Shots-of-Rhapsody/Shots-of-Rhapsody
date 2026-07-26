@@ -163,6 +163,43 @@
       ]
     },
     {
+      "slug": "the-collateral-shift",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-collateral-shift-2e24528b3eb4",
+      "paths": {
+        "snapshot": "provenance/medium/posts/the-collateral-shift.json",
+        "markdown": "src/content/posts/the-collateral-shift/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:26a4948705deb40f43038b83b29c684a6ad8efddd3597546adaedd8efe54a5d7",
+        "snapshot": "sha256:f70129aa53eaef3e0da4d8acc058752d78e089b58f81a1f3d88b2ffa23eff8f6",
+        "markdown": "sha256:e8233237acc0ea9a9cdcbdc76d744490f1d2600b1b2aba61df99ce849226e1ee",
+        "bodyText": "sha256:95f9bbe282ebd36789d25fc12804f61ad80fc38732ab2a0db12356347334ff40"
+      },
+      "content": {
+        "title": "The Collateral Shift",
+        "subtitle": "In a system where access determines power, even liquidity becomes a geopolitical tool.",
+        "seriesLine": "A Ledger Series article on how the global energy trade is restructuring risk and rewriting financial norms.",
+        "bodyBlockCount": 39
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/the-collateral-shift/hero.webp",
+          "sha256": "sha256:d22cbcd9bf423ac3f3ec97798e13600eee8044bb66baf523051ee270a021b5cd",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:0f8f0ef19091e3dc6cecfb2c07c7afb8bccb82f0d2b811769012711845d8a2e0",
+          "pixelSha256": "sha256:2a1beadc9bae79203c14279855a7e179992bbe5d0922a60a3474383721fd6a15",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1200,
+          "byteSize": 2056368
+        }
+      ]
+    },
+    {
       "slug": "the-economics-of-loneliness-how-disconnection-became-a-market-failure",
       "capturedAt": "2026-07-25T14:11:15.789Z",
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-economics-of-loneliness-how-disconnection-became-a-market-failure-e9a8dfdba5f3",
