@@ -753,6 +753,43 @@
           "byteSize": 3558860
         }
       ]
+    },
+    {
+      "slug": "why-family-is-not-sacred-by-default",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/why-family-is-not-sacred-by-default-62dc7ecda7cb",
+      "paths": {
+        "snapshot": "provenance/medium/posts/why-family-is-not-sacred-by-default.json",
+        "markdown": "src/content/posts/why-family-is-not-sacred-by-default/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:57efb98067c1fc5e15fa0fa78339fe4c367e91a387c165b69cf097e470816b76",
+        "snapshot": "sha256:e1e146bc45938f5779a4f147a09328261f8bddb0b12182d03ee844e68b8a68d6",
+        "markdown": "sha256:5bfb56670ea7d91d568b34cae79256d35eebcd269b2a4ed31114d02856ad714c",
+        "bodyText": "sha256:8761103dec3402fc12a7830099d56fac4aa654da9e4d508ead046d3078d4e38f"
+      },
+      "content": {
+        "title": "Why Family Is Not Sacred by Default",
+        "subtitle": "In a system that glorifies inheritance and tradition, choosing your people becomes a radical act of self-respect.",
+        "seriesLine": "A Ledger Series article on what we owe to those we never chose, and the quiet rebellion of redefining family on our own terms.",
+        "bodyBlockCount": 71
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/why-family-is-not-sacred-by-default/hero.webp",
+          "sha256": "sha256:4805a825f70c518512b43624ffda113b228dcd23628f0afa572687fe1b356f91",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:7b19b2c1f05f461410c747b1d542868aa575ae99768705f7d2f5b37f69ca2a29",
+          "pixelSha256": "sha256:e1c8f46142489b7c24b65a43508d273cc381de4895e9f6ea19eae2a62dafb706",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 2865800
+        }
+      ]
     }
   ]
 }
