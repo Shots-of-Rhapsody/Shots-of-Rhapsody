@@ -1,0 +1,134 @@
+---
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { url } from "@utils/url-utils";
+import { IS_PUBLIC_REVIEW } from "@/data/build-mode";
+
+const siteUrl = Astro.site ?? Astro.url;
+const canonicalUrl = new URL(url("/404.html"), siteUrl).toString();
+---
+
+<MainGridLayout
+	title="Page not found"
+	description="This page is not part of the Shots of Rhapsody archive."
+	canonicalUrl={canonicalUrl}
+>
+	{!IS_PUBLIC_REVIEW && <meta slot="head" name="robots" content="noindex" />}
+	<section class="not-found manuscript-panel" data-custom-404>
+		<div class="not-found__mark" aria-hidden="true">SR</div>
+		<p class="not-found__kicker">A missing folio</p>
+		<h1>Page not found</h1>
+		<p class="not-found__message">
+			The page you followed is not part of this archive. Return to the opening
+			page, or continue through the complete collection.
+		</p>
+		<nav class="not-found__actions" aria-label="Page not found">
+			<a data-404-home href={url("/")}>Return home</a>
+			<a data-404-archive href={url("/archive/")}>Browse all works</a>
+		</nav>
+	</section>
+</MainGridLayout>
+
+<style>
+	.manuscript-panel {
+		position: relative;
+		overflow: hidden;
+		background: var(--card-bg);
+		border: 1px solid var(--line-divider);
+		border-radius: var(--radius-large);
+	}
+
+	.not-found {
+		display: grid;
+		min-height: min(64vh, 38rem);
+		place-content: center;
+		justify-items: center;
+		padding: clamp(3rem, 10vw, 7rem) clamp(1.25rem, 8vw, 6rem);
+		text-align: center;
+	}
+
+	.not-found::before,
+	.not-found::after {
+		position: absolute;
+		left: 50%;
+		width: min(30rem, 68%);
+		height: 1px;
+		content: "";
+		background: var(--line-divider);
+		transform: translateX(-50%);
+	}
+
+	.not-found::before {
+		top: clamp(1.5rem, 5vw, 3rem);
+	}
+
+	.not-found::after {
+		bottom: clamp(1.5rem, 5vw, 3rem);
+	}
+
+	.not-found__mark {
+		display: grid;
+		width: 4.5rem;
+		height: 4.5rem;
+		place-items: center;
+		margin-bottom: 1.35rem;
+		border-radius: 0.35rem;
+		background: var(--seal);
+		color: var(--paper-raised);
+		font-family: "Noto Serif Variable", Georgia, serif;
+		font-size: 1.05rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+	}
+
+	.not-found__kicker {
+		margin: 0 0 0.7rem;
+		color: var(--primary);
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+
+	.not-found h1 {
+		margin: 0;
+		font-size: clamp(2.35rem, 7vw, 4.75rem);
+		font-weight: 620;
+		letter-spacing: -0.025em;
+		line-height: 1;
+		text-wrap: balance;
+	}
+
+	.not-found__message {
+		max-width: 48ch;
+		margin: 1.35rem 0 0;
+		color: var(--ink-soft);
+		line-height: 1.7;
+	}
+
+	.not-found__actions {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.7rem;
+		margin-top: 2rem;
+	}
+
+	.not-found__actions a {
+		display: inline-flex;
+		min-height: 44px;
+		align-items: center;
+		padding: 0.65rem 1rem;
+		border: 1px solid color-mix(in srgb, var(--primary) 45%, transparent);
+		border-radius: 999px;
+		color: var(--primary);
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		font-size: 0.9rem;
+		font-weight: 700;
+		text-decoration: none;
+	}
+
+	.not-found__actions a:hover {
+		background: color-mix(in srgb, var(--primary) 9%, transparent);
+	}
+</style>

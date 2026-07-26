@@ -1,55 +1,82 @@
 ---
 import { render } from "astro:content";
+import EditorialWorkCard from "@components/EditorialWorkCard.astro";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
-import I18nKey from "@i18n/i18nKey";
-import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
-import { getPostAssetBasePath, getSortedPosts } from "@utils/content-utils";
-import { getAbsoluteImageUrl } from "@utils/image-utils";
+import {
+	getPostDeck,
+	getPostHeadline,
+	getSortedPosts,
+} from "@utils/content-utils";
+import { getSocialImage } from "@utils/image-utils";
 import {
 	getAbsolutePostUrlBySlug,
-	getPostUrlBySlug,
 	getSiteRootUrl,
 	url,
 } from "@utils/url-utils";
-import { Icon } from "astro-icon/components";
+import {
+	EDITORIAL_METADATA,
+	getWritingTypeLabel,
+	indexEditorialEntries,
+	isManifestSlug,
+} from "@/data/editorial";
 import ImageWrapper from "../../components/misc/ImageWrapper.astro";
 import PostMetadata from "../../components/PostMeta.astro";
 import { licenseConfig, profileConfig, siteConfig } from "../../config";
 
 export async function getStaticPaths() {
 	const blogEntries = await getSortedPosts();
+	const indexedEntries = indexEditorialEntries(blogEntries);
+	const nonfictionEntries = blogEntries
+		.filter((entry) => entry.data.section === "nonfiction")
+		.toSorted(
+			(left, right) =>
+				left.data.published.valueOf() - right.data.published.valueOf(),
+		);
+	const nonfictionContinuation = new Map(
+		nonfictionEntries.map((entry, index) => [
+			entry.id,
+			nonfictionEntries[index + 1],
+		]),
+	);
 	return blogEntries.map((entry) => ({
 		params: { slug: entry.id },
-		props: { entry },
+		props: {
+			entry,
+			continuationEntry: isManifestSlug(entry.id)
+				? indexedEntries.get(EDITORIAL_METADATA[entry.id].continueSlug)
+				: nonfictionContinuation.get(entry.id),
+			returnToNonfiction:
+				entry.data.section === "nonfiction" &&
+				!nonfictionContinuation.get(entry.id),
+		},
 	}));
 }
 
-const { entry } = Astro.props;
+const { entry, continuationEntry, returnToNonfiction } = Astro.props;
 const { Content, headings, remarkPluginFrontmatter } = await render(entry);
+const headline = getPostHeadline(entry);
+const deck = getPostDeck(entry);
 const siteUrl = Astro.site ?? Astro.url;
 const siteRoot = getSiteRootUrl(siteUrl);
-const postBasePath = getPostAssetBasePath(entry);
 const canonicalUrl = getAbsolutePostUrlBySlug(entry.id, siteUrl).toString();
 const author = entry.data.author || profileConfig.name;
-const description =
-	entry.data.description ||
-	entry.data.subtitle ||
-	entry.data.summary ||
-	entry.data.title;
-const coverUrl = entry.data.image
-	? await getAbsoluteImageUrl(entry.data.image, postBasePath, siteUrl)
-	: undefined;
-const isArchivePost = Boolean(entry.data.provenance);
+const description = entry.data.description || deck;
+const socialImage = getSocialImage(entry.id, siteUrl);
+const coverUrl = socialImage.url;
+const isSourceVerifiedPost = Boolean(entry.data.provenance);
+const isSealedArchivePost = entry.data.provenance?.authority === "Proton Docs";
+const isMediumPost =
+	entry.data.provenance?.authority === "Medium account export";
 const authorUrl =
-	isArchivePost && author === "Tai Song"
+	author === "Tai Song"
 		? new URL(url("/authors/tai-song/"), siteUrl).toString()
 		: undefined;
-const coverAlt = isArchivePost
+const coverAlt = isSourceVerifiedPost
 	? (entry.data.imageAlt ?? "")
-	: (entry.data.imageAlt ?? `Cover image for “${entry.data.title}”`);
-const imageDescription = isArchivePost
+	: (entry.data.imageAlt ?? `Cover image for “${headline}”`);
+const imageDescription = isSourceVerifiedPost
 	? (entry.data.imageAlt ?? undefined)
 	: coverAlt;
 const archiveWordCount = entry.data.provenance?.wordCount;
@@ -58,11 +85,12 @@ const displayedMinutes =
 	archiveWordCount !== undefined
 		? Math.max(1, Math.round(archiveWordCount / 200))
 		: remarkPluginFrontmatter.minutes;
+const writingType = getWritingTypeLabel(entry.id, entry.data.category ?? "");
 const showLicense = Boolean(entry.data.license) || licenseConfig.enable;
 const effectiveLicense =
 	entry.data.license ?? (licenseConfig.enable ? licenseConfig : undefined);
 const coverCaptionId =
-	isArchivePost && entry.data.imageCaption
+	isSourceVerifiedPost && entry.data.imageCaption
 		? `hero-caption-${entry.id}`
 		: undefined;
 
@@ -70,8 +98,10 @@ const jsonLd = {
 	"@context": "https://schema.org",
 	"@type": "BlogPosting",
 	"@id": `${canonicalUrl}#article`,
-	headline: entry.data.title,
-	alternativeHeadline: entry.data.subtitle || undefined,
+	headline,
+	alternativeHeadline: isMediumPost
+		? entry.data.title
+		: entry.data.subtitle || undefined,
 	description,
 	keywords: entry.data.tags,
 	author: {
@@ -93,16 +123,16 @@ const jsonLd = {
 		"@type": "WebPage",
 		"@id": canonicalUrl,
 	},
-	image: coverUrl
-		? {
-				"@type": "ImageObject",
-				url: coverUrl,
-				contentUrl: coverUrl,
-				description: imageDescription,
-				caption: entry.data.imageCaption || undefined,
-			}
-		: undefined,
-	isBasedOn: entry.data.publication?.url,
+	image: {
+		"@type": "ImageObject",
+		url: coverUrl,
+		contentUrl: coverUrl,
+		encodingFormat: socialImage.mimeType,
+		width: socialImage.width,
+		height: socialImage.height,
+		description: imageDescription,
+		caption: entry.data.imageCaption || undefined,
+	},
 	articleSection: entry.data.category || undefined,
 	wordCount: displayedWordCount,
 	license: effectiveLicense?.url ?? effectiveLicense?.name,
@@ -114,8 +144,7 @@ const jsonLd = {
 const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 ---
 <MainGridLayout
-	banner={entry.data.image}
-	title={entry.data.title}
+	title={headline}
 	description={description}
 	lang={entry.data.lang}
 	setOGTypeArticle={true}
@@ -123,119 +152,311 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 	canonicalUrl={canonicalUrl}
 	socialImage={coverUrl}
 	socialImageAlt={coverAlt}
+	socialImageWidth={socialImage.width}
+	socialImageHeight={socialImage.height}
+	socialImageType={socialImage.mimeType}
 	author={author}
 	published={entry.data.published}
 	updated={entry.data.updated}
 	tags={entry.data.tags}
 	category={entry.data.category}
 >
-    <script is:inline slot="head" type="application/ld+json" set:html={jsonLdString}></script>
-    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative mb-4">
-        <div id="post-container" class:list={["card-base z-10 px-6 md:px-9 pt-6 pb-4 relative w-full ",
-            {}
-        ]}>
-            <!-- word count and reading time -->
-            <div class="flex flex-row text-black/30 dark:text-white/30 gap-5 mb-3 transition onload-animation">
-                <div class="flex flex-row items-center">
-                    <div class="transition h-6 w-6 rounded-md bg-black/5 dark:bg-white/10 text-black/50 dark:text-white/50 flex items-center justify-center mr-2">
-                        <Icon name="material-symbols:notes-rounded"></Icon>
-                    </div>
-                    <div class="text-sm">{displayedWordCount} {" " + i18n(displayedWordCount === 1 ? I18nKey.wordCount : I18nKey.wordsCount)}</div>
-                </div>
-                <div class="flex flex-row items-center">
-                    <div class="transition h-6 w-6 rounded-md bg-black/5 dark:bg-white/10 text-black/50 dark:text-white/50 flex items-center justify-center mr-2">
-                        <Icon name="material-symbols:schedule-outline-rounded"></Icon>
-                    </div>
-                    <div class="text-sm">
-                        {displayedMinutes} {" " + i18n(displayedMinutes === 1 ? I18nKey.minuteCount : I18nKey.minutesCount)}
-                    </div>
-                </div>
-            </div>
+	<script is:inline slot="head" type="application/ld+json" set:html={jsonLdString}></script>
+	<article id="post-container" class="article-shell">
+		<header class="article-header">
+			<p class="article-type" data-pagefind-meta="type">{writingType}</p>
+			<div class="post-reading-meta" data-pagefind-ignore>
+				<span>{displayedWordCount} {displayedWordCount === 1 ? "word" : "words"}</span>
+				<span aria-hidden="true">·</span>
+				<span>{displayedMinutes} min read</span>
+			</div>
+			<h1
+				data-pagefind-body
+				data-pagefind-weight="10"
+				data-pagefind-meta="title"
+				data-archive-field={isSealedArchivePost ? "title" : undefined}
+				data-article-field={isMediumPost ? "export-title" : undefined}
+			>
+				{headline}
+			</h1>
+			{(isMediumPost ? deck : entry.data.subtitle) && (
+				<p
+					data-archive-field={isSealedArchivePost ? "subtitle" : undefined}
+					data-article-field={isMediumPost ? "summary" : undefined}
+					class="article-subtitle"
+				>
+					{isMediumPost ? deck : entry.data.subtitle}
+				</p>
+			)}
+			<div class="article-byline" data-pagefind-ignore>
+				<span
+					data-archive-field={isSealedArchivePost ? "author" : undefined}
+					data-article-field={isMediumPost ? "author" : undefined}
+				>
+					By {authorUrl ? <a href={url("/authors/tai-song/")}>{author}</a> : author}
+				</span>
+			</div>
+			<div class="article-metadata" data-pagefind-ignore>
+				<PostMetadata
+					published={entry.data.published}
+					updated={entry.data.updated}
+					tags={entry.data.tags}
+					category={entry.data.category}
+				/>
+			</div>
+		</header>
 
-            <!-- title -->
-            <div class="relative onload-animation">
-                <h1
-                    data-pagefind-body data-pagefind-weight="10" data-pagefind-meta="title"
-					data-archive-field={isArchivePost ? "title" : undefined}
-                    class="transition w-full block font-bold mb-3
-                    text-3xl md:text-[2.25rem]/[2.75rem]
-                    text-black/90 dark:text-white/90
-                    md:before:w-1 before:h-5 before:rounded-md before:bg-[var(--primary)]
-                    before:absolute before:top-[0.75rem] before:left-[-1.125rem]
-                ">{entry.data.title}</h1>
-				{entry.data.subtitle && <p data-archive-field={isArchivePost ? "subtitle" : undefined} class="transition text-lg md:text-xl text-black/65 dark:text-white/65 mb-3">{entry.data.subtitle}</p>}
-				<div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-black/50 dark:text-white/50 mb-4" data-pagefind-ignore>
-					<span data-archive-field={isArchivePost ? "author" : undefined}>By {authorUrl ? <a href={url("/authors/tai-song/")} class="link text-[var(--primary)]">{author}</a> : author}</span>
-					{entry.data.publication && <span aria-hidden="true">·</span>}
-					{entry.data.publication && <a data-archive-publication-url href={entry.data.publication.url} target="_blank" rel="noopener noreferrer" class="link text-[var(--primary)]">Originally published on {entry.data.publication.platform}</a>}
-				</div>
-            </div>
+		{isMediumPost && (
+			<section class="article-medium-lead" data-article-lead>
+				<h2 data-article-field="title">{entry.data.title}</h2>
+				<p data-article-field="subtitle">{entry.data.subtitle}</p>
+			</section>
+		)}
 
-            <!-- metadata -->
-            <div class="onload-animation">
-                <PostMetadata
-                        class="mb-5"
-                        published={entry.data.published}
-                        updated={entry.data.updated}
-                        tags={entry.data.tags}
-                        category={entry.data.category}
-                ></PostMetadata>
-                {!entry.data.image && <div class="border-[var(--line-divider)] border-dashed border-b-[1px] mb-5"></div>}
-            </div>
+		{entry.data.seriesLine && (
+			<p
+				class="article-series-line"
+				data-article-field={isMediumPost ? "series-line" : undefined}
+			>
+				{entry.data.seriesLine}
+			</p>
+		)}
 
-            <!-- always show cover as long as it has one -->
-
-			{entry.data.image && <figure data-archive-hero={isArchivePost ? "" : undefined} class="mb-8 onload-animation">
+		{entry.data.image && (
+			<figure
+				data-archive-hero={isSealedArchivePost ? "" : undefined}
+				data-article-hero={isMediumPost ? "" : undefined}
+				class="article-hero"
+			>
 				<ImageWrapper
 					id="post-cover"
 					src={entry.data.image}
-					basePath={postBasePath}
+					variant="hero"
+					priority
 					alt={coverAlt}
 					ariaDescribedby={coverCaptionId}
 					fit="contain"
-					loading="eager"
-					class="rounded-xl banner-container bg-black/5 dark:bg-white/5"
+					class="article-hero__image"
 				/>
-				{entry.data.imageCaption && <figcaption id={coverCaptionId} data-archive-field={isArchivePost ? "image-caption" : undefined} class="mt-2 px-2 text-sm text-center text-black/50 dark:text-white/50">{entry.data.imageCaption}</figcaption>}
-			</figure>}
+				{entry.data.imageCaption && (
+					<figcaption
+						id={coverCaptionId}
+						data-archive-field={isSealedArchivePost ? "image-caption" : undefined}
+						class="article-caption"
+					>
+						{entry.data.imageCaption}
+					</figcaption>
+				)}
+			</figure>
+		)}
 
+		<Markdown archiveBody={isSealedArchivePost} class="article-body markdown-content">
+			<Content />
+		</Markdown>
 
-            <Markdown archiveBody={isArchivePost} class="mb-6 markdown-content onload-animation">
-                <Content />
-            </Markdown>
+		{continuationEntry && (
+			<section
+				class="post-continuation"
+				aria-labelledby="continue-reading-title"
+				data-editorial-continuation-from={entry.id}
+				data-editorial-continue-slug={continuationEntry.id}
+				data-pagefind-ignore
+			>
+				<p class="post-continuation__kicker">The next leaf</p>
+				<h2 id="continue-reading-title">Continue through the archive</h2>
+				<EditorialWorkCard
+					entry={continuationEntry}
+					variant="continuation"
+					context="article"
+				/>
+			</section>
+		)}
+		{returnToNonfiction && (
+			<nav class="post-continuation post-continuation--index" aria-label="Continue reading" data-pagefind-ignore>
+				<p class="post-continuation__kicker">More essays</p>
+				<a href={url("/nonfiction/")}>Return to the Nonfiction collection <span aria-hidden="true">→</span></a>
+			</nav>
+		)}
 
-            {showLicense && <License
-				title={entry.data.title}
+		{showLicense && (
+			<License
+				title={headline}
 				pubDate={entry.data.published}
 				author={author}
 				license={entry.data.license}
-				canonicalUrl={canonicalUrl}
-				class="mb-6 rounded-xl license-container onload-animation"
-			></License>}
-
-        </div>
-    </div>
-
-    <div class="flex flex-col md:flex-row justify-between mb-4 gap-4 overflow-hidden w-full">
-        {entry.data.nextSlug ? <a data-post-navigation="next" href={getPostUrlBySlug(entry.data.nextSlug)}
-           class="w-full font-bold overflow-hidden active:scale-95">
-            <div class="btn-card rounded-2xl w-full h-[3.75rem] max-w-full px-4 flex items-center !justify-start gap-4" >
-                <Icon name="material-symbols:chevron-left-rounded" class="text-[2rem] text-[var(--primary)]" />
-                <div class="overflow-hidden transition overflow-ellipsis whitespace-nowrap max-w-[calc(100%_-_3rem)] text-black/75 dark:text-white/75">
-                    {entry.data.nextTitle}
-                </div>
-            </div>
-        </a> : <span aria-hidden="true" class="w-full"></span>}
-
-        {entry.data.prevSlug ? <a data-post-navigation="previous" href={getPostUrlBySlug(entry.data.prevSlug)}
-           class="w-full font-bold overflow-hidden active:scale-95">
-            <div class="btn-card rounded-2xl w-full h-[3.75rem] max-w-full px-4 flex items-center !justify-end gap-4">
-                <div class="overflow-hidden transition overflow-ellipsis whitespace-nowrap max-w-[calc(100%_-_3rem)] text-black/75 dark:text-white/75">
-                    {entry.data.prevTitle}
-                </div>
-                <Icon name="material-symbols:chevron-right-rounded" class="text-[2rem] text-[var(--primary)]" />
-            </div>
-        </a> : <span aria-hidden="true" class="w-full"></span>}
-    </div>
-
+				class="license-container"
+			/>
+		)}
+	</article>
 </MainGridLayout>
+
+<style>
+	.article-shell {
+		width: 100%;
+		padding: clamp(1.5rem, 5vw, 4rem) clamp(1rem, 4vw, 3rem);
+		background: var(--card-bg);
+		border-block: 1px solid var(--line-divider);
+	}
+
+	.article-header {
+		max-width: 66ch;
+		margin-inline: auto;
+		padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+		border-bottom: 1px solid var(--line-divider);
+	}
+
+	.article-medium-lead {
+		max-width: 66ch;
+		margin: clamp(2rem, 5vw, 3.5rem) auto 0;
+		padding-inline: clamp(0rem, 2vw, 1rem);
+	}
+
+	.article-medium-lead h2 {
+		margin: 0;
+		color: var(--title-color);
+		font-size: clamp(1.65rem, 4vw, 2.65rem);
+		font-weight: 620;
+		letter-spacing: -0.015em;
+		line-height: 1.12;
+		text-wrap: balance;
+	}
+
+	.article-medium-lead p {
+		margin: 0.8rem 0 0;
+		color: var(--ink-soft);
+		font-size: clamp(1.02rem, 2vw, 1.2rem);
+		line-height: 1.6;
+	}
+
+	.article-header h1 {
+		margin: 0;
+		color: var(--title-color);
+		font-size: clamp(2.15rem, 6vw, 4.65rem);
+		font-weight: 640;
+		letter-spacing: -0.025em;
+		line-height: 1.03;
+		text-wrap: balance;
+	}
+
+	.article-type {
+		margin: 0 0 0.5rem;
+		color: var(--primary);
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		font-size: 0.72rem;
+		font-weight: 750;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+
+	.article-subtitle {
+		margin: 1rem 0 0;
+		color: var(--ink-soft);
+		font-size: clamp(1.08rem, 2.2vw, 1.35rem);
+		line-height: 1.55;
+	}
+
+	.post-reading-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.45rem;
+		margin-bottom: 1.15rem;
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		font-size: 0.78rem;
+		color: var(--ink-soft);
+	}
+
+	.article-byline {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.25rem 0.5rem;
+		margin-top: 1rem;
+		color: var(--ink-soft);
+		font-size: 0.82rem;
+	}
+
+	.article-byline a {
+		color: var(--primary);
+		font-weight: 700;
+		text-underline-offset: 0.2em;
+	}
+
+	.article-metadata {
+		margin-top: 0.7rem;
+	}
+
+	.article-series-line {
+		max-width: 66ch;
+		margin: clamp(1.75rem, 4vw, 2.5rem) auto 0;
+		padding-inline-start: 1rem;
+		border-inline-start: 2px solid var(--primary);
+		color: var(--ink-soft);
+		font-size: clamp(1rem, 1.8vw, 1.12rem);
+		font-style: italic;
+		line-height: 1.65;
+	}
+
+	.article-hero {
+		max-width: 71rem;
+		margin: clamp(2rem, 5vw, 3.5rem) auto;
+	}
+
+	.article-hero__image {
+		background: color-mix(in srgb, var(--primary) 5%, transparent);
+		border-block: 1px solid var(--line-divider);
+	}
+
+	.article-caption {
+		margin-top: 0.55rem;
+		padding-inline: 0.75rem;
+		color: var(--ink-soft);
+		font-size: 0.82rem;
+		text-align: center;
+	}
+
+	.article-body {
+		margin-inline: auto;
+	}
+
+	.post-continuation {
+		display: grid;
+		gap: 1rem;
+		max-width: 66ch;
+		margin: clamp(3rem, 8vw, 5rem) auto 2rem;
+		padding-top: clamp(1.5rem, 4vw, 2.5rem);
+		border-top: 1px solid var(--line-divider);
+	}
+
+	.post-continuation__kicker {
+		margin: 0;
+		color: var(--primary);
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.09em;
+		text-transform: uppercase;
+	}
+
+	.post-continuation h2 {
+		margin: -0.45rem 0 0.25rem;
+		font-size: clamp(1.55rem, 4vw, 2.35rem);
+		font-weight: 620;
+		line-height: 1.15;
+	}
+
+	.post-continuation--index a {
+		display: inline-flex;
+		min-height: 44px;
+		align-items: center;
+		gap: 0.5rem;
+		color: var(--primary);
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		font-weight: 700;
+	}
+
+	@media (max-width: 42rem) {
+		.article-shell {
+			padding-inline: 0.75rem;
+		}
+	}
+</style>

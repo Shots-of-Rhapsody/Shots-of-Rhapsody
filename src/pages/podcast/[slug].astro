@@ -1,0 +1,233 @@
+---
+import PodcastPlayer from "@components/podcast/PodcastPlayer.astro";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getSiteRootUrl, url } from "@utils/url-utils";
+import { IS_PUBLIC_REVIEW } from "@/data/build-mode";
+import {
+	getPodcastPublicationBlockers,
+	PODCAST_SHOW,
+	type PodcastEpisode,
+} from "@/data/podcast";
+import { getVisiblePodcastEpisodes } from "@/data/podcast-approval";
+
+export function getStaticPaths() {
+	return getVisiblePodcastEpisodes().map((episode) => ({
+		params: { slug: episode.slug },
+		props: { episode },
+	}));
+}
+
+interface Props {
+	episode: PodcastEpisode;
+}
+
+const { episode } = Astro.props;
+const blockers = getPodcastPublicationBlockers(episode);
+if (!IS_PUBLIC_REVIEW && blockers.length > 0) {
+	throw new Error(
+		`Podcast route refused an incomplete episode: ${episode.slug} (${blockers.join(", ")})`,
+	);
+}
+if (
+	!IS_PUBLIC_REVIEW &&
+	(episode.description === null ||
+		episode.author === null ||
+		episode.publishedAt === null ||
+		episode.guid === null ||
+		episode.transcript === null ||
+		episode.audio.durationSeconds === null)
+) {
+	throw new Error(
+		`Podcast episode unexpectedly failed type narrowing: ${episode.slug}`,
+	);
+}
+
+const description =
+	episode.description ?? "Episode 1: Modular Ethics, by Tai Song.";
+const author = episode.author ?? PODCAST_SHOW.author;
+const published = episode.publishedAt
+	? new Date(episode.publishedAt)
+	: undefined;
+const siteUrl = Astro.site ?? Astro.url;
+const siteRoot = getSiteRootUrl(siteUrl);
+const episodePath = url(`/podcast/${episode.slug}/`);
+const canonicalUrl = new URL(episodePath, siteUrl).toString();
+const audioUrl = new URL(url(episode.audio.publicPath), siteUrl).toString();
+const artworkUrl = new URL(
+	url(PODCAST_SHOW.artwork.publicPath),
+	siteUrl,
+).toString();
+const duration =
+	episode.audio.durationSeconds === null
+		? undefined
+		: `PT${episode.audio.durationSeconds}S`;
+const jsonLd = IS_PUBLIC_REVIEW
+	? null
+	: {
+			"@context": "https://schema.org",
+			"@type": "PodcastEpisode",
+			"@id": `${canonicalUrl}#episode`,
+			name: episode.title,
+			description,
+			url: canonicalUrl,
+			datePublished: published?.toISOString(),
+			episodeNumber: episode.episodeNumber ?? undefined,
+			identifier: episode.guid ?? undefined,
+			author: {
+				"@type": "Person",
+				name: author,
+			},
+			partOfSeries: {
+				"@type": "PodcastSeries",
+				"@id": `${new URL(url("/podcast/"), siteUrl)}#series`,
+				name: PODCAST_SHOW.title,
+				url: new URL(url("/podcast/"), siteUrl).toString(),
+			},
+			associatedMedia: {
+				"@type": "AudioObject",
+				contentUrl: audioUrl,
+				encodingFormat: episode.audio.mimeType,
+				contentSize: String(episode.audio.byteLength),
+				duration,
+			},
+			image: artworkUrl,
+			publisher: {
+				"@type": "Organization",
+				"@id": `${siteRoot}#organization`,
+				name: "Shots of Rhapsody",
+				url: siteRoot.toString(),
+			},
+		};
+const jsonLdString =
+	jsonLd === null ? null : JSON.stringify(jsonLd).replace(/</g, "\\u003c");
+---
+
+<MainGridLayout
+	title={episode.title}
+	description={description}
+	canonicalUrl={canonicalUrl}
+	socialImage={artworkUrl}
+	socialImageAlt={`Cover artwork for ${PODCAST_SHOW.title}`}
+	socialImageWidth={PODCAST_SHOW.artwork.width}
+	socialImageHeight={PODCAST_SHOW.artwork.height}
+	socialImageType={PODCAST_SHOW.artwork.mimeType}
+	author={author}
+	published={published}
+	setOGTypeArticle={true}
+>
+	<meta slot="head" property="og:audio" content={audioUrl} />
+	<meta slot="head" property="og:audio:secure_url" content={audioUrl} />
+	<meta slot="head" property="og:audio:type" content={episode.audio.mimeType} />
+	{jsonLdString && <script is:inline slot="head" type="application/ld+json" set:html={jsonLdString}></script>}
+
+	<article class="podcast-episode" data-podcast-episode={episode.slug}>
+		<header class="podcast-episode__header">
+			<p class="podcast-episode__kicker" data-pagefind-meta="type">Podcast</p>
+			<h1 data-pagefind-body data-pagefind-meta="title">{episode.title}</h1>
+			<p data-pagefind-body>{description}</p>
+			<div class="podcast-episode__meta">
+				<span>By {author}</span>
+				{published && <span aria-hidden="true">·</span>}
+				{published && (
+					<time datetime={published.toISOString()}>
+						{new Intl.DateTimeFormat("en-US", {
+							year: "numeric",
+							month: "long",
+							day: "numeric",
+							timeZone: "UTC",
+						}).format(published)}
+					</time>
+				)}
+			</div>
+		</header>
+
+		<PodcastPlayer episode={episode} show={PODCAST_SHOW} />
+
+		{episode.transcript && (
+			<section class="podcast-episode__transcript" aria-labelledby="transcript-title">
+				<p class="podcast-episode__kicker">Accessible text</p>
+				<h2 id="transcript-title">Transcript</h2>
+				<p>Follow the episode in text.</p>
+				<a href={url(episode.transcript.publicPath)}>Read transcript</a>
+			</section>
+		)}
+	</article>
+</MainGridLayout>
+
+<style>
+	.podcast-episode {
+		display: grid;
+		gap: clamp(2rem, 6vw, 4rem);
+	}
+
+	.podcast-episode__header,
+	.podcast-episode__transcript {
+		width: min(100%, 66ch);
+		margin-inline: auto;
+	}
+
+	.podcast-episode__header {
+		padding-block: clamp(1rem, 4vw, 2.5rem);
+		border-bottom: 1px solid var(--line-divider);
+	}
+
+	.podcast-episode__kicker {
+		margin: 0 0 0.55rem;
+		color: var(--primary);
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+
+	.podcast-episode__header h1 {
+		margin: 0;
+		font-size: clamp(2.15rem, 7vw, 4.75rem);
+		font-weight: 640;
+		letter-spacing: -0.025em;
+		line-height: 1.03;
+		text-wrap: balance;
+	}
+
+	.podcast-episode__header > p:not(.podcast-episode__kicker) {
+		margin: 1rem 0 0;
+		color: var(--ink-soft);
+		font-size: clamp(1.05rem, 2vw, 1.25rem);
+		line-height: 1.7;
+	}
+
+	.podcast-episode__meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin-top: 1rem;
+		color: var(--ink-soft);
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		font-size: 0.82rem;
+	}
+
+	.podcast-episode__transcript {
+		padding-top: 2rem;
+		border-top: 1px solid var(--line-divider);
+	}
+
+	.podcast-episode__transcript h2 {
+		margin: 0;
+		font-size: clamp(1.7rem, 4vw, 2.6rem);
+		font-weight: 620;
+	}
+
+	.podcast-episode__transcript p:not(.podcast-episode__kicker) {
+		color: var(--ink-soft);
+	}
+
+	.podcast-episode__transcript a {
+		display: inline-flex;
+		min-height: 44px;
+		align-items: center;
+		color: var(--primary);
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		font-weight: 700;
+	}
+</style>

@@ -54,6 +54,7 @@ test("the complete post inventory has unique deterministic route IDs", async () 
 	const postsRoot = path.join(repositoryRoot, "src/content/posts");
 	const files = await listMarkdownFiles(postsRoot);
 	const owners = new Map();
+	let draftCount = 0;
 	for (const absolutePath of files) {
 		const entry = path.relative(postsRoot, absolutePath).replaceAll("\\", "/");
 		const source = await readFile(absolutePath, "utf8");
@@ -65,20 +66,42 @@ test("the complete post inventory has unique deterministic route IDs", async () 
 			`content ID ${id} is shared by ${owners.get(id)} and ${entry}`,
 		);
 		owners.set(id, entry);
+		if (frontmatter.draft === true) draftCount += 1;
 	}
 
-	assert.equal(
-		owners.size,
-		15,
-		"the release inventory must retain 11 posts and 4 drafts",
-	);
-	const manifest = JSON.parse(
+	const releaseTarget = JSON.parse(
 		await readFile(
-			path.join(repositoryRoot, "provenance/tai-song/manifest.json"),
+			path.join(repositoryRoot, "provenance/release-target.json"),
 			"utf8",
 		),
 	);
-	for (const article of manifest.articles) {
+	const expectedWritingCount =
+		releaseTarget.expected.archiveWriting +
+		releaseTarget.expected.mediumWriting;
+	const expectedDraftCount = 4;
+	assert.equal(
+		owners.size,
+		expectedWritingCount + expectedDraftCount,
+		"the repository inventory must retain every targeted work and four drafts",
+	);
+	assert.equal(
+		draftCount,
+		expectedDraftCount,
+		"the four legacy drafts must remain",
+	);
+	const manifests = await Promise.all(
+		["tai-song", "medium"].map(async (source) =>
+			JSON.parse(
+				await readFile(
+					path.join(repositoryRoot, `provenance/${source}/manifest.json`),
+					"utf8",
+				),
+			),
+		),
+	);
+	const articles = manifests.flatMap((manifest) => manifest.articles);
+	assert.equal(articles.length, expectedWritingCount);
+	for (const article of articles) {
 		assert.ok(
 			owners.has(article.slug),
 			`manifest route ${article.slug} is missing`,

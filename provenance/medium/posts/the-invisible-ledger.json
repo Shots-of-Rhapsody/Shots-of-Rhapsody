@@ -1,0 +1,609 @@
+{
+  "schemaVersion": 1,
+  "slug": "the-invisible-ledger",
+  "exportTitle": "The Invisible Ledger",
+  "exportSummary": "A Ledger Series article on hidden labor, data, and the systems that ignore both.",
+  "title": "The Invisible Ledger",
+  "subtitle": "In a system powered by human labor, what we don’t count defines what we do.",
+  "seriesLine": "A Ledger Series article on hidden labor, data, and the systems that ignore both.",
+  "summary": "A Ledger Series article on hidden labor, data, and the systems that ignore both.",
+  "description": "A Ledger Series article on hidden labor, data, and the systems that ignore both.",
+  "author": "Tai Song",
+  "published": "2025-04-04T17:00:06.123Z",
+  "category": "Nonfiction",
+  "tags": [],
+  "imageAlt": null,
+  "imageCaption": "",
+  "provenance": {
+    "authority": "Medium account export",
+    "captureFormat": "account-export-html",
+    "capturedAt": "2026-07-25T14:11:15.789Z",
+    "sourcePath": "posts/2025-04-04_The-Invisible-Ledger-2505f05b7201.html",
+    "sourceSha256": "sha256:39fc0cb6002d9006ce8b5cc11f03bce034b223230b3727ab3be41f8146edcc6f",
+    "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-invisible-ledger-2505f05b7201",
+    "presentationSetVersion": 1,
+    "presentationSetSha256": "sha256:ef4258dc651853433de14371682bb3603c7e58852672587fc6f0a9ce8e1484a2"
+  },
+  "hero": {
+    "id": "hero",
+    "outputFile": "hero.webp",
+    "sha256": "sha256:db09120dd63f26eca95dc54838a0db630e9220e56e9fc88887d229810af6e60d",
+    "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+    "captureSha256": "sha256:d1a20828d75d01631cbaa1ad2b4728baaf96a135b415fa34f5e3fd8d047416ee",
+    "pixelSha256": "sha256:931433be57dee6b95a8480c093bfad5cfd8358afade9920be62894687281a7bf",
+    "mimeType": "image/webp",
+    "width": 1800,
+    "height": 1800,
+    "byteSize": 2483576
+  },
+  "assets": [
+    {
+      "id": "hero",
+      "role": "hero",
+      "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*Q0vztVcQx9kQNAX3nEi5Dw@2x.jpeg",
+      "rawFile": "hero-medium.webp",
+      "siteReadyFile": "hero-sanitized.webp",
+      "outputFile": "hero.webp",
+      "sha256": "sha256:db09120dd63f26eca95dc54838a0db630e9220e56e9fc88887d229810af6e60d",
+      "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+      "captureSha256": "sha256:d1a20828d75d01631cbaa1ad2b4728baaf96a135b415fa34f5e3fd8d047416ee",
+      "pixelSha256": "sha256:931433be57dee6b95a8480c093bfad5cfd8358afade9920be62894687281a7bf",
+      "mimeType": "image/webp",
+      "width": 1800,
+      "height": 1800,
+      "byteSize": 2483576,
+      "alt": null,
+      "caption": ""
+    }
+  ],
+  "bodyDocument": {
+    "blocks": [
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Migration is framed as crisis, but it’s built as commerce.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Borders are often presented as walls of protection. In practice, they behave more like valves, regulating the flow of people for labor, capital, and control. Beneath the headlines about illegal crossings, refugee pressure, or border security, there is a quieter system at work. One that moves money, not just people.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "From South Asia to the Gulf, across Southeast Asia and throughout parts of Africa, migration is less a failure of policy and more a feature of the global economy. It is not chaos. It is infrastructure. And it is deeply profitable, just not for those who move.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Migration Isn’t a Problem. It’s a Business Model",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "As of 2022, there were more than 281 million international migrants worldwide, accounting for 3.6 percent of the global population (International Organization for Migration, 2023). The majority of this movement is tied to labor, not asylum or tourism, but structured economic demand.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In Asia and the Gulf, this demand is fundamental. In the UAE, 88 percent of the population are foreign nationals. In Singapore, non-resident workers make up over 30 percent of the labor force, and more than 80 percent of construction, marine, and cleaning jobs are filled by migrants (UN DESA 2022; Ministry of Manpower Singapore, 2023).",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "This is not informal or chaotic. Migration is tightly managed through bilateral agreements, employer quotas, and visa systems that match specific sectors. Every job category has its own rules, time limits, and fees.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "According to the International Labour Organization, workers from Bangladesh, Nepal, and Indonesia often pay between 4 and 18 months of future wages in recruitment fees before their first paycheck (ILO, Fair Recruitment Initiative, 2021). These costs are frequently financed through debt. The financial risk of migration falls not on employers or governments, but on the worker.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The global movement of people may look like mobility. But underneath, it operates as a highly monetized system of control.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Infrastructure of Extraction",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Crossing a border is only the beginning. What migrants enter next is a system designed to absorb labor while limiting autonomy.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In countries like Qatar, Saudi Arabia, and the UAE, many low-wage foreign workers are employed under the kafala system, which ties legal status to a single employer. While Qatar implemented reforms in 2020 to allow limited job changes, enforcement remains inconsistent and retaliatory practices persist (ILO, 2021; Amnesty International, 2022).",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Similar patterns exist in Malaysia, Thailand, and Singapore, where migrant permits are sector-specific, time-bound, and non-renewable beyond fixed terms. Work permits can be revoked if a worker is deemed “non-productive” or files a complaint.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The infrastructure behind this model begins at home. In Bangladesh, Nepal, and the Philippines, migration is embedded into national development policy. In the Philippines alone, more than 10 million Overseas Filipino Workers are managed through the Department of Migrant Workers and OWWA, which oversee training, health coverage, and repatriation (Philippine Statistics Authority, 2023).",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "A 2022 ILO report found that Bangladeshi migrants paid an average of $2,000 for jobs in the Gulf, far above legal thresholds, and that most entered high-interest debt to cover placement costs. For many domestic workers, particularly women, risks extend beyond debt to include unpaid wages, surveillance, and isolation from legal protection (Human Rights Watch, 2023).",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Migration is often described as movement. But the infrastructure around it is built for containment.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Remittance Economies and Dependency",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In 2022, remittances to low- and middle-income countries reached $647 billion (World Bank, 2023). In Nepal, they accounted for nearly 24 percent of GDP. In the Philippines, remittances exceeded $36 billion, making up approximately 9 percent of national GDP (Bangko Sentral ng Pilipinas, 2023).",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "These flows sustain families. They fund education, healthcare, and daily survival. But they also form part of national economic strategy.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "When remittance flows outpace foreign direct investment and aid, as they do in much of South Asia, governments may prioritize labor export over domestic employment generation. This creates a feedback loop where migration is not just encouraged, but required.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And the cost to send money remains high. The global average fee for remitting $200 is 6.2 percent, with some places charging over 10 percent (World Bank, Remittance Prices Worldwide, Q2 2023). These fees fall hardest on the lowest-paid migrants, who send small sums regularly.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Remittances support resilience. But when systems depend on them, they trade domestic security for global labor export.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Borders as Economic Tools",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Borders do not just keep people out. They manage who comes in, for how long, and under what conditions.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In Singapore, a Foreign Worker Levy system adjusts the cost of migrant labor based on industry, headcount, and skill tier. The more low-wage workers an employer hires, the more they pay. This system ensures steady state revenue while incentivizing a controlled, rotating workforce (Ministry of Manpower Singapore, 2023).",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In Africa, migration management has become increasingly shaped by external influence. Programs like the EU Trust Fund for Africa have funded biometric registration, surveillance infrastructure, and detention centers in countries such as Niger, Libya, and Kenya. While these programs claim to reduce irregular migration, they often prioritize EU border control goals over migrant rights (International Crisis Group, 2022; IOM, 2023).",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Private industry plays a growing role. A 2021 report by the Transnational Institute detailed how biometric tech firms and security contractors now operate throughout North and West Africa, selling tools to monitor and control population movement.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Migration becomes not something to solve, but something to manage for profit.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Borders are not just thresholds. They are economic filters, designed to structure access and suppress permanence.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Who Wins When Movement Is Monetized",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The migration system generates revenue at every turn. Not for the worker, but for the institutions surrounding them.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Governments collect fees, taxes, and employer levies. Placement agencies extract commissions from both sides. Employers gain low-cost, low-rights labor. Banks and remittance companies profit from high transfer fees. Digital platforms offer new financial products without addressing deeper barriers to access.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "According to the ILO, over 50 percent of surveyed migrants from Bangladesh, Pakistan, and Nepal enter debt before departure, with repayment taking six to twelve months of earnings (ILO, 2023). The World Bank reports that remittance service providers earn billions in fees annually, mostly from low-income workers transferring modest amounts.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The migrant pays to leave, pays to work, and pays to send money home. If they lose their job, they often lose their legal right to stay.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The system is not broken. It functions exactly as designed, converting labor mobility into economic value while externalizing risk.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Toward a More Just Migration Economy",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Migration is not the failure. It is the outcome of uneven development, demographic shifts, and global labor demand. What needs repair is not movement itself, but the systems that surround it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "A more just migration economy is not a utopian ideal. It is already being shaped through global frameworks like the ILO’s Fair Recruitment Guidelines, the UN Global Compact for Migration, the ASEAN Declaration on Migrant Rights, and the African Union’s Joint Labour Migration Programme.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Governments can act by:",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "•\tDecoupling visas from single employers",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "•\tEnforcing zero-fee recruitment",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "•\tCapping remittance costs and expanding public financial channels",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "•\tAllowing job transfers across sectors",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "•\tEnsuring access to legal aid and grievance systems",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "•\tIncluding migrants in national wage, health, and safety protections",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "These steps are not radical. They are overdue.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "A just economy does not begin at the border. It begins with the decision to treat every worker as part of the system, not outside of it. If we want a fairer economy, we have to start by following the labor, not just the money.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "If this resonated with you, share it, question it, challenge the way we talk about migration in policy, media, and everyday language. Visibility is the first form of justice.",
+            "marks": []
+          }
+        ]
+      }
+    ]
+  },
+  "bodyHtml": "<p>Migration is framed as crisis, but it’s built as commerce.</p>\n<p>Borders are often presented as walls of protection. In practice, they behave more like valves, regulating the flow of people for labor, capital, and control. Beneath the headlines about illegal crossings, refugee pressure, or border security, there is a quieter system at work. One that moves money, not just people.</p>\n<p>From South Asia to the Gulf, across Southeast Asia and throughout parts of Africa, migration is less a failure of policy and more a feature of the global economy. It is not chaos. It is infrastructure. And it is deeply profitable, just not for those who move.</p>\n<p>⸻</p>\n<p>Migration Isn’t a Problem. It’s a Business Model</p>\n<p>As of 2022, there were more than 281 million international migrants worldwide, accounting for 3.6 percent of the global population (International Organization for Migration, 2023). The majority of this movement is tied to labor, not asylum or tourism, but structured economic demand.</p>\n<p>In Asia and the Gulf, this demand is fundamental. In the UAE, 88 percent of the population are foreign nationals. In Singapore, non-resident workers make up over 30 percent of the labor force, and more than 80 percent of construction, marine, and cleaning jobs are filled by migrants (UN DESA 2022; Ministry of Manpower Singapore, 2023).</p>\n<p>This is not informal or chaotic. Migration is tightly managed through bilateral agreements, employer quotas, and visa systems that match specific sectors. Every job category has its own rules, time limits, and fees.</p>\n<p>According to the International Labour Organization, workers from Bangladesh, Nepal, and Indonesia often pay between 4 and 18 months of future wages in recruitment fees before their first paycheck (ILO, Fair Recruitment Initiative, 2021). These costs are frequently financed through debt. The financial risk of migration falls not on employers or governments, but on the worker.</p>\n<p>The global movement of people may look like mobility. But underneath, it operates as a highly monetized system of control.</p>\n<p>⸻</p>\n<p>The Infrastructure of Extraction</p>\n<p>Crossing a border is only the beginning. What migrants enter next is a system designed to absorb labor while limiting autonomy.</p>\n<p>In countries like Qatar, Saudi Arabia, and the UAE, many low-wage foreign workers are employed under the kafala system, which ties legal status to a single employer. While Qatar implemented reforms in 2020 to allow limited job changes, enforcement remains inconsistent and retaliatory practices persist (ILO, 2021; Amnesty International, 2022).</p>\n<p>Similar patterns exist in Malaysia, Thailand, and Singapore, where migrant permits are sector-specific, time-bound, and non-renewable beyond fixed terms. Work permits can be revoked if a worker is deemed “non-productive” or files a complaint.</p>\n<p>The infrastructure behind this model begins at home. In Bangladesh, Nepal, and the Philippines, migration is embedded into national development policy. In the Philippines alone, more than 10 million Overseas Filipino Workers are managed through the Department of Migrant Workers and OWWA, which oversee training, health coverage, and repatriation (Philippine Statistics Authority, 2023).</p>\n<p>A 2022 ILO report found that Bangladeshi migrants paid an average of $2,000 for jobs in the Gulf, far above legal thresholds, and that most entered high-interest debt to cover placement costs. For many domestic workers, particularly women, risks extend beyond debt to include unpaid wages, surveillance, and isolation from legal protection (Human Rights Watch, 2023).</p>\n<p>Migration is often described as movement. But the infrastructure around it is built for containment.</p>\n<p>⸻</p>\n<p>Remittance Economies and Dependency</p>\n<p>In 2022, remittances to low- and middle-income countries reached $647 billion (World Bank, 2023). In Nepal, they accounted for nearly 24 percent of GDP. In the Philippines, remittances exceeded $36 billion, making up approximately 9 percent of national GDP (Bangko Sentral ng Pilipinas, 2023).</p>\n<p>These flows sustain families. They fund education, healthcare, and daily survival. But they also form part of national economic strategy.</p>\n<p>When remittance flows outpace foreign direct investment and aid, as they do in much of South Asia, governments may prioritize labor export over domestic employment generation. This creates a feedback loop where migration is not just encouraged, but required.</p>\n<p>And the cost to send money remains high. The global average fee for remitting $200 is 6.2 percent, with some places charging over 10 percent (World Bank, Remittance Prices Worldwide, Q2 2023). These fees fall hardest on the lowest-paid migrants, who send small sums regularly.</p>\n<p>Remittances support resilience. But when systems depend on them, they trade domestic security for global labor export.</p>\n<p>⸻</p>\n<p>Borders as Economic Tools</p>\n<p>Borders do not just keep people out. They manage who comes in, for how long, and under what conditions.</p>\n<p>In Singapore, a Foreign Worker Levy system adjusts the cost of migrant labor based on industry, headcount, and skill tier. The more low-wage workers an employer hires, the more they pay. This system ensures steady state revenue while incentivizing a controlled, rotating workforce (Ministry of Manpower Singapore, 2023).</p>\n<p>In Africa, migration management has become increasingly shaped by external influence. Programs like the EU Trust Fund for Africa have funded biometric registration, surveillance infrastructure, and detention centers in countries such as Niger, Libya, and Kenya. While these programs claim to reduce irregular migration, they often prioritize EU border control goals over migrant rights (International Crisis Group, 2022; IOM, 2023).</p>\n<p>Private industry plays a growing role. A 2021 report by the Transnational Institute detailed how biometric tech firms and security contractors now operate throughout North and West Africa, selling tools to monitor and control population movement.</p>\n<p>Migration becomes not something to solve, but something to manage for profit.</p>\n<p>Borders are not just thresholds. They are economic filters, designed to structure access and suppress permanence.</p>\n<p>⸻</p>\n<p>Who Wins When Movement Is Monetized</p>\n<p>The migration system generates revenue at every turn. Not for the worker, but for the institutions surrounding them.</p>\n<p>Governments collect fees, taxes, and employer levies. Placement agencies extract commissions from both sides. Employers gain low-cost, low-rights labor. Banks and remittance companies profit from high transfer fees. Digital platforms offer new financial products without addressing deeper barriers to access.</p>\n<p>According to the ILO, over 50 percent of surveyed migrants from Bangladesh, Pakistan, and Nepal enter debt before departure, with repayment taking six to twelve months of earnings (ILO, 2023). The World Bank reports that remittance service providers earn billions in fees annually, mostly from low-income workers transferring modest amounts.</p>\n<p>The migrant pays to leave, pays to work, and pays to send money home. If they lose their job, they often lose their legal right to stay.</p>\n<p>The system is not broken. It functions exactly as designed, converting labor mobility into economic value while externalizing risk.</p>\n<p>⸻</p>\n<p>Toward a More Just Migration Economy</p>\n<p>Migration is not the failure. It is the outcome of uneven development, demographic shifts, and global labor demand. What needs repair is not movement itself, but the systems that surround it.</p>\n<p>A more just migration economy is not a utopian ideal. It is already being shaped through global frameworks like the ILO’s Fair Recruitment Guidelines, the UN Global Compact for Migration, the ASEAN Declaration on Migrant Rights, and the African Union’s Joint Labour Migration Programme.</p>\n<p>Governments can act by:</p>\n<p>•\tDecoupling visas from single employers</p>\n<p>•\tEnforcing zero-fee recruitment</p>\n<p>•\tCapping remittance costs and expanding public financial channels</p>\n<p>•\tAllowing job transfers across sectors</p>\n<p>•\tEnsuring access to legal aid and grievance systems</p>\n<p>•\tIncluding migrants in national wage, health, and safety protections</p>\n<p>These steps are not radical. They are overdue.</p>\n<p>A just economy does not begin at the border. It begins with the decision to treat every worker as part of the system, not outside of it. If we want a fairer economy, we have to start by following the labor, not just the money.</p>\n<p>If this resonated with you, share it, question it, challenge the way we talk about migration in policy, media, and everyday language. Visibility is the first form of justice.</p>",
+  "bodyTextSha256": "sha256:e1bdf4f5583e562e1751c2cd57e8f5d91219199199941c5fc44389d0be82ec46",
+  "bodyBlockCount": 54,
+  "license": {
+    "name": "All Rights Reserved"
+  }
+}

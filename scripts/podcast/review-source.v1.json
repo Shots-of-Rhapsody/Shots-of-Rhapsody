@@ -1,0 +1,37 @@
+{
+	"version": 1,
+	"episodeSlug": "modular-ethics",
+	"audio": {
+		"path": "public/media/podcast/episode-001-modular-ethics.mp3",
+		"byteLength": 57831360,
+		"sha256": "sha256:b4ec04aa9f99b0c52c3bd77123962cd7d7a49b316147bd293ad011698d232dc3",
+		"durationSeconds": 1445.784
+	},
+	"drafts": {
+		"text": {
+			"path": ".podcast-import/episode-001-modular-ethics/machine-draft-large-v3.txt",
+			"byteLength": 23323,
+			"sha256": "sha256:964685413e71e72bbf85f36520a484bf6a1aa858cfe0e1172d910190ecbb5e63"
+		},
+		"vtt": {
+			"path": ".podcast-import/episode-001-modular-ethics/machine-draft-large-v3.vtt",
+			"byteLength": 33365,
+			"sha256": "sha256:abc799cace67911f91145ba38c668e7acfee1e6c4495fbd10c512e5086fc6596"
+		},
+		"json": {
+			"path": ".podcast-import/episode-001-modular-ethics/machine-draft-large-v3.json",
+			"byteLength": 1280433,
+			"sha256": "sha256:ea1ec9f4bdd2a368ac35c427ef8f00849ce4dd7bb3c20713019392766a931f51"
+		}
+	},
+	"expectedTiming": {
+		"cueCount": 304,
+		"firstStartSeconds": 0,
+		"lastEndSeconds": 1431.5,
+		"cueDurationSeconds": 1407.02,
+		"interCueGapCount": 57,
+		"interCueGapSeconds": 24.48,
+		"trailingUncaptionedSeconds": 14.284
+	},
+	"outputPath": ".podcast-import/episode-001-modular-ethics/review-worksheet.html"
+}

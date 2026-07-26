@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3000 3000" role="img" aria-labelledby="title description">
+  <title id="title">Shots of Rhapsody podcast cover source</title>
+  <desc id="description">The Shots of Rhapsody seal mark centered on a warm manuscript field with celadon rules.</desc>
+  <rect width="3000" height="3000" fill="#f5efdf"/>
+  <rect x="180" y="180" width="2640" height="2640" rx="48" fill="none" stroke="#315f57" stroke-width="18"/>
+  <path d="M450 760h2100M450 2240h2100" fill="none" stroke="#315f57" stroke-width="14"/>
+  <path d="M1500 370l36 36-36 36-36-36 36-36Zm0 2188 36 36-36 36-36-36 36-36Z" fill="#9e3d32"/>
+  <g transform="translate(900 900) scale(18.75)">
+    <rect width="64" height="64" rx="8" fill="#9e3d32"/>
+    <g fill="none" stroke="#fffaf0" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
+      <path d="M16 22c4-7 17-7 23-2-6-1-12 0-14 4-1 6 15 3 15 14 0 9-11 13-21 8 7 0 13-3 13-8 0-7-16-3-16-15 0-.4 0-.7.1-1Z"/>
+      <path d="M42 18v28"/>
+    </g>
+  </g>
+</svg>

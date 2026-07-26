@@ -1,6 +1,10 @@
 import rss from "@astrojs/rss";
-import { getPostAssetBasePath, getSortedPosts } from "@utils/content-utils";
-import { getAbsoluteImageUrl } from "@utils/image-utils";
+import {
+	getPostDeck,
+	getPostHeadline,
+	getSortedPosts,
+} from "@utils/content-utils";
+import { getSocialImage } from "@utils/image-utils";
 import { getAbsolutePostUrlBySlug, getSiteRootUrl } from "@utils/url-utils";
 import type { APIContext } from "astro";
 import MarkdownIt from "markdown-it";
@@ -34,22 +38,24 @@ export async function GET(context: APIContext) {
 	const siteRoot = getSiteRootUrl(site);
 	const items = await Promise.all(
 		blog.map(async (post) => {
+			const headline = getPostHeadline(post);
+			const deck = getPostDeck(post);
 			const content =
 				typeof post.body === "string" ? post.body : String(post.body || "");
 			const cleanedContent = stripInvalidXmlChars(content);
 			const postUrl = getAbsolutePostUrlBySlug(post.id, site).toString();
-			const basePath = getPostAssetBasePath(post);
-			const imageUrl = post.data.image
-				? await getAbsoluteImageUrl(post.data.image, basePath, site)
-				: undefined;
+			const image = getSocialImage(post.id, site);
+			const imageUrl = image.url;
 			const imageAlt = post.data.provenance
 				? (post.data.imageAlt ?? "")
-				: (post.data.imageAlt ?? `Cover image for “${post.data.title}”`);
-			const heroFigure = imageUrl
-				? `<figure><img src="${escapeXml(imageUrl)}" alt="${escapeXml(imageAlt)}" loading="lazy" decoding="async">${post.data.imageCaption ? `<figcaption>${escapeXml(post.data.imageCaption)}</figcaption>` : ""}</figure>`
-				: "";
+				: (post.data.imageAlt ?? `Cover image for “${headline}”`);
+			const heroFigure = `<figure><img src="${escapeXml(imageUrl)}" alt="${escapeXml(imageAlt)}" width="${image.width}" height="${image.height}" loading="lazy" decoding="async">${post.data.imageCaption ? `<figcaption>${escapeXml(post.data.imageCaption)}</figcaption>` : ""}</figure>`;
+			const mediumLead =
+				post.data.provenance?.authority === "Medium account export"
+					? `<section><h2>${escapeXml(post.data.title)}</h2><p>${escapeXml(post.data.subtitle)}</p><p>${escapeXml(post.data.seriesLine)}</p></section>`
+					: "";
 			const renderedContent = sanitizeHtml(
-				`${heroFigure}${parser.render(cleanedContent)}`,
+				`${mediumLead}${heroFigure}${parser.render(cleanedContent)}`,
 				{
 					allowedTags: sanitizeHtml.defaults.allowedTags.concat([
 						"img",
@@ -58,7 +64,7 @@ export async function GET(context: APIContext) {
 					]),
 					allowedAttributes: {
 						...sanitizeHtml.defaults.allowedAttributes,
-						img: ["src", "alt", "loading", "decoding"],
+						img: ["src", "alt", "width", "height", "loading", "decoding"],
 					},
 				},
 			);
@@ -77,12 +83,7 @@ export async function GET(context: APIContext) {
 				post.data.updated
 					? `<dcterms:modified>${escapeXml(post.data.updated.toISOString())}</dcterms:modified>`
 					: "",
-				post.data.publication?.url
-					? `<dc:relation>${escapeXml(post.data.publication.url)}</dc:relation>`
-					: "",
-				imageUrl
-					? `<media:content url="${escapeXml(imageUrl)}" medium="image" />`
-					: "",
+				`<media:content url="${escapeXml(imageUrl)}" medium="image" type="${image.mimeType}" width="${image.width}" height="${image.height}" />`,
 				imageUrl && post.data.imageCaption
 					? `<media:description type="plain">${escapeXml(post.data.imageCaption)}</media:description>`
 					: "",
@@ -91,13 +92,9 @@ export async function GET(context: APIContext) {
 				.join("");
 
 			return {
-				title: post.data.title,
+				title: headline,
 				pubDate: post.data.published,
-				description:
-					post.data.summary ||
-					post.data.description ||
-					post.data.subtitle ||
-					post.data.title,
+				description: deck,
 				link: postUrl,
 				content: renderedContent,
 				categories: [

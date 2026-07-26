@@ -1,17 +1,23 @@
 # About Shots of Rhapsody
 
-Shots of Rhapsody is a home for fiction, poetry, and reflective writing by Tai Song. Its purpose is to preserve each work faithfully while presenting the archive in a calm, readable form.
+Stories, poems, and reflections by Tai Song—gathered in one quiet place for unhurried reading.
 
-## The archive
+## What lives here
 
-The initial publication contains exactly eleven articles recovered from Tai Song's author-master Proton Docs exports. The [Tai Song author archive](../authors/tai-song/) lists every published work. Historical Vocal links on article pages record earlier publication history; they are not the source of the local text.
+Shots of Rhapsody moves between imagined futures and remembered rooms, gentle legends and difficult choices, digital kinship and the traces people leave behind. Some works unfold as speculative fiction. Others arrive as poetry, reflection, or a story meant simply to delight.
 
-Each imported article, its metadata, and its original hero image is checked against a committed provenance manifest. Human side-by-side review remains a separate release gate and is never inferred from an automated hash check.
+## Start here
 
-## Mission
+- [Before the Sky Went Quiet: Part I — The Girl Who Faded](../posts/before-the-sky-went-quiet-part-i-the-girl-who-faded/) begins a three-part story about voice, loss, and what remains.
+- [The Seventh Skin](../posts/the-seventh-skin/) enters a future where eternal youth changes the meaning of being human.
+- [Where We Last Were Us](../posts/where-we-last-were-us/) follows two voices through memory, place, and silence.
 
-The project brings narrative and reflection into the same space: stories that hold emotion, memory, ethics, and imagination without flattening them into a single style. Accuracy matters here as much as presentation. The archive preserves the author's wording, punctuation, paragraph order, emphasis, captions, and original image bytes.
+Or browse [all works by Tai Song](../authors/tai-song/).
 
-## Project and rights
+## Tai Song
 
-The site is maintained in the [Shots-of-Rhapsody/Shots-of-Rhapsody GitHub repository](https://github.com/Shots-of-Rhapsody/Shots-of-Rhapsody). Repository code is MIT-licensed; the eleven imported articles and their hero images are All Rights Reserved. See [Content Rights and Licensing](../content-license/) and the [third-party notices](https://github.com/Shots-of-Rhapsody/Shots-of-Rhapsody/blob/main/THIRD-PARTY-NOTICES.md) for the exact boundaries.
+[Tai Song](../authors/tai-song/) is a Singapore-based commodity trader and trade strategist whose writing spans fiction, poetry, reflection, and nonfiction. Across global markets and imagined futures, Tai explores power, policy, inequality, memory, the consequences of invention, and the fragile things people try to preserve.
+
+## Rights
+
+The writing and original artwork presented here remain All Rights Reserved. Read the [rights notice](../rights/) for details.

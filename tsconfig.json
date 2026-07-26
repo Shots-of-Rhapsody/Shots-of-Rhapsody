@@ -4,7 +4,6 @@
     "baseUrl": ".",
     "strictNullChecks": true,
     "allowJs": false,
-    "declaration": true,
     "plugins": [
       {
         "name": "@astrojs/ts-plugin"
@@ -12,10 +11,7 @@
     ],
     "paths": {
       "@components/*": ["src/components/*"],
-      "@assets/*": ["src/assets/*"],
-      "@constants/*": ["src/constants/*"],
       "@utils/*": ["src/utils/*"],
-      "@i18n/*": ["src/i18n/*"],
       "@layouts/*": ["src/layouts/*"],
       "@/*": ["src/*"]
     }

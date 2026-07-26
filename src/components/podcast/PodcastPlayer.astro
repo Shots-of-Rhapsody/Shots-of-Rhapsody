@@ -1,0 +1,127 @@
+---
+import { url } from "@utils/url-utils";
+import podcastArtwork from "@/assets/podcast/shots-of-rhapsody-podcast-cover.png";
+import { IS_PUBLIC_REVIEW } from "@/data/build-mode";
+import type { PodcastEpisode, PodcastShow } from "@/data/podcast";
+import ImageWrapper from "../misc/ImageWrapper.astro";
+
+interface Props {
+	episode: PodcastEpisode;
+	show: PodcastShow;
+}
+
+const { episode, show } = Astro.props;
+if (episode.transcript === null && !IS_PUBLIC_REVIEW) {
+	throw new Error(`Podcast episode lacks a transcript: ${episode.slug}`);
+}
+
+const audioUrl = url(episode.audio.publicPath);
+const transcriptUrl = episode.transcript
+	? url(episode.transcript.publicPath)
+	: undefined;
+const downloadSizeMiB = (episode.audio.byteLength / 1024 ** 2).toFixed(1);
+---
+
+<section class="podcast-player" aria-labelledby="podcast-listen-title">
+	<div data-podcast-artwork={show.artwork.sha256}>
+		<ImageWrapper
+			class="podcast-player__artwork"
+			src={podcastArtwork}
+			alt={`Cover artwork for ${show.title}`}
+			fit="contain"
+			variant="featured"
+			priority={true}
+		/>
+	</div>
+	<div class="podcast-player__body">
+		<p class="podcast-player__kicker">Listen</p>
+		<h2 id="podcast-listen-title">{episode.title}</h2>
+		<audio controls preload="none">
+			<source src={audioUrl} type={episode.audio.mimeType} />
+		</audio>
+		<nav class="podcast-player__alternatives" aria-label="Episode alternatives">
+			{transcriptUrl && <a href={transcriptUrl}>Read transcript</a>}
+			<a href={audioUrl} download>Download audio ({downloadSizeMiB} MiB)</a>
+			<a href={url("/rights/")}>Rights and permissions</a>
+		</nav>
+	</div>
+</section>
+
+<style>
+	.podcast-player {
+		display: grid;
+		grid-template-columns: minmax(10rem, 18rem) minmax(0, 1fr);
+		gap: clamp(1.25rem, 4vw, 2.5rem);
+		align-items: center;
+		padding: clamp(1rem, 3vw, 2rem);
+		background: var(--card-bg);
+		border: 1px solid var(--line-divider);
+		border-radius: var(--radius-large);
+		box-shadow: var(--shadow);
+	}
+
+	.podcast-player__artwork {
+		display: block;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 1;
+		border-radius: 0.35rem;
+		object-fit: contain;
+	}
+
+	.podcast-player__body {
+		min-width: 0;
+	}
+
+	.podcast-player__kicker {
+		margin: 0 0 0.45rem;
+		color: var(--primary);
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+
+	.podcast-player h2 {
+		margin: 0;
+		font-size: clamp(1.55rem, 4vw, 2.55rem);
+		font-weight: 620;
+		line-height: 1.12;
+		text-wrap: balance;
+	}
+
+	.podcast-player audio {
+		display: block;
+		width: 100%;
+		margin-top: 1.25rem;
+	}
+
+	.podcast-player__alternatives {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.65rem 1.25rem;
+		margin-top: 1rem;
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		font-size: 0.9rem;
+		font-weight: 700;
+	}
+
+	.podcast-player__alternatives a {
+		display: inline-flex;
+		min-height: 44px;
+		align-items: center;
+		color: var(--primary);
+	}
+
+	@media (max-width: 42rem) {
+		.podcast-player {
+			grid-template-columns: 1fr;
+		}
+
+		.podcast-player__artwork {
+			width: min(100%, 18rem);
+			margin-inline: auto;
+		}
+	}
+</style>

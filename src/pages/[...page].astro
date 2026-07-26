@@ -1,23 +1,346 @@
 ---
-import type { GetStaticPaths } from "astro";
-import Pagination from "../components/control/Pagination.astro";
-import PostPage from "../components/PostPage.astro";
-import { PAGE_SIZE } from "../constants/constants";
-import MainGridLayout from "../layouts/MainGridLayout.astro";
-import { getSortedPosts } from "../utils/content-utils";
+import { getCollection } from "astro:content";
+import EditorialWorkCard from "@components/EditorialWorkCard.astro";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getSiteRootUrl, url } from "@utils/url-utils";
+import { siteConfig } from "@/config";
+import {
+	EDITORIAL_GROUPS,
+	entriesForSlugs,
+	getFeaturedEntries,
+	indexEditorialEntries,
+	isManifestSlug,
+} from "@/data/editorial";
 
-export const getStaticPaths = (async ({ paginate }) => {
-	const allBlogPosts = await getSortedPosts();
-	return paginate(allBlogPosts, { pageSize: PAGE_SIZE });
-}) satisfies GetStaticPaths;
-// https://github.com/withastro/astro/issues/6507#issuecomment-1489916992
+export function getStaticPaths() {
+	return [{ params: { page: undefined } }];
+}
 
-const { page } = Astro.props;
-
-const len = page.data.length;
+const archiveEntries = await getCollection("posts");
+const indexedEntries = indexEditorialEntries(archiveEntries);
+const featuredEntries = getFeaturedEntries(indexedEntries);
+const groups = EDITORIAL_GROUPS.map((group) => ({
+	...group,
+	entries: entriesForSlugs(indexedEntries, group.slugs),
+}));
+const nonfictionEntries = archiveEntries
+	.filter((entry) => entry.data.section === "nonfiction")
+	.toSorted(
+		(left, right) =>
+			right.data.published.valueOf() - left.data.published.valueOf(),
+	);
+const additionalCreativeEntries = archiveEntries
+	.filter(
+		(entry) => !isManifestSlug(entry.id) && entry.data.section !== "nonfiction",
+	)
+	.toSorted(
+		(left, right) =>
+			right.data.published.valueOf() - left.data.published.valueOf(),
+	);
+const hasNonfiction = nonfictionEntries.length > 0;
+const description = hasNonfiction
+	? `Enter the ${archiveEntries.length}-work Shots of Rhapsody collection: fiction, poetry, reflections, and nonfiction by Tai Song.`
+	: "Enter the eleven-work Shots of Rhapsody archive: fiction, poetry, and reflections by Tai Song.";
+const siteUrl = Astro.site ?? Astro.url;
+const siteRootUrl = getSiteRootUrl(siteUrl).toString();
+const authorUrl = new URL(url("/authors/tai-song/"), siteUrl).toString();
+const socialImageUrl = new URL(url("/social/site.jpg"), siteUrl).toString();
+const socialImageAlt =
+	"Shots of Rhapsody — Stories, poems, and reflections by Tai Song";
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "WebSite",
+	"@id": `${siteRootUrl}#website`,
+	name: siteConfig.title,
+	description,
+	url: siteRootUrl,
+	inLanguage: siteConfig.lang,
+	author: {
+		"@type": "Person",
+		"@id": `${authorUrl}#person`,
+		name: "Tai Song",
+		url: authorUrl,
+	},
+	image: {
+		"@type": "ImageObject",
+		url: socialImageUrl,
+		contentUrl: socialImageUrl,
+		encodingFormat: "image/jpeg",
+		width: 1200,
+		height: 630,
+		description: socialImageAlt,
+	},
+};
+const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 ---
 
-<MainGridLayout>
-    <PostPage page={page}></PostPage>
-    <Pagination class="mx-auto onload-animation" page={page} style={`animation-delay: calc(var(--content-delay) + ${(len)*50}ms)`}></Pagination>
+<MainGridLayout
+	title="Stories, poems, and reflections by Tai Song"
+	description={description}
+	canonicalUrl={siteRootUrl}
+	socialImage={socialImageUrl}
+	socialImageAlt={socialImageAlt}
+	socialImageWidth={1200}
+	socialImageHeight={630}
+	socialImageType="image/jpeg"
+>
+	<script is:inline slot="head" type="application/ld+json" set:html={jsonLdString}></script>
+	<div class="home-archive" data-public-article-count={archiveEntries.length}>
+		<header class="home-intro manuscript-panel">
+			<p class="home-intro__kicker">Stories, poems, and reflections by Tai Song</p>
+			<h1>Shots of Rhapsody</h1>
+			<p class="home-intro__lede">
+				An archive of imagined futures, remembered voices, quiet legends, and
+				the human traces that remain.
+			</p>
+			<a class="home-intro__action" href="#start-here">Begin with three paths</a>
+		</header>
+
+		<section id="start-here" class="home-section" aria-labelledby="start-here-title" data-pagefind-ignore>
+			<div class="section-heading">
+				<p class="section-heading__kicker">A place to begin</p>
+				<h2 id="start-here-title">Start here</h2>
+				<p>Three entrances into the archive: a trilogy, a speculative future, and a poem of memory.</p>
+			</div>
+			<div class="featured-grid">
+				{featuredEntries.map((entry, index) => (
+					<EditorialWorkCard
+						entry={entry}
+						variant="featured"
+						priority={index === 0}
+					/>
+				))}
+			</div>
+		</section>
+
+		{hasNonfiction && (
+			<section id="nonfiction" class="home-section" aria-labelledby="nonfiction-title" data-pagefind-ignore>
+				<div class="section-heading">
+					<p class="section-heading__kicker">Ideas and inquiry</p>
+					<h2 id="nonfiction-title">Recent nonfiction</h2>
+					<p>{siteConfig.nonfictionDescription}</p>
+				</div>
+				<div class="featured-grid">
+					{nonfictionEntries.slice(0, 3).map((entry) => (
+						<EditorialWorkCard entry={entry} variant="featured" label="Nonfiction" />
+					))}
+				</div>
+				<a class="home-intro__action" href={url("/nonfiction/")}>Explore all nonfiction</a>
+			</section>
+		)}
+
+		<section id="works" class="home-section" aria-labelledby="works-title" data-pagefind-ignore>
+			<div class="section-heading">
+				<p class="section-heading__kicker">The complete collection</p>
+				<h2 id="works-title">{hasNonfiction ? "Creative works" : "All eleven works"}</h2>
+				<p>
+					{hasNonfiction
+						? "Explore the creative archive here, with the trilogy kept in reading order."
+						: "Explore the whole archive here, with the trilogy kept in reading order."}
+				</p>
+			</div>
+
+			<div class="catalog-groups">
+				{groups.map((group) => (
+					<section class="catalog-group" aria-labelledby={`group-${group.id}`}>
+						<header class="catalog-group__heading">
+							<h3 id={`group-${group.id}`}>{group.title}</h3>
+							<p>{group.description}</p>
+						</header>
+						<div class="catalog-grid">
+							{group.entries.map((entry) => (
+								<EditorialWorkCard entry={entry} variant="catalog" />
+							))}
+						</div>
+					</section>
+				))}
+				{additionalCreativeEntries.length > 0 && (
+					<section class="catalog-group" aria-labelledby="group-new-writing">
+						<header class="catalog-group__heading">
+							<h3 id="group-new-writing">New writing</h3>
+							<p>Recently published stories and reflections.</p>
+						</header>
+						<div class="catalog-grid">
+							{additionalCreativeEntries.map((entry) => (
+								<EditorialWorkCard entry={entry} variant="catalog" />
+							))}
+						</div>
+					</section>
+				)}
+			</div>
+		</section>
+	</div>
 </MainGridLayout>
+
+<style>
+	.home-archive {
+		display: grid;
+		gap: clamp(3rem, 7vw, 6rem);
+	}
+
+	.manuscript-panel {
+		position: relative;
+		overflow: hidden;
+		background: var(--card-bg);
+		border: 1px solid var(--line-divider);
+		border-radius: var(--radius-large);
+	}
+
+	.manuscript-panel::before,
+	.manuscript-panel::after {
+		position: absolute;
+		left: clamp(1.25rem, 5vw, 4rem);
+		width: min(9rem, 28%);
+		height: 1px;
+		content: "";
+		background: var(--primary);
+		opacity: 0.45;
+	}
+
+	.manuscript-panel::before {
+		top: clamp(1.5rem, 5vw, 3.5rem);
+	}
+
+	.manuscript-panel::after {
+		bottom: clamp(1.5rem, 5vw, 3.5rem);
+	}
+
+	.home-intro {
+		padding: clamp(4.25rem, 10vw, 8rem) clamp(1.5rem, 8vw, 6.5rem);
+	}
+
+	.home-intro__kicker,
+	.section-heading__kicker {
+		margin: 0 0 0.75rem;
+		color: var(--primary);
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+
+	.home-intro h1 {
+		max-width: 13ch;
+		margin: 0;
+		font-size: clamp(2.6rem, 8vw, 6rem);
+		font-weight: 620;
+		letter-spacing: -0.035em;
+		line-height: 0.96;
+		text-wrap: balance;
+	}
+
+	.home-intro__lede {
+		max-width: 49ch;
+		margin: clamp(1.5rem, 4vw, 2.5rem) 0 0;
+		font-size: clamp(1.08rem, 2vw, 1.28rem);
+		line-height: 1.65;
+		opacity: 0.76;
+	}
+
+	.home-intro__action {
+		display: inline-flex;
+		align-items: center;
+		min-height: 2.75rem;
+		margin-top: 2rem;
+		padding: 0.65rem 1rem;
+		color: var(--primary);
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		font-size: 0.9rem;
+		font-weight: 700;
+		text-decoration: none;
+		border: 1px solid color-mix(in srgb, var(--primary) 45%, transparent);
+		border-radius: 999px;
+	}
+
+	.home-intro__action:hover {
+		background: color-mix(in srgb, var(--primary) 9%, transparent);
+	}
+
+	.home-intro__action:focus-visible {
+		outline: 3px solid var(--primary);
+		outline-offset: 3px;
+	}
+
+	.home-section,
+	.catalog-groups,
+	.catalog-group {
+		display: grid;
+		gap: clamp(1.25rem, 3vw, 2rem);
+	}
+
+	.section-heading {
+		max-width: 49rem;
+	}
+
+	.section-heading h2,
+	.catalog-group__heading h3 {
+		margin: 0;
+		font-weight: 620;
+		line-height: 1.15;
+		text-wrap: balance;
+	}
+
+	.section-heading h2 {
+		font-size: clamp(2rem, 5vw, 3.35rem);
+	}
+
+	.section-heading > p:last-child,
+	.catalog-group__heading p {
+		max-width: 60ch;
+		margin: 0.65rem 0 0;
+		line-height: 1.65;
+		opacity: 0.68;
+	}
+
+	.featured-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 1rem;
+	}
+
+	.catalog-groups {
+		gap: clamp(2.5rem, 6vw, 4.5rem);
+	}
+
+	.catalog-group {
+		grid-template-columns: minmax(11rem, 0.34fr) minmax(0, 1fr);
+		align-items: start;
+		padding-top: clamp(1.5rem, 4vw, 2.5rem);
+		border-top: 1px solid var(--line-divider);
+	}
+
+	.catalog-group__heading {
+		position: sticky;
+		top: 6rem;
+	}
+
+	.catalog-group__heading h3 {
+		font-size: clamp(1.35rem, 3vw, 2rem);
+	}
+
+	.catalog-grid {
+		display: grid;
+		gap: 0.85rem;
+	}
+
+	@media (max-width: 62rem) {
+		.featured-grid {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+
+	@media (max-width: 47.9375rem) {
+		.home-archive {
+			gap: 3.5rem;
+		}
+
+		.featured-grid,
+		.catalog-group {
+			grid-template-columns: 1fr;
+		}
+		.catalog-group__heading {
+			position: static;
+		}
+	}
+</style>

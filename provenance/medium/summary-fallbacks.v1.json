@@ -1,0 +1,11 @@
+{
+	"schemaVersion": 1,
+	"proposalSha256": "sha256:0a7cb0e549a300dba112c9e102839fe0dd50ecb11dc78b4a008200a0d5e3d2d5",
+	"presentationSetSha256": "sha256:ef4258dc651853433de14371682bb3603c7e58852672587fc6f0a9ce8e1484a2",
+	"fallbacks": [
+		{
+			"slug": "what-we-call-freedom-isnt-really-freedom",
+			"summary": "In a system where structure keeps the peace but limits the self, true freedom remains both desired and impossible."
+		}
+	]
+}

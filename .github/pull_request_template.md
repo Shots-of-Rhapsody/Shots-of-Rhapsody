@@ -1,37 +1,25 @@
-## Type of change
+## Summary
 
-- [ ] Bug fix (a non-breaking change that fixes an issue)
-- [ ] New feature (a non-breaking change that adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] Other (please describe):
+<!-- Explain the purpose and the meaningful user-facing or technical changes. -->
 
-## Checklist
+## Validation
 
-- [ ] I have read the [**CONTRIBUTING**](https://github.com/saicaca/fuwari/blob/main/CONTRIBUTING.md) document.
-- [ ] I have checked to ensure that this Pull Request is not for personal changes.
-- [ ] I have performed a self-review of my own code.
-- [ ] My changes generate no new warnings.
+<!-- List the exact checks you ran and their results. If a check was not run, explain why. -->
 
-## Related Issue
+- [ ] I ran the relevant non-writing checks from `CONTRIBUTING.md`.
+- [ ] I reviewed the diff for unrelated changes and generated-file drift.
 
-<!-- Please link to the issue that this pull request addresses. e.g. #123 -->
+## Content, rights, and privacy
 
+- [ ] This change does not hand-edit imported article prose, metadata, provenance snapshots, or archival hero images; any required writing change came from an author-approved source re-import.
+- [ ] I did not add raw Proton exports, private document identifiers, credentials, personal account data, absolute local paths, or other private material.
+- [ ] I have permission for every new asset or substantial text contribution, and any required third-party attribution or license notice is included.
+- [ ] Dependency or workflow changes use pinned versions and least-privilege permissions where applicable.
 
-## Changes
+## Visual evidence
 
-<!-- Please describe the changes you made in this pull request. -->
+<!-- For visible changes, include desktop/mobile and light/dark screenshots, or explain why screenshots do not apply. Do not attach private source material. -->
 
+## Related issue and notes
 
-## How To Test
-
-<!-- Please describe how you tested your changes. -->
-
-
-## Screenshots (if applicable)
-
-<!-- If you made any UI changes, please include screenshots. -->
-
-
-## Additional Notes
-
-<!-- Any additional information that you want to share with the reviewer. -->
+<!-- Link an issue when one exists. Call out accessibility, security, privacy, licensing, migration, or rollout considerations. -->

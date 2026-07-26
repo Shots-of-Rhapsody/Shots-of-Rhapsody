@@ -2,8 +2,6 @@
 
 import { getEntry, render } from "astro:content";
 import Markdown from "@components/misc/Markdown.astro";
-import I18nKey from "../i18n/i18nKey";
-import { i18n } from "../i18n/translation";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
 
 const aboutPost = await getEntry("spec", "about");
@@ -14,12 +12,42 @@ if (!aboutPost) {
 
 const { Content } = await render(aboutPost);
 ---
-<MainGridLayout title={i18n(I18nKey.about)} description={i18n(I18nKey.about)}>
-    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
-        <div class="card-base z-10 px-9 py-6 relative w-full ">
-            <Markdown class="mt-2" searchable={false}>
+<MainGridLayout title="About" description="Stories, poems, reflections, and nonfiction by Tai Song.">
+    <article class="about-page manuscript-panel">
+        <div class="about-page__content">
+            <Markdown class="about-page__markdown" searchable={false}>
                 <Content />
             </Markdown>
         </div>
-    </div>
+    </article>
 </MainGridLayout>
+
+<style>
+	.manuscript-panel {
+		position: relative;
+		overflow: hidden;
+		background: var(--card-bg);
+		border: 1px solid var(--line-divider);
+		border-radius: var(--radius-large);
+	}
+
+	.manuscript-panel::before {
+		display: block;
+		width: min(9rem, 35%);
+		height: 2px;
+		margin: clamp(1.5rem, 5vw, 3.5rem) 0 0 clamp(1.25rem, 7vw, 5.5rem);
+		content: "";
+		background: var(--primary);
+		opacity: 0.5;
+	}
+
+	.about-page__content {
+		max-width: 72ch;
+		padding: clamp(1.5rem, 7vw, 5.5rem);
+		padding-top: clamp(1.75rem, 4vw, 3rem);
+	}
+
+	.about-page__markdown {
+		margin: 0;
+	}
+</style>

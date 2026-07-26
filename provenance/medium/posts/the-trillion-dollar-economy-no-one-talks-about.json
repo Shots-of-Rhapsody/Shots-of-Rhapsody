@@ -1,0 +1,639 @@
+{
+  "schemaVersion": 1,
+  "slug": "the-trillion-dollar-economy-no-one-talks-about",
+  "exportTitle": "The Trillion Dollar Economy No One Talks About",
+  "exportSummary": "Unpaid care work props up the global economy. We just don’t count it, or support it.",
+  "title": "The Care Economy",
+  "subtitle": "In a system that runs on unpaid labor, what’s essential is what’s ignored.",
+  "seriesLine": "A Ledger Series article on the unpaid labor that props up everything.",
+  "summary": "Unpaid care work props up the global economy. We just don’t count it, or support it.",
+  "description": "Unpaid care work props up the global economy. We just don’t count it, or support it.",
+  "author": "Tai Song",
+  "published": "2025-03-28T12:17:40.188Z",
+  "category": "Nonfiction",
+  "tags": [],
+  "imageAlt": null,
+  "imageCaption": "",
+  "provenance": {
+    "authority": "Medium account export",
+    "captureFormat": "account-export-html",
+    "capturedAt": "2026-07-25T14:11:15.789Z",
+    "sourcePath": "posts/2025-03-28_The-Trillion-Dollar-Economy-No-One-Talks-About-b1810889d3b6.html",
+    "sourceSha256": "sha256:18b3605b79eaae7e5d5b6e2cc79254173a376aca60fe421cfff04b38a5f27355",
+    "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-trillion-dollar-economy-no-one-talks-about-b1810889d3b6",
+    "presentationSetVersion": 1,
+    "presentationSetSha256": "sha256:ef4258dc651853433de14371682bb3603c7e58852672587fc6f0a9ce8e1484a2"
+  },
+  "hero": {
+    "id": "hero",
+    "outputFile": "hero.webp",
+    "sha256": "sha256:93b38a1e92f4254279dca447fcfc1744d4cf7e0b2b882687db8e356ca60336fc",
+    "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+    "captureSha256": "sha256:5037dd253edeb04a01af226f63299b2136fb549e6faa6424ea4856720a739fe5",
+    "pixelSha256": "sha256:0c773cc09baa0a5415d9c9266d5ed58566b275f3e5c4e0a6022bc6348572744f",
+    "mimeType": "image/webp",
+    "width": 1800,
+    "height": 1800,
+    "byteSize": 1723306
+  },
+  "assets": [
+    {
+      "id": "hero",
+      "role": "hero",
+      "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*2c7ZLS5ccmHssoR8P1f5jA@2x.jpeg",
+      "rawFile": "hero-medium.webp",
+      "siteReadyFile": "hero-sanitized.webp",
+      "outputFile": "hero.webp",
+      "sha256": "sha256:93b38a1e92f4254279dca447fcfc1744d4cf7e0b2b882687db8e356ca60336fc",
+      "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+      "captureSha256": "sha256:5037dd253edeb04a01af226f63299b2136fb549e6faa6424ea4856720a739fe5",
+      "pixelSha256": "sha256:0c773cc09baa0a5415d9c9266d5ed58566b275f3e5c4e0a6022bc6348572744f",
+      "mimeType": "image/webp",
+      "width": 1800,
+      "height": 1800,
+      "byteSize": 1723306,
+      "alt": null,
+      "caption": ""
+    }
+  ],
+  "bodyDocument": {
+    "blocks": [
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Work That Keeps the World Running Isn’t Even Counted",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Every year, unpaid labor contributes more to the global economy than the entire tech, energy, and finance sectors combined. Its value may reach trillions, accounting for up to 40 percent of GDP in some countries.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Yet it doesn’t appear in GDP. It’s not tracked in company earnings. It barely registers in policy debates.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Most of this labor is done by women, who spend more than twice as many hours as men on unpaid care. Across the world, hundreds of millions are excluded from the formal economy not by choice, but because they are raising children, supporting elders, or holding households together.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "This includes childcare, eldercare, cooking, housework, and emotional support, the kind of labor that never ends, never gets paid, and rarely gets credit.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "We rely on it like electricity: constantly, quietly, and without question. If it stopped, the economy would stall. But because it isn’t tied to a paycheck, it stays invisible.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "That’s the contradiction at the heart of our systems. The work we depend on most is treated as if it has no value.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "This article is about that invisible labor and the structures that continue to ignore it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "What the Numbers Say",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Unpaid labor isn’t just morally significant. It is economically massive.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Globally, women perform over three-quarters of all unpaid care work. On average, they spend 4.3 hours a day on it. Men spend 1.6. That difference adds up to billions of unpaid hours every single day, labor that would cost governments and households trillions if they had to replace it with paid work.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In many countries, the value of unpaid labor is estimated to equal between 10 and 39 percent of GDP. In some cases, that makes it more valuable than entire industries like manufacturing or trade.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Still, it remains invisible. It doesn’t appear in tax records, employment figures, or productivity reports. It creates real value, but gets no valuation.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "If unpaid labor vanished, markets would falter. Families would fall apart. Hospitals, schools, and cities would not keep running. The global economy only works because someone is doing the daily work of care and doing it for free.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "We’ve built our systems on that assumption. And we still act like it costs nothing.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Why It’s Invisible",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Unpaid labor doesn’t show up in our economy because the system wasn’t built to see it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "GDP was designed to measure market activity, what could be taxed, sold, or traded. Anything done at home, for free, was left out. Not because it lacked value, but because it didn’t have a price.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "That decision reflected the norms of the time. Care, housework, and emotional labor were considered women’s responsibility. The assumption was that women would always do it, quietly and without pay.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "That assumption still shapes how we measure value today. We track the output of machines but not the work of mothers. We count what a factory produces but ignore what it takes to raise a child or support a household.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The model is outdated, but the consequences are not. Labor that mostly falls to women remains invisible in data, in budgets, and in decision-making.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "If we don’t count the work, we don’t support the people who do it. And if we don’t name the value, it’s easy to pretend it doesn’t exist.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Consequences of Ignoring It",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "When unpaid labor is invisible, the people who do it are overlooked too.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Across the world, women face higher rates of burnout, financial stress, and stalled careers. Not because they lack ability, but because their work is dismissed. They are working, often harder and longer than many salaried professionals, but the system refuses to recognize it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Caregivers lose income, benefits, and retirement security. They miss out on education and promotions. Many spend years out of the workforce, and when they return, they face barriers to reentry.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "As the care burden grows during crises or economic shocks, these same workers are expected to take on more with no added support. The load increases, but the recognition does not.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Ignoring unpaid labor doesn’t make it go away. It makes society weaker. When caregivers burn out or walk away, everything they hold up begins to strain: families, schools, workplaces, and communities.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The cost of neglect builds quietly. Lower labor participation. Wider gender gaps. Higher poverty rates. It starts in the margins, and ends in the headlines.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "We talk a lot about resilience. But no economy can be resilient if it rests on unpaid, unsupported, and invisible labor.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "What Recognition Could Look Like",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "If unpaid labor is essential, then it should be counted, supported, and protected like any other part of the economy.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Some governments and organizations are starting to do just that. Time-use surveys and care economy reports are helping decision-makers understand the scale of unpaid labor. In countries like Vietnam, public childcare subsidies and caregiver benefits are being expanded. Other nations are piloting tax credits and direct compensation for those providing essential care.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "There are also early models of time banks, where people exchange hours of caregiving instead of money. These systems are small, but they show what it looks like to value time and care as currency.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Recognition is not just about counting the hours. It is about changing the system.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Imagine an economy that:",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "•\tBuilds unpaid care into national planning and public budgets",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "•\tPays caregivers fairly or offsets their income with benefits",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "•\tGuarantees universal childcare and elder support",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "•\tEncourages shorter workweeks to make time for care",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "•\tDesigns infrastructure around caregiving, not just commerce",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "None of these ideas are hypothetical. They are already being tested in communities around the world.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Recognition also means shifting how we think. Care work is not a fallback or a soft skill. It is fundamental. It takes strength, skill, and time. Treating it with the investment it deserves helps everyone, not just those who provide it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "When care is made visible and shared, societies become stronger. Economies become more fair. And value becomes something more than profit.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Choice Ahead",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "We have built an economy that measures everything except the work it relies on most.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Unpaid labor has been the hidden engine behind growth, stability, and survival. It keeps families functioning, societies steady, and markets running. But it remains uncounted, unsupported, and unprotected.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "That doesn’t have to continue.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "There is global momentum to change this. We have the models, the policies, and the data. What we need is the will to act. This is not a lack of solutions. It is a failure of priorities.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Recognizing unpaid labor doesn’t just benefit those who do it. It strengthens economies. It makes societies more resilient. And it redefines value in a way that includes everyone.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "🔹 What kind of economy would you rather live in?",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "One that overlooks its foundation, or one that finally invests in it? Add your thoughts in the comments. The conversation starts here.",
+            "marks": []
+          }
+        ]
+      }
+    ]
+  },
+  "bodyHtml": "<p>The Work That Keeps the World Running Isn’t Even Counted</p>\n<p>Every year, unpaid labor contributes more to the global economy than the entire tech, energy, and finance sectors combined. Its value may reach trillions, accounting for up to 40 percent of GDP in some countries.</p>\n<p>Yet it doesn’t appear in GDP. It’s not tracked in company earnings. It barely registers in policy debates.</p>\n<p>Most of this labor is done by women, who spend more than twice as many hours as men on unpaid care. Across the world, hundreds of millions are excluded from the formal economy not by choice, but because they are raising children, supporting elders, or holding households together.</p>\n<p>This includes childcare, eldercare, cooking, housework, and emotional support, the kind of labor that never ends, never gets paid, and rarely gets credit.</p>\n<p>We rely on it like electricity: constantly, quietly, and without question. If it stopped, the economy would stall. But because it isn’t tied to a paycheck, it stays invisible.</p>\n<p>That’s the contradiction at the heart of our systems. The work we depend on most is treated as if it has no value.</p>\n<p>This article is about that invisible labor and the structures that continue to ignore it.</p>\n<p>⸻</p>\n<p>What the Numbers Say</p>\n<p>Unpaid labor isn’t just morally significant. It is economically massive.</p>\n<p>Globally, women perform over three-quarters of all unpaid care work. On average, they spend 4.3 hours a day on it. Men spend 1.6. That difference adds up to billions of unpaid hours every single day, labor that would cost governments and households trillions if they had to replace it with paid work.</p>\n<p>In many countries, the value of unpaid labor is estimated to equal between 10 and 39 percent of GDP. In some cases, that makes it more valuable than entire industries like manufacturing or trade.</p>\n<p>Still, it remains invisible. It doesn’t appear in tax records, employment figures, or productivity reports. It creates real value, but gets no valuation.</p>\n<p>If unpaid labor vanished, markets would falter. Families would fall apart. Hospitals, schools, and cities would not keep running. The global economy only works because someone is doing the daily work of care and doing it for free.</p>\n<p>We’ve built our systems on that assumption. And we still act like it costs nothing.</p>\n<p>⸻</p>\n<p>Why It’s Invisible</p>\n<p>Unpaid labor doesn’t show up in our economy because the system wasn’t built to see it.</p>\n<p>GDP was designed to measure market activity, what could be taxed, sold, or traded. Anything done at home, for free, was left out. Not because it lacked value, but because it didn’t have a price.</p>\n<p>That decision reflected the norms of the time. Care, housework, and emotional labor were considered women’s responsibility. The assumption was that women would always do it, quietly and without pay.</p>\n<p>That assumption still shapes how we measure value today. We track the output of machines but not the work of mothers. We count what a factory produces but ignore what it takes to raise a child or support a household.</p>\n<p>The model is outdated, but the consequences are not. Labor that mostly falls to women remains invisible in data, in budgets, and in decision-making.</p>\n<p>If we don’t count the work, we don’t support the people who do it. And if we don’t name the value, it’s easy to pretend it doesn’t exist.</p>\n<p>⸻</p>\n<p>The Consequences of Ignoring It</p>\n<p>When unpaid labor is invisible, the people who do it are overlooked too.</p>\n<p>Across the world, women face higher rates of burnout, financial stress, and stalled careers. Not because they lack ability, but because their work is dismissed. They are working, often harder and longer than many salaried professionals, but the system refuses to recognize it.</p>\n<p>Caregivers lose income, benefits, and retirement security. They miss out on education and promotions. Many spend years out of the workforce, and when they return, they face barriers to reentry.</p>\n<p>As the care burden grows during crises or economic shocks, these same workers are expected to take on more with no added support. The load increases, but the recognition does not.</p>\n<p>Ignoring unpaid labor doesn’t make it go away. It makes society weaker. When caregivers burn out or walk away, everything they hold up begins to strain: families, schools, workplaces, and communities.</p>\n<p>The cost of neglect builds quietly. Lower labor participation. Wider gender gaps. Higher poverty rates. It starts in the margins, and ends in the headlines.</p>\n<p>We talk a lot about resilience. But no economy can be resilient if it rests on unpaid, unsupported, and invisible labor.</p>\n<p>⸻</p>\n<p>What Recognition Could Look Like</p>\n<p>If unpaid labor is essential, then it should be counted, supported, and protected like any other part of the economy.</p>\n<p>Some governments and organizations are starting to do just that. Time-use surveys and care economy reports are helping decision-makers understand the scale of unpaid labor. In countries like Vietnam, public childcare subsidies and caregiver benefits are being expanded. Other nations are piloting tax credits and direct compensation for those providing essential care.</p>\n<p>There are also early models of time banks, where people exchange hours of caregiving instead of money. These systems are small, but they show what it looks like to value time and care as currency.</p>\n<p>Recognition is not just about counting the hours. It is about changing the system.</p>\n<p>Imagine an economy that:</p>\n<p>•\tBuilds unpaid care into national planning and public budgets</p>\n<p>•\tPays caregivers fairly or offsets their income with benefits</p>\n<p>•\tGuarantees universal childcare and elder support</p>\n<p>•\tEncourages shorter workweeks to make time for care</p>\n<p>•\tDesigns infrastructure around caregiving, not just commerce</p>\n<p>None of these ideas are hypothetical. They are already being tested in communities around the world.</p>\n<p>Recognition also means shifting how we think. Care work is not a fallback or a soft skill. It is fundamental. It takes strength, skill, and time. Treating it with the investment it deserves helps everyone, not just those who provide it.</p>\n<p>When care is made visible and shared, societies become stronger. Economies become more fair. And value becomes something more than profit.</p>\n<p>⸻</p>\n<p>The Choice Ahead</p>\n<p>We have built an economy that measures everything except the work it relies on most.</p>\n<p>Unpaid labor has been the hidden engine behind growth, stability, and survival. It keeps families functioning, societies steady, and markets running. But it remains uncounted, unsupported, and unprotected.</p>\n<p>That doesn’t have to continue.</p>\n<p>There is global momentum to change this. We have the models, the policies, and the data. What we need is the will to act. This is not a lack of solutions. It is a failure of priorities.</p>\n<p>Recognizing unpaid labor doesn’t just benefit those who do it. It strengthens economies. It makes societies more resilient. And it redefines value in a way that includes everyone.</p>\n<p>🔹 What kind of economy would you rather live in?</p>\n<p>One that overlooks its foundation, or one that finally invests in it? Add your thoughts in the comments. The conversation starts here.</p>",
+  "bodyTextSha256": "sha256:216ccd78db50d6c86fd1e8041978c624e7d2fa2553f41f2501ccc8f86a51e3df",
+  "bodyBlockCount": 57,
+  "license": {
+    "name": "All Rights Reserved"
+  }
+}

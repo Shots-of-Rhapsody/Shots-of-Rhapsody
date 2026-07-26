@@ -13,21 +13,26 @@ permissions:
   contents: read
 
 jobs:
-  check:
+  content-integrity:
     runs-on: ubuntu-latest
-    name: Astro Check for Node.js 24
+    name: Content integrity and Astro check
+    env:
+      TZ: UTC
+      PROJECT_HISTORY_TIP: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
         with:
           version: 11.16.0
           run_install: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
           cache: pnpm
@@ -35,39 +40,60 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Run non-writing lint
+        run: pnpm lint:ci
+
       - name: Run Astro Check
-        run: pnpm check
+        run: pnpm type-check
 
       - name: Run author archive importer tests
         run: pnpm test:archive
 
+      - name: Test future writing and podcast boundaries
+        run: pnpm test:future-content
+
       - name: Run Astro migration regression tests
         run: pnpm test:migration
 
-      - name: Verify imported author-master content when present
-        shell: bash
-        run: |
-          if [[ -f provenance/tai-song/manifest.json ]]; then
-            pnpm archive:verify
-          else
-            echo "No archive manifest exists yet; importer tests cover the empty foundation."
-          fi
+      - name: Verify the complete committed author archive
+        run: pnpm archive:verify --require-complete
 
-  build:
+      - name: Verify the aggregate writing catalog
+        run: pnpm content:verify --require-complete
+
+      - name: Verify complete Medium and podcast release evidence
+        run: |
+          pnpm medium:verify --require-complete
+          pnpm podcast:verify --require-complete
+
+      - name: Test release audit tooling
+        run: pnpm test:release-tools
+
+      - name: Enforce project Git identity policy
+        run: node scripts/release/verify-git-identity.mjs "$PROJECT_HISTORY_TIP"
+
+      - name: Check patch whitespace
+        run: git diff --check HEAD^
+
+  build-and-site:
     runs-on: ubuntu-latest
-    name: Astro Build for Node.js 24
+    name: Production build and site verification
+    env:
+      TZ: America/Los_Angeles
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
         with:
           version: 11.16.0
           run_install: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
           cache: pnpm
@@ -80,3 +106,83 @@ jobs:
 
       - name: Verify built routes and metadata
         run: pnpm verify:site
+
+      - name: Verify complete built podcast publication boundary
+        run: pnpm podcast:verify --require-complete --with-built
+
+      - name: Verify the complete combined release
+        run: pnpm verify:release
+
+  dependency-security:
+    runs-on: ubuntu-latest
+    name: Dependency security
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        with:
+          version: 11.16.0
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Audit the complete dependency graph
+        shell: bash
+        run: |
+          pnpm audit --json > dependency-audit.json || true
+          node scripts/release/verify-dependency-audit.mjs dependency-audit.json
+
+  browser-accessibility:
+    runs-on: ubuntu-latest
+    name: Production browser and accessibility
+    env:
+      TZ: UTC
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        with:
+          version: 11.16.0
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build and verify the production site
+        run: |
+          pnpm build
+          pnpm verify:site
+
+      - name: Install the pinned Chromium browser
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run browser and axe verification
+        run: pnpm test:e2e
+
+      - name: Upload privacy-verified browser screenshots
+        if: success()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-pr-evidence
+          path: test-results/**/*.png
+          if-no-files-found: error
+          retention-days: 14

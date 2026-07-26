@@ -1,0 +1,270 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getPostDeck, getPostHeadline } from "@utils/content-utils";
+import { formatDateToYYYYMMDD } from "@utils/date-utils";
+import { getPostUrlBySlug } from "@utils/url-utils";
+import {
+	EDITORIAL_METADATA,
+	type EditorialMetadata,
+	getWritingTypeLabel,
+	isManifestSlug,
+} from "@/data/editorial";
+import ImageWrapper from "./misc/ImageWrapper.astro";
+
+interface Props {
+	entry: CollectionEntry<"posts">;
+	variant?: "featured" | "catalog" | "continuation";
+	context?: "home" | "author" | "article";
+	priority?: boolean;
+	label?: string;
+}
+
+const {
+	entry,
+	variant = "catalog",
+	context = "home",
+	priority = false,
+	label,
+} = Astro.props;
+
+const editorial: EditorialMetadata | undefined = isManifestSlug(entry.id)
+	? EDITORIAL_METADATA[entry.id]
+	: undefined;
+const minutes = Math.max(
+	1,
+	Math.round((entry.data.provenance?.wordCount ?? 0) / 200),
+);
+const publishedText =
+	context === "author"
+		? new Intl.DateTimeFormat("en-US", {
+				year: "numeric",
+				month: "long",
+				day: "numeric",
+				timeZone: "UTC",
+			}).format(entry.data.published)
+		: formatDateToYYYYMMDD(entry.data.published);
+const eyebrow =
+	label ??
+	(editorial?.series
+		? `${editorial.series.name} · Part ${editorial.series.position} of ${editorial.series.total}`
+		: getWritingTypeLabel(entry.id, entry.data.category ?? ""));
+const TitleTag = variant === "catalog" ? "h4" : "h3";
+const imageVariant = variant === "catalog" ? "card" : variant;
+const cardTitle = getPostHeadline(entry);
+const isMediumPost =
+	entry.data.provenance?.authority === "Medium account export";
+const cardDescription =
+	variant === "continuation" && !isMediumPost
+		? entry.data.subtitle || getPostDeck(entry)
+		: getPostDeck(entry);
+---
+
+<article
+	data-editorial-card={variant}
+	data-editorial-slug={entry.id}
+	data-post-card-slug={
+		context === "home" && variant === "catalog" ? entry.id : undefined
+	}
+	data-home-nonfiction-slug={
+		context === "home" && entry.data.section === "nonfiction"
+			? entry.id
+			: undefined
+	}
+	data-featured-card-slug={variant === "featured" ? entry.id : undefined}
+	data-continuation-slug={variant === "continuation" ? entry.id : undefined}
+	data-author-article-slug={context === "author" ? entry.id : undefined}
+	class:list={["editorial-card", `editorial-card--${variant}`]}
+>
+	<div class="editorial-card__frame">
+		<div class="editorial-card__image" aria-hidden="true">
+			<ImageWrapper
+				src={entry.data.image}
+				alt=""
+				fit="contain"
+				variant={imageVariant}
+				priority={priority}
+				loading={priority ? "eager" : "lazy"}
+				class="editorial-card__image-frame"
+			/>
+		</div>
+		<div class="editorial-card__body">
+			<p class="editorial-card__eyebrow">{eyebrow}</p>
+			<TitleTag class="editorial-card__title">
+				<a href={getPostUrlBySlug(entry.id)}>{cardTitle}</a>
+			</TitleTag>
+			<p class="editorial-card__subtitle">{cardDescription}</p>
+			<p class="editorial-card__meta">
+				<time
+					data-post-published={context === "home" ? "" : undefined}
+					data-author-published={context === "author" ? "" : undefined}
+					datetime={entry.data.published.toISOString()}
+				>
+					{publishedText}
+				</time>
+				<span aria-hidden="true">·</span>
+				<span>{entry.data.category}</span>
+				<span aria-hidden="true">·</span>
+				<span>{minutes} min read</span>
+			</p>
+			<span class="editorial-card__action" aria-hidden="true">
+				{variant === "continuation" ? "Continue reading" : "Read the work"}
+				<span>→</span>
+			</span>
+		</div>
+	</div>
+</article>
+
+<style>
+	.editorial-card {
+		min-width: 0;
+	}
+
+	.editorial-card__frame {
+		position: relative;
+		display: grid;
+		height: 100%;
+		overflow: hidden;
+		background: var(--card-bg);
+		border: 1px solid var(--line-divider);
+		border-radius: var(--radius-large);
+		box-shadow: 0 0.75rem 2.5rem rgb(34 31 24 / 0.06);
+		transition:
+			border-color 160ms ease,
+			box-shadow 160ms ease,
+			transform 160ms ease;
+	}
+
+	.editorial-card__frame:hover {
+		border-color: color-mix(in srgb, var(--primary) 55%, transparent);
+		box-shadow: 0 1rem 3rem rgb(34 31 24 / 0.1);
+		transform: translateY(-2px);
+	}
+
+	.editorial-card__title a:focus-visible {
+		outline: 3px solid var(--primary);
+		outline-offset: 3px;
+	}
+
+	.editorial-card__image {
+		align-self: center;
+		aspect-ratio: 1;
+		overflow: hidden;
+		background: color-mix(in srgb, var(--primary) 8%, var(--card-bg));
+	}
+
+	.editorial-card__image-frame {
+		width: 100%;
+		height: 100%;
+	}
+
+	.editorial-card__body {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		padding: clamp(1rem, 2.5vw, 1.5rem);
+	}
+
+	.editorial-card__eyebrow {
+		margin: 0 0 0.55rem;
+		color: var(--primary);
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.09em;
+		line-height: 1.35;
+		text-transform: uppercase;
+	}
+
+	.editorial-card__title {
+		margin: 0;
+		color: var(--title-color, currentColor);
+		font-size: clamp(1.2rem, 2vw, 1.55rem);
+		font-weight: 650;
+		line-height: 1.18;
+		text-wrap: balance;
+	}
+
+	.editorial-card__title a {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.editorial-card__title a::after {
+		position: absolute;
+		inset: 0;
+		content: "";
+	}
+
+	.editorial-card__title a:hover {
+		color: var(--primary);
+	}
+
+	.editorial-card__subtitle {
+		display: -webkit-box;
+		margin: 0.65rem 0 0;
+		overflow: hidden;
+		color: var(--ink-soft);
+		font-size: 0.98rem;
+		line-height: 1.55;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 3;
+	}
+
+	.editorial-card__meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin: 0.8rem 0 0;
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		font-size: 0.78rem;
+		color: var(--ink-soft);
+	}
+
+	.editorial-card__action {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		margin-top: 1rem;
+		color: var(--primary);
+		font-family: ui-sans-serif, system-ui, sans-serif;
+		font-size: 0.82rem;
+		font-weight: 700;
+	}
+
+	.editorial-card--catalog .editorial-card__frame {
+		grid-template-columns: minmax(7rem, 30%) 1fr;
+	}
+
+	.editorial-card--catalog .editorial-card__image {
+		aspect-ratio: 1;
+	}
+
+	.editorial-card--catalog .editorial-card__subtitle {
+		-webkit-line-clamp: 2;
+	}
+
+	.editorial-card--continuation .editorial-card__frame {
+		grid-template-columns: minmax(10rem, 38%) 1fr;
+	}
+
+	.editorial-card--continuation .editorial-card__image {
+		aspect-ratio: 1;
+	}
+
+	@media (max-width: 42rem) {
+		.editorial-card--catalog .editorial-card__frame,
+		.editorial-card--continuation .editorial-card__frame {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.editorial-card__frame {
+			transition: none;
+		}
+
+		.editorial-card__frame:hover {
+			transform: none;
+		}
+	}
+</style>

@@ -2,8 +2,6 @@ name: Feature Request
 description: Suggest an idea for this project
 title: "[Feature]: "
 labels: ["enhancement"]
-assignees:
-  - saicaca
 body:
   - type: markdown
     attributes:
@@ -36,6 +34,6 @@ body:
   - type: markdown
     attributes:
       value: |
-        **Disclaimer**
+        **Before submitting**
 
-        Please note that this feature request is at the discretion of the repository owner, @saicaca, and its implementation is not guaranteed.
+        Feature requests are reviewed against the archive's reading experience, content-rights boundary, accessibility, privacy, performance, and maintenance goals. Submission does not guarantee implementation.

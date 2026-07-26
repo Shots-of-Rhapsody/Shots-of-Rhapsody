@@ -1,0 +1,13 @@
+{
+	"version": 1,
+	"entries": [
+		{
+			"slug": "modular-ethics",
+			"decision": "retain-current-audio",
+			"audioSha256": "sha256:b4ec04aa9f99b0c52c3bd77123962cd7d7a49b316147bd293ad011698d232dc3",
+			"reviewer": "Tai Song",
+			"reviewedAt": "2026-07-26T07:55:35.215Z",
+			"approval": "passed"
+		}
+	]
+}

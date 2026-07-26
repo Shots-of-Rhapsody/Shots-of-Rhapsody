@@ -1,0 +1,102 @@
+name: Public disclosure audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reachable-history:
+    name: Reachable Git history and privacy audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require the current main release candidate
+        shell: bash
+        run: test "$GITHUB_REF" = "refs/heads/main"
+
+      - name: Checkout complete reachable history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Snapshot and synchronize every public Git ref
+        shell: bash
+        run: |
+          snapshot_remote_refs() {
+            git ls-remote origin | LC_ALL=C sort
+          }
+          snapshot_remote_refs > "${RUNNER_TEMP}/public-refs-before.txt"
+          awk '
+            $2 == "HEAD" { next }
+            $2 ~ /^refs\/heads\// { next }
+            $2 ~ /^refs\/tags\// { next }
+            $2 ~ /^refs\/notes\// { next }
+            $2 ~ /^refs\/pull\/[0-9]+\/(head|merge)$/ { next }
+            { exit 1 }
+          ' "${RUNNER_TEMP}/public-refs-before.txt"
+          git fetch --prune --prune-tags origin \
+            '+refs/heads/*:refs/remotes/origin/*' \
+            '+refs/tags/*:refs/tags/*'
+          git fetch --prune --no-tags origin \
+            '+refs/pull/*/head:refs/remotes/audit-pull-head/*' \
+            '+refs/pull/*/merge:refs/remotes/audit-pull-merge/*'
+          git fetch --prune --no-tags origin \
+            '+refs/notes/*:refs/remotes/audit-notes/*'
+          snapshot_remote_refs > "${RUNNER_TEMP}/public-refs-fetched.txt"
+          cmp --silent \
+            "${RUNNER_TEMP}/public-refs-before.txt" \
+            "${RUNNER_TEMP}/public-refs-fetched.txt"
+
+      - name: Confirm the audited commit is the current main tip
+        shell: bash
+        run: |
+          git fetch --no-tags origin main
+          test "$(git rev-parse HEAD)" = "$(git rev-parse refs/remotes/origin/main)"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+
+      - name: Run checksum-verified Gitleaks
+        id: gitleaks
+        continue-on-error: true
+        run: node scripts/release/run-gitleaks.mjs --report "${{ runner.temp }}/gitleaks-report.json"
+
+      - name: Run independent history and privacy audit
+        run: >-
+          node scripts/release/audit-repository.mjs
+          --gitleaks-report "${{ runner.temp }}/gitleaks-report.json"
+          --output "${{ runner.temp }}/public-release-audit.json"
+
+      - name: Require successful Gitleaks execution
+        if: always()
+        shell: bash
+        run: test "${{ steps.gitleaks.outcome }}" = "success"
+
+      - name: Reconfirm the audited commit is still the main tip
+        shell: bash
+        run: |
+          git fetch --no-tags origin main
+          test "$(git rev-parse HEAD)" = "$(git rev-parse refs/remotes/origin/main)"
+
+      - name: Reconfirm the audited public ref set is unchanged
+        shell: bash
+        run: |
+          git ls-remote origin | LC_ALL=C sort \
+            > "${RUNNER_TEMP}/public-refs-after.txt"
+          cmp --silent \
+            "${RUNNER_TEMP}/public-refs-before.txt" \
+            "${RUNNER_TEMP}/public-refs-after.txt"
+
+      - name: Upload redacted audit evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: public-disclosure-audit
+          path: |
+            ${{ runner.temp }}/gitleaks-report.json
+            ${{ runner.temp }}/public-release-audit.json
+          if-no-files-found: error
+          retention-days: 7

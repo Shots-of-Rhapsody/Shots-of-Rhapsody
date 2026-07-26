@@ -32,6 +32,22 @@ yarn.lock
 # local-only Proton Docs author exports and embedded images
 /.proton-import/
 
+# local-only Medium account exports and import evidence
+/.medium-import/
+
+# local-only podcast transcription drafts and review media
+/.podcast-import/
+
+# isolated, checksum-verified development utilities and models
+/.tools/
+
+# local release evidence; CI uploads these as short-lived artifacts
+/playwright-report/
+/test-results/
+/dependency-audit.json
+/gitleaks-report*.json
+/public-release-audit*.json
+
 # ide
 .idea
 *.iml
