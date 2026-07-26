@@ -63,7 +63,56 @@ const ALLOWED_ATTRIBUTES = new Map([
 ]);
 const CANONICAL_MARK_ORDER = ["bold", "italic", "code"];
 
-function attributes(node, label) {
+const OFFICIAL_GRAF_CLASSES = new Map([
+	["h2", new Set(["graf graf--h2 graf--leading graf--title"])],
+	[
+		"h3",
+		new Set([
+			"graf graf--h3 graf--leading graf--title",
+			"graf graf--h3 graf-after--figure",
+			"graf graf--h3 graf-after--h3",
+			"graf graf--h3 graf-after--p",
+		]),
+	],
+	[
+		"h4",
+		new Set([
+			"graf graf--h4 graf-after--h2 graf--subtitle",
+			"graf graf--h4 graf-after--h3 graf--subtitle",
+		]),
+	],
+	[
+		"p",
+		new Set([
+			"graf graf--p graf--startsWithDoubleQuote graf-after--figure",
+			"graf graf--p graf--startsWithDoubleQuote graf-after--p",
+			"graf graf--p graf-after--figure",
+			"graf graf--p graf-after--h3",
+			"graf graf--p graf-after--h4",
+			"graf graf--p graf-after--li",
+			"graf graf--p graf-after--p",
+			"graf graf--p graf-after--p graf--trailing",
+		]),
+	],
+	[
+		"li",
+		new Set(["graf graf--li graf-after--li", "graf graf--li graf-after--p"]),
+	],
+	["figure", new Set(["graf graf--figure graf-after--p"])],
+]);
+const OFFICIAL_STRONG_CLASSES = new Set([
+	"markup--strong markup--h2-strong",
+	"markup--strong markup--h3-strong",
+	"markup--strong markup--li-strong",
+	"markup--strong markup--p-strong",
+]);
+const OFFICIAL_EM_CLASSES = new Set(["markup--em markup--p-em"]);
+const OFFICIAL_ANCHOR_CLASSES = new Set([
+	"markup--anchor markup--li-anchor",
+	"markup--anchor markup--p-anchor",
+]);
+
+function rawAttributes(node, label) {
 	const values = {};
 	for (const attribute of node.attrs ?? []) {
 		if (Object.hasOwn(values, attribute.name)) {
@@ -73,6 +122,11 @@ function attributes(node, label) {
 		}
 		values[attribute.name] = attribute.value;
 	}
+	return values;
+}
+
+function attributes(node, label) {
+	const values = rawAttributes(node, label);
 	const allowed = ALLOWED_ATTRIBUTES.get(node.tagName);
 	if (!allowed) {
 		throw new MediumContractError(
@@ -80,6 +134,19 @@ function attributes(node, label) {
 		);
 	}
 	assertOnlyKeys(values, allowed, label);
+	return values;
+}
+
+function exactAttributes(node, expected, label) {
+	const values = rawAttributes(node, label);
+	assertOnlyKeys(values, new Set(Object.keys(expected)), label);
+	for (const [name, expectedValue] of Object.entries(expected)) {
+		if (values[name] !== expectedValue) {
+			throw new MediumContractError(
+				`${label}.${name} must equal ${JSON.stringify(expectedValue)}`,
+			);
+		}
+	}
 	return values;
 }
 
@@ -160,6 +227,8 @@ export function extractCandidateMetadata(html, sourcePath) {
 	const titles = [];
 	const headings = [];
 	const descriptions = [];
+	const exportedSubtitles = [];
+	const renderedSubtitles = [];
 	const canonicalUrls = [];
 	const publishedDates = [];
 	walkElements(document, (node) => {
@@ -176,10 +245,30 @@ export function extractCandidateMetadata(html, sourcePath) {
 				publishedDates.push(content);
 			}
 		}
+		if (node.tagName === "section") {
+			const dataField = attributeValue(node, "data-field");
+			const classes = attributeValue(node, "class")?.split(/\s+/u) ?? [];
+			if (dataField === "subtitle" && classes.includes("p-summary")) {
+				exportedSubtitles.push(textContent(node));
+			}
+		}
+		if (node.tagName === "h4") {
+			const classes = attributeValue(node, "class")?.split(/\s+/u) ?? [];
+			if (classes.includes("graf--subtitle")) {
+				renderedSubtitles.push(textContent(node));
+			}
+		}
 		if (node.tagName === "link") {
 			const rel = attributeValue(node, "rel")?.toLowerCase().split(/\s+/u);
 			const href = attributeValue(node, "href");
 			if (rel?.includes("canonical") && href !== undefined) {
+				canonicalUrls.push(href);
+			}
+		}
+		if (node.tagName === "a") {
+			const classes = attributeValue(node, "class")?.split(/\s+/u) ?? [];
+			const href = attributeValue(node, "href");
+			if (classes.includes("p-canonical") && href !== undefined) {
 				canonicalUrls.push(href);
 			}
 		}
@@ -219,13 +308,23 @@ export function extractCandidateMetadata(html, sourcePath) {
 			`${sourcePath} contains an invalid publication date`,
 		);
 	}
+	const metaDescription = uniqueNonEmpty(
+		descriptions,
+		`${sourcePath} description`,
+	);
+	const exportedSubtitle = uniqueNonEmpty(
+		exportedSubtitles,
+		`${sourcePath} exported subtitle`,
+	);
+	const renderedSubtitle = uniqueNonEmpty(
+		renderedSubtitles,
+		`${sourcePath} rendered subtitle`,
+	);
 	return {
 		suggestedSlug: suggestedSlug(title),
 		title,
-		descriptionCandidate: uniqueNonEmpty(
-			descriptions,
-			`${sourcePath} description`,
-		),
+		descriptionCandidate:
+			metaDescription ?? exportedSubtitle ?? renderedSubtitle,
 		publishedAtCandidate: publishedAt,
 		canonicalUrlCandidate: canonicalUrl,
 	};
@@ -299,6 +398,407 @@ function significantChildren(node, label) {
 		children.push(child);
 	}
 	return children;
+}
+
+function requireSingleChild(node, tagName, label) {
+	const children = significantChildren(node, label);
+	if (children.length !== 1 || children[0].tagName !== tagName) {
+		throw new MediumContractError(
+			`${label} must contain exactly one <${tagName}> child`,
+		);
+	}
+	return children[0];
+}
+
+function normalizeOfficialGrafAttributes(node, label) {
+	const attrs = rawAttributes(node, label);
+	assertOnlyKeys(attrs, new Set(["name", "id", "class"]), label);
+	if (!/^[0-9a-f]{4}$/u.test(attrs.name ?? "") || attrs.id !== attrs.name) {
+		throw new MediumContractError(
+			`${label} must have matching four-character lowercase hexadecimal name and id attributes`,
+		);
+	}
+	const allowedClasses = OFFICIAL_GRAF_CLASSES.get(node.tagName);
+	if (!allowedClasses?.has(attrs.class)) {
+		throw new MediumContractError(
+			`${label}.class is not a recognized Medium export class`,
+		);
+	}
+	node.attrs = [];
+}
+
+function normalizeOfficialContentAttributes(node, label) {
+	if (node.nodeName === "#text") return;
+	if (node.nodeName === "#comment") {
+		throw new MediumContractError(`${label} contains a comment`);
+	}
+	if (!node.tagName || !ALLOWED_ATTRIBUTES.has(node.tagName)) {
+		throw new MediumContractError(
+			`${label} uses unsupported <${node.tagName ?? node.nodeName}>`,
+		);
+	}
+	if (OFFICIAL_GRAF_CLASSES.has(node.tagName)) {
+		normalizeOfficialGrafAttributes(node, label);
+	} else if (node.tagName === "ul" || node.tagName === "ol") {
+		const attrs = rawAttributes(node, label);
+		assertOnlyKeys(
+			attrs,
+			new Set(node.tagName === "ol" ? ["class", "start"] : ["class"]),
+			label,
+		);
+		if (attrs.class !== "postList") {
+			throw new MediumContractError(`${label}.class must equal "postList"`);
+		}
+		node.attrs =
+			attrs.start === undefined ? [] : [{ name: "start", value: attrs.start }];
+	} else if (node.tagName === "strong") {
+		const attrs = rawAttributes(node, label);
+		assertOnlyKeys(attrs, new Set(["class"]), label);
+		if (!OFFICIAL_STRONG_CLASSES.has(attrs.class)) {
+			throw new MediumContractError(
+				`${label}.class is not a recognized Medium strong class`,
+			);
+		}
+		node.attrs = [];
+	} else if (node.tagName === "em") {
+		const attrs = rawAttributes(node, label);
+		assertOnlyKeys(attrs, new Set(["class"]), label);
+		if (!OFFICIAL_EM_CLASSES.has(attrs.class)) {
+			throw new MediumContractError(
+				`${label}.class is not a recognized Medium emphasis class`,
+			);
+		}
+		node.attrs = [];
+	} else if (node.tagName === "a") {
+		const attrs = rawAttributes(node, label);
+		assertOnlyKeys(
+			attrs,
+			new Set(["href", "data-href", "class", "rel", "target"]),
+			label,
+		);
+		assertHttpsUrl(attrs.href, `${label}.href`);
+		if (
+			attrs["data-href"] !== attrs.href ||
+			!OFFICIAL_ANCHOR_CLASSES.has(attrs.class) ||
+			attrs.target !== "_blank"
+		) {
+			throw new MediumContractError(
+				`${label} has inconsistent Medium link metadata`,
+			);
+		}
+		const relTokens = attrs.rel?.split(/\s+/u).filter(Boolean) ?? [];
+		if (
+			!relTokens.includes("noopener") ||
+			relTokens.some(
+				(token) => !new Set(["noopener", "ugc", "nofollow"]).has(token),
+			)
+		) {
+			throw new MediumContractError(
+				`${label}.rel contains unsupported link behavior`,
+			);
+		}
+		node.attrs = [{ name: "href", value: attrs.href }];
+	} else if (node.tagName === "img") {
+		const attrs = rawAttributes(node, label);
+		assertOnlyKeys(
+			attrs,
+			new Set([
+				"class",
+				"data-image-id",
+				"data-width",
+				"data-height",
+				"data-is-featured",
+				"src",
+				"alt",
+			]),
+			label,
+		);
+		if (
+			attrs.class !== "graf-image" ||
+			!/^\S+$/u.test(attrs["data-image-id"] ?? "")
+		) {
+			throw new MediumContractError(
+				`${label} has incomplete Medium image metadata`,
+			);
+		}
+		for (const dimension of ["data-width", "data-height"]) {
+			if (!/^[1-9][0-9]*$/u.test(attrs[dimension] ?? "")) {
+				throw new MediumContractError(
+					`${label}.${dimension} must be a positive integer`,
+				);
+			}
+		}
+		if (
+			attrs["data-is-featured"] !== undefined &&
+			attrs["data-is-featured"] !== "true"
+		) {
+			throw new MediumContractError(
+				`${label}.data-is-featured must equal "true" when present`,
+			);
+		}
+		assertHttpsUrl(attrs.src, `${label}.src`);
+		node.attrs = [
+			{ name: "src", value: attrs.src },
+			...(attrs.alt === undefined ? [] : [{ name: "alt", value: attrs.alt }]),
+		];
+	} else {
+		attributes(node, label);
+	}
+	for (const [index, child] of (node.childNodes ?? []).entries()) {
+		normalizeOfficialContentAttributes(child, `${label}.childNodes[${index}]`);
+	}
+}
+
+function validateOfficialFooter(footer, label) {
+	exactAttributes(footer, {}, label);
+	const visit = (node, nodeLabel) => {
+		if (node.nodeName === "#text") return;
+		if (node.nodeName === "#comment") {
+			throw new MediumContractError(`${nodeLabel} contains a comment`);
+		}
+		if (!node.tagName || !new Set(["p", "a", "time"]).has(node.tagName)) {
+			throw new MediumContractError(
+				`${nodeLabel} uses unsupported footer <${node.tagName ?? node.nodeName}>`,
+			);
+		}
+		const attrs = rawAttributes(node, nodeLabel);
+		if (node.tagName === "p") {
+			assertOnlyKeys(attrs, new Set(), nodeLabel);
+		} else if (node.tagName === "a") {
+			assertOnlyKeys(attrs, new Set(["href", "class"]), nodeLabel);
+			const url = assertHttpsUrl(attrs.href, `${nodeLabel}.href`, {
+				hostname: "medium.com",
+			});
+			if (url.hostname !== "medium.com") {
+				throw new MediumContractError(
+					`${nodeLabel}.href must remain on medium.com`,
+				);
+			}
+			if (
+				attrs.class !== undefined &&
+				attrs.class !== "p-author h-card" &&
+				attrs.class !== "p-canonical"
+			) {
+				throw new MediumContractError(
+					`${nodeLabel}.class is not a recognized Medium footer class`,
+				);
+			}
+		} else {
+			assertOnlyKeys(attrs, new Set(["class", "datetime"]), nodeLabel);
+			if (
+				attrs.class !== "dt-published" ||
+				Number.isNaN(new Date(attrs.datetime).valueOf())
+			) {
+				throw new MediumContractError(
+					`${nodeLabel} has invalid publication metadata`,
+				);
+			}
+		}
+		for (const [index, child] of (node.childNodes ?? []).entries()) {
+			visit(child, `${nodeLabel}.childNodes[${index}]`);
+		}
+	};
+	for (const [index, child] of (footer.childNodes ?? []).entries()) {
+		visit(child, `${label}.childNodes[${index}]`);
+	}
+}
+
+function shellTextMatches(sourceText, reviewedText) {
+	return (
+		sourceText === reviewedText ||
+		sourceText.replaceAll("\u00a0", " ") === reviewedText
+	);
+}
+
+function reconcileOfficialPresentationShell(nodes, expected) {
+	const leadingTitle = nodes[0];
+	const leadingTitleClass = leadingTitle
+		? attributeValue(leadingTitle, "class")
+		: undefined;
+	const isRendererTitle =
+		(leadingTitle?.tagName === "h2" || leadingTitle?.tagName === "h3") &&
+		leadingTitleClass ===
+			`graf graf--${leadingTitle.tagName} graf--leading graf--title`;
+	if (!isRendererTitle) return nodes;
+	const titleText = textContent(leadingTitle).trim();
+	if (!shellTextMatches(titleText, expected.title)) return nodes;
+	normalizeOfficialContentAttributes(
+		leadingTitle,
+		"story.body.presentationTitle",
+	);
+
+	const remaining = nodes.slice(1);
+	const leadingSubtitle = remaining[0];
+	const isRendererSubtitle =
+		leadingSubtitle?.tagName === "h4" &&
+		OFFICIAL_GRAF_CLASSES.get("h4")?.has(
+			attributeValue(leadingSubtitle, "class"),
+		);
+	if (
+		isRendererSubtitle &&
+		expected.subtitle.length > 0 &&
+		shellTextMatches(textContent(leadingSubtitle).trim(), expected.subtitle)
+	) {
+		normalizeOfficialContentAttributes(
+			leadingSubtitle,
+			"story.body.presentationSubtitle",
+		);
+		return remaining.slice(1);
+	}
+	return remaining;
+}
+
+function extractOfficialMediumStory(body, expected) {
+	exactAttributes(body, {}, "document.body");
+	const article = requireSingleChild(
+		body,
+		"article",
+		"Medium story export body",
+	);
+	exactAttributes(article, { class: "h-entry" }, "document.body.article");
+	const parts = significantChildren(article, "document.body.article");
+	if (parts[0]?.tagName !== "header") {
+		throw new MediumContractError(
+			"Official Medium story export must begin with its <header>",
+		);
+	}
+	exactAttributes(parts[0], {}, "story.header");
+	const titleNode = requireSingleChild(parts[0], "h1", "story.header");
+	exactAttributes(titleNode, { class: "p-name" }, "story.header.title");
+	if (textContent(titleNode).trim() !== expected.title) {
+		throw new MediumContractError(
+			`Exported title does not exactly match reviewed inventory title for ${expected.slug}`,
+		);
+	}
+
+	let cursor = 1;
+	const subtitleNode =
+		parts[cursor]?.tagName === "section" &&
+		attributeValue(parts[cursor], "data-field") === "subtitle"
+			? parts[cursor]
+			: null;
+	if (subtitleNode) {
+		exactAttributes(
+			subtitleNode,
+			{ "data-field": "subtitle", class: "p-summary" },
+			"story.subtitle",
+		);
+		if (expected.subtitle.length === 0) {
+			throw new MediumContractError(
+				`Exported story ${expected.slug} has an unexpected subtitle`,
+			);
+		}
+		if (textContent(subtitleNode).trim() !== expected.subtitle) {
+			throw new MediumContractError(
+				`Exported subtitle does not exactly match reviewed inventory subtitle for ${expected.slug}`,
+			);
+		}
+		cursor += 1;
+	}
+
+	const bodySection = parts[cursor];
+	if (bodySection?.tagName !== "section") {
+		throw new MediumContractError(
+			"Official Medium story export is missing its body section",
+		);
+	}
+	exactAttributes(
+		bodySection,
+		{ "data-field": "body", class: "e-content" },
+		"story.body",
+	);
+	const layoutSection = requireSingleChild(
+		bodySection,
+		"section",
+		"story.body",
+	);
+	const layoutAttrs = rawAttributes(layoutSection, "story.body.layout");
+	assertOnlyKeys(layoutAttrs, new Set(["name", "class"]), "story.body.layout");
+	if (
+		!/^[0-9a-f]{4}$/u.test(layoutAttrs.name ?? "") ||
+		layoutAttrs.class !== "section section--body section--first section--last"
+	) {
+		throw new MediumContractError(
+			"story.body.layout is not a recognized Medium export body wrapper",
+		);
+	}
+	const layoutChildren = significantChildren(
+		layoutSection,
+		"story.body.layout",
+	);
+	if (
+		layoutChildren.length !== 2 ||
+		layoutChildren[0].tagName !== "div" ||
+		layoutChildren[1].tagName !== "div"
+	) {
+		throw new MediumContractError(
+			"story.body.layout must contain its divider and content wrappers",
+		);
+	}
+	exactAttributes(
+		layoutChildren[0],
+		{ class: "section-divider" },
+		"story.body.divider",
+	);
+	const divider = requireSingleChild(
+		layoutChildren[0],
+		"hr",
+		"story.body.divider",
+	);
+	exactAttributes(
+		divider,
+		{ class: "section-divider" },
+		"story.body.divider.hr",
+	);
+	exactAttributes(
+		layoutChildren[1],
+		{ class: "section-content" },
+		"story.body.content",
+	);
+	const inner = requireSingleChild(
+		layoutChildren[1],
+		"div",
+		"story.body.content",
+	);
+	exactAttributes(
+		inner,
+		{ class: "section-inner sectionLayout--insetColumn" },
+		"story.body.content.inner",
+	);
+	const rawStoryNodes = significantChildren(inner, "story.body.content.inner");
+	if (!subtitleNode && expected.subtitle.length > 0) {
+		const renderedSubtitle = rawStoryNodes[1];
+		if (
+			renderedSubtitle?.tagName !== "h4" ||
+			!OFFICIAL_GRAF_CLASSES.get("h4")?.has(
+				attributeValue(renderedSubtitle, "class"),
+			) ||
+			!shellTextMatches(textContent(renderedSubtitle).trim(), expected.subtitle)
+		) {
+			throw new MediumContractError(
+				`Exported story ${expected.slug} is missing its reviewed subtitle`,
+			);
+		}
+	}
+	const storyNodes = reconcileOfficialPresentationShell(
+		rawStoryNodes,
+		expected,
+	);
+	for (const [index, node] of storyNodes.entries()) {
+		normalizeOfficialContentAttributes(
+			node,
+			`story.body.content.inner.blocks[${index}]`,
+		);
+	}
+	cursor += 1;
+	const footer = parts[cursor];
+	if (footer?.tagName !== "footer" || cursor !== parts.length - 1) {
+		throw new MediumContractError(
+			"Official Medium story export must end with exactly one footer",
+		);
+	}
+	validateOfficialFooter(footer, "story.footer");
+	return { blocks: extractBlocks(storyNodes, "story") };
 }
 
 function extractFigure(node, label) {
@@ -452,6 +952,13 @@ export function extractMediumStoryHtml(html, expected) {
 	const body = getSingleElement(document, "body", "Medium story export");
 	attributes(body, "document.body");
 	let roots = significantChildren(body, "document.body");
+	if (
+		roots.length === 1 &&
+		roots[0].tagName === "article" &&
+		attributeValue(roots[0], "class") === "h-entry"
+	) {
+		return validateMediumDocument(extractOfficialMediumStory(body, expected));
+	}
 	if (roots.length === 1 && roots[0].tagName === "article") {
 		attributes(roots[0], "document.body.article");
 		roots = significantChildren(roots[0], "document.body.article");

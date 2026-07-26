@@ -20,6 +20,7 @@ function zipEntry({
 	name = "posts/story.html",
 	contents = Buffer.from("<h1>Story</h1>"),
 	method = 0,
+	flags = 0x800,
 	externalAttributes = 0,
 	declaredCrc = crc32(contents),
 	declaredSize = contents.length,
@@ -28,7 +29,7 @@ function zipEntry({
 	const compressed = method === 8 ? deflateRawSync(contents) : contents;
 	const local = Buffer.alloc(30);
 	local.writeUInt32LE(0x04034b50, 0);
-	local.writeUInt16LE(0x800, 6);
+	local.writeUInt16LE(flags, 6);
 	local.writeUInt16LE(method, 8);
 	local.writeUInt32LE(declaredCrc, 14);
 	local.writeUInt32LE(compressed.length, 18);
@@ -37,7 +38,7 @@ function zipEntry({
 
 	const central = Buffer.alloc(46);
 	central.writeUInt32LE(0x02014b50, 0);
-	central.writeUInt16LE(0x800, 8);
+	central.writeUInt16LE(flags, 8);
 	central.writeUInt16LE(method, 10);
 	central.writeUInt32LE(declaredCrc, 16);
 	central.writeUInt32LE(compressed.length, 20);
@@ -58,6 +59,22 @@ function zipEntry({
 test("ZIP reader accepts one bounded UTF-8 entry", () => {
 	const entries = readZipEntries(zipEntry());
 	assert.equal(entries.get("posts/story.html").toString(), "<h1>Story</h1>");
+});
+
+test("ZIP reader accepts unflagged printable ASCII filenames", () => {
+	const entries = readZipEntries(zipEntry({ flags: 0 }));
+	assert.equal(entries.get("posts/story.html").toString(), "<h1>Story</h1>");
+});
+
+test("ZIP reader rejects ambiguous unflagged filenames", () => {
+	assert.throws(
+		() => readZipEntries(zipEntry({ name: "posts/café.html", flags: 0 })),
+		/printable ASCII/u,
+	);
+	assert.throws(
+		() => readZipEntries(zipEntry({ name: "posts/story\t.html", flags: 0 })),
+		/printable ASCII/u,
+	);
 });
 
 test("ZIP reader rejects traversal, links, and corrupt bytes", () => {

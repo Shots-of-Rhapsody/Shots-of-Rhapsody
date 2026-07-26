@@ -24,6 +24,10 @@ Use Medium's logged-in **Settings → Security and apps → Download your inform
 
 1. Save the untouched download as `.medium-import/raw/medium-export.zip`.
 2. Do not extract, edit, normalize, or re-save the ZIP or its HTML files.
+   Medium exports may omit the ZIP UTF-8 filename flag. The bounded reader
+   accepts that official variant only when every unflagged filename byte is
+   printable ASCII and round-trips exactly; non-ASCII or ambiguous legacy
+   encodings stop inventory creation.
 3. Generate an ignored review candidate:
 
    ```sh
@@ -56,7 +60,25 @@ pnpm medium:verify --slug <slug> --with-raw
 pnpm content:verify --require-complete
 ```
 
-The converter preserves text, headings, paragraphs, lists, quotations, links, emphasis, inline breaks, Unicode, code, and reviewed images through an explicit HTML allowlist. Unknown wrappers, attributes, embeds, unsafe URLs, scripts, styles, forms, tracking markup, missing images, and metadata disagreements stop the import for review.
+The converter recognizes Medium's official export envelope explicitly. It
+validates and removes only the known header, subtitle, body-layout, and footer
+wrappers. It also reconciles Medium's leading renderer title/subtitle shell:
+those nodes are omitted only when their text matches the reviewed metadata
+exactly, allowing only Medium's observed non-breaking-space presentation
+substitution. Distinct `h2`, `h3`, and `h4` text remains authored body content.
+When the export has no `p-summary`, its observed leading renderer `h4` becomes
+the subtitle candidate and is subject to the same exact reconciliation.
+Medium's export-only head stylesheet is ignored and never deployed, while any
+style or active markup in the authored body fails closed.
+
+The converter preserves text, headings, paragraphs, lists, quotations, links,
+emphasis, inline breaks, Unicode—including non-breaking spaces—code, and
+reviewed images through an explicit HTML allowlist. Link destinations retain
+their exact exported query strings. Unknown wrappers, attributes, embeds,
+unsafe URLs, scripts, forms, tracking markup, missing images, and metadata
+disagreements stop the import for review. Response-like filenames or titles are
+never excluded heuristically: every exported post remains unresolved until Tai
+Song records its reviewed classification.
 
 Source fidelity and factual review are separate. Never silently correct imported prose. Bind each entry in `provenance/medium/claim-reviews.json` to the current source and Markdown hashes, and record material nonfiction claims against primary sources. An unresolved material claim blocks publication until Tai Song corrects the author master and re-imports it or excludes the article.
 
@@ -72,11 +94,11 @@ Source-platform names, URLs, IDs, ZIP hashes, and acquisition details remain in 
 
 No local importer utility is required by the live static site. GitHub Actions builds only committed, approved content with the frozen JavaScript dependency graph.
 
-After building the frozen v1.1 candidate, generate—never auto-approve—the
+After building the frozen v1.0.0 candidate, generate—never auto-approve—the
 release-wide presentation evidence with:
 
 ```sh
-pnpm content:presentation-evidence --release v1.1.0
+pnpm content:presentation-evidence --release v1.0.0
 ```
 
 Tai Song records the displayed commit and hashes only after responsive and

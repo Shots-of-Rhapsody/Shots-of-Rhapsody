@@ -15,7 +15,10 @@ import {
 	validateMediumManifest,
 	validateMediumSnapshot,
 } from "../lib/model.js";
-import { verifyFirstPartyMarkdown } from "../lib/pipeline.js";
+import {
+	createUnreviewedInventoryCandidates,
+	verifyFirstPartyMarkdown,
+} from "../lib/pipeline.js";
 import { bodyTextSha256, renderMediumBodyHtml } from "../lib/render.js";
 
 const AWAITING_INVENTORY = {
@@ -198,6 +201,207 @@ test("story converter preserves safe structure and rejects active markup", () =>
 			),
 		/unsupported block/u,
 	);
+});
+
+function officialStoryExport({
+	title = "Exported Page Title",
+	subtitle = "Exported subtitle",
+	body = '<p name="1a2b" id="1a2b" class="graf graf--p graf-after--p">Exact body.</p>',
+	canonical = "https://medium.com/@ShotsOfRhapsody/exported-page-title-123",
+} = {}) {
+	const subtitleSection =
+		subtitle === null
+			? ""
+			: `<section data-field="subtitle" class="p-summary">${subtitle}</section>`;
+	return `<!doctype html><html><head><title>${title}</title><style>p { color: black; }</style></head><body><article class="h-entry"><header><h1 class="p-name">${title}</h1></header>${subtitleSection}<section data-field="body" class="e-content"><section name="c0de" class="section section--body section--first section--last"><div class="section-divider"><hr class="section-divider"></div><div class="section-content"><div class="section-inner sectionLayout--insetColumn">${body}</div></div></section></section><footer><p>By <a href="https://medium.com/@ShotsOfRhapsody" class="p-author h-card">Tai Song</a> on <a href="https://medium.com/p/123"><time class="dt-published" datetime="2025-04-01T12:00:00.000Z">April 1, 2025</time></a>.</p><p><a href="${canonical}" class="p-canonical">Canonical link</a></p><p><a href="https://medium.com">Exported from Medium</a></p></footer></article></body></html>`;
+}
+
+test("official export preserves page title, body headings, structure, links, and Unicode", () => {
+	const href =
+		"https://example.com/research?utm_source=source.example&section=one";
+	const html = officialStoryExport({
+		body: [
+			'<h2 name="100a" id="100a" class="graf graf--h2 graf--leading graf--title">A Distinct Body Heading</h2>',
+			'<h4 name="100b" id="100b" class="graf graf--h4 graf-after--h2 graf--subtitle">A body subheading</h4>',
+			`<p name="100c" id="100c" class="graf graf--p graf-after--h4">Plain&nbsp;<strong class="markup--strong markup--p-strong">bold</strong> and <em class="markup--em markup--p-em">italic</em> — text.<br>Next <a href="${href.replace("&", "&amp;")}" data-href="${href.replace("&", "&amp;")}" class="markup--anchor markup--p-anchor" rel="noopener ugc nofollow noopener" target="_blank">linked</a>.</p>`,
+			'<figure name="100d" id="100d" class="graf graf--figure graf-after--p"><img class="graf-image" data-image-id="1*hero@2x.jpeg" data-width="1536" data-height="1024" data-is-featured="true" src="https://cdn.example/hero.jpeg"></figure>',
+			'<h3 name="100e" id="100e" class="graf graf--h3 graf-after--figure">Later heading</h3>',
+			'<ul class="postList"><li name="100f" id="100f" class="graf graf--li graf-after--p"><strong class="markup--strong markup--li-strong">Bullet</strong></li></ul>',
+			'<ol class="postList"><li name="101a" id="101a" class="graf graf--li graf-after--li">Numbered</li></ol>',
+		].join(""),
+	});
+	const metadata = extractCandidateMetadata(html, "posts/official.html");
+	assert.equal(metadata.title, "Exported Page Title");
+	assert.equal(metadata.descriptionCandidate, "Exported subtitle");
+	assert.equal(
+		metadata.canonicalUrlCandidate,
+		"https://medium.com/@ShotsOfRhapsody/exported-page-title-123",
+	);
+	const document = extractMediumStoryHtml(html, {
+		slug: "exported-page-title",
+		title: "Exported Page Title",
+		subtitle: "Exported subtitle",
+	});
+	assert.deepEqual(
+		document.blocks
+			.filter((block) => block.type === "heading")
+			.map((block) => [block.level, block.children[0].text]),
+		[
+			[2, "A Distinct Body Heading"],
+			[4, "A body subheading"],
+			[3, "Later heading"],
+		],
+	);
+	assert.equal(document.blocks[2].children[0].text, "Plain\u00a0");
+	assert.equal(document.blocks[2].children[1].marks[0], "bold");
+	assert.equal(document.blocks[2].children[3].marks[0], "italic");
+	assert.equal(document.blocks[2].children[5].type, "break");
+	assert.equal(document.blocks[2].children[7].href, href);
+	assert.equal(document.blocks[3].sourceUrl, "https://cdn.example/hero.jpeg");
+	assert.equal(document.blocks[5].ordered, false);
+	assert.equal(document.blocks[6].ordered, true);
+});
+
+test("official export removes only a metadata-matching presentation shell", () => {
+	const body = [
+		'<h2 name="100a" id="100a" class="graf graf--h2 graf--leading graf--title">Exported Page&nbsp;Title</h2>',
+		'<h4 name="100b" id="100b" class="graf graf--h4 graf-after--h2 graf--subtitle">Exported subtitle</h4>',
+		'<p name="100c" id="100c" class="graf graf--p graf-after--h4">First authored paragraph.</p>',
+	].join("");
+	const document = extractMediumStoryHtml(officialStoryExport({ body }), {
+		slug: "exported-page-title",
+		title: "Exported Page Title",
+		subtitle: "Exported subtitle",
+	});
+	assert.deepEqual(document.blocks, [
+		{
+			type: "paragraph",
+			children: [
+				{ type: "text", text: "First authored paragraph.", marks: [] },
+			],
+		},
+	]);
+});
+
+test("official export keeps a distinct authored subtitle after a duplicate title", () => {
+	const body = [
+		'<h2 name="100a" id="100a" class="graf graf--h2 graf--leading graf--title">Exported Page Title</h2>',
+		'<h4 name="100b" id="100b" class="graf graf--h4 graf-after--h2 graf--subtitle">A distinct authored body subtitle</h4>',
+		'<p name="100c" id="100c" class="graf graf--p graf-after--h4">First authored paragraph.</p>',
+	].join("");
+	const document = extractMediumStoryHtml(officialStoryExport({ body }), {
+		slug: "exported-page-title",
+		title: "Exported Page Title",
+		subtitle: "Exported subtitle",
+	});
+	assert.equal(document.blocks[0].type, "heading");
+	assert.equal(document.blocks[0].level, 4);
+	assert.equal(
+		document.blocks[0].children[0].text,
+		"A distinct authored body subtitle",
+	);
+});
+
+test("official export supports an explicitly absent subtitle", () => {
+	const html = officialStoryExport({ subtitle: null });
+	const metadata = extractCandidateMetadata(html, "posts/no-subtitle.html");
+	assert.equal(metadata.descriptionCandidate, null);
+	assert.doesNotThrow(() =>
+		extractMediumStoryHtml(html, {
+			slug: "exported-page-title",
+			title: "Exported Page Title",
+			subtitle: "",
+		}),
+	);
+});
+
+test("official export recovers its leading h4 subtitle when p-summary is absent", () => {
+	const body = [
+		'<h2 name="100a" id="100a" class="graf graf--h2 graf--leading graf--title">Exported Page&nbsp;Title</h2>',
+		'<h4 name="100b" id="100b" class="graf graf--h4 graf-after--h2 graf--subtitle">Recovered subtitle</h4>',
+		'<p name="100c" id="100c" class="graf graf--p graf-after--h4">First authored paragraph.</p>',
+	].join("");
+	const html = officialStoryExport({ subtitle: null, body });
+	const metadata = extractCandidateMetadata(
+		html,
+		"posts/recovered-subtitle.html",
+	);
+	assert.equal(metadata.descriptionCandidate, "Recovered subtitle");
+	const document = extractMediumStoryHtml(html, {
+		slug: "exported-page-title",
+		title: "Exported Page Title",
+		subtitle: "Recovered subtitle",
+	});
+	assert.equal(document.blocks.length, 1);
+	assert.equal(
+		document.blocks[0].children[0].text,
+		"First authored paragraph.",
+	);
+	assert.throws(
+		() =>
+			extractMediumStoryHtml(html, {
+				slug: "exported-page-title",
+				title: "Exported Page Title",
+				subtitle: "Different subtitle",
+			}),
+		/missing its reviewed subtitle/u,
+	);
+});
+
+test("official export envelope and generated attributes fail closed", () => {
+	const expected = {
+		slug: "exported-page-title",
+		title: "Exported Page Title",
+		subtitle: "Exported subtitle",
+	};
+	for (const body of [
+		'<div class="unknown"><p>Wrapped.</p></div>',
+		"<script>alert(1)</script>",
+		'<h2 name="1a2b" id="1a2b" class="graf graf--h2 graf--leading graf--title" onclick="alert(1)">Exported Page Title</h2>',
+		'<p name="1a2b" id="1a2b" class="graf graf--p graf-after--p" onclick="alert(1)">Active.</p>',
+		'<p name="1a2b" id="1a2b" class="graf graf--p graf-after--p"><a href="javascript:alert(1)" data-href="javascript:alert(1)" class="markup--anchor markup--p-anchor" rel="noopener" target="_blank">Unsafe</a></p>',
+	]) {
+		assert.throws(
+			() => extractMediumStoryHtml(officialStoryExport({ body }), expected),
+			/unsupported|keys|HTTPS/u,
+		);
+	}
+	assert.throws(
+		() =>
+			extractMediumStoryHtml(
+				officialStoryExport().replace(
+					"</header>",
+					"</header><aside>Unknown sibling</aside>",
+				),
+				expected,
+			),
+		/missing its reviewed subtitle|missing its body section/u,
+	);
+});
+
+test("response-like exports remain unresolved inventory candidates", () => {
+	const responseLikeTitles = Array.from(
+		{ length: 9 },
+		(_value, index) => `A thoughtful response ${index + 1}.`,
+	);
+	const entries = new Map(
+		responseLikeTitles.map((title, index) => [
+			`posts/response-${index + 1}.html`,
+			Buffer.from(officialStoryExport({ title, subtitle: null }), "utf8"),
+		]),
+	);
+	const candidates = createUnreviewedInventoryCandidates(entries);
+	assert.equal(candidates.length, 9);
+	for (const [index, candidate] of candidates.entries()) {
+		assert.equal(candidate.title, responseLikeTitles[index]);
+		assert.equal(candidate.include, null);
+		assert.equal(candidate.exclusionReason, "");
+		assert.deepEqual(candidate.classification, {
+			visibility: null,
+			authorship: null,
+			format: null,
+		});
+	}
 });
 
 function textToken(text) {

@@ -35,6 +35,22 @@ function decodeUtf8(buffer, label) {
 	}
 }
 
+function decodeEntryName(buffer, flags, label) {
+	if ((flags & 0x800) !== 0) return decodeUtf8(buffer, label);
+	if (buffer.some((byte) => byte < 0x20 || byte > 0x7e)) {
+		throw new MediumContractError(
+			`${label} has no UTF-8 flag and must use printable ASCII bytes`,
+		);
+	}
+	const decoded = buffer.toString("ascii");
+	if (!Buffer.from(decoded, "ascii").equals(buffer)) {
+		throw new MediumContractError(
+			`${label} has an ambiguous legacy filename encoding`,
+		);
+	}
+	return decoded;
+}
+
 function normalizedEntryName(name) {
 	if (
 		name.length === 0 ||
@@ -118,8 +134,9 @@ function readEntry(buffer, centralEntry, centralOffset) {
 		localNameLength + localExtraLength,
 		`ZIP local metadata for ${name}`,
 	);
-	const localName = decodeUtf8(
+	const localName = decodeEntryName(
 		buffer.subarray(localNameStart, localNameStart + localNameLength),
+		flags,
 		`ZIP local filename for ${name}`,
 	);
 	if (localName !== name) {
@@ -236,11 +253,6 @@ export function readZipEntries(buffer) {
 		if ((flags & 0x1) !== 0) {
 			throw new MediumContractError("Encrypted ZIP entries are not supported");
 		}
-		if ((flags & 0x800) === 0) {
-			throw new MediumContractError(
-				"Every Medium export ZIP filename must be UTF-8 encoded",
-			);
-		}
 		if (diskStart !== 0) {
 			throw new MediumContractError("Multi-disk ZIP entries are not supported");
 		}
@@ -262,8 +274,9 @@ export function readZipEntries(buffer) {
 				`Medium export exceeds the ${MAX_TOTAL_UNCOMPRESSED_BYTES}-byte expanded safety limit`,
 			);
 		}
-		const decodedName = decodeUtf8(
+		const decodedName = decodeEntryName(
 			buffer.subarray(cursor + 46, cursor + 46 + nameLength),
+			flags,
 			`ZIP filename ${index}`,
 		);
 		const { name, isDirectory } = normalizedEntryName(decodedName);

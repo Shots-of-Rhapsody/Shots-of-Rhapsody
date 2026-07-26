@@ -233,6 +233,19 @@ function exportedCandidates(entries) {
 		}));
 }
 
+export function createUnreviewedInventoryCandidates(entries) {
+	return exportedCandidates(entries).map((candidate) => ({
+		...candidate,
+		include: null,
+		exclusionReason: "",
+		classification: {
+			visibility: null,
+			authorship: null,
+			format: null,
+		},
+	}));
+}
+
 export async function createInventoryCandidate({
 	repoRoot,
 	exportPath,
@@ -247,22 +260,12 @@ export async function createInventoryCandidate({
 		"Official Medium export ZIP",
 	);
 	const entries = readZipEntries(exportBuffer);
-	const exported = exportedCandidates(entries);
-	if (exported.length === 0) {
+	const candidates = createUnreviewedInventoryCandidates(entries);
+	if (candidates.length === 0) {
 		throw new MediumContractError(
 			"The export contains no posts/*.html candidates; verify this is the official account export",
 		);
 	}
-	const candidates = exported.map((candidate) => ({
-		...candidate,
-		include: null,
-		exclusionReason: "",
-		classification: {
-			visibility: null,
-			authorship: null,
-			format: null,
-		},
-	}));
 	const duplicateSlugs = candidates
 		.map((candidate) => candidate.suggestedSlug)
 		.filter((slug, index, values) => values.indexOf(slug) !== index);
