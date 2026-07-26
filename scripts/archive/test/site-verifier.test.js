@@ -688,7 +688,7 @@ test("podcast artifact allowlist accepts only approved routes, audio, cover, and
 	assert.match(failures.join("\n"), /unexpectedly includes/u);
 });
 
-test("public-review podcast allowlist omits an unapproved transcript route", () => {
+test("podcast artifact allowlist accepts a transcript-free episode", () => {
 	const distRoot = path.resolve("synthetic-dist");
 	const episode = {
 		slug: "episode-one",
@@ -701,15 +701,9 @@ test("public-review podcast allowlist omits an unapproved transcript route", () 
 		"media/podcast/episode-one.mp3",
 		"media/podcast/shots-of-rhapsody-podcast-cover.png",
 	].map((relative) => path.join(distRoot, ...relative.split("/")));
-	const reviewFailures = [];
-	verifyPodcastArtifacts(expected, distRoot, [episode], reviewFailures, {
-		allowMissingTranscript: true,
-	});
-	assert.deepEqual(reviewFailures, []);
-
-	const releaseFailures = [];
-	verifyPodcastArtifacts(expected, distRoot, [episode], releaseFailures);
-	assert.match(releaseFailures.join("\n"), /lacks a transcript/u);
+	const failures = [];
+	verifyPodcastArtifacts(expected, distRoot, [episode], failures);
+	assert.deepEqual(failures, []);
 });
 
 test("built-site body comparison normalizes HTML serialization only", () => {

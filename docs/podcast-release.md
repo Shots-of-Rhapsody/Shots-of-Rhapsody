@@ -1,18 +1,18 @@
 # Podcast release boundary
 
 The repository contains one verified recording, but no podcast episode is
-approved for publication. The podcast manifest is intentionally fail-closed:
-the show and episode are drafts, the transcript is not human-reviewed, the
-cover awaits visual approval, and no audio file or podcast feed is emitted in
-the built site.
+approved for release publication. The podcast manifest is intentionally
+fail-closed: the show and episode are drafts, descriptions and explicit-content
+decisions are missing, the publication date is unset, the cover awaits visual
+approval, and no podcast feed is emitted in the release build.
 
 The audio decision is separate from general content signoff. Tai Song has
 explicitly accepted the exact tracked MP3 as the low-loudness pilot source.
 The manifest records `retain-current-audio`, and the versioned decision ledger
 binds that decision to SHA-256
 `b4ec04aa9f99b0c52c3bd77123962cd7d7a49b316147bd293ad011698d232dc3`
-at `2026-07-26T07:55:35.215Z`. This does not approve the transcript, artwork,
-metadata, content signoff, presentation, or publication.
+at `2026-07-26T07:55:35.215Z`. This does not approve artwork, metadata, content
+signoff, presentation, publication, or any future transcript.
 
 `retain-current-audio` means only the bytes currently named in the manifest;
 it is not a permanent waiver for Episode 1. The
@@ -68,14 +68,17 @@ reports any publication blocker.
 1. Retain the confirmed recording and distribution rights in a genuine
    `ContentSignoffV2` record. For a podcast record, `sourceSha256` is the
    approved audio hash, `outputSha256` is the deterministic review-envelope
-   hash covering show, episode, audio, transcript, artwork, and rights metadata,
-   and `assetSha256` lists audio, artwork, then transcript hashes in that order.
+   hash covering show, episode, audio, optional transcript, artwork, and rights
+   metadata. `assetSha256` lists audio and artwork, followed by a transcript hash
+   only when a reviewed transcript is present.
 2. Inspect the exact MP3 with a pinned, checksum-verified media utility. Record
    codec, duration, sample rate, channels, bitrate, integrated loudness, and
    true peak without changing the source bytes.
-3. Produce and human-review an equivalent transcript with speaker labels and
-   meaningful non-speech audio. Publish accessible HTML; add a reviewed WebVTT
-   file when timed text is available.
+3. A transcript is optional for v1.0.0. If one is added later, human-review its
+   speaker labels and meaningful non-speech audio before publishing accessible
+   HTML; add a reviewed WebVTT file when timed text is available. Releasing
+   Episode 1 without a transcript is a documented accessibility exception and
+   must not be described as complete WCAG conformance.
    `pnpm podcast:review` verifies the exact local machine drafts without
    writing. `pnpm podcast:review --write` creates one ignored, time-linked
    worksheet covering every machine cue, every inter-cue gap, and the final
@@ -103,9 +106,9 @@ reports any publication blocker.
    ranges, browser seeking, full-download hashing, cache validators, and the
    actual `Content-Type`. Validate the public feed in Apple Podcasts Connect
    before directory submission.
-10. Perform keyboard, screen-reader, 320 CSS-pixel reflow, 200 percent text
-    resize, and transcript review before enabling Podcast navigation in the
-    combined v1.0.0 candidate.
+10. Perform keyboard, screen-reader, 320 CSS-pixel reflow, and 200 percent text
+    resize review before enabling Podcast navigation in the combined v1.0.0
+    candidate.
 11. Bind the final built routes and shared renderer to Tai Song's genuine
     `PresentationSignoffV2` for `v1.0.0`; the built podcast verifier checks its
     hashes and reviewed-commit ancestry without creating the record.
@@ -113,8 +116,9 @@ reports any publication blocker.
 ## Player and hosting policy
 
 The episode page uses the browser's native `<audio controls>` element with
-`preload="none"`, an adjacent transcript link, and a direct MP3 download.
-There is no autoplay or custom player JavaScript.
+`preload="none"` and a direct MP3 download. A transcript link and transcript
+structured data appear only when reviewed transcript evidence exists. There is
+no autoplay or custom player JavaScript.
 
 GitHub Pages is suitable only for this low-traffic pilot after production proves
 that `HEAD` and byte-range requests work. GitHub documents a 1 GB published-site
@@ -137,9 +141,8 @@ Primary references:
 ## Local verification
 
 Podcast boundary tests and the draft verifier run in normal CI. Complete
-publication verification remains intentionally fail-closed until the reviewed
-transcript, approved metadata and artwork, content signoff, and presentation
-signoff exist.
+publication verification remains intentionally fail-closed until approved
+metadata and artwork, content signoff, and presentation signoff exist.
 
 ```powershell
 pnpm test:future-content
@@ -156,6 +159,6 @@ Pinned local tool archives and model hashes are recorded in
 dependencies.
 
 Passing checks confirm only that the draft stays unpublished and its recorded
-source bytes remain unchanged. They do not approve the episode, create a human
+source bytes remain unchanged. They do not approve the episode or any optional
 transcript, clear rights, validate production delivery, or authorize directory
 submission.

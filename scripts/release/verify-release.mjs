@@ -17,6 +17,12 @@ const RELEASE_EXPECTATIONS = Object.freeze({
 	mediumWriting: 24,
 	podcastEpisodes: 1,
 });
+const RELEASE_POLICY = Object.freeze({
+	writingAccuracy: "source-fidelity",
+	nonfictionClaimResearch: "optional-internal",
+	podcastTranscript: "optional",
+	podcastFeed: "disabled-until-permanent-domain",
+});
 
 const defaultDependencies = Object.freeze({
 	verifyBuiltSite,
@@ -30,8 +36,11 @@ export function validateReleaseTarget(value) {
 		value === null ||
 		typeof value !== "object" ||
 		Array.isArray(value) ||
-		!hasExactKeys(value, new Set(["schemaVersion", "release", "expected"])) ||
-		value.schemaVersion !== 2 ||
+		!hasExactKeys(
+			value,
+			new Set(["schemaVersion", "release", "expected", "policy"]),
+		) ||
+		value.schemaVersion !== 3 ||
 		value.release !== "v1.0.0" ||
 		value.expected === null ||
 		typeof value.expected !== "object" ||
@@ -39,10 +48,17 @@ export function validateReleaseTarget(value) {
 		!hasExactKeys(value.expected, new Set(Object.keys(RELEASE_EXPECTATIONS))) ||
 		Object.entries(RELEASE_EXPECTATIONS).some(
 			([field, expected]) => value.expected[field] !== expected,
+		) ||
+		value.policy === null ||
+		typeof value.policy !== "object" ||
+		Array.isArray(value.policy) ||
+		!hasExactKeys(value.policy, new Set(Object.keys(RELEASE_POLICY))) ||
+		Object.entries(RELEASE_POLICY).some(
+			([field, expected]) => value.policy[field] !== expected,
 		)
 	) {
 		throw new Error(
-			"Release target must be the exact schema version 2 contract for the combined v1.0.0 release",
+			"Release target must be the exact schema version 3 contract for the combined v1.0.0 release",
 		);
 	}
 	return value;
@@ -136,8 +152,8 @@ export function validateCombinedReleaseSummary({
 		["authorWorks", publishedWriting],
 		["nonfictionEntries", mediumWriting],
 		["podcastEpisodes", podcastEpisodes],
-		["pagefindRecords", publishedWriting + podcastEpisodes * 2],
-		["htmlPages", publishedWriting + podcastEpisodes * 2 + 8],
+		["pagefindRecords", publishedWriting + podcastEpisodes],
+		["htmlPages", publishedWriting + podcastEpisodes + 8],
 	]) {
 		if (site?.[field] !== expected) {
 			failures.push(

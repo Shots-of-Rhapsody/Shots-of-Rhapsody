@@ -3,7 +3,7 @@ import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
 import { gunzipSync } from "node:zlib";
-import { parse, parseFragment } from "parse5";
+import { defaultTreeAdapter, parse, parseFragment } from "parse5";
 import { IS_PUBLIC_REVIEW } from "../src/data/build-mode.ts";
 import { PODCAST_SHOW } from "../src/data/podcast.ts";
 import {
@@ -99,23 +99,18 @@ async function walk(directory) {
 	return files;
 }
 
+const HTML_TEXT_CONTEXT = defaultTreeAdapter.createElement(
+	"textarea",
+	"http://www.w3.org/1999/xhtml",
+	[],
+);
+
 function decodeHtml(value) {
-	return value
-		.replace(/&amp;/g, "&")
-		.replace(/&quot;/g, '"')
-		.replace(/&#39;|&apos;/g, "'")
-		.replace(/&lt;/g, "<")
-		.replace(/&gt;/g, ">")
-		.replace(/&#(\d+);/g, (_, codePoint) =>
-			String.fromCodePoint(Number(codePoint)),
-		)
-		.replace(/&#x([0-9a-f]+);/gi, (_, codePoint) =>
-			String.fromCodePoint(Number.parseInt(codePoint, 16)),
-		);
+	return nodeText(parseFragment(HTML_TEXT_CONTEXT, String(value)));
 }
 
 function visibleText(markup) {
-	return decodeHtml(markup.replace(/<[^>]*>/g, ""));
+	return nodeText(parseFragment(String(markup)));
 }
 
 function escapeRegExp(value) {
@@ -128,6 +123,17 @@ function elementsWithAttribute(root, name) {
 		if (node.attrs?.some((attribute) => attribute.name === name)) {
 			matches.push(node);
 		}
+		for (const child of node.childNodes ?? []) visit(child);
+	};
+	visit(root);
+	return matches;
+}
+
+function elementsWithTagName(root, name) {
+	const matches = [];
+	const normalizedName = name.toLowerCase();
+	const visit = (node) => {
+		if (node.tagName?.toLowerCase() === normalizedName) matches.push(node);
 		for (const child of node.childNodes ?? []) visit(child);
 	};
 	visit(root);
@@ -601,22 +607,19 @@ function xmlElementText(xml, name) {
 	return match ? decodeHtml(match[1]) : undefined;
 }
 
-function attributes(tag) {
-	const result = {};
-	const expression =
-		/([^\s=/>]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/g;
-	for (const match of tag.matchAll(expression)) {
-		result[match[1].toLowerCase()] = decodeHtml(
-			match[2] ?? match[3] ?? match[4] ?? "",
-		);
-	}
-	return result;
+function attributes(node) {
+	return Object.fromEntries(
+		(node.attrs ?? []).map((attribute) => [
+			attribute.name.toLowerCase(),
+			attribute.value,
+		]),
+	);
 }
 
 function tags(html, name) {
-	return [...html.matchAll(new RegExp(`<${name}\\b[^>]*>`, "gi"))].map(
-		(match) => ({ raw: match[0], attributes: attributes(match[0]) }),
-	);
+	return elementsWithTagName(parseFragment(String(html)), name).map((node) => ({
+		attributes: attributes(node),
+	}));
 }
 
 function normalizedPath(value) {
@@ -1012,15 +1015,15 @@ async function resolveBuiltUrl(
 }
 
 function extractJsonLd(html, label, failures) {
-	const scripts = [
-		...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi),
-	].filter((match) => attributes(match[1]).type === "application/ld+json");
+	const scripts = elementsWithTagName(parse(String(html)), "script").filter(
+		(node) => attributeValue(node, "type") === "application/ld+json",
+	);
 	if (scripts.length !== 1) {
 		failures.push(`${label}: expected exactly one JSON-LD script`);
 		return undefined;
 	}
 	try {
-		return JSON.parse(scripts[0][2]);
+		return JSON.parse(nodeText(scripts[0]));
 	} catch (error) {
 		failures.push(`${label}: invalid JSON-LD (${error.message})`);
 		return undefined;
@@ -3431,7 +3434,6 @@ export function verifyPodcastArtifacts(
 	distRoot,
 	podcastEpisodes,
 	failures,
-	{ allowMissingTranscript = false } = {},
 ) {
 	const expected = new Set();
 	if (podcastEpisodes.length > 0) {
@@ -3441,11 +3443,6 @@ export function verifyPodcastArtifacts(
 			expected.add(`podcast/${episode.slug}/index.html`);
 			expected.add(episode.audio.publicPath.replace(/^\//u, ""));
 			if (episode.transcript === null) {
-				if (!allowMissingTranscript) {
-					failures.push(
-						`Approved podcast episode lacks a transcript: ${episode.slug}`,
-					);
-				}
 				continue;
 			}
 			expected.add(`podcast/${episode.slug}/transcript/index.html`);
@@ -3664,9 +3661,7 @@ export async function verifyBuiltSite({
 		failures.push(failure);
 	}
 	await verifyNoPrivateBuildReferences(files, failures);
-	verifyPodcastArtifacts(files, distRoot, podcastEpisodes, failures, {
-		allowMissingTranscript: reviewBuild,
-	});
+	verifyPodcastArtifacts(files, distRoot, podcastEpisodes, failures);
 	const imageVerification = await inspectBuiltImages({
 		dist: distRoot,
 		repoRoot,

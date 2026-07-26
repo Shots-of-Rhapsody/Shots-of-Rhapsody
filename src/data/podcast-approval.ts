@@ -24,10 +24,6 @@ export function getPodcastReviewOutputSha256(
 	episode: PodcastEpisode,
 	show: PodcastShow = PODCAST_SHOW,
 ): `sha256:${string}` {
-	if (episode.transcript === null)
-		throw new Error(
-			`Podcast review output cannot be calculated without a transcript: ${episode.slug}`,
-		);
 	const reviewEnvelope = {
 		show: {
 			title: show.title,
@@ -64,10 +60,6 @@ export function assertPodcastContentSignoff(
 ): ContentSignoffV2 {
 	if (ledger.version !== 2 || !Array.isArray(ledger.entries))
 		throw new Error("Podcast content signoff ledger is malformed");
-	if (episode.transcript === null)
-		throw new Error(
-			`Podcast content signoff cannot be checked without a transcript: ${episode.slug}`,
-		);
 	const signoff: ContentSignoffV2 | undefined = ledger.entries.find(
 		(entry) => entry.kind === "podcast" && entry.slug === episode.slug,
 	);
@@ -81,13 +73,13 @@ export function assertPodcastContentSignoff(
 	const expectedAssets = [
 		episode.audio.sha256,
 		show.artwork.sha256,
-		episode.transcript.sha256,
+		...(episode.transcript === null ? [] : [episode.transcript.sha256]),
 	];
 	if (signoff.sourceSha256 !== episode.audio.sha256)
 		throw new Error(`Podcast content signoff has stale audio: ${episode.slug}`);
 	if (signoff.outputSha256 !== getPodcastReviewOutputSha256(episode, show))
 		throw new Error(
-			`Podcast content signoff has stale transcript or metadata: ${episode.slug}`,
+			`Podcast content signoff has stale episode metadata: ${episode.slug}`,
 		);
 	if (
 		signoff.assetSha256.length !== expectedAssets.length ||

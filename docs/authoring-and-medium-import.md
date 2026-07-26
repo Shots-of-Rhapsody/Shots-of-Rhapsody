@@ -193,21 +193,21 @@ never excluded heuristically: every exported post remains unresolved until Tai
 Song records its reviewed classification.
 
 Source fidelity and factual review are separate. Never silently correct imported
-prose. Bind each entry in `provenance/medium/claim-reviews.json` to the current
-source and Markdown hashes, and record material nonfiction claims against
-primary sources. A passed review must follow exactly one path: record at least
-one reviewed claim in `claims` and omit `noMaterialClaimsRationale`, or leave
-`claims` empty and provide a non-empty `noMaterialClaimsRationale` explaining
-why the essay contains no material factual claims. The two paths cannot be
-combined. A generic empty review is never sufficient. An unresolved material
-claim blocks publication until Tai Song corrects the author master and
-re-imports it or excludes the article.
+prose. The v1.0.0 release gate verifies exact reproduction from the hash-bound
+author master; `accuracy: "passed"` in `ContentSignoffV2` records that specific
+source-fidelity decision. Independent claim research may be kept in
+`provenance/medium/claim-reviews.json` as optional internal evidence, but its
+presence or outcome does not publish, block, qualify, or alter an essay. Any
+author-approved factual correction must still be made in the author master,
+re-imported, rehashed, and reviewed again.
 
 Importing creates sealed evidence but does not publish a work. A Medium article
-becomes eligible for `provenance/publication-catalog.json` only when the complete
-manifest, verified site-ready assets, claim review, and matching `ContentSignoffV2` record
-all verify. This separate allowlist prevents partial imports and unsigned drafts
-from entering routes, RSS, search, or the sitemap.
+becomes release-eligible only when the complete manifest, verified site-ready
+assets, and matching source-fidelity and rights `ContentSignoffV2` record all
+verify. `provenance/publication-catalog.json` is the exact 35-work release
+allowlist; missing or stale approvals keep release mode fail-closed even when an
+entry is present. This separation prevents partial imports and unsigned drafts
+from entering an approved release.
 
 ## Create and verify the Proton Non-Fiction masters
 
@@ -231,7 +231,7 @@ Marks, links, lists, quotations, line breaks, blank blocks and Unicode come from
 the sealed Medium snapshot without editorial rewriting.
 
 Import the package through Proton Docs, using the exact exported headline as the
-document name. Keep the Drive layout flat and exact:
+cloud document name. Keep the Drive layout flat and exact:
 
 ```text
 Blogging/
@@ -240,8 +240,12 @@ Blogging/
 ```
 
 Do not copy, rename, rewrite or reorganize anything in `Fiction` during this
-workflow. Do not treat the zero-byte `.protondoc` files exposed by Proton Drive
-sync as readable content or verification evidence.
+workflow. Ten approved cloud titles contain `:` or `?`, which Windows cannot
+represent literally in local filenames. Proton Drive may sanitize or omit those
+desktop placeholders; do not rename the cloud masters to force local filename
+parity. The authenticated cloud inventory and supported HTML exports are the
+authority. Never treat zero-byte `.protondoc` placeholders as readable content
+or verification evidence; local placeholder parity is only a convenience check.
 
 After importing and reviewing a document in Proton Docs, export it as HTML and
 save it beneath the ignored `.medium-import/` directory, for example

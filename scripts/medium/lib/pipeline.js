@@ -11,7 +11,6 @@ import {
 	writeFile,
 } from "node:fs/promises";
 import path from "node:path";
-import { validateClaimReviews } from "../../content/claims.js";
 import {
 	validateContentSignoffsV2,
 	validatePresentationSignoffsV2,
@@ -1931,11 +1930,11 @@ export function validateAggregateReleaseTarget(value) {
 	const target = assertPlainObject(value, "release target");
 	assertOnlyKeys(
 		target,
-		new Set(["schemaVersion", "release", "expected"]),
+		new Set(["schemaVersion", "release", "expected", "policy"]),
 		"release target",
 	);
-	if (target.schemaVersion !== 2) {
-		throw new MediumContractError("release target schemaVersion must equal 2");
+	if (target.schemaVersion !== 3) {
+		throw new MediumContractError("release target schemaVersion must equal 3");
 	}
 	const expected = assertPlainObject(
 		target.expected,
@@ -1946,8 +1945,29 @@ export function validateAggregateReleaseTarget(value) {
 		new Set(["archiveWriting", "mediumWriting", "podcastEpisodes"]),
 		"release target.expected",
 	);
+	const policy = assertPlainObject(target.policy, "release target.policy");
+	assertOnlyKeys(
+		policy,
+		new Set([
+			"writingAccuracy",
+			"nonfictionClaimResearch",
+			"podcastTranscript",
+			"podcastFeed",
+		]),
+		"release target.policy",
+	);
+	if (
+		policy.writingAccuracy !== "source-fidelity" ||
+		policy.nonfictionClaimResearch !== "optional-internal" ||
+		policy.podcastTranscript !== "optional" ||
+		policy.podcastFeed !== "disabled-until-permanent-domain"
+	) {
+		throw new MediumContractError(
+			"release target.policy differs from the approved publication policy",
+		);
+	}
 	return {
-		schemaVersion: 2,
+		schemaVersion: 3,
 		release: assertNonEmptyString(target.release, "release target.release"),
 		expected: {
 			archiveWriting: assertInteger(
@@ -1965,6 +1985,12 @@ export function validateAggregateReleaseTarget(value) {
 				"release target.expected.podcastEpisodes",
 				{ positive: true },
 			),
+		},
+		policy: {
+			writingAccuracy: "source-fidelity",
+			nonfictionClaimResearch: "optional-internal",
+			podcastTranscript: "optional",
+			podcastFeed: "disabled-until-permanent-domain",
 		},
 	};
 }
@@ -2003,25 +2029,15 @@ function requireExactIdentitySet(actualValues, expectedValues, label) {
 
 export function validateAggregateReviewIdentitySets({
 	mediumSlugs,
-	claimReviews,
 	contentSignoffs,
 } = {}) {
-	if (
-		!Array.isArray(mediumSlugs) ||
-		!Array.isArray(claimReviews) ||
-		!Array.isArray(contentSignoffs)
-	) {
+	if (!Array.isArray(mediumSlugs) || !Array.isArray(contentSignoffs)) {
 		throw new MediumContractError(
 			"Aggregate review identity inputs must be arrays",
 		);
 	}
 	const writingIdentities = mediumSlugs.map(
 		(slug) => `writing:${assertSlug(slug)}`,
-	);
-	requireExactIdentitySet(
-		claimReviews.map((review) => assertSlug(review?.slug)),
-		mediumSlugs,
-		"Medium claim reviews",
 	);
 	requireExactIdentitySet(
 		contentSignoffs.map(
@@ -2031,7 +2047,6 @@ export function validateAggregateReviewIdentitySets({
 		"Content signoffs",
 	);
 	return {
-		claimReviewCount: claimReviews.length,
 		contentSignoffCount: contentSignoffs.length,
 	};
 }
@@ -2143,25 +2158,12 @@ export async function verifyAggregateContent({
 			.filter((entry) => entry.kind === "writing")
 			.map((entry) => [entry.slug, entry]),
 	);
-	const claimReviewEntries = validateClaimReviews(
-		parseJson(
-			await readRequired(
-				path.join(repoRoot, "provenance", "medium", "claim-reviews.json"),
-				"Medium claim reviews",
-			),
-			"Medium claim reviews",
-		),
-	);
 	if (requireComplete) {
 		validateAggregateReviewIdentitySets({
 			mediumSlugs: mediumManifest.articles.map((article) => article.slug),
-			claimReviews: claimReviewEntries,
 			contentSignoffs,
 		});
 	}
-	const claimReviews = new Map(
-		claimReviewEntries.map((review) => [review.slug, review]),
-	);
 	const archiveBySlug = new Map(
 		archiveManifest.articles.map((article) => [article.slug, article]),
 	);
@@ -2229,10 +2231,6 @@ export async function verifyAggregateContent({
 			const signedAssets = [...(signoff?.assetSha256 ?? [])].sort();
 			if (
 				!signoff ||
-				claimReviews.get(entry.slug)?.sourceSha256 !==
-					sourceEntry.hashes.rawSource ||
-				claimReviews.get(entry.slug)?.outputSha256 !==
-					sourceEntry.hashes.markdown ||
 				signoff.sourceSha256 !== sourceEntry.hashes.rawSource ||
 				signoff.outputSha256 !== sourceEntry.hashes.markdown ||
 				approvedAssets.length !== signedAssets.length ||

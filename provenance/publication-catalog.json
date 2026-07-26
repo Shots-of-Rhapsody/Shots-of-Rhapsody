@@ -66,6 +66,150 @@
       "source": "tai-song",
       "markdown": "src/content/posts/where-we-last-were-us/index.md",
       "section": "poetry-reflection"
+    },
+    {
+      "slug": "beyond-scarcity-how-automation-ai-could-end-economic-struggle",
+      "source": "medium",
+      "markdown": "src/content/posts/beyond-scarcity-how-automation-ai-could-end-economic-struggle/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "closing-the-gap-how-a-fairer-global-economy-could-lift-billions",
+      "source": "medium",
+      "markdown": "src/content/posts/closing-the-gap-how-a-fairer-global-economy-could-lift-billions/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "debt-as-destiny-how-the-credit-system-controls-lives",
+      "source": "medium",
+      "markdown": "src/content/posts/debt-as-destiny-how-the-credit-system-controls-lives/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "origins-orders",
+      "source": "medium",
+      "markdown": "src/content/posts/origins-orders/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "the-aspiration-economy",
+      "source": "medium",
+      "markdown": "src/content/posts/the-aspiration-economy/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "the-collateral-shift",
+      "source": "medium",
+      "markdown": "src/content/posts/the-collateral-shift/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "the-economics-of-loneliness-how-disconnection-became-a-market-failure",
+      "source": "medium",
+      "markdown": "src/content/posts/the-economics-of-loneliness-how-disconnection-became-a-market-failure/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "the-economy-is-built-on-nature-we-just-dont-count-it",
+      "source": "medium",
+      "markdown": "src/content/posts/the-economy-is-built-on-nature-we-just-dont-count-it/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "the-education-illusion",
+      "source": "medium",
+      "markdown": "src/content/posts/the-education-illusion/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking",
+      "source": "medium",
+      "markdown": "src/content/posts/the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "the-identity-economy",
+      "source": "medium",
+      "markdown": "src/content/posts/the-identity-economy/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "the-informal-majority",
+      "source": "medium",
+      "markdown": "src/content/posts/the-informal-majority/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "the-invisible-ledger",
+      "source": "medium",
+      "markdown": "src/content/posts/the-invisible-ledger/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "the-next-leap-from-global-competition-to-human-cooperation",
+      "source": "medium",
+      "markdown": "src/content/posts/the-next-leap-from-global-competition-to-human-cooperation/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "the-psychology-of-belief-why-humans-prefer-comfort-over-truth",
+      "source": "medium",
+      "markdown": "src/content/posts/the-psychology-of-belief-why-humans-prefer-comfort-over-truth/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "the-remittance-paradox",
+      "source": "medium",
+      "markdown": "src/content/posts/the-remittance-paradox/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "the-rise-of-zero-cost-economies-what-happens-when-prices-disappear",
+      "source": "medium",
+      "markdown": "src/content/posts/the-rise-of-zero-cost-economies-what-happens-when-prices-disappear/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "the-shadow-subsidy",
+      "source": "medium",
+      "markdown": "src/content/posts/the-shadow-subsidy/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "the-trillion-dollar-economy-no-one-talks-about",
+      "source": "medium",
+      "markdown": "src/content/posts/the-trillion-dollar-economy-no-one-talks-about/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "the-water-economy",
+      "source": "medium",
+      "markdown": "src/content/posts/the-water-economy/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "what-comes-after-work-designing-a-purpose-driven-life",
+      "source": "medium",
+      "markdown": "src/content/posts/what-comes-after-work-designing-a-purpose-driven-life/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "what-we-call-freedom-isnt-really-freedom",
+      "source": "medium",
+      "markdown": "src/content/posts/what-we-call-freedom-isnt-really-freedom/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource",
+      "source": "medium",
+      "markdown": "src/content/posts/who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource/index.md",
+      "section": "nonfiction"
+    },
+    {
+      "slug": "why-family-is-not-sacred-by-default",
+      "source": "medium",
+      "markdown": "src/content/posts/why-family-is-not-sacred-by-default/index.md",
+      "section": "nonfiction"
     }
   ]
 }

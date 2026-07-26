@@ -14,20 +14,26 @@ import {
 } from "./verify-release.mjs";
 
 const TARGET = Object.freeze({
-	schemaVersion: 2,
+	schemaVersion: 3,
 	release: "v1.0.0",
 	expected: Object.freeze({
 		archiveWriting: 11,
 		mediumWriting: 24,
 		podcastEpisodes: 1,
 	}),
+	policy: Object.freeze({
+		writingAccuracy: "source-fidelity",
+		nonfictionClaimResearch: "optional-internal",
+		podcastTranscript: "optional",
+		podcastFeed: "disabled-until-permanent-domain",
+	}),
 });
 
 const SITE = Object.freeze({
-	htmlPages: 45,
+	htmlPages: 44,
 	postPages: 35,
 	rssItems: 35,
-	pagefindRecords: 37,
+	pagefindRecords: 36,
 	archiveEntries: 35,
 	authorWorks: 35,
 	nonfictionEntries: 24,
@@ -150,7 +156,7 @@ test("release target accepts only the exact combined v1.0.0 contract", () => {
 	assert.deepEqual(validateReleaseTarget(TARGET), TARGET);
 	for (const value of [
 		{},
-		{ ...TARGET, schemaVersion: 1 },
+		{ ...TARGET, schemaVersion: 2 },
 		{ ...TARGET, release: "v1.1.0" },
 		{ ...TARGET, draft: true },
 		{ ...TARGET, expected: { ...TARGET.expected, mediumWriting: 23 } },
@@ -158,6 +164,19 @@ test("release target accepts only the exact combined v1.0.0 contract", () => {
 		{
 			...TARGET,
 			expected: { ...TARGET.expected, unexpectedWriting: 1 },
+		},
+		{ ...TARGET, policy: undefined },
+		{
+			...TARGET,
+			policy: { ...TARGET.policy, writingAccuracy: "fact-checked" },
+		},
+		{
+			...TARGET,
+			policy: { ...TARGET.policy, podcastTranscript: "required" },
+		},
+		{
+			...TARGET,
+			policy: { ...TARGET.policy, unexpectedPolicy: true },
 		},
 	]) {
 		assert.throws(() => validateReleaseTarget(value), /Release target/u);
@@ -322,10 +341,10 @@ test("combined release rejects writing-source and public-surface drift", () => {
 		);
 	}
 	for (const site of [
-		{ ...SITE, htmlPages: 44 },
+		{ ...SITE, htmlPages: 45 },
 		{ ...SITE, postPages: 36 },
 		{ ...SITE, rssItems: 34 },
-		{ ...SITE, pagefindRecords: 38 },
+		{ ...SITE, pagefindRecords: 37 },
 		{ ...SITE, archiveEntries: 34 },
 		{ ...SITE, authorWorks: 36 },
 		{ ...SITE, nonfictionEntries: 23 },
@@ -390,7 +409,7 @@ test("combined release runs and reports every failed gate", async (context) => {
 				},
 				verifyPodcastRelease: async () => {
 					calls.push("podcast");
-					throw new Error("podcast transcript pending");
+					throw new Error("podcast metadata pending");
 				},
 			},
 		}),
@@ -398,7 +417,7 @@ test("combined release runs and reports every failed gate", async (context) => {
 			assert.match(error.message, /archive review pending/u);
 			assert.match(error.message, /catalog incomplete/u);
 			assert.match(error.message, /Medium approvals pending/u);
-			assert.match(error.message, /podcast transcript pending/u);
+			assert.match(error.message, /podcast metadata pending/u);
 			return true;
 		},
 	);

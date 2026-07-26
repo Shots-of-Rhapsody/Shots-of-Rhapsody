@@ -94,6 +94,9 @@ jobs:
       - name: Verify the complete committed archive
         run: pnpm archive:verify --require-complete
 
+      - name: Verify all Proton author-master bindings
+        run: pnpm proton:verify --require-complete
+
       - name: Verify complete approved writing and podcast evidence
         if: inputs.deployment_mode == 'release'
         run: |

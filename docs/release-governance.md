@@ -4,7 +4,7 @@ This runbook covers provider-side controls that cannot be enforced by files in
 the repository. Do not perform these steps until the release candidate has
 passed the archive, browser, dependency, human-signoff, and disclosure gates.
 
-## Before changing repository visibility
+## Before the final indexable release
 
 1. Confirm the release candidate is the current `main` commit and the tracked
    worktree is clean.
@@ -38,10 +38,11 @@ passed the archive, browser, dependency, human-signoff, and disclosure gates.
    repository path, or private document identifier into an artifact or report.
    Paths explicitly listed as accepted public disclosures are the only path
    exception.
-5. Keep the repository private if either scanner reports a blocking finding.
-   Revoke or rotate credentials before any history remediation. A raw Proton
-   export or real document identifier requires an explicit owner decision
-   before rewriting history.
+5. Block the final release if either scanner reports a finding. Disable Pages
+   immediately if a public privacy or credential defect is discovered, and
+   revoke or rotate affected credentials before any history remediation. A raw
+   Proton export or real document identifier requires an explicit owner
+   decision before rewriting history.
 6. Review every redacted Git author, committer, tagger, commit/tag-message, and
    ref-name finding. Identity exceptions are bound to one immutable Git object
    and role. The documented Fuwari ancestry is trusted only through its pinned
@@ -51,15 +52,15 @@ passed the archive, browser, dependency, human-signoff, and disclosure gates.
    recreation removed those provider refs from the current canonical
    repository; contact GitHub Support only if an old URL remains accessible.
 
-## First public conversion
+## Public repository hardening
 
-After all 11 `ReviewSignoffV1` records, 25 `ContentSignoffV2` records, the 24
-nonfiction claim reviews, and the release-wide `PresentationSignoffV2` record
-pass for the exact candidate:
+After all 11 `ReviewSignoffV1` records, 25 `ContentSignoffV2` records, and the
+release-wide `PresentationSignoffV2` record pass for the exact candidate:
 
-1. Change `Shots-of-Rhapsody/Shots-of-Rhapsody` from private to public.
-2. Wait for GitHub secret scanning to complete and confirm there are no open
-   alerts. Enable secret push protection.
+1. Confirm `Shots-of-Rhapsody/Shots-of-Rhapsody` remains public and that the
+   exact candidate discloses only the approved repository history and assets.
+2. Confirm GitHub secret scanning has completed with no open alerts and secret
+   push protection remains enabled.
 3. Enable Dependabot alerts, Dependabot security updates, and private
    vulnerability reporting.
 4. Set Actions policy to the exact action repositories used by the workflows,
@@ -79,10 +80,10 @@ pass for the exact candidate:
 Record the ruleset ID, enabled features, and required check names in the final
 audit report. Do not record tokens or collaborator email addresses.
 
-## First GitHub Pages deployment
+## Final GitHub Pages deployment
 
-1. In organization settings, allow public Pages publication.
-2. In repository **Settings → Pages**, choose **GitHub Actions**.
+1. Confirm organization policy still allows public Pages publication.
+2. Confirm repository **Settings → Pages** uses **GitHub Actions**.
 3. Protect the `github-pages` environment so only `main` can deploy.
 4. Dispatch **Deploy Astro to GitHub Pages** from the approved `main` SHA. The
    workflow is intentionally manual and refuses to deploy any other ref.

@@ -287,12 +287,18 @@ test("aggregate completion uses the release target instead of an empty Medium pl
 		() =>
 			reconcileAggregateReleaseTarget({
 				target: {
-					schemaVersion: 2,
+					schemaVersion: 3,
 					release: "v1.0.0",
 					expected: {
 						archiveWriting: 11,
 						mediumWriting: 24,
 						podcastEpisodes: 1,
+					},
+					policy: {
+						writingAccuracy: "source-fidelity",
+						nonfictionClaimResearch: "optional-internal",
+						podcastTranscript: "optional",
+						podcastFeed: "disabled-until-permanent-domain",
 					},
 				},
 				archive: { importedCount: 11, complete: true },
@@ -306,12 +312,11 @@ test("aggregate completion uses the release target instead of an empty Medium pl
 	);
 });
 
-test("aggregate review evidence accepts only the exact 24-writing and one-podcast identity set", () => {
+test("aggregate review evidence accepts only the exact 24-writing and one-podcast signoff set", () => {
 	const mediumSlugs = Array.from(
 		{ length: 24 },
 		(_, index) => `essay-${String(index + 1).padStart(2, "0")}`,
 	);
-	const claimReviews = mediumSlugs.map((slug) => ({ slug }));
 	const contentSignoffs = [
 		...mediumSlugs.map((slug) => ({ slug, kind: "writing" })),
 		{ slug: "modular-ethics", kind: "podcast" },
@@ -319,26 +324,10 @@ test("aggregate review evidence accepts only the exact 24-writing and one-podcas
 	assert.deepEqual(
 		validateAggregateReviewIdentitySets({
 			mediumSlugs,
-			claimReviews,
 			contentSignoffs,
 		}),
-		{ claimReviewCount: 24, contentSignoffCount: 25 },
+		{ contentSignoffCount: 25 },
 	);
-
-	for (const changedClaims of [
-		claimReviews.slice(1),
-		[...claimReviews, { slug: "excluded-response" }],
-	]) {
-		assert.throws(
-			() =>
-				validateAggregateReviewIdentitySets({
-					mediumSlugs,
-					claimReviews: changedClaims,
-					contentSignoffs,
-				}),
-			/Medium claim reviews must exactly match/u,
-		);
-	}
 	for (const changedSignoffs of [
 		contentSignoffs.slice(1),
 		[...contentSignoffs, { slug: "excluded-response", kind: "writing" }],
@@ -353,7 +342,6 @@ test("aggregate review evidence accepts only the exact 24-writing and one-podcas
 			() =>
 				validateAggregateReviewIdentitySets({
 					mediumSlugs,
-					claimReviews,
 					contentSignoffs: changedSignoffs,
 				}),
 			/Content signoffs must exactly match/u,

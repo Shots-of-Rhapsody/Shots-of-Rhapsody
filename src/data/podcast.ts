@@ -95,7 +95,6 @@ export type PodcastPublicationBlocker =
 	| "audio-retain-approval-missing"
 	| "audio-remaster-required"
 	| "audio-quality-unapproved"
-	| "transcript-missing"
 	| "transcript-unreviewed";
 
 const SHA256_PATTERN = /^sha256:[a-f0-9]{64}$/u;
@@ -192,8 +191,8 @@ export function getPodcastPublicationBlockers(
 			blockers.push("audio-decision-pending");
 	}
 	if (!episode.audio.qualityApproved) blockers.push("audio-quality-unapproved");
-	if (episode.transcript === null) blockers.push("transcript-missing");
-	else if (!episode.transcript.reviewed) blockers.push("transcript-unreviewed");
+	if (episode.transcript !== null && !episode.transcript.reviewed)
+		blockers.push("transcript-unreviewed");
 
 	return blockers;
 }

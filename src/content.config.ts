@@ -2,7 +2,6 @@ import { defineCollection, type ImageFunction } from "astro:content";
 import { file, glob } from "astro/loaders";
 import { z } from "astro/zod";
 import firstPartyManifestJson from "../provenance/first-party/manifest.json";
-import claimReviewsJson from "../provenance/medium/claim-reviews.json";
 import mediumManifestJson from "../provenance/medium/manifest.json";
 import contentSignoffsJson from "../provenance/reviews/content-signoffs-v2.json";
 import manifest from "../provenance/tai-song/manifest.json";
@@ -34,16 +33,6 @@ const firstPartyManifest = firstPartyManifestJson as unknown as {
 		markdown: string;
 		hashes: { source: string; output: string };
 		assets: Array<{ sha256: string }>;
-	}>;
-};
-const claimReviews = claimReviewsJson as unknown as {
-	version: number;
-	articles: Array<{
-		slug: string;
-		sourceSha256: string;
-		outputSha256: string;
-		reviewer: string;
-		outcome: string;
 	}>;
 };
 const publicPostPatterns = publicationCatalog.entries.map((article) => {
@@ -119,9 +108,6 @@ for (const entry of publicationCatalog.entries.filter(
 	const signoff = contentSignoffs.entries.find(
 		(review) => review.kind === "writing" && review.slug === entry.slug,
 	);
-	const claimReview = claimReviews.articles.find(
-		(review) => review.slug === entry.slug,
-	);
 	const sourceAssets = [...(source?.assets ?? [])]
 		.map((asset) => asset.sha256)
 		.sort();
@@ -131,13 +117,7 @@ for (const entry of publicationCatalog.entries.filter(
 		!source ||
 		source.paths.markdown !== entry.markdown ||
 		(!IS_PUBLIC_REVIEW &&
-			(!signoff ||
-				claimReviews.version !== 1 ||
-				claimReview?.reviewer !== "Tai Song" ||
-				claimReview?.outcome !== "passed" ||
-				claimReview?.sourceSha256 !== source.hashes.rawSource ||
-				claimReview?.outputSha256 !== source.hashes.markdown ||
-				signoff.reviewer !== "Tai Song" ||
+			(signoff?.reviewer !== "Tai Song" ||
 				signoff.accuracy !== "passed" ||
 				signoff.rights !== "passed" ||
 				signoff.sourceSha256 !== source.hashes.rawSource ||

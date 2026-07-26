@@ -20,7 +20,7 @@ The 24 essays recorded in the active Medium evidence manifest, their authored pr
 
 ## Podcast — All Rights Reserved
 
-Shots of Rhapsody Podcast audio, show and episode artwork, descriptions, and reviewed transcripts are **All Rights Reserved**. The first episode retains the exact approved recording bytes. Publication through the website does not grant permission to copy, redistribute, adapt, retransmit, or commercially reuse the recording or transcript.
+Shots of Rhapsody Podcast audio, show and episode artwork, descriptions, and any published transcript are **All Rights Reserved**. The first episode retains the exact approved recording bytes. Publication through the website does not grant permission to copy, redistribute, adapt, retransmit, or commercially reuse the recording or a transcript.
 
 ## Repository-only drafts
 
@@ -29,8 +29,6 @@ The four non-manifest posts are intentionally unpublished drafts. Posts without 
 ## Project media and branding
 
 Project-specific artwork, favicons, names, and branding are not licensed by the root MIT License unless a file-specific notice expressly says otherwise. Do not assume that repository access grants reuse rights.
-
-The historical player implementation under `legacy/podcast/` is retained for history only and is never deployed. Its presence has no effect on the rights for the separately verified episode asset.
 
 ## Third-party material
 
