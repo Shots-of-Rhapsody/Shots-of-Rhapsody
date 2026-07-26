@@ -1,9 +1,9 @@
 {
-	"schemaVersion": 2,
-	"release": "v1.0.0",
-	"expected": {
-		"archiveWriting": 11,
-		"mediumWriting": 24,
-		"podcastEpisodes": 1
-	}
+  "schemaVersion": 2,
+  "release": "v1.0.0",
+  "expected": {
+    "archiveWriting": 11,
+    "mediumWriting": 24,
+    "podcastEpisodes": 1
+  }
 }

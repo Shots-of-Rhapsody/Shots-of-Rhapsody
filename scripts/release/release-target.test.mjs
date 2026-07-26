@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { collectPresentationEvidence } from "../content/presentation.js";
+import { DEFAULT_REPO_ROOT, serializeJson } from "../medium/lib/contract.js";
 import {
 	requirePresentationTarget,
 	validateCombinedReleaseSummary,
@@ -161,6 +162,16 @@ test("release target accepts only the exact combined v1.0.0 contract", () => {
 	]) {
 		assert.throws(() => validateReleaseTarget(value), /Release target/u);
 	}
+});
+
+test("committed release target uses the canonical JSON contract", async () => {
+	const buffer = await readFile(
+		path.join(DEFAULT_REPO_ROOT, "provenance", "release-target.json"),
+	);
+	const value = JSON.parse(buffer.toString("utf8"));
+
+	assert.equal(buffer.toString("utf8"), serializeJson(value));
+	assert.deepEqual(validateReleaseTarget(value), TARGET);
 });
 
 test("combined release runs every content and presentation gate", async (context) => {
