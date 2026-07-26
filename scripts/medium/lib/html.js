@@ -1,5 +1,7 @@
 import { parse } from "parse5";
 import {
+	AUTHOR_NAME,
+	AUTHOR_PROFILE_URL,
 	assertHttpsUrl,
 	assertNonEmptyString,
 	assertOnlyKeys,
@@ -328,6 +330,75 @@ export function extractCandidateMetadata(html, sourcePath) {
 		publishedAtCandidate: publishedAt,
 		canonicalUrlCandidate: canonicalUrl,
 	};
+}
+
+export function extractMediumAuthorEvidence(html, sourcePath) {
+	const document = parseDocument(html, sourcePath);
+	const officialArticles = [];
+	walkElements(document, (node) => {
+		if (
+			node.tagName === "article" &&
+			attributeValue(node, "class") === "h-entry"
+		) {
+			officialArticles.push(node);
+		}
+	});
+	if (officialArticles.length !== 1) {
+		throw new MediumContractError(
+			`${sourcePath} must contain exactly one official Medium article.h-entry`,
+		);
+	}
+	const footers = significantChildren(
+		officialArticles[0],
+		`${sourcePath} article.h-entry`,
+	).filter((node) => node.tagName === "footer");
+	if (footers.length !== 1) {
+		throw new MediumContractError(
+			`${sourcePath} must contain exactly one direct official article footer`,
+		);
+	}
+	const authorLinks = [];
+	walkElements(footers[0], (node) => {
+		if (
+			node.tagName === "a" &&
+			attributeValue(node, "class") === "p-author h-card"
+		) {
+			authorLinks.push(node);
+		}
+	});
+	const documentAuthorLinks = [];
+	walkElements(document, (node) => {
+		if (
+			node.tagName === "a" &&
+			attributeValue(node, "class") === "p-author h-card"
+		) {
+			documentAuthorLinks.push(node);
+		}
+	});
+	if (authorLinks.length !== 1 || documentAuthorLinks.length !== 1) {
+		throw new MediumContractError(
+			`${sourcePath} must contain exactly one official Medium author credit inside its article footer`,
+		);
+	}
+	const authorLink = authorLinks[0];
+	const attrs = rawAttributes(authorLink, `${sourcePath} author credit`);
+	assertOnlyKeys(
+		attrs,
+		new Set(["href", "class"]),
+		`${sourcePath} author credit`,
+	);
+	const profileUrl = assertHttpsUrl(
+		attrs.href,
+		`${sourcePath} author profile URL`,
+		{ hostname: "medium.com" },
+	).toString();
+	const name = textContent(authorLink);
+	if (name !== AUTHOR_NAME || profileUrl !== AUTHOR_PROFILE_URL) {
+		throw new MediumContractError(
+			`${sourcePath} author credit does not match Tai Song at the Shots of Rhapsody profile`,
+		);
+	}
+	return { name, profileUrl };
 }
 
 function canonicalMarks(marks) {

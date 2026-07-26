@@ -41,6 +41,7 @@ import {
 import {
 	decodeUtf8,
 	extractCandidateMetadata,
+	extractMediumAuthorEvidence,
 	extractMediumStoryHtml,
 	validateMediumDocument,
 } from "./html.js";
@@ -56,6 +57,10 @@ import {
 	renderMediumBodyHtml,
 	renderMediumIndexMarkdown,
 } from "./render.js";
+import {
+	buildMediumInventoryReviewProposal,
+	validateUnresolvedMediumCandidate,
+} from "./review.js";
 import { readZipEntries } from "./zip.js";
 
 function parseJson(buffer, label) {
@@ -334,6 +339,10 @@ async function loadAssetCandidateLedger(
 			"Medium inventory candidate ledger does not bind the supplied official export",
 		);
 	}
+	const capturedAt = assertCanonicalUtc(
+		exportRecord.capturedAt,
+		"Medium inventory candidate ledger export.capturedAt",
+	);
 	if (
 		!Array.isArray(ledger.candidates) ||
 		!Number.isSafeInteger(ledger.candidateCount) ||
@@ -354,14 +363,11 @@ async function loadAssetCandidateLedger(
 	}
 	const sourcePaths = new Set();
 	for (const [index, candidateValue] of ledger.candidates.entries()) {
-		const candidate = assertPlainObject(
+		const candidate = validateUnresolvedMediumCandidate(
 			candidateValue,
 			`Medium inventory candidate ledger candidates[${index}]`,
 		);
-		const sourcePath = assertSafeRepositoryPath(
-			candidate.sourcePath,
-			`Medium inventory candidate ledger candidates[${index}].sourcePath`,
-		);
+		const sourcePath = candidate.sourcePath;
 		if (
 			sourcePaths.has(sourcePath) ||
 			!entries.has(sourcePath) ||
@@ -372,19 +378,16 @@ async function loadAssetCandidateLedger(
 			);
 		}
 		sourcePaths.add(sourcePath);
-		if (
-			candidate.include !== null ||
-			candidate.exclusionReason !== "" ||
-			candidate.classification?.visibility !== null ||
-			candidate.classification?.authorship !== null ||
-			candidate.classification?.format !== null
-		) {
-			throw new MediumContractError(
-				"Medium inventory candidate ledger must retain every candidate as unresolved",
-			);
-		}
 	}
-	return { candidates: ledger.candidates, candidateSetSha256 };
+	return {
+		candidates: ledger.candidates,
+		candidateSetSha256,
+		exportRecord: {
+			fileName: exportRecord.fileName,
+			sha256: exportRecord.sha256,
+			capturedAt,
+		},
+	};
 }
 
 export async function createInventoryCandidate({
@@ -495,6 +498,59 @@ export async function createMediumHeroChecklist({
 		mode: write ? "write" : "dry-run",
 		checklistPath: toRepositoryPath(repoRoot, checklistPath),
 		checklist,
+	};
+}
+
+export async function createMediumInventoryReviewProposal({
+	repoRoot,
+	exportPath,
+	approvedAllowlist,
+	write = false,
+} = {}) {
+	const { absoluteExport, exportBuffer, entries } = await loadOfficialExport(
+		repoRoot,
+		exportPath,
+	);
+	const { candidates, exportRecord } = await loadAssetCandidateLedger(
+		repoRoot,
+		{
+			absoluteExport,
+			exportBuffer,
+			entries,
+		},
+	);
+	let authorEvidenceCount = 0;
+	for (const candidate of candidates) {
+		const source = entries.get(candidate.sourcePath);
+		if (!Buffer.isBuffer(source)) {
+			throw new MediumContractError(
+				`Medium candidate author evidence is missing: ${candidate.sourcePath}`,
+			);
+		}
+		extractMediumAuthorEvidence(
+			decodeUtf8(source, candidate.sourcePath),
+			candidate.sourcePath,
+		);
+		authorEvidenceCount += 1;
+	}
+	const proposal = buildMediumInventoryReviewProposal({
+		candidates,
+		approvedAllowlist,
+		exportRecord,
+		authorEvidenceCount,
+	});
+	const reviewProposalPath = getMediumPaths(repoRoot).reviewProposalPath;
+	if (write) {
+		await writeNewFile(
+			reviewProposalPath,
+			Buffer.from(serializeJson(proposal), "utf8"),
+			"Medium inventory review proposal",
+		);
+	}
+	return {
+		mode: write ? "write" : "dry-run",
+		reviewProposalPath: toRepositoryPath(repoRoot, reviewProposalPath),
+		proposal,
 	};
 }
 

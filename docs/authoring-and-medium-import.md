@@ -34,6 +34,17 @@ Use Medium's logged-in **Settings → Security and apps → Download your inform
    pnpm medium:inventory .medium-import/raw/medium-export.zip --captured-at 2026-07-25T12:34:56.000Z --write
    ```
 
+   After the exact release-title and response dispositions are approved, create
+   a separate non-publishing proposal:
+
+   ```sh
+   pnpm medium:review-inventory .medium-import/raw/medium-export.zip --write
+   ```
+
+   This verifies the source footer author on all 33 candidates and refuses to
+   overwrite an existing proposal. It does not create the final inventory or
+   any human signoff.
+
 4. Compare every candidate with the public author profile. Include only public, original, standalone stories. Exclude drafts, unlisted stories, reposts, and responses.
 5. Retain a disposition for every exported HTML file—include, or exclude with
    a reason—and preserve the candidate-set count and hash. Review exact titles,
