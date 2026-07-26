@@ -644,6 +644,43 @@
       ]
     },
     {
+      "slug": "what-we-call-freedom-isnt-really-freedom",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/what-we-call-freedom-isnt-really-freedom-26ecc317aa63",
+      "paths": {
+        "snapshot": "provenance/medium/posts/what-we-call-freedom-isnt-really-freedom.json",
+        "markdown": "src/content/posts/what-we-call-freedom-isnt-really-freedom/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:71153f592190d0d93bceade154e465a602f822dc29b4fd98e37b86059fbf0a7e",
+        "snapshot": "sha256:7e834eaac5738763c46d0dd3cc556b11259ec489dd51de2b7fbf78dfd1e1b805",
+        "markdown": "sha256:c4905105043f0858b8a8932003b5712415b741ba7ae9d864f881fe29dc5529c9",
+        "bodyText": "sha256:a5f79c1179ccc2097178fd447fc4526591e227e785df4b5372b170f00da55962"
+      },
+      "content": {
+        "title": "What We Call Freedom Isn’t Really Freedom",
+        "subtitle": "In a system where structure keeps the peace but limits the self, true freedom remains both desired and impossible.",
+        "seriesLine": "A Ledger Series article on the paradox of autonomy in a world built on rules, compromise, and invisible contracts.",
+        "bodyBlockCount": 62
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/what-we-call-freedom-isnt-really-freedom/hero.webp",
+          "sha256": "sha256:869c84bed45487ddb6239d9c4498c324490f74e0a8db4a51602ce20867842026",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:3f26906002bb21da390291fd29cecce1954e82275314b5ebdb70bd2f57cf740f",
+          "pixelSha256": "sha256:21ee48179728d13b4a386906c6aad31c43694a67c48b69dc54a6be5c68b6e88b",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 2655886
+        }
+      ]
+    },
+    {
       "slug": "who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource",
       "capturedAt": "2026-07-25T14:11:15.789Z",
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource-c2f680f7c679",
