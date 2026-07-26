@@ -463,6 +463,12 @@
 		},
 		{
 			"rule": "email-address-review",
+			"path": "scripts/medium/test/foundation.test.js",
+			"blob": "a90f045cef519ceb21779e7af4f8d869a694e4f6",
+			"reason": "Immutable synthetic test fixture containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
 			"path": "scripts/release/release-target.test.mjs",
 			"blob": "256b93f7bfba6c65556fae0cf74205d67ce5b69f",
 			"reason": "Immutable synthetic test fixture using the reserved .invalid domain; it is not a deliverable address."
@@ -471,6 +477,12 @@
 			"rule": "email-address-review",
 			"path": "scripts/release/release-target.test.mjs",
 			"blob": "8e745eebece0422759876faeecacff5273b0b8ad",
+			"reason": "Immutable synthetic test fixture using the reserved .invalid domain; it is not a deliverable address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/release/release-target.test.mjs",
+			"blob": "ced4b2b708ca70d43db42d369c087cdc845e93c2",
 			"reason": "Immutable synthetic test fixture using the reserved .invalid domain; it is not a deliverable address."
 		}
 	],
