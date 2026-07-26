@@ -168,6 +168,10 @@ test("worksheet is local-only, time-linked, and refuses overwrite", async (t) =>
 	const evidence = await verifyPodcastReviewSources(fixture);
 	const html = renderReviewWorksheet(evidence, fixture.repositoryRoot);
 	assert.match(html, /data-start="0"/u);
+	assert.match(html, /id="gap-001"/u);
+	assert.match(html, /00:00:01\.000 to 00:00:01\.500/u);
+	assert.match(html, /id="trailing-audio-review"/u);
+	assert.match(html, /00:00:02\.000 to 00:00:03\.000/u);
 	assert.match(html, /Checking boxes does not save, approve, publish/u);
 	assert.doesNotMatch(html, /https?:\/\//u);
 

@@ -40,6 +40,18 @@ function roundMillis(value) {
 	return Math.round(value * 1000) / 1000;
 }
 
+function formatTimestamp(totalSeconds) {
+	const milliseconds = Math.round(totalSeconds * 1000);
+	const hours = Math.floor(milliseconds / 3_600_000);
+	const minutes = Math.floor((milliseconds % 3_600_000) / 60_000);
+	const seconds = Math.floor((milliseconds % 60_000) / 1000);
+	const remainder = milliseconds % 1000;
+	return [hours, minutes, seconds]
+		.map((value) => String(value).padStart(2, "0"))
+		.join(":")
+		.concat(`.${String(remainder).padStart(3, "0")}`);
+}
+
 function seconds(hours, minutes, secondsAndMillis) {
 	return Number(hours) * 3600 + Number(minutes) * 60 + Number(secondsAndMillis);
 }
@@ -340,6 +352,16 @@ export function renderReviewWorksheet(evidence, repositoryRoot) {
 </li>`,
 		)
 		.join("\n");
+	const gaps = evidence.gaps
+		.map(
+			(gap, index) => `<li id="gap-${String(index + 1).padStart(3, "0")}">
+	<button type="button" data-start="${gap.start}">${escapeHtml(formatTimestamp(gap.start))} to ${escapeHtml(formatTimestamp(gap.end))}</button>
+	<p>${gap.duration.toFixed(3)} seconds without a machine cue</p>
+	<label><input type="checkbox" /> Manually checked for speech, music, or a meaningful sound</label>
+</li>`,
+		)
+		.join("\n");
+	const finalCueEnd = evidence.cues.at(-1).end;
 	return `<!doctype html>
 <html lang="en">
 <head>
@@ -360,9 +382,23 @@ export function renderReviewWorksheet(evidence, repositoryRoot) {
 	<h1>Episode 1 transcript review worksheet</h1>
 	<p class="warning"><strong>Local review evidence only.</strong> Checking boxes does not save, approve, publish, or change any signoff.</p>
 	<p>Audio SHA-256: <code>${escapeHtml(evidence.contract.audio.sha256)}</code></p>
-	<p>${evidence.stats.cueCount} machine cues; ${evidence.stats.trailingUncaptionedSeconds.toFixed(3)} seconds after the final cue require listening review.</p>
+	<p>${evidence.stats.cueCount} machine cues, ${evidence.stats.interCueGapCount} inter-cue gaps, and ${evidence.stats.trailingUncaptionedSeconds.toFixed(3)} seconds after the final cue require listening review.</p>
 	<audio id="review-audio" controls preload="metadata" src="${escapeHtml(audioRelative)}"></audio>
-	<ol>${cues}</ol>
+	<section aria-labelledby="cue-review-heading">
+		<h2 id="cue-review-heading">Machine transcript cues</h2>
+		<ol>${cues}</ol>
+	</section>
+	<section aria-labelledby="gap-review-heading">
+		<h2 id="gap-review-heading">Inter-cue coverage</h2>
+		<p>Listen to every interval below and record any omitted speech, music, or meaningful sound in the corrected transcript.</p>
+		<ol>${gaps}</ol>
+	</section>
+	<section aria-labelledby="tail-review-heading" id="trailing-audio-review">
+		<h2 id="tail-review-heading">Final uncaptioned audio</h2>
+		<button type="button" data-start="${finalCueEnd}">${escapeHtml(formatTimestamp(finalCueEnd))} to ${escapeHtml(formatTimestamp(evidence.contract.audio.durationSeconds))}</button>
+		<p>${evidence.stats.trailingUncaptionedSeconds.toFixed(3)} seconds after the final machine cue</p>
+		<label><input type="checkbox" /> Manually checked through the exact end of the MP3</label>
+	</section>
 	<script>
 		const audio = document.querySelector("#review-audio");
 		document.addEventListener("click", (event) => {
