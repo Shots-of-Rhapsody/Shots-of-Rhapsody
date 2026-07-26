@@ -383,6 +383,43 @@
           "byteSize": 2360566
         }
       ]
+    },
+    {
+      "slug": "who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource-c2f680f7c679",
+      "paths": {
+        "snapshot": "provenance/medium/posts/who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource.json",
+        "markdown": "src/content/posts/who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:6ad2918190f9729bf365773d2d928d7ad20d6f66d52c53174b43bf7815fcb3c3",
+        "snapshot": "sha256:5a459973a70f30c64bfe1552ddaed715437ed6e62dd2d57579ee1248a16f87b0",
+        "markdown": "sha256:287032fe12bedfa281406c4f461c105954c77f247a5909431a5d88c46315dc42",
+        "bodyText": "sha256:a1d6e64d052f16d66f5cf27b5203448323a0d3b237007c30150c93bd9e031bbc"
+      },
+      "content": {
+        "title": "The Time Economy",
+        "subtitle": "In a system that only counts paid hours, time itself becomes a silent sacrifice.",
+        "seriesLine": "A Ledger Series article on how unpaid hours keep paid systems running.",
+        "bodyBlockCount": 98
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource/hero.webp",
+          "sha256": "sha256:825d61f7c32c3354086d675f36b98b08244961721374974500491b0bb227eb86",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:926389d208c4ca47918b554d8833e118f679c7cb2aff6b8db6136a277f4cc76b",
+          "pixelSha256": "sha256:584556f03b35b399ad4ae9e2d494a75527a5d4cdc4672c7a6c5d72f91f6e7550",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 3558860
+        }
+      ]
     }
   ]
 }
