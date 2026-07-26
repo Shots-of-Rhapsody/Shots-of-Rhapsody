@@ -434,6 +434,18 @@ function metadataPolicy(policy) {
 		}
 		allowedMessageEmailObjects.add(`${entry.object}\0${entry.location}`);
 	}
+	const allowedSignedOffByObjects = new Set();
+	for (const entry of policy.gitMetadata?.allowedSignedOffByObjects ?? []) {
+		if (!/^[0-9a-f]{40}$/.test(entry.object ?? "")) {
+			throw new Error(
+				"Git metadata policy contains an invalid signed-off-by object",
+			);
+		}
+		if (typeof entry.reason !== "string" || entry.reason.trim() === "") {
+			throw new Error("Git metadata signed-off-by exception requires a reason");
+		}
+		allowedSignedOffByObjects.add(entry.object);
+	}
 	const allowedPublicNames = new Set();
 	for (const entry of policy.gitMetadata?.allowedPublicNames ?? []) {
 		if (typeof entry.name !== "string" || entry.name.trim() === "") {
@@ -447,6 +459,7 @@ function metadataPolicy(policy) {
 	return {
 		allowedIdentityObjects,
 		allowedMessageEmailObjects,
+		allowedSignedOffByObjects,
 		allowedPublicNames,
 		trustedUpstreamTips: policy.gitMetadata?.trustedUpstreamTips ?? [],
 	};
@@ -599,6 +612,7 @@ function scanCommitMetadata(cwd, commits, policy) {
 	const {
 		allowedIdentityObjects,
 		allowedMessageEmailObjects,
+		allowedSignedOffByObjects,
 		allowedPublicNames,
 		trustedUpstreamTips,
 	} = metadataPolicy(policy);
@@ -752,7 +766,7 @@ function scanCommitMetadata(cwd, commits, policy) {
 				findings.set(`${finding.rule}\0${commit}`, finding);
 			}
 		}
-		if (!trustedCommits.has(commit)) {
+		if (!trustedCommits.has(commit) && !allowedSignedOffByObjects.has(commit)) {
 			for (const finding of scanProjectSignedOffBy(message, {
 				type: "commit-metadata",
 				kind: "commit",

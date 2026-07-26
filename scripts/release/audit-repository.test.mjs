@@ -91,6 +91,7 @@ async function writePolicy(
 	allowedIdentityObjects = [],
 	trustedUpstreamTips = [],
 	allowedMessageEmailObjects = [],
+	allowedSignedOffByObjects = [],
 ) {
 	await writeFile(
 		file,
@@ -107,6 +108,7 @@ async function writePolicy(
 					],
 					allowedIdentityObjects,
 					allowedMessageEmailObjects,
+					allowedSignedOffByObjects,
 				},
 				contentAllowlists: {},
 				contentAllowlistEntries: allowedEmailBlob
@@ -576,6 +578,60 @@ test("repository audit scans redacted commit and annotated-tag messages", async 
 					finding.commit === projectCommit,
 			),
 			"an exact message-email exception must not approve a project Signed-off-by trailer",
+		);
+
+		await writePolicy(
+			policy,
+			null,
+			null,
+			[],
+			[
+				{
+					commit: upstreamTip,
+					reason: "Synthetic trusted upstream ancestry.",
+				},
+			],
+			[
+				{
+					object: projectCommit,
+					location: "commit-message",
+					reason: "Exact synthetic commit-message email review.",
+				},
+			],
+			[
+				{
+					object: projectCommit,
+					reason: "Exact synthetic provider signed-off-by review.",
+				},
+			],
+		);
+		const approvedSignedOffBy = await auditRepository({
+			cwd: repository,
+			policy,
+			gitleaksReport: null,
+			output: null,
+		});
+		assert.equal(
+			approvedSignedOffBy.findings.some(
+				(finding) =>
+					finding.rule === "commit-signed-off-by" &&
+					finding.commit === projectCommit,
+			),
+			false,
+		);
+		assert.ok(
+			approvedSignedOffBy.findings.some(
+				(finding) =>
+					finding.rule === "commit-signed-off-by" &&
+					finding.commit === noreplySignedOffCommit,
+			),
+			"a signed-off-by exception must remain bound to its exact commit",
+		);
+		assert.ok(
+			approvedSignedOffBy.findings.some(
+				(finding) => finding.rule === "commit-message-github-token",
+			),
+			"signed-off-by exceptions must never suppress secret-like findings",
 		);
 		assert.equal(
 			approvedMessages.findings.some(

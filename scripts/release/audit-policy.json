@@ -33,8 +33,53 @@
 				"reason": "Standard GitHub Dependabot identity."
 			}
 		],
-		"allowedIdentityObjects": [],
-		"allowedMessageEmailObjects": []
+		"allowedIdentityObjects": [
+			{
+				"object": "66f2eb9cb188cfef1a75d24fe5887a47fed8aa76",
+				"role": "author",
+				"reason": "Exact GitHub-generated merge for reviewed PR #5; the provider recorded the authenticated maintainer through a public noreply identity."
+			}
+		],
+		"allowedMessageEmailObjects": [
+			{
+				"object": "a80e389f2140d40eadc766240c3aacce31297ccd",
+				"location": "commit-message",
+				"reason": "Exact GitHub Dependabot PR commit with a verified public noreply trailer."
+			},
+			{
+				"object": "dc82acd18ce6e1f4956b29101e2b9c3072d019f6",
+				"location": "commit-message",
+				"reason": "Exact GitHub Dependabot PR commit with a verified public noreply trailer."
+			},
+			{
+				"object": "f6e69fa06e5cf617dc7f5be6df9717e155527209",
+				"location": "commit-message",
+				"reason": "Exact GitHub Dependabot PR commit with a verified public noreply trailer."
+			},
+			{
+				"object": "fa824b103bf1b1974b74b0347f6b9ff045605c56",
+				"location": "commit-message",
+				"reason": "Exact GitHub Dependabot PR commit with a verified public noreply trailer."
+			}
+		],
+		"allowedSignedOffByObjects": [
+			{
+				"object": "a80e389f2140d40eadc766240c3aacce31297ccd",
+				"reason": "Exact GitHub Dependabot PR commit authored by dependabot[bot], committed by GitHub, and carrying only its public noreply trailer."
+			},
+			{
+				"object": "dc82acd18ce6e1f4956b29101e2b9c3072d019f6",
+				"reason": "Exact GitHub Dependabot PR commit authored by dependabot[bot], committed by GitHub, and carrying only its public noreply trailer."
+			},
+			{
+				"object": "f6e69fa06e5cf617dc7f5be6df9717e155527209",
+				"reason": "Exact GitHub Dependabot PR commit authored by dependabot[bot], committed by GitHub, and carrying only its public noreply trailer."
+			},
+			{
+				"object": "fa824b103bf1b1974b74b0347f6b9ff045605c56",
+				"reason": "Exact GitHub Dependabot PR commit authored by dependabot[bot], committed by GitHub, and carrying only its public noreply trailer."
+			}
+		]
 	},
 	"contentAllowlists": {},
 	"contentAllowlistEntries": [
@@ -60,6 +105,18 @@
 			],
 			"path": "scripts/release/audit-repository.mjs",
 			"blob": "84c34f152c7d734d95d51724d3097754ad53effa",
+			"reason": "Immutable scanner source containing its own detection expressions."
+		},
+		{
+			"rules": [
+				"github-token",
+				"provider-token",
+				"private-key",
+				"local-user-path",
+				"email-address-review"
+			],
+			"path": "scripts/release/audit-repository.mjs",
+			"blob": "da3e93d84e4ed046dbcbf0d2441fdfd105f1116d",
 			"reason": "Immutable scanner source containing its own detection expressions."
 		},
 		{
