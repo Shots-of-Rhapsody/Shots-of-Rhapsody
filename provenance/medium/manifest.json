@@ -89,6 +89,43 @@
       ]
     },
     {
+      "slug": "the-rise-of-zero-cost-economies-what-happens-when-prices-disappear",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-rise-of-zero-cost-economies-what-happens-when-prices-disappear-6757f5dd592e",
+      "paths": {
+        "snapshot": "provenance/medium/posts/the-rise-of-zero-cost-economies-what-happens-when-prices-disappear.json",
+        "markdown": "src/content/posts/the-rise-of-zero-cost-economies-what-happens-when-prices-disappear/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:71e46d3e502cf2c5bc856dcaf2ed5b9e998de0fd4d8d61c66a9cb8ceb216281d",
+        "snapshot": "sha256:b21cd2e25ba28b99a5c13a17d0a5416f37c80e1ecfe82174eb09f14a25a94162",
+        "markdown": "sha256:47f78a1f104c7eb59bed06e320d76d4f3e8ba3f4e994d36ba20e8327bd32ca73",
+        "bodyText": "sha256:5f99adba5c3f99df27d7089718c0a914f255e6514826ad3e03ddf8f69b7532aa"
+      },
+      "content": {
+        "title": "The Price of Free",
+        "subtitle": "In a system obsessed with scale, zero-cost isn’t freedom. It’s capture.",
+        "seriesLine": "A Ledger Series article on moving from global competition to systems cooperation.",
+        "bodyBlockCount": 52
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/the-rise-of-zero-cost-economies-what-happens-when-prices-disappear/hero.webp",
+          "sha256": "sha256:108203f226621c550a84ea746a577fe6b13b41dc3e870fe3497e9256dd7e5a13",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:3d72193481fd2372681b331f0d9cd25adef3707684ce6e80de82e23c2472a8b2",
+          "pixelSha256": "sha256:7e4e310a7d1ba9adbfd21e056d1345e0fb1385a2397b0ad2cbe7fa6529fe3655",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 2677928
+        }
+      ]
+    },
+    {
       "slug": "what-comes-after-work-designing-a-purpose-driven-life",
       "capturedAt": "2026-07-25T14:11:15.789Z",
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/what-comes-after-work-designing-a-purpose-driven-life-06fcd3447f09",
