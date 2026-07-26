@@ -104,7 +104,10 @@ async function writeCanonicalJson(filePath, value) {
 	await writeFile(filePath, serializeJson(value), { flag: "wx" });
 }
 
-async function createFixture(context) {
+async function createFixture(
+	context,
+	{ heroCaption = "Exact hero caption." } = {},
+) {
 	const root = await mkdtemp(path.join(os.tmpdir(), "shots-proton-master-"));
 	context.after(() => rm(root, { recursive: true, force: true }));
 	await mkdir(path.join(root, ".medium-import"), { recursive: true });
@@ -171,7 +174,7 @@ async function createFixture(context) {
 		height: 2,
 		byteSize: hero.byteLength,
 		alt: "Celadon field — exact",
-		caption: "Exact hero caption.",
+		caption: heroCaption,
 	};
 	const bodyAsset = {
 		id: "diagram",
@@ -483,6 +486,237 @@ test("Proton HTML verification preserves the full semantic document", async (con
 			exportPath: reencodedPath,
 		}),
 	);
+
+	const protonListAttributes = master
+		.toString("utf8")
+		.replace("<ul>\n<li>", '<ul>\n<li value="1" dir="ltr">')
+		.replace("</li>\n<li>", '</li>\n<li value="2" dir="ltr">')
+		.replace(
+			'<ol start="3">\n<li>',
+			'<ol start="3">\n<li value="3" dir="ltr">',
+		);
+	const protonListPath = await writeExport(
+		fixture.root,
+		"exact-essay-proton-list-attributes.html",
+		protonListAttributes,
+	);
+	await assert.doesNotReject(
+		verifyProtonMasterExport({
+			repoRoot: fixture.root,
+			slug: "exact-essay",
+			exportPath: protonListPath,
+		}),
+	);
+});
+
+test("Proton list-item attributes remain exact and non-active", async (context) => {
+	const fixture = await createFixture(context);
+	const evidence = await loadMediumMasterEvidence({
+		repoRoot: fixture.root,
+		slug: "exact-essay",
+	});
+	const master = renderProtonMasterHtml(evidence).toString("utf8");
+	const mutations = [
+		["wrong-value.html", 'value="2" dir="ltr"'],
+		["noncanonical-value.html", 'value="01" dir="ltr"'],
+		["wrong-direction.html", 'value="1" dir="rtl"'],
+		["missing-direction.html", 'value="1"'],
+		["id.html", 'id="private-list-item"'],
+		["class.html", 'class="proton-list-item"'],
+		["url.html", 'href="https://example.com/tracker"'],
+		["event-handler.html", 'onclick="alert(1)"'],
+		["arbitrary.html", 'data-unexpected="value"'],
+	];
+	for (const [name, attributes] of mutations) {
+		const exportPath = await writeExport(
+			fixture.root,
+			name,
+			master.replace("<ul>\n<li>", `<ul>\n<li ${attributes}>`),
+		);
+		await assert.rejects(
+			verifyProtonMasterExport({
+				repoRoot: fixture.root,
+				slug: "exact-essay",
+				exportPath,
+			}),
+			/unsupported (?:or identifying )?(?:list-item )?attribute|exact value and dir pair|\.dir must equal|sequential list position/u,
+		);
+	}
+});
+
+test("Proton's exact hero image paragraph preserves decoded evidence", async (context) => {
+	const fixture = await createFixture(context, { heroCaption: "" });
+	const evidence = await loadMediumMasterEvidence({
+		repoRoot: fixture.root,
+		slug: "exact-essay",
+	});
+	const master = renderProtonMasterHtml(evidence).toString("utf8");
+	const protonHero = master.replace(
+		/<figure data-shots-role="hero">\n(<img [^\n]+ \/>)\n<\/figure>/u,
+		'<p dir="ltr">$1</p>',
+	);
+	assert.notEqual(protonHero, master);
+	const exportPath = await writeExport(
+		fixture.root,
+		"exact-essay-proton-hero.html",
+		protonHero,
+	);
+
+	const result = await verifyProtonMasterExport({
+		repoRoot: fixture.root,
+		slug: "exact-essay",
+		exportPath,
+	});
+	assert.equal(result.heroPixelSha256, evidence.hero.pixelSha256);
+});
+
+test("Proton hero image paragraphs reject broader markup", async (context) => {
+	const fixture = await createFixture(context, { heroCaption: "" });
+	const evidence = await loadMediumMasterEvidence({
+		repoRoot: fixture.root,
+		slug: "exact-essay",
+	});
+	const master = renderProtonMasterHtml(evidence).toString("utf8");
+	const valid = master.replace(
+		/<figure data-shots-role="hero">\n(<img [^\n]+ \/>)\n<\/figure>/u,
+		'<p dir="ltr">$1</p>',
+	);
+	const mutations = [
+		["missing-dir.html", valid.replace('<p dir="ltr"><img', "<p><img")],
+		["rtl.html", valid.replace('<p dir="ltr"><img', '<p dir="rtl"><img')],
+		[
+			"wrapper-class.html",
+			valid.replace('<p dir="ltr"><img', '<p dir="ltr" class="hero"><img'),
+		],
+		[
+			"wrapper-id.html",
+			valid.replace('<p dir="ltr"><img', '<p dir="ltr" id="hero"><img'),
+		],
+		[
+			"wrapper-handler.html",
+			valid.replace('<p dir="ltr"><img', '<p dir="ltr" onclick="x()"><img'),
+		],
+		[
+			"image-class.html",
+			valid.replace('<p dir="ltr"><img', '<p dir="ltr"><img class="hero"'),
+		],
+		[
+			"image-id.html",
+			valid.replace('<p dir="ltr"><img', '<p dir="ltr"><img id="hero"'),
+		],
+		[
+			"image-handler.html",
+			valid.replace('<p dir="ltr"><img', '<p dir="ltr"><img onerror="x()"'),
+		],
+		[
+			"remote.html",
+			valid.replace(
+				/src="data:image\/[^"]+"/u,
+				'src="https://example.com/hero.png"',
+			),
+		],
+		[
+			"relative.html",
+			valid.replace(/src="data:image\/[^"]+"/u, 'src="hero.png"'),
+		],
+		[
+			"extra-child.html",
+			valid.replace(
+				"</p>\n</header>",
+				"<span>unexpected</span></p>\n</header>",
+			),
+		],
+		["missing-height.html", valid.replace(/ height="[^"]+"/u, "")],
+		[
+			"noncanonical-width.html",
+			valid.replace(/ width="[^"]+"/u, ' width="+3"'),
+		],
+		[
+			"wrong-position.html",
+			valid.replace(
+				/(<p data-shots-role="series-line">[^<]+<\/p>)\n(<p dir="ltr"><img[^\n]+<\/p>)/u,
+				"$2\n$1",
+			),
+		],
+	];
+	for (const [name, html] of mutations) {
+		const exportPath = await writeExport(fixture.root, name, html);
+		await assert.rejects(
+			verifyProtonMasterExport({
+				repoRoot: fixture.root,
+				slug: "exact-essay",
+				exportPath,
+			}),
+			/Proton HTML export|network|unsupported|identifying/u,
+		);
+	}
+});
+
+test("one exact exporter-added terminal blank is outside authored content", async (context) => {
+	const fixture = await createFixture(context);
+	const evidence = await loadMediumMasterEvidence({
+		repoRoot: fixture.root,
+		slug: "exact-essay",
+	});
+	const master = renderProtonMasterHtml(evidence).toString("utf8");
+	const withTerminalBlank = master.replace(
+		"\n</section>\n</article>",
+		"\n<p><br></p>\n</section>\n</article>",
+	);
+	assert.notEqual(withTerminalBlank, master);
+	const exportPath = await writeExport(
+		fixture.root,
+		"exact-essay-terminal-export-blank.html",
+		withTerminalBlank,
+	);
+
+	const result = await verifyProtonMasterExport({
+		repoRoot: fixture.root,
+		slug: "exact-essay",
+		exportPath,
+	});
+	assert.equal(result.bodyBlockCount, BODY_DOCUMENT.blocks.length);
+});
+
+test("terminal blank allowance rejects broader or authored-body variants", async (context) => {
+	const fixture = await createFixture(context);
+	const evidence = await loadMediumMasterEvidence({
+		repoRoot: fixture.root,
+		slug: "exact-essay",
+	});
+	const master = renderProtonMasterHtml(evidence).toString("utf8");
+	const terminal = (value) =>
+		master.replace(
+			"\n</section>\n</article>",
+			`\n${value}\n</section>\n</article>`,
+		);
+	const mutations = [
+		["multiple.html", terminal("<p><br></p><p><br></p>")],
+		[
+			"nonterminal.html",
+			master.replace(
+				'<section data-shots-role="body">\n',
+				'<section data-shots-role="body">\n<p><br></p>\n',
+			),
+		],
+		["paragraph-attribute.html", terminal('<p dir="ltr"><br></p>')],
+		["break-attribute.html", terminal('<p><br class="blank"></p>')],
+		["multiple-breaks.html", terminal("<p><br><br></p>")],
+		["text.html", terminal("<p><br>unexpected</p>")],
+		["wrapper.html", terminal("<div><p><br></p></div>")],
+	];
+	for (const [name, html] of mutations) {
+		const exportPath = await writeExport(fixture.root, name, html);
+		await assert.rejects(
+			verifyProtonMasterExport({
+				repoRoot: fixture.root,
+				slug: "exact-essay",
+				exportPath,
+			}),
+			/Proton HTML export/u,
+			name,
+		);
+	}
 });
 
 test("Proton verification fails closed on semantic or image drift", async (context) => {

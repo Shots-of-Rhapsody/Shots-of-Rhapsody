@@ -115,6 +115,7 @@ function assertNoProtonUrl(value, label) {
 function htmlAttributes(node, label) {
 	const result = {};
 	for (const attribute of node.attrs ?? []) {
+		const isListItemValue = node.tagName === "li" && attribute.name === "value";
 		if (Object.hasOwn(result, attribute.name)) {
 			throw new MediumContractError(
 				`${label} repeats attribute ${attribute.name}`,
@@ -125,7 +126,7 @@ function htmlAttributes(node, label) {
 			attribute.name.includes("proton") ||
 			attribute.name === "id" ||
 			attribute.name === "data-doc-id" ||
-			!PASSIVE_ATTRIBUTES.has(attribute.name)
+			(!PASSIVE_ATTRIBUTES.has(attribute.name) && !isListItemValue)
 		) {
 			throw new MediumContractError(
 				`${label} contains unsupported or identifying attribute ${attribute.name}`,
@@ -138,6 +139,41 @@ function htmlAttributes(node, label) {
 		result[attribute.name] = attribute.value;
 	}
 	return result;
+}
+
+function protonListItemAttributes(node, label, expectedValue) {
+	const attributes = node.attrs ?? [];
+	if (attributes.length === 0) return;
+	if (!Number.isSafeInteger(expectedValue) || expectedValue < 1) {
+		throw new MediumContractError(`${label} expected value is invalid`);
+	}
+	const byName = new Map();
+	for (const attribute of attributes) {
+		if (byName.has(attribute.name)) {
+			throw new MediumContractError(
+				`${label} repeats attribute ${attribute.name}`,
+			);
+		}
+		if (attribute.name !== "value" && attribute.name !== "dir") {
+			throw new MediumContractError(
+				`${label} contains unsupported list-item attribute ${attribute.name}`,
+			);
+		}
+		byName.set(attribute.name, attribute.value);
+	}
+	if (attributes.length !== 2 || !byName.has("value") || !byName.has("dir")) {
+		throw new MediumContractError(
+			`${label} must contain either no attributes or Proton's exact value and dir pair`,
+		);
+	}
+	if (byName.get("dir") !== "ltr") {
+		throw new MediumContractError(`${label}.dir must equal ltr`);
+	}
+	if (byName.get("value") !== String(expectedValue)) {
+		throw new MediumContractError(
+			`${label}.value must equal its sequential list position ${expectedValue}`,
+		);
+	}
 }
 
 function walkElements(node, callback) {
@@ -986,6 +1022,114 @@ async function extractExportFigure(node, context, label) {
 	};
 }
 
+function protonHeroParagraphImage(node, label) {
+	const wrapperAttributes = node.attrs ?? [];
+	if (
+		wrapperAttributes.length !== 1 ||
+		wrapperAttributes[0].name !== "dir" ||
+		wrapperAttributes[0].value !== "ltr"
+	) {
+		throw new MediumContractError(
+			`${label} paragraph must contain only dir="ltr"`,
+		);
+	}
+	const children = significantChildren(node, label);
+	if (children.length !== 1 || children[0].tagName !== "img") {
+		throw new MediumContractError(
+			`${label} paragraph must contain exactly one image`,
+		);
+	}
+	const image = children[0];
+	const imageAttributes = new Map();
+	const allowedImageAttributes = new Set(["src", "alt", "width", "height"]);
+	for (const attribute of image.attrs ?? []) {
+		if (
+			imageAttributes.has(attribute.name) ||
+			!allowedImageAttributes.has(attribute.name)
+		) {
+			throw new MediumContractError(
+				`${label} image contains an unsupported or repeated attribute ${attribute.name}`,
+			);
+		}
+		imageAttributes.set(attribute.name, attribute.value);
+	}
+	if (
+		imageAttributes.size !== allowedImageAttributes.size ||
+		[...allowedImageAttributes].some(
+			(attribute) => !imageAttributes.has(attribute),
+		)
+	) {
+		throw new MediumContractError(
+			`${label} image must contain exactly src, alt, width, and height`,
+		);
+	}
+	if (
+		!/^data:image\/(?:png|jpeg|webp);base64,/u.test(imageAttributes.get("src"))
+	) {
+		throw new MediumContractError(
+			`${label} image must contain embedded image bytes`,
+		);
+	}
+	for (const dimension of ["width", "height"]) {
+		if (!/^[1-9][0-9]*(?:\.[0-9]+)?$/u.test(imageAttributes.get(dimension))) {
+			throw new MediumContractError(
+				`${label} image ${dimension} must be a canonical positive number`,
+			);
+		}
+	}
+	return image;
+}
+
+async function extractExportHero(node, context, label) {
+	if (node.tagName === "figure") {
+		return extractExportFigure(node, context, label);
+	}
+	if (node.tagName === "p") {
+		return extractExportFigure(
+			protonHeroParagraphImage(node, label),
+			context,
+			`${label}.img`,
+		);
+	}
+	throw new MediumContractError(
+		`${label} must use a figure or Proton's exact image paragraph`,
+	);
+}
+
+function isCanonicalTerminalParent(node, documentBody) {
+	if (node?.parentNode === documentBody) return true;
+	const parent = node?.parentNode;
+	const attributes = parent?.attrs ?? [];
+	return (
+		parent?.tagName === "section" &&
+		attributes.length === 1 &&
+		attributes[0].name === "data-shots-role" &&
+		attributes[0].value === "body"
+	);
+}
+
+function isExactProtonTerminalBlank(node, documentBody) {
+	if (node?.tagName !== "p" || (node.attrs ?? []).length !== 0) return false;
+	if (!isCanonicalTerminalParent(node, documentBody)) return false;
+	const children = node.childNodes ?? [];
+	const significant = children.filter(
+		(child) => child.nodeName !== "#text" || !/^\s*$/u.test(child.value),
+	);
+	if (
+		significant.length !== 1 ||
+		significant[0].tagName !== "br" ||
+		(significant[0].attrs ?? []).length !== 0 ||
+		(significant[0].childNodes ?? []).length !== 0
+	) {
+		return false;
+	}
+	return children.every(
+		(child) =>
+			child === significant[0] ||
+			(child.nodeName === "#text" && /^\s*$/u.test(child.value)),
+	);
+}
+
 async function extractExportBlock(
 	node,
 	context,
@@ -1049,7 +1193,7 @@ async function extractExportBlock(
 		}
 		const parsedItems = [];
 		for (const [index, item] of items.entries()) {
-			htmlAttributes(item, `${label}.items[${index}]`);
+			protonListItemAttributes(item, `${label}.items[${index}]`, start + index);
 			const itemChildren = significantChildren(
 				item,
 				`${label}.items[${index}]`,
@@ -1210,16 +1354,16 @@ export async function verifyProtonMasterExport({
 			);
 		}
 	}
-	if (nodes[5]?.tagName !== "figure") {
+	if (nodes[5]?.tagName !== "figure" && nodes[5]?.tagName !== "p") {
 		throw new MediumContractError(
-			"Proton HTML export Ledger Series sentence must be followed by its hero figure",
+			"Proton HTML export Ledger Series sentence must be followed by its hero",
 		);
 	}
 	const context = {
 		exportPath: exportFile.exportPath,
 		ignoredRoot: exportFile.importRoot,
 	};
-	const exportedHero = await extractExportFigure(
+	const exportedHero = await extractExportHero(
 		nodes[5],
 		context,
 		"Proton HTML export hero",
@@ -1247,8 +1391,10 @@ export async function verifyProtonMasterExport({
 			"Proton HTML export hero alt, caption, dimensions, or decoded pixels differ",
 		);
 	}
+	const bodyNodes = nodes.slice(6);
+	if (isExactProtonTerminalBlank(bodyNodes.at(-1), body)) bodyNodes.pop();
 	const exportedBody = [];
-	for (const [index, node] of nodes.slice(6).entries()) {
+	for (const [index, node] of bodyNodes.entries()) {
 		if (node.tagName === "h1") {
 			throw new MediumContractError("Proton article body contains an extra h1");
 		}
