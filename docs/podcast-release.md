@@ -78,8 +78,9 @@ reports any publication blocker.
    file when timed text is available.
    `pnpm podcast:review` verifies the exact local machine drafts without
    writing. `pnpm podcast:review --write` creates one ignored, time-linked
-   worksheet and refuses to overwrite it. Neither command changes publication
-   state, review status, or signoff data.
+   worksheet covering every machine cue, every inter-cue gap, and the final
+   uncaptioned interval, then refuses to overwrite it. Neither command changes
+   publication state, review status, or signoff data.
 4. Approve the show description, episode description, explicit-content values,
    publication date, immutable GUID, and cover artwork. The publication date
    is the UTC calendar date intended for the combined v1.0.0 production
