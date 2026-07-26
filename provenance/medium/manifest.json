@@ -274,6 +274,43 @@
       ]
     },
     {
+      "slug": "the-informal-majority",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-informal-majority-e44dfd41f3ce",
+      "paths": {
+        "snapshot": "provenance/medium/posts/the-informal-majority.json",
+        "markdown": "src/content/posts/the-informal-majority/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:5afd6e64e4962541e849be18128cd71e9c5055f786655ae02fb9b806444bc525",
+        "snapshot": "sha256:d1881648154508ef1139faef23ef3eeb60c1f25d8769991a6f844578a68575e5",
+        "markdown": "sha256:bf001a45509a427798b1b37d8b528fe5855bc163a8509a15c246c81c03913cb3",
+        "bodyText": "sha256:f7f6eb9fbe3f11ed1b411e164cfafa0b27961da0c5ce724ed294eca8b6ebaabd"
+      },
+      "content": {
+        "title": "The Informal Majority",
+        "subtitle": "In a system that only sees the formal, most of the world disappears from the ledger.",
+        "seriesLine": "A Ledger Series article on the real economy most of the world works in.",
+        "bodyBlockCount": 54
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/the-informal-majority/hero.webp",
+          "sha256": "sha256:00b1f3ad0eaa0d8f2693920fff97ae1ebc61656651aefcf1531dc5870eb8ff5c",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:055a007cb95768cff7bdb744c322ece3bf518fa0e7c2723d2bc0923bd1016251",
+          "pixelSha256": "sha256:0ec1954a165cf28d02f8e162a5368a86cfcc57029aea08d6bdd0f4beabcb59d6",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 3400864
+        }
+      ]
+    },
+    {
       "slug": "the-next-leap-from-global-competition-to-human-cooperation",
       "capturedAt": "2026-07-25T14:11:15.789Z",
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-next-leap-from-global-competition-to-human-cooperation-b0f2805608c5",
