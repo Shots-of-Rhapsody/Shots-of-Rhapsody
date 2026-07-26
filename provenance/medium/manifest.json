@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "state": "awaiting-export",
+  "state": "active",
   "authority": {
     "platform": "Medium",
     "captureFormat": "account-export-zip"
@@ -10,6 +10,46 @@
     "profileUrl": "https://medium.com/@ShotsOfRhapsody"
   },
   "inventoryPath": "provenance/medium/inventory.json",
-  "inventorySha256": null,
-  "articles": []
+  "inventorySha256": "sha256:eea3293965d4f15f0c96b0c8698ead524e60400efb9577307a44d7321acf7f2f",
+  "presentationSetVersion": 1,
+  "presentationSetSha256": "sha256:ef4258dc651853433de14371682bb3603c7e58852672587fc6f0a9ce8e1484a2",
+  "articles": [
+    {
+      "slug": "beyond-scarcity-how-automation-ai-could-end-economic-struggle",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/beyond-scarcity-how-automation-ai-could-end-economic-struggle-1b84e081e845",
+      "paths": {
+        "snapshot": "provenance/medium/posts/beyond-scarcity-how-automation-ai-could-end-economic-struggle.json",
+        "markdown": "src/content/posts/beyond-scarcity-how-automation-ai-could-end-economic-struggle/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:d4e98625e0916126a2e9369d030436586abd724fd7dca9986293b65afa613c82",
+        "snapshot": "sha256:34b0bf6b8caa040be6e70e1192bfa530c53b7bbd2fccd8cf5db79832c3d281bf",
+        "markdown": "sha256:48329b9c8aaad2ea4fa83b4ca80d1e103df30c0b6d5b95d1fa744ff60a2ca2c8",
+        "bodyText": "sha256:1086d052aab7e9da9828701863d57c12639edb00a3e2ca3ebb0bfe502dd25b16"
+      },
+      "content": {
+        "title": "The Post-Growth Premise",
+        "subtitle": "In a system built on endless expansion, enough is never enough.",
+        "seriesLine": "A Ledger Series article on what comes after scarcity economics.",
+        "bodyBlockCount": 29
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/beyond-scarcity-how-automation-ai-could-end-economic-struggle/hero.webp",
+          "sha256": "sha256:c2c5b08f8ccc6efce7d56a8ad8e8bb4ce013c62fb338071700a10c170607e798",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:75fbcdf3b84b470251b848cb8ae7ccdb18b4fa768268b4979220226ef55657de",
+          "pixelSha256": "sha256:945ab9f2557425d4364ea87e279c49d7591aeb04eeabd78bc9d4c44371cb9320",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 3149986
+        }
+      ]
+    }
+  ]
 }
