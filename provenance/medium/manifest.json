@@ -311,6 +311,43 @@
       ]
     },
     {
+      "slug": "the-invisible-ledger",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-invisible-ledger-2505f05b7201",
+      "paths": {
+        "snapshot": "provenance/medium/posts/the-invisible-ledger.json",
+        "markdown": "src/content/posts/the-invisible-ledger/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:39fc0cb6002d9006ce8b5cc11f03bce034b223230b3727ab3be41f8146edcc6f",
+        "snapshot": "sha256:5262dd8611f8af9a6557d4d0011839d4f5eb5b279f51149568c802d45c9a3460",
+        "markdown": "sha256:521f036cc21f475868bebf3f880c85bd4b7bf927f2675dfb03cfd91ea5375d8a",
+        "bodyText": "sha256:e1bdf4f5583e562e1751c2cd57e8f5d91219199199941c5fc44389d0be82ec46"
+      },
+      "content": {
+        "title": "The Invisible Ledger",
+        "subtitle": "In a system powered by human labor, what we don’t count defines what we do.",
+        "seriesLine": "A Ledger Series article on hidden labor, data, and the systems that ignore both.",
+        "bodyBlockCount": 54
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/the-invisible-ledger/hero.webp",
+          "sha256": "sha256:db09120dd63f26eca95dc54838a0db630e9220e56e9fc88887d229810af6e60d",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:d1a20828d75d01631cbaa1ad2b4728baaf96a135b415fa34f5e3fd8d047416ee",
+          "pixelSha256": "sha256:931433be57dee6b95a8480c093bfad5cfd8358afade9920be62894687281a7bf",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 2483576
+        }
+      ]
+    },
+    {
       "slug": "the-next-leap-from-global-competition-to-human-cooperation",
       "capturedAt": "2026-07-25T14:11:15.789Z",
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-next-leap-from-global-competition-to-human-cooperation-b0f2805608c5",
