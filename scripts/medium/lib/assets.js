@@ -6,6 +6,8 @@ import {
 	assertPlainObject,
 	assertSha256,
 	assertSlug,
+	MEDIUM_HERO_CAPTURE_FILE,
+	MEDIUM_HERO_SITE_READY_FILE,
 	MediumContractError,
 } from "./contract.js";
 import { decodeUtf8, extractMediumHeroEvidence } from "./html.js";
@@ -268,7 +270,8 @@ export function buildMediumHeroChecklist({
 				alt: hero.alt,
 				caption: hero.caption,
 			},
-			requiredDestinationPattern: `.medium-import/raw/assets/${slug}/hero-original.<ext>`,
+			requiredCapturePath: `.medium-import/raw/assets/${slug}/${MEDIUM_HERO_CAPTURE_FILE}`,
+			requiredSiteReadyPath: `.medium-import/site-ready/assets/${slug}/${MEDIUM_HERO_SITE_READY_FILE}`,
 		};
 	});
 
@@ -290,8 +293,11 @@ export function buildMediumHeroChecklist({
 		state: "asset-acquisition-checklist",
 		assetPolicy: {
 			exportedSourceUrlUse: "comparison-reference-only",
-			originalAssetRequired: true,
+			browserCaptureRequired: true,
+			captureKind: "highest-observed-medium-responsive-derivative",
+			originalUploadClaimed: false,
 			automatedDownloadAllowed: false,
+			metadataStrippingRequired: true,
 		},
 		export: {
 			fileName: exportFileName,

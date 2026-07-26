@@ -9,6 +9,13 @@ export const CAPTURE_FORMAT = "account-export-zip";
 export const AUTHOR_NAME = "Tai Song";
 export const AUTHOR_PROFILE_URL = "https://medium.com/@ShotsOfRhapsody";
 export const ALL_RIGHTS_RESERVED = "All Rights Reserved";
+export const MEDIUM_HERO_CAPTURE_FILE = "hero-medium.webp";
+export const MEDIUM_HERO_SITE_READY_FILE = "hero-sanitized.webp";
+export const MEDIUM_HERO_SANITIZATION_RECORD = "hero-sanitization.json";
+export const MEDIUM_HERO_MAX_SOURCE_BYTES = 64 * 1024 * 1024;
+export const MEDIUM_HERO_MAX_OUTPUT_BYTES = 128 * 1024 * 1024;
+export const MEDIUM_HERO_MAX_RECORD_BYTES = 64 * 1024;
+export const MEDIUM_HERO_MAX_LEDGER_BYTES = 256 * 1024;
 
 export const DEFAULT_REPO_ROOT = fileURLToPath(
 	new URL("../../../", import.meta.url),
@@ -177,9 +184,19 @@ export function toRepositoryPath(repoRoot, absolutePath) {
 
 export function getMediumPaths(repoRoot = DEFAULT_REPO_ROOT) {
 	const root = path.resolve(repoRoot);
+	const importRoot = path.join(root, ".medium-import");
+	const rawRoot = path.join(root, ".medium-import", "raw");
+	const siteReadyRoot = path.join(root, ".medium-import", "site-ready");
 	return {
 		root,
-		rawRoot: path.join(root, ".medium-import", "raw"),
+		importRoot,
+		rawRoot,
+		rawExportPath: path.join(rawRoot, "medium-export.zip"),
+		siteReadyRoot,
+		acquisitionResultsPath: path.join(
+			importRoot,
+			"hero-acquisition-results.json",
+		),
 		candidatePath: path.join(
 			root,
 			".medium-import",
@@ -197,6 +214,18 @@ export function getMediumPaths(repoRoot = DEFAULT_REPO_ROOT) {
 		),
 		inventoryPath: path.join(root, "provenance", "medium", "inventory.json"),
 		manifestPath: path.join(root, "provenance", "medium", "manifest.json"),
+		approvedTitlesPath: path.join(
+			root,
+			"provenance",
+			"medium",
+			"approved-titles.v1.json",
+		),
+		heroAssetLedgerPath: path.join(
+			root,
+			"provenance",
+			"medium",
+			"hero-assets.v1.json",
+		),
 		snapshotRoot: path.join(root, "provenance", "medium", "posts"),
 		postsRoot: path.join(root, "src", "content", "posts"),
 	};
@@ -212,6 +241,7 @@ export function getMediumArticlePaths(repoRoot, article) {
 		markdownPath: path.join(postDirectory, "index.md"),
 		postDirectory,
 		rawAssetRoot: path.join(roots.rawRoot, "assets", slug),
+		siteReadyAssetRoot: path.join(roots.siteReadyRoot, "assets", slug),
 	};
 }
 

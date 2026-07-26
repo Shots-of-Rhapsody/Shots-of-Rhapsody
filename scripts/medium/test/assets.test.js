@@ -111,8 +111,11 @@ test("hero checklist preserves exact evidence and leaves other candidates unreso
 	assert.equal(result.expectedCandidateCount, 2);
 	assert.deepEqual(result.assetPolicy, {
 		exportedSourceUrlUse: "comparison-reference-only",
-		originalAssetRequired: true,
+		browserCaptureRequired: true,
+		captureKind: "highest-observed-medium-responsive-derivative",
+		originalUploadClaimed: false,
 		automatedDownloadAllowed: false,
+		metadataStrippingRequired: true,
 	});
 	assert.equal(result.items.length, 1);
 	assert.deepEqual(result.items[0].exportedHero, {
@@ -124,8 +127,12 @@ test("hero checklist preserves exact evidence and leaves other candidates unreso
 		caption: { present: true, value: "Exact caption." },
 	});
 	assert.equal(
-		result.items[0].requiredDestinationPattern,
-		".medium-import/raw/assets/approved-essay/hero-original.<ext>",
+		result.items[0].requiredCapturePath,
+		".medium-import/raw/assets/approved-essay/hero-medium.webp",
+	);
+	assert.equal(
+		result.items[0].requiredSiteReadyPath,
+		".medium-import/site-ready/assets/approved-essay/hero-sanitized.webp",
 	);
 	assert.equal(fixture(entries).candidates[1].include, null);
 	const absentEvidence = checklist(

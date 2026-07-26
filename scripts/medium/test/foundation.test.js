@@ -93,11 +93,15 @@ function reviewedInventory(candidate) {
 					{
 						id: "hero",
 						role: "hero",
-						sourceUrl: "https://cdn.example/hero.png",
-						rawFile: "hero.png",
-						outputFile: "hero.png",
+						sourceUrl: "https://cdn.example/hero.webp",
+						rawFile: "hero-medium.webp",
+						siteReadyFile: "hero-sanitized.webp",
+						outputFile: "hero.webp",
 						sha256: digest,
-						mimeType: "image/png",
+						acquisitionManifestSha256: digest,
+						captureSha256: digest,
+						pixelSha256: digest,
+						mimeType: "image/webp",
 						width: 1200,
 						height: 1200,
 						byteSize: 123,
@@ -130,6 +134,12 @@ test("reviewed inventory resolves every classification and includes every eligib
 	assert.equal(
 		validateMediumInventory(reviewedInventory(candidate)).state,
 		"reviewed",
+	);
+	const missingSanitizedHero = reviewedInventory(candidate);
+	delete missingSanitizedHero.articles[0].assets[0].siteReadyFile;
+	assert.throws(
+		() => validateMediumInventory(missingSanitizedHero),
+		/must bind hero-medium\.webp to the separately sanitized hero-sanitized\.webp/u,
 	);
 	assert.throws(
 		() =>
@@ -574,11 +584,15 @@ test("Medium snapshot validation binds body image URLs to its article slug", () 
 	const hero = {
 		id: "hero",
 		role: "hero",
-		sourceUrl: "https://cdn.example/hero.png",
-		rawFile: "hero.png",
-		outputFile: "hero.png",
+		sourceUrl: "https://cdn.example/hero.webp",
+		rawFile: "hero-medium.webp",
+		siteReadyFile: "hero-sanitized.webp",
+		outputFile: "hero.webp",
 		sha256: digest,
-		mimeType: "image/png",
+		acquisitionManifestSha256: digest,
+		captureSha256: digest,
+		pixelSha256: digest,
+		mimeType: "image/webp",
 		width: 1200,
 		height: 1200,
 		byteSize: 123,
@@ -626,6 +640,9 @@ test("Medium snapshot validation binds body image URLs to its article slug", () 
 			id: hero.id,
 			outputFile: hero.outputFile,
 			sha256: hero.sha256,
+			acquisitionManifestSha256: hero.acquisitionManifestSha256,
+			captureSha256: hero.captureSha256,
+			pixelSha256: hero.pixelSha256,
 			mimeType: hero.mimeType,
 			width: hero.width,
 			height: hero.height,
@@ -774,6 +791,9 @@ test("Medium manifest rejects duplicate or non-image assets", () => {
 		role: "hero",
 		path: "src/content/posts/essay/hero.png",
 		sha256: digest,
+		acquisitionManifestSha256: digest,
+		captureSha256: digest,
+		pixelSha256: digest,
 		mimeType: "image/png",
 		width: 1200,
 		height: 1200,

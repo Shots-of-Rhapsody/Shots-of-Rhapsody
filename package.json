@@ -26,6 +26,7 @@
 		"medium:inventory": "node scripts/medium/inventory.js",
 		"medium:review-inventory": "node scripts/medium/review-inventory.js",
 		"medium:assets": "node scripts/medium/assets.js",
+		"medium:sanitize-image": "node scripts/medium/sanitize-image.js",
 		"medium:import": "node scripts/medium/import.js",
 		"medium:verify": "node scripts/medium/verify.js",
 		"podcast:review": "node scripts/podcast/review.mjs",

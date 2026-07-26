@@ -16,6 +16,10 @@ import {
 	validateContentSignoffsV2,
 	validatePresentationSignoffsV2,
 } from "../../content/signoffs.js";
+import {
+	loadMediumHeroAcquisition,
+	loadMediumHeroAssetLedger,
+} from "./acquisition.js";
 import { buildMediumHeroChecklist } from "./assets.js";
 import {
 	ALL_RIGHTS_RESERVED,
@@ -45,6 +49,7 @@ import {
 	extractMediumStoryHtml,
 	validateMediumDocument,
 } from "./html.js";
+import { readVerifiedMediumHero } from "./image-sanitizer.js";
 import { inspectImage, sha256 } from "./integrity.js";
 import {
 	mediumCandidateSetSha256,
@@ -686,15 +691,42 @@ function removeAndValidateHero(documentValue, article) {
 
 async function loadAssets(repoRoot, article) {
 	const paths = getMediumArticlePaths(repoRoot, article);
+	const loadedAcquisition = await loadMediumHeroAcquisition(repoRoot);
 	const assets = [];
 	for (const asset of article.assets) {
-		const rawPath = path.join(paths.rawAssetRoot, asset.rawFile);
-		const buffer = await readRawFileInside(
-			repoRoot,
-			rawPath,
-			`Original image ${asset.id} for ${article.slug}`,
-		);
-		const inspection = inspectImage(buffer, rawPath);
+		let buffer;
+		let inspectionPath;
+		let label;
+		if (asset.role === "hero") {
+			const verified = await readVerifiedMediumHero({
+				repoRoot,
+				slug: article.slug,
+				loadedAcquisition,
+			});
+			buffer = verified.outputBuffer;
+			inspectionPath = verified.record.output.path;
+			label = `Site-ready hero ${asset.id} for ${article.slug}`;
+			if (
+				asset.acquisitionManifestSha256 !==
+					verified.record.identity.acquisitionManifestSha256 ||
+				asset.captureSha256 !== verified.record.capture.sha256 ||
+				asset.pixelSha256 !== verified.record.pixels.sha256
+			) {
+				throw new MediumContractError(
+					`${label} provenance hashes differ from the acquisition and sanitization record`,
+				);
+			}
+		} else {
+			const rawPath = path.join(paths.rawAssetRoot, asset.rawFile);
+			buffer = await readRawFileInside(
+				repoRoot,
+				rawPath,
+				`Reviewed body image ${asset.id} for ${article.slug}`,
+			);
+			inspectionPath = rawPath;
+			label = `Reviewed body image ${asset.id} for ${article.slug}`;
+		}
+		const inspection = inspectImage(buffer, inspectionPath);
 		if (
 			sha256(buffer) !== asset.sha256 ||
 			buffer.byteLength !== asset.byteSize ||
@@ -703,7 +735,7 @@ async function loadAssets(repoRoot, article) {
 			inspection.height !== asset.height
 		) {
 			throw new MediumContractError(
-				`Original image ${asset.id} for ${article.slug} differs from its reviewed metadata`,
+				`${label} differs from its reviewed metadata`,
 			);
 		}
 		assets.push({
@@ -790,6 +822,9 @@ async function buildArticle(repoRoot, article, rawExport, capturedAt) {
 			id: hero.id,
 			outputFile: hero.outputFile,
 			sha256: hero.sha256,
+			acquisitionManifestSha256: hero.acquisitionManifestSha256,
+			captureSha256: hero.captureSha256,
+			pixelSha256: hero.pixelSha256,
 			mimeType: hero.mimeType,
 			width: hero.width,
 			height: hero.height,
@@ -859,6 +894,13 @@ function makeManifestEntry(repoRoot, built, rawExport, capturedAt) {
 			role: asset.role,
 			path: toRepositoryPath(repoRoot, asset.outputPath),
 			sha256: asset.sha256,
+			...(asset.role === "hero"
+				? {
+						acquisitionManifestSha256: asset.acquisitionManifestSha256,
+						captureSha256: asset.captureSha256,
+						pixelSha256: asset.pixelSha256,
+					}
+				: {}),
 			mimeType: asset.mimeType,
 			width: asset.width,
 			height: asset.height,
@@ -1094,6 +1136,8 @@ export async function verifyMediumArticles({
 	assertRawEvidenceUntracked(repoRoot);
 	const inventory = await loadInventory(repoRoot);
 	const manifest = await loadManifest(repoRoot);
+	const heroAssetLedger = await loadMediumHeroAssetLedger(repoRoot);
+	if (withRaw) await loadMediumHeroAcquisition(repoRoot);
 	if (inventory.state === "awaiting-export") {
 		if (manifest.state !== "awaiting-export") {
 			throw new MediumContractError(
@@ -1109,7 +1153,7 @@ export async function verifyMediumArticles({
 			articles: [],
 			complete: false,
 			importedCount: 0,
-			expectedCount: 0,
+			expectedCount: heroAssetLedger.itemCount,
 		};
 	}
 	if (manifest.state !== "active") {
@@ -1141,6 +1185,24 @@ export async function verifyMediumArticles({
 				`Medium manifest has no imported article ${slug}`,
 			);
 		}
+		const inventoryHero = article.assets.find((asset) => asset.role === "hero");
+		const ledgerHero = heroAssetLedger.bySlug.get(slug);
+		if (
+			!inventoryHero ||
+			!ledgerHero ||
+			inventoryHero.acquisitionManifestSha256 !==
+				heroAssetLedger.acquisitionManifestSha256 ||
+			inventoryHero.captureSha256 !== ledgerHero.capture.sha256 ||
+			inventoryHero.sha256 !== ledgerHero.siteReady.sha256 ||
+			inventoryHero.pixelSha256 !== ledgerHero.pixels.sha256 ||
+			inventoryHero.width !== ledgerHero.siteReady.width ||
+			inventoryHero.height !== ledgerHero.siteReady.height ||
+			inventoryHero.byteSize !== ledgerHero.siteReady.byteSize
+		) {
+			throw new MediumContractError(
+				`Medium inventory hero evidence differs from the durable asset ledger for ${slug}`,
+			);
+		}
 		const paths = expectedPaths(repoRoot, article);
 		if (
 			entry.paths.snapshot !== paths.snapshot ||
@@ -1162,6 +1224,10 @@ export async function verifyMediumArticles({
 				asset.path !== paths.assets.get(asset.id) ||
 				asset.role !== inventoryAsset.role ||
 				asset.sha256 !== inventoryAsset.sha256 ||
+				asset.acquisitionManifestSha256 !==
+					inventoryAsset.acquisitionManifestSha256 ||
+				asset.captureSha256 !== inventoryAsset.captureSha256 ||
+				asset.pixelSha256 !== inventoryAsset.pixelSha256 ||
 				asset.mimeType !== inventoryAsset.mimeType ||
 				asset.width !== inventoryAsset.width ||
 				asset.height !== inventoryAsset.height ||

@@ -49,9 +49,16 @@ Use Medium's logged-in **Settings → Security and apps → Download your inform
 5. Retain a disposition for every exported HTML file—include, or exclude with
    a reason—and preserve the candidate-set count and hash. Review exact titles,
    subtitles, descriptions, summaries, publication timestamps, URLs, tags,
-   image alt text, captions, and original-image ownership before promoting data
-   into `provenance/medium/inventory.json`.
-6. Save each author-controlled original PNG, JPEG, or WebP under `.medium-import/raw/assets/<slug>/`. Do not use screenshots, thumbnails, transformed delivery URLs, or images whose reuse rights are unclear.
+   image alt text, captions, image identity, and republication rights before
+   promoting data into `provenance/medium/inventory.json`.
+6. In the logged-in browser, open each approved story and inspect its loaded
+   responsive image candidates. Expand the viewport through 4800 CSS pixels,
+   confirm that no larger Medium candidate appears, and save the exact response
+   bytes of the highest observed candidate as
+   `.medium-import/raw/assets/<slug>/hero-medium.webp`. This is a browser-captured
+   Medium responsive derivative, not the original upload. Do not use a
+   screenshot, the export's `max/800` reference, a smaller candidate, automated
+   requests, or any image whose identity or reuse rights are unclear.
 
 Generate the acquisition checklist from the explicit, versioned release
 allowlist. This command performs no network requests and writes no image bytes:
@@ -76,10 +83,59 @@ between absent and empty alt/caption evidence. When the official export omits
 its featured flag, the checklist records `sole-exported-figure` only if exactly
 one exported figure image exists; it never hides that weaker identification
 evidence. The destination remains a
-pattern—`.medium-import/raw/assets/<slug>/hero-original.<ext>`—until the real
-original file determines its extension and MIME type.
-The JSON also marks every exported hero URL `comparison-reference-only`, states
-that an original asset is still required, and forbids automated download.
+fixed capture path—`.medium-import/raw/assets/<slug>/hero-medium.webp`—and the
+checklist labels it `highest-observed-medium-responsive-derivative` with
+`originalUploadClaimed: false`. It also records the separate site-ready target
+`.medium-import/site-ready/assets/<slug>/hero-sanitized.webp`, marks the exported
+hero URL `comparison-reference-only`, and forbids automated download.
+
+Sanitize the captured heroes locally before any article import. Both commands
+are non-writing by default:
+
+```sh
+pnpm medium:sanitize-image --slug <slug>
+pnpm medium:sanitize-image --all
+```
+
+[`provenance/medium/hero-assets.v1.json`](../provenance/medium/hero-assets.v1.json)
+is the durable, non-rendered 24-item asset anchor. It binds the approved title
+order, public story and hero identities, canonical and observed URLs, captured
+and sanitized byte hashes and dimensions, decoded-pixel hashes, and the exact
+ignored acquisition-ledger SHA-256
+`sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa`.
+It contains no account data, local absolute paths, or private document IDs.
+
+Both single-slug and `--all` modes validate that anchor against the exact
+ignored `.medium-import/hero-acquisition-results.json` ledger before reading an
+image. `--all` takes its exact 24 slugs, in order, from that validated binding;
+it never scans an asset directory or broad filesystem glob to discover work.
+Swapped story IDs, image IDs, URLs, paths, hashes, dimensions, sizes, order, or
+duplicate items stop the entire operation. After the complete dry run succeeds,
+add `--write` to create one ignored `hero-sanitized.webp` and
+`hero-sanitization.json` per approved slug.
+
+Every source, generated image, and verification record is size-checked with
+`lstat` before it is opened or read. The record has its own 64 KiB cap. Fixed
+ignored-root components are created one at a time and symbolic-link or junction
+escapes are rejected. Existing outputs are never overwritten. Each of the 48
+batch files is installed atomically with a same-filesystem hard link using
+no-replace semantics; the batch is not globally atomic, but an identity-checked
+rollback removes files installed by a failed batch without deleting an
+unrelated replacement.
+
+The sanitizer uses the repository-pinned Sharp release to decode the source,
+reject malformed or animated input, remove EXIF, XMP, IPTC, ICC profiles,
+comments, and every other auxiliary WebP chunk, and write a lossless WebP. It
+then decodes both files into sRGB RGBA bytes and requires the dimensions and
+every decoded pixel to be identical. The importer consumes only the verified
+site-ready bytes; raw captures and their acquisition metadata remain ignored
+evidence and can never be copied into article directories or `dist`.
+
+The future reviewed inventory, sanitized snapshot, and committed Medium
+manifest must carry the acquisition-manifest hash, captured-byte hash,
+sanitized-byte hash, and decoded-pixel hash for every hero. Verification checks
+those values against the durable asset anchor before an essay can enter the
+publication catalog.
 
 The approved-title file is a non-rendered release allowlist, not a substitute
 for candidate reconciliation. `medium:inventory` must continue to retain all
@@ -130,7 +186,7 @@ Source fidelity and factual review are separate. Never silently correct imported
 
 Importing creates sealed evidence but does not publish a work. A Medium article
 becomes eligible for `provenance/publication-catalog.json` only when the complete
-manifest, original assets, claim review, and matching `ContentSignoffV2` record
+manifest, verified site-ready assets, claim review, and matching `ContentSignoffV2` record
 all verify. This separate allowlist prevents partial imports and unsigned drafts
 from entering routes, RSS, search, or the sitemap.
 
@@ -159,5 +215,6 @@ Authoritative references:
 - [Medium RSS limitations](https://help.medium.com/hc/en-us/articles/214874118-Using-RSS-feeds-of-profiles-publications-and-topics)
 - [Astro content collections](https://docs.astro.build/en/guides/content-collections/)
 - [Astro image handling](https://docs.astro.build/en/guides/images/)
+- [Sharp image output](https://sharp.pixelplumbing.com/api-output/)
 - [Google people-first content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content)
 - [WCAG 2.2](https://www.w3.org/TR/WCAG22/)

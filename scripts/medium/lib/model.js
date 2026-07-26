@@ -18,6 +18,8 @@ import {
 	CAPTURE_FORMAT,
 	INVENTORY_SCHEMA_VERSION,
 	MANIFEST_SCHEMA_VERSION,
+	MEDIUM_HERO_CAPTURE_FILE,
+	MEDIUM_HERO_SITE_READY_FILE,
 	MediumContractError,
 	SNAPSHOT_SCHEMA_VERSION,
 	serializeJson,
@@ -255,8 +257,12 @@ function validateAsset(value, label) {
 			"role",
 			"sourceUrl",
 			"rawFile",
+			"siteReadyFile",
 			"outputFile",
 			"sha256",
+			"acquisitionManifestSha256",
+			"captureSha256",
+			"pixelSha256",
 			"mimeType",
 			"width",
 			"height",
@@ -274,7 +280,12 @@ function validateAsset(value, label) {
 		asset.sourceUrl,
 		`${label}.sourceUrl`,
 	).toString();
-	for (const field of ["rawFile", "outputFile"]) {
+	const siteReadyFile =
+		asset.siteReadyFile === undefined
+			? undefined
+			: assertNonEmptyString(asset.siteReadyFile, `${label}.siteReadyFile`);
+	for (const field of ["rawFile", "outputFile", "siteReadyFile"]) {
+		if (field === "siteReadyFile" && siteReadyFile === undefined) continue;
 		assertNonEmptyString(asset[field], `${label}.${field}`);
 		if (
 			path.basename(asset[field]) !== asset[field] ||
@@ -289,13 +300,63 @@ function validateAsset(value, label) {
 	if (!IMAGE_MIME_TYPES.has(asset.mimeType)) {
 		throw new MediumContractError(`${label}.mimeType is unsupported`);
 	}
+	const provenanceHashes = {
+		acquisitionManifestSha256:
+			asset.acquisitionManifestSha256 === undefined
+				? undefined
+				: assertSha256(
+						asset.acquisitionManifestSha256,
+						`${label}.acquisitionManifestSha256`,
+					),
+		captureSha256:
+			asset.captureSha256 === undefined
+				? undefined
+				: assertSha256(asset.captureSha256, `${label}.captureSha256`),
+		pixelSha256:
+			asset.pixelSha256 === undefined
+				? undefined
+				: assertSha256(asset.pixelSha256, `${label}.pixelSha256`),
+	};
+	if (asset.role === "hero") {
+		if (
+			asset.rawFile !== MEDIUM_HERO_CAPTURE_FILE ||
+			siteReadyFile !== MEDIUM_HERO_SITE_READY_FILE ||
+			asset.mimeType !== "image/webp"
+		) {
+			throw new MediumContractError(
+				`${label} hero must bind ${MEDIUM_HERO_CAPTURE_FILE} to the separately sanitized ${MEDIUM_HERO_SITE_READY_FILE}`,
+			);
+		}
+		if (asset.rawFile === siteReadyFile) {
+			throw new MediumContractError(
+				`${label} hero raw capture and site-ready image must be separate files`,
+			);
+		}
+		if (Object.values(provenanceHashes).some((value) => value === undefined)) {
+			throw new MediumContractError(
+				`${label} hero must bind acquisition, capture, sanitized, and pixel hashes`,
+			);
+		}
+	} else if (siteReadyFile !== undefined) {
+		throw new MediumContractError(
+			`${label}.siteReadyFile is reserved for sanitized hero images`,
+		);
+	} else if (
+		Object.values(provenanceHashes).some((value) => value !== undefined)
+	) {
+		throw new MediumContractError(
+			`${label} Medium hero provenance hashes are reserved for hero images`,
+		);
+	}
 	return {
 		id,
 		role: asset.role,
 		sourceUrl,
 		rawFile: asset.rawFile,
+		...(siteReadyFile === undefined ? {} : { siteReadyFile }),
 		outputFile: asset.outputFile,
 		sha256: assertSha256(asset.sha256, `${label}.sha256`),
+		...(asset.role === "hero" ? provenanceHashes : {}),
 		mimeType: asset.mimeType,
 		width: assertInteger(asset.width, `${label}.width`, { positive: true }),
 		height: assertInteger(asset.height, `${label}.height`, { positive: true }),
@@ -376,8 +437,16 @@ function validateArticle(value, label) {
 			`${label}.assets must contain exactly one hero image`,
 		);
 	}
-	for (const field of ["id", "sourceUrl", "rawFile", "outputFile"]) {
-		const values = assets.map((asset) => asset[field]);
+	for (const field of [
+		"id",
+		"sourceUrl",
+		"rawFile",
+		"siteReadyFile",
+		"outputFile",
+	]) {
+		const values = assets
+			.map((asset) => asset[field])
+			.filter((value) => value !== undefined);
 		if (new Set(values).size !== values.length) {
 			throw new MediumContractError(`${label}.assets repeats ${field}`);
 		}
@@ -568,6 +637,9 @@ function validateManifestAsset(value, label) {
 			"role",
 			"path",
 			"sha256",
+			"acquisitionManifestSha256",
+			"captureSha256",
+			"pixelSha256",
 			"mimeType",
 			"width",
 			"height",
@@ -593,11 +665,45 @@ function validateManifestAsset(value, label) {
 			`${label}.path does not match its image MIME type`,
 		);
 	}
+	const provenanceHashes = {
+		acquisitionManifestSha256:
+			asset.acquisitionManifestSha256 === undefined
+				? undefined
+				: assertSha256(
+						asset.acquisitionManifestSha256,
+						`${label}.acquisitionManifestSha256`,
+					),
+		captureSha256:
+			asset.captureSha256 === undefined
+				? undefined
+				: assertSha256(asset.captureSha256, `${label}.captureSha256`),
+		pixelSha256:
+			asset.pixelSha256 === undefined
+				? undefined
+				: assertSha256(asset.pixelSha256, `${label}.pixelSha256`),
+	};
+	if (
+		asset.role === "hero" &&
+		Object.values(provenanceHashes).some((value) => value === undefined)
+	) {
+		throw new MediumContractError(
+			`${label} hero must carry acquisition, capture, and pixel hashes`,
+		);
+	}
+	if (
+		asset.role === "body" &&
+		Object.values(provenanceHashes).some((value) => value !== undefined)
+	) {
+		throw new MediumContractError(
+			`${label} body image must not carry Medium hero provenance hashes`,
+		);
+	}
 	return {
 		id: assertSlug(asset.id, `${label}.id`),
 		role: asset.role,
 		path: repositoryPath,
 		sha256: assertSha256(asset.sha256, `${label}.sha256`),
+		...(asset.role === "hero" ? provenanceHashes : {}),
 		mimeType: asset.mimeType,
 		width: assertInteger(asset.width, `${label}.width`, { positive: true }),
 		height: assertInteger(asset.height, `${label}.height`, { positive: true }),
@@ -882,6 +988,9 @@ export function validateMediumSnapshot(value, inventoryArticle) {
 		id: hero.id,
 		outputFile: hero.outputFile,
 		sha256: hero.sha256,
+		acquisitionManifestSha256: hero.acquisitionManifestSha256,
+		captureSha256: hero.captureSha256,
+		pixelSha256: hero.pixelSha256,
 		mimeType: hero.mimeType,
 		width: hero.width,
 		height: hero.height,

@@ -97,7 +97,7 @@ export async function main(argv = process.argv.slice(2)) {
 				`Medium disposition proposal dry-run: ${result.proposal.includedCount} included standalone essays, ${result.proposal.excludedResponseCount} excluded responses`,
 			);
 			console.log(
-				"The committed reviewed inventory remains inactive until article records, original assets, and human approvals are complete.",
+				"The committed reviewed inventory remains inactive until article records, verified site-ready assets, and human approvals are complete.",
 			);
 		}
 		return 0;

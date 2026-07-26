@@ -1,0 +1,684 @@
+{
+	"schemaVersion": 1,
+	"state": "captured-site-ready",
+	"captureKind": "highest-observed-medium-responsive-derivative",
+	"originalUploadClaimed": false,
+	"acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+	"exportSha256": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+	"candidateSetSha256": "sha256:5aacb429b819f4bb7bd51304fc414d6be54b62b5231433b0797d6672b265e38a",
+	"itemCount": 24,
+	"items": [
+		{
+			"slug": "beyond-scarcity-how-automation-ai-could-end-economic-struggle",
+			"title": "Beyond Scarcity: How Automation & AI Could End Economic Struggle",
+			"storyId": "1b84e081e845",
+			"heroImageId": "1*sJKT43w2CHPy5SrSrnkvCg@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/beyond-scarcity-how-automation-ai-could-end-economic-struggle-1b84e081e845",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*sJKT43w2CHPy5SrSrnkvCg@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:75fbcdf3b84b470251b848cb8ae7ccdb18b4fa768268b4979220226ef55657de",
+				"mimeType": "image/webp",
+				"byteSize": 385740,
+				"width": 1800,
+				"height": 1800
+			},
+			"siteReady": {
+				"sha256": "sha256:c2c5b08f8ccc6efce7d56a8ad8e8bb4ce013c62fb338071700a10c170607e798",
+				"mimeType": "image/webp",
+				"byteSize": 3149986,
+				"width": 1800,
+				"height": 1800
+			},
+			"pixels": {
+				"sha256": "sha256:945ab9f2557425d4364ea87e279c49d7591aeb04eeabd78bc9d4c44371cb9320",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking",
+			"title": "The Future of Money: Will Cryptocurrency and AI Kill Traditional Banking?",
+			"storyId": "b093d81a7c12",
+			"heroImageId": "1*FuoqDJKI9v48Eg34kvBHvg@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking-b093d81a7c12",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*FuoqDJKI9v48Eg34kvBHvg@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:783c0729091a5777a63db07beb437d7f454d8321aeb1aa3fc6b4370f7bddda23",
+				"mimeType": "image/webp",
+				"byteSize": 418672,
+				"width": 1800,
+				"height": 1800
+			},
+			"siteReady": {
+				"sha256": "sha256:04b5097187a17822aa71a80c134181c83bf9029b97e875b0d7a44de7770f0ff5",
+				"mimeType": "image/webp",
+				"byteSize": 3102338,
+				"width": 1800,
+				"height": 1800
+			},
+			"pixels": {
+				"sha256": "sha256:e8e40f937523bf29d39a2d12bbe93264731cd64b96fceeb43657afcb9307c8e6",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "what-comes-after-work-designing-a-purpose-driven-life",
+			"title": "What Comes After Work? Designing a Purpose-Driven Life",
+			"storyId": "06fcd3447f09",
+			"heroImageId": "1*FSC-iA8LR9VRNBFWXrLnvA@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/what-comes-after-work-designing-a-purpose-driven-life-06fcd3447f09",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*FSC-iA8LR9VRNBFWXrLnvA@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:cc58d93272b42c5931b827a592ae2377a14210a3fc1c63aa60724b9fb24bb8f0",
+				"mimeType": "image/webp",
+				"byteSize": 242788,
+				"width": 1800,
+				"height": 1800
+			},
+			"siteReady": {
+				"sha256": "sha256:69ecacac3ce4abb5ef4e535fc082d25eec05b2d2c61411327df9f7f2e9550393",
+				"mimeType": "image/webp",
+				"byteSize": 2360566,
+				"width": 1800,
+				"height": 1800
+			},
+			"pixels": {
+				"sha256": "sha256:9eedfbf2e0284849f88ce3d1b0d68af6cb2575739d33b060fe84332ef0927685",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "the-rise-of-zero-cost-economies-what-happens-when-prices-disappear",
+			"title": "The Rise of Zero-Cost Economies: What Happens When Prices Disappear?",
+			"storyId": "6757f5dd592e",
+			"heroImageId": "1*e5Q2fWtvlA9N_6RyKuTUhg@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-rise-of-zero-cost-economies-what-happens-when-prices-disappear-6757f5dd592e",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*e5Q2fWtvlA9N_6RyKuTUhg@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:3d72193481fd2372681b331f0d9cd25adef3707684ce6e80de82e23c2472a8b2",
+				"mimeType": "image/webp",
+				"byteSize": 299974,
+				"width": 1800,
+				"height": 1800
+			},
+			"siteReady": {
+				"sha256": "sha256:108203f226621c550a84ea746a577fe6b13b41dc3e870fe3497e9256dd7e5a13",
+				"mimeType": "image/webp",
+				"byteSize": 2677928,
+				"width": 1800,
+				"height": 1800
+			},
+			"pixels": {
+				"sha256": "sha256:7e4e310a7d1ba9adbfd21e056d1345e0fb1385a2397b0ad2cbe7fa6529fe3655",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "the-next-leap-from-global-competition-to-human-cooperation",
+			"title": "The Next Leap: From Global Competition to Human Cooperation",
+			"storyId": "b0f2805608c5",
+			"heroImageId": "1*3adt6isWbkZAMjk19sM6xg@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-next-leap-from-global-competition-to-human-cooperation-b0f2805608c5",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*3adt6isWbkZAMjk19sM6xg@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:9174f7fb0505465c9f26679cda18a29a0f856d480f3f639341b50feb4a2af683",
+				"mimeType": "image/webp",
+				"byteSize": 314258,
+				"width": 1800,
+				"height": 1800
+			},
+			"siteReady": {
+				"sha256": "sha256:5743628e2f2949fcf9faafb533e4c39ee028564d3a4c4fb2d8f85887319113ad",
+				"mimeType": "image/webp",
+				"byteSize": 2703162,
+				"width": 1800,
+				"height": 1800
+			},
+			"pixels": {
+				"sha256": "sha256:c427aa59f27e848be904a7b70a78a885aed611c05971668b05ebd34a574d8e1f",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "closing-the-gap-how-a-fairer-global-economy-could-lift-billions",
+			"title": "Closing the Gap: How a Fairer Global Economy Could Lift Billions",
+			"storyId": "24c9923e2f19",
+			"heroImageId": "1*oeZxnSSsVJMolSWK_xJ6IQ@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/closing-the-gap-how-a-fairer-global-economy-could-lift-billions-24c9923e2f19",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*oeZxnSSsVJMolSWK_xJ6IQ@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:2efc8cbe4206f58151de6b3cd0a0f606a1039426f93a00fb099f86af7f8c555d",
+				"mimeType": "image/webp",
+				"byteSize": 436768,
+				"width": 1800,
+				"height": 1800
+			},
+			"siteReady": {
+				"sha256": "sha256:f4c8327008607706341cfd26800fb9e2a87d106d693ec6c56a7d2a85afc6cde1",
+				"mimeType": "image/webp",
+				"byteSize": 3274756,
+				"width": 1800,
+				"height": 1800
+			},
+			"pixels": {
+				"sha256": "sha256:14238f17a001032286063d8bea39efd7d9c654d5e8d94a3de5f5d86fc77b81f4",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "the-economy-is-built-on-nature-we-just-dont-count-it",
+			"title": "The Economy Is Built on Nature, We Just Don’t Count It",
+			"storyId": "6c801f9d71cc",
+			"heroImageId": "1*6xNcXBkeMw7u0iYgghZ86Q@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-economy-is-built-on-nature-we-just-dont-count-it-6c801f9d71cc",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*6xNcXBkeMw7u0iYgghZ86Q@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:45c0de0c7002008db6139295ced61a78c55f8abfbbb8b659fe56c9d8536a54cd",
+				"mimeType": "image/webp",
+				"byteSize": 304154,
+				"width": 1800,
+				"height": 1029
+			},
+			"siteReady": {
+				"sha256": "sha256:1fdb3a0ddf2ce33a87ef1b41da563e9c2d285d8f6fbae90301ff2971e9101dcf",
+				"mimeType": "image/webp",
+				"byteSize": 1859918,
+				"width": 1800,
+				"height": 1029
+			},
+			"pixels": {
+				"sha256": "sha256:18945d661df915dc3022782ec49470e7d3cd940000eab83cec86a4348ea39c2e",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "the-trillion-dollar-economy-no-one-talks-about",
+			"title": "The Trillion Dollar Economy No One Talks About",
+			"storyId": "b1810889d3b6",
+			"heroImageId": "1*2c7ZLS5ccmHssoR8P1f5jA@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-trillion-dollar-economy-no-one-talks-about-b1810889d3b6",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*2c7ZLS5ccmHssoR8P1f5jA@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:5037dd253edeb04a01af226f63299b2136fb549e6faa6424ea4856720a739fe5",
+				"mimeType": "image/webp",
+				"byteSize": 181336,
+				"width": 1800,
+				"height": 1800
+			},
+			"siteReady": {
+				"sha256": "sha256:93b38a1e92f4254279dca447fcfc1744d4cf7e0b2b882687db8e356ca60336fc",
+				"mimeType": "image/webp",
+				"byteSize": 1723306,
+				"width": 1800,
+				"height": 1800
+			},
+			"pixels": {
+				"sha256": "sha256:0c773cc09baa0a5415d9c9266d5ed58566b275f3e5c4e0a6022bc6348572744f",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "the-economics-of-loneliness-how-disconnection-became-a-market-failure",
+			"title": "The Economics of Loneliness: How Disconnection Became a Market Failure",
+			"storyId": "e9a8dfdba5f3",
+			"heroImageId": "1*L_1kq7v_vVP-TSjSwdFo9Q@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-economics-of-loneliness-how-disconnection-became-a-market-failure-e9a8dfdba5f3",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*L_1kq7v_vVP-TSjSwdFo9Q@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:e8fdfb192b8bccc8cfe82cbe6cf8799417499032089c2e1c81098354dbe38913",
+				"mimeType": "image/webp",
+				"byteSize": 346336,
+				"width": 1800,
+				"height": 1029
+			},
+			"siteReady": {
+				"sha256": "sha256:37a566db82bf6152e2d434c18acaf4a5c31c62585be81ab77fa1643531f239a3",
+				"mimeType": "image/webp",
+				"byteSize": 2182056,
+				"width": 1800,
+				"height": 1029
+			},
+			"pixels": {
+				"sha256": "sha256:31b9fad27b644955e86c922a80a3c8090ce28a075d63a5a6cc842822d90c7eec",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "debt-as-destiny-how-the-credit-system-controls-lives",
+			"title": "Debt as Destiny: How the Credit System Controls Lives",
+			"storyId": "5f67cd4ff1c5",
+			"heroImageId": "1*k7pKgyBBrM9Usuteb0r7Zg@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/debt-as-destiny-how-the-credit-system-controls-lives-5f67cd4ff1c5",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*k7pKgyBBrM9Usuteb0r7Zg@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:1ae7c898181cd94ec2eb607d9b228e4cd0762af2fedc18095208a31b7b723275",
+				"mimeType": "image/webp",
+				"byteSize": 430180,
+				"width": 1800,
+				"height": 1029
+			},
+			"siteReady": {
+				"sha256": "sha256:e6f310b0231c8960e9ef1e6b14b66e0e22f674d31382e7476a49d83ebd1fcc3c",
+				"mimeType": "image/webp",
+				"byteSize": 2268348,
+				"width": 1800,
+				"height": 1029
+			},
+			"pixels": {
+				"sha256": "sha256:1205b26a3544c39c09103b7d2c9ff7ac8f9b9e9fc68e2c0c1ed424a79bfc8fb9",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource",
+			"title": "Who Stole Your Time? The Silent Economics of a Vanishing Life Resource",
+			"storyId": "c2f680f7c679",
+			"heroImageId": "1*YT1F0DJ_ysD1oQe6QaqnOg@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource-c2f680f7c679",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*YT1F0DJ_ysD1oQe6QaqnOg@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:926389d208c4ca47918b554d8833e118f679c7cb2aff6b8db6136a277f4cc76b",
+				"mimeType": "image/webp",
+				"byteSize": 523896,
+				"width": 1800,
+				"height": 1800
+			},
+			"siteReady": {
+				"sha256": "sha256:825d61f7c32c3354086d675f36b98b08244961721374974500491b0bb227eb86",
+				"mimeType": "image/webp",
+				"byteSize": 3558860,
+				"width": 1800,
+				"height": 1800
+			},
+			"pixels": {
+				"sha256": "sha256:584556f03b35b399ad4ae9e2d494a75527a5d4cdc4672c7a6c5d72f91f6e7550",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "the-identity-economy",
+			"title": "The Identity Economy",
+			"storyId": "8db3aed3582c",
+			"heroImageId": "1*28LGJAa9JFWc5M-gJN9LJQ@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-identity-economy-8db3aed3582c",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*28LGJAa9JFWc5M-gJN9LJQ@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:a52ec1e3496ec4514bc1e78ca604f09abad3e334ef3b7f2f3c735a8bb997c3d8",
+				"mimeType": "image/webp",
+				"byteSize": 340978,
+				"width": 1800,
+				"height": 1800
+			},
+			"siteReady": {
+				"sha256": "sha256:48c6dd24904bd63fbb100e8b8ff0f6756b98314749aa7dac3416b97e5f3d6360",
+				"mimeType": "image/webp",
+				"byteSize": 2813638,
+				"width": 1800,
+				"height": 1800
+			},
+			"pixels": {
+				"sha256": "sha256:3b91ec49ce40ffcfae8ef0c8bb4216e0a8ccdd6ecfe3e182be86d103bc1e5379",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "the-informal-majority",
+			"title": "The Informal Majority",
+			"storyId": "e44dfd41f3ce",
+			"heroImageId": "1*XJ1q9M0ySA7gB_BzpA6DHQ@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-informal-majority-e44dfd41f3ce",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*XJ1q9M0ySA7gB_BzpA6DHQ@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:055a007cb95768cff7bdb744c322ece3bf518fa0e7c2723d2bc0923bd1016251",
+				"mimeType": "image/webp",
+				"byteSize": 464004,
+				"width": 1800,
+				"height": 1800
+			},
+			"siteReady": {
+				"sha256": "sha256:00b1f3ad0eaa0d8f2693920fff97ae1ebc61656651aefcf1531dc5870eb8ff5c",
+				"mimeType": "image/webp",
+				"byteSize": 3400864,
+				"width": 1800,
+				"height": 1800
+			},
+			"pixels": {
+				"sha256": "sha256:0ec1954a165cf28d02f8e162a5368a86cfcc57029aea08d6bdd0f4beabcb59d6",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "the-invisible-ledger",
+			"title": "The Invisible Ledger",
+			"storyId": "2505f05b7201",
+			"heroImageId": "1*Q0vztVcQx9kQNAX3nEi5Dw@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-invisible-ledger-2505f05b7201",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*Q0vztVcQx9kQNAX3nEi5Dw@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:d1a20828d75d01631cbaa1ad2b4728baaf96a135b415fa34f5e3fd8d047416ee",
+				"mimeType": "image/webp",
+				"byteSize": 307764,
+				"width": 1800,
+				"height": 1800
+			},
+			"siteReady": {
+				"sha256": "sha256:db09120dd63f26eca95dc54838a0db630e9220e56e9fc88887d229810af6e60d",
+				"mimeType": "image/webp",
+				"byteSize": 2483576,
+				"width": 1800,
+				"height": 1800
+			},
+			"pixels": {
+				"sha256": "sha256:931433be57dee6b95a8480c093bfad5cfd8358afade9920be62894687281a7bf",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "the-remittance-paradox",
+			"title": "The Remittance Paradox",
+			"storyId": "dc6992732720",
+			"heroImageId": "1*SzljAycO9iRbdMquByj5Pg@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-remittance-paradox-dc6992732720",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*SzljAycO9iRbdMquByj5Pg@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:04f3bc4692b0139c4020739a321c838fede64dc6e9c968e198eb8125eae92eb5",
+				"mimeType": "image/webp",
+				"byteSize": 298716,
+				"width": 1800,
+				"height": 1800
+			},
+			"siteReady": {
+				"sha256": "sha256:da005c8bb598310da530a723ddeb196312e6961cd0e7ea113dbe504090dba859",
+				"mimeType": "image/webp",
+				"byteSize": 2556250,
+				"width": 1800,
+				"height": 1800
+			},
+			"pixels": {
+				"sha256": "sha256:ba3060c36f6551945a58cd3b51f4f6648aa7c0d2b15c11c7aae1562177007282",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "the-water-economy",
+			"title": "The Water Economy",
+			"storyId": "2bb7ef210efd",
+			"heroImageId": "1*qMh1GeTCLC4b_AaBpt2kUQ@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-water-economy-2bb7ef210efd",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*qMh1GeTCLC4b_AaBpt2kUQ@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:752f074c19c46dd2d841e58950ba0495330b4bbb5b359127eab86d5e20054826",
+				"mimeType": "image/webp",
+				"byteSize": 411340,
+				"width": 1800,
+				"height": 1800
+			},
+			"siteReady": {
+				"sha256": "sha256:cc36ae521f3823f0444ebc18ac6bd4f4396ddf461d9c3db62c9e16434aab89f9",
+				"mimeType": "image/webp",
+				"byteSize": 3206976,
+				"width": 1800,
+				"height": 1800
+			},
+			"pixels": {
+				"sha256": "sha256:eb0065a7a87b49e8c4b97af60302d26fc8cadf3ee71aaee75431765c09bc83a9",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "the-education-illusion",
+			"title": "The Education Illusion",
+			"storyId": "5ebad0c48b7e",
+			"heroImageId": "1*Hr9IuLqWGh1DZSw0n4_MQQ@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-education-illusion-5ebad0c48b7e",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*Hr9IuLqWGh1DZSw0n4_MQQ@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:1010e7761e8bf0eb7d4fe367b702b5ddccc3025c8038631db305bcac3a7d11a6",
+				"mimeType": "image/webp",
+				"byteSize": 377484,
+				"width": 1800,
+				"height": 1800
+			},
+			"siteReady": {
+				"sha256": "sha256:60f39098d00ba30e118c4523ed878487ce982bf0a47de6d69f759ace64a2ee2f",
+				"mimeType": "image/webp",
+				"byteSize": 3017292,
+				"width": 1800,
+				"height": 1800
+			},
+			"pixels": {
+				"sha256": "sha256:e8d0f0f88318680f6350845823cc91c9feda93b14ba25b475d8075e6e9e3f15a",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "the-aspiration-economy",
+			"title": "The Aspiration Economy",
+			"storyId": "c79c4bd2c4ff",
+			"heroImageId": "1*MZjMKeUUIJfdM5OVv1sBew@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-aspiration-economy-c79c4bd2c4ff",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*MZjMKeUUIJfdM5OVv1sBew@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:7a5c5bc3cf2f5446d3fdfeb0fff83e1bbeb43b69f68ca1ba4364edb2b164a5f1",
+				"mimeType": "image/webp",
+				"byteSize": 276972,
+				"width": 1800,
+				"height": 1800
+			},
+			"siteReady": {
+				"sha256": "sha256:a34df5c5ef0f45071d20293344ea51144c0fc6f661e747c5863d40225b652264",
+				"mimeType": "image/webp",
+				"byteSize": 2402452,
+				"width": 1800,
+				"height": 1800
+			},
+			"pixels": {
+				"sha256": "sha256:6040358ad1a8a75cb19a74d09faf612440eb8101d2fca2a168d837a758f99f30",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "what-we-call-freedom-isnt-really-freedom",
+			"title": "What We Call Freedom Isn’t Really Freedom",
+			"storyId": "26ecc317aa63",
+			"heroImageId": "1*ojlAAB9Pq1JwgemWOJsYLQ@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/what-we-call-freedom-isnt-really-freedom-26ecc317aa63",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*ojlAAB9Pq1JwgemWOJsYLQ@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:3f26906002bb21da390291fd29cecce1954e82275314b5ebdb70bd2f57cf740f",
+				"mimeType": "image/webp",
+				"byteSize": 280092,
+				"width": 1800,
+				"height": 1800
+			},
+			"siteReady": {
+				"sha256": "sha256:869c84bed45487ddb6239d9c4498c324490f74e0a8db4a51602ce20867842026",
+				"mimeType": "image/webp",
+				"byteSize": 2655886,
+				"width": 1800,
+				"height": 1800
+			},
+			"pixels": {
+				"sha256": "sha256:21ee48179728d13b4a386906c6aad31c43694a67c48b69dc54a6be5c68b6e88b",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "the-psychology-of-belief-why-humans-prefer-comfort-over-truth",
+			"title": "The Psychology of Belief: Why Humans Prefer Comfort Over Truth",
+			"storyId": "a9787ad7f605",
+			"heroImageId": "1*hKyYlDm3TUjxR_XvsYyh9Q@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-psychology-of-belief-why-humans-prefer-comfort-over-truth-a9787ad7f605",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*hKyYlDm3TUjxR_XvsYyh9Q@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:04e83fbc4ddf8c8e4c99098d7bf811c84ae56cd481f989391540a2c36fe454e2",
+				"mimeType": "image/webp",
+				"byteSize": 267680,
+				"width": 1800,
+				"height": 1800
+			},
+			"siteReady": {
+				"sha256": "sha256:ba243cdd1d022b54b158e3911f1542177d77b318a6e06e31df73dbc57597eac2",
+				"mimeType": "image/webp",
+				"byteSize": 2222070,
+				"width": 1800,
+				"height": 1800
+			},
+			"pixels": {
+				"sha256": "sha256:bb6f013a06440a62ac3ca86c61e795eec245651d93459f1545d00bf2c8fc3f97",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "why-family-is-not-sacred-by-default",
+			"title": "Why Family Is Not Sacred by Default",
+			"storyId": "62dc7ecda7cb",
+			"heroImageId": "1*g-Y7rnePvZiDcuoIne78Kw@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/why-family-is-not-sacred-by-default-62dc7ecda7cb",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*g-Y7rnePvZiDcuoIne78Kw@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:7b19b2c1f05f461410c747b1d542868aa575ae99768705f7d2f5b37f69ca2a29",
+				"mimeType": "image/webp",
+				"byteSize": 351372,
+				"width": 1800,
+				"height": 1800
+			},
+			"siteReady": {
+				"sha256": "sha256:4805a825f70c518512b43624ffda113b228dcd23628f0afa572687fe1b356f91",
+				"mimeType": "image/webp",
+				"byteSize": 2865800,
+				"width": 1800,
+				"height": 1800
+			},
+			"pixels": {
+				"sha256": "sha256:e1c8f46142489b7c24b65a43508d273cc381de4895e9f6ea19eae2a62dafb706",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "the-shadow-subsidy",
+			"title": "The Shadow Subsidy",
+			"storyId": "90d432a7abea",
+			"heroImageId": "1*AZSPqZgUJppV9llQe8aVfQ@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-shadow-subsidy-90d432a7abea",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*AZSPqZgUJppV9llQe8aVfQ@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:6cdc734c01dc7b5b355d1db61de9d74acf3027731c1e8cbfe6f4eab2ab124596",
+				"mimeType": "image/webp",
+				"byteSize": 402750,
+				"width": 1800,
+				"height": 1800
+			},
+			"siteReady": {
+				"sha256": "sha256:d55db095becfbbec09940097d3ac46e1eef9bbb13dc5f56d59def3354880ef55",
+				"mimeType": "image/webp",
+				"byteSize": 3164556,
+				"width": 1800,
+				"height": 1800
+			},
+			"pixels": {
+				"sha256": "sha256:1ff9412fe032040323cdf6d25f2bb54edcf4fce110d1479e5586cb6d00e05e03",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "the-collateral-shift",
+			"title": "The Collateral Shift",
+			"storyId": "2e24528b3eb4",
+			"heroImageId": "1*7lzyXkIoAMBse1Rm0jOAvw@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-collateral-shift-2e24528b3eb4",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*7lzyXkIoAMBse1Rm0jOAvw@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:0f8f0ef19091e3dc6cecfb2c07c7afb8bccb82f0d2b811769012711845d8a2e0",
+				"mimeType": "image/webp",
+				"byteSize": 266914,
+				"width": 1800,
+				"height": 1200
+			},
+			"siteReady": {
+				"sha256": "sha256:d22cbcd9bf423ac3f3ec97798e13600eee8044bb66baf523051ee270a021b5cd",
+				"mimeType": "image/webp",
+				"byteSize": 2056368,
+				"width": 1800,
+				"height": 1200
+			},
+			"pixels": {
+				"sha256": "sha256:2a1beadc9bae79203c14279855a7e179992bbe5d0922a60a3474383721fd6a15",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		},
+		{
+			"slug": "origins-orders",
+			"title": "Origins & Orders",
+			"storyId": "d3f3f81fe11f",
+			"heroImageId": "1*6kr-VV2kQH-eya-38VPzkw@2x.jpeg",
+			"canonicalUrl": "https://medium.com/@ShotsOfRhapsody/origins-orders-d3f3f81fe11f",
+			"observedUrl": "https://miro.medium.com/v2/resize:fit:4800/format:webp/1*6kr-VV2kQH-eya-38VPzkw@2x.jpeg",
+			"capture": {
+				"sha256": "sha256:11a33bdba027ce7baa031645220e062e5bbc4d9cbb0dc39978abbb00a8bae80f",
+				"mimeType": "image/webp",
+				"byteSize": 604666,
+				"width": 1800,
+				"height": 1800
+			},
+			"siteReady": {
+				"sha256": "sha256:eed7ac5909604705bb8fdda51efbd56e0dac05fcdf61090e98296a51fc692a29",
+				"mimeType": "image/webp",
+				"byteSize": 3654690,
+				"width": 1800,
+				"height": 1800
+			},
+			"pixels": {
+				"sha256": "sha256:4280aea1de8563088b83a8499fdccc3196d607ad6757e14f4fec09ab269e0472",
+				"colourspace": "srgb",
+				"channels": 4,
+				"depth": "uchar"
+			}
+		}
+	]
+}
