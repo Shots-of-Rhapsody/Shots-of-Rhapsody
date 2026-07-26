@@ -89,6 +89,43 @@
       ]
     },
     {
+      "slug": "the-economics-of-loneliness-how-disconnection-became-a-market-failure",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-economics-of-loneliness-how-disconnection-became-a-market-failure-e9a8dfdba5f3",
+      "paths": {
+        "snapshot": "provenance/medium/posts/the-economics-of-loneliness-how-disconnection-became-a-market-failure.json",
+        "markdown": "src/content/posts/the-economics-of-loneliness-how-disconnection-became-a-market-failure/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:344b04b5cded127e3e365b0e25eac76e01a4e73fa583628c259a19c9a1d545ba",
+        "snapshot": "sha256:aefd3ace45410902abe55b863729a8275530d4c69e9e13284b495496eb78c581",
+        "markdown": "sha256:1f126a2c23330a32583f93b211dc3bec2c03f3d8e71a72081202b56dbcb1c635",
+        "bodyText": "sha256:d401f7815230d2bda77e630c6a10561c1088a4e9ba2c75386f6fa21585ea321e"
+      },
+      "content": {
+        "title": "The Loneliness Economy",
+        "subtitle": "In a system that monetizes connection, isolation becomes profitable.",
+        "seriesLine": "A Ledger Series article on isolation as a structural outcome of modern systems.",
+        "bodyBlockCount": 43
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/the-economics-of-loneliness-how-disconnection-became-a-market-failure/hero.webp",
+          "sha256": "sha256:37a566db82bf6152e2d434c18acaf4a5c31c62585be81ab77fa1643531f239a3",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:e8fdfb192b8bccc8cfe82cbe6cf8799417499032089c2e1c81098354dbe38913",
+          "pixelSha256": "sha256:31b9fad27b644955e86c922a80a3c8090ce28a075d63a5a6cc842822d90c7eec",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1029,
+          "byteSize": 2182056
+        }
+      ]
+    },
+    {
       "slug": "the-economy-is-built-on-nature-we-just-dont-count-it",
       "capturedAt": "2026-07-25T14:11:15.789Z",
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-economy-is-built-on-nature-we-just-dont-count-it-6c801f9d71cc",
