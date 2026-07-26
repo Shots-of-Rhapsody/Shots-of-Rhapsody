@@ -126,6 +126,43 @@
       ]
     },
     {
+      "slug": "the-aspiration-economy",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-aspiration-economy-c79c4bd2c4ff",
+      "paths": {
+        "snapshot": "provenance/medium/posts/the-aspiration-economy.json",
+        "markdown": "src/content/posts/the-aspiration-economy/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:e0720bf67a0bc71edac831bdd906ac44a44d10d113f1c198826db890ddf7ae2a",
+        "snapshot": "sha256:646b3f8a9427ac6c6490f6a9e1bde26bbc2b9fbb01efaf4befdb47e8899098ea",
+        "markdown": "sha256:6d485a77569fce2c027b332a73d536044ab1017c8ffaa9b0ffb80ee35fbcaa4d",
+        "bodyText": "sha256:209738f1e07a246ea502053c737ff9056b46110b0f73ff80797e7c99d2bee524"
+      },
+      "content": {
+        "title": "The Aspiration Economy",
+        "subtitle": "In a system that sells success but stalls mobility, youth grow up working for a future that isn’t arriving.",
+        "seriesLine": "A Ledger Series article on the gap between ambition and access in the Global South.",
+        "bodyBlockCount": 47
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/the-aspiration-economy/hero.webp",
+          "sha256": "sha256:a34df5c5ef0f45071d20293344ea51144c0fc6f661e747c5863d40225b652264",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:7a5c5bc3cf2f5446d3fdfeb0fff83e1bbeb43b69f68ca1ba4364edb2b164a5f1",
+          "pixelSha256": "sha256:6040358ad1a8a75cb19a74d09faf612440eb8101d2fca2a168d837a758f99f30",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 2402452
+        }
+      ]
+    },
+    {
       "slug": "the-economics-of-loneliness-how-disconnection-became-a-market-failure",
       "capturedAt": "2026-07-25T14:11:15.789Z",
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-economics-of-loneliness-how-disconnection-became-a-market-failure-e9a8dfdba5f3",

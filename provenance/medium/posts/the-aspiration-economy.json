@@ -1,0 +1,551 @@
+{
+  "schemaVersion": 1,
+  "slug": "the-aspiration-economy",
+  "exportTitle": "The Aspiration Economy",
+  "exportSummary": "In a system that sells success but stalls mobility, youth grow up working for a future that isn’t arriving.",
+  "title": "The Aspiration Economy",
+  "subtitle": "In a system that sells success but stalls mobility, youth grow up working for a future that isn’t arriving.",
+  "seriesLine": "A Ledger Series article on the gap between ambition and access in the Global South.",
+  "summary": "In a system that sells success but stalls mobility, youth grow up working for a future that isn’t arriving.",
+  "description": "In a system that sells success but stalls mobility, youth grow up working for a future that isn’t arriving.",
+  "author": "Tai Song",
+  "published": "2025-04-10T12:47:39.634Z",
+  "category": "Nonfiction",
+  "tags": [],
+  "imageAlt": null,
+  "imageCaption": "",
+  "provenance": {
+    "authority": "Medium account export",
+    "captureFormat": "account-export-html",
+    "capturedAt": "2026-07-25T14:11:15.789Z",
+    "sourcePath": "posts/2025-04-10_The-Aspiration-Economy-c79c4bd2c4ff.html",
+    "sourceSha256": "sha256:e0720bf67a0bc71edac831bdd906ac44a44d10d113f1c198826db890ddf7ae2a",
+    "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-aspiration-economy-c79c4bd2c4ff",
+    "presentationSetVersion": 1,
+    "presentationSetSha256": "sha256:ef4258dc651853433de14371682bb3603c7e58852672587fc6f0a9ce8e1484a2"
+  },
+  "hero": {
+    "id": "hero",
+    "outputFile": "hero.webp",
+    "sha256": "sha256:a34df5c5ef0f45071d20293344ea51144c0fc6f661e747c5863d40225b652264",
+    "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+    "captureSha256": "sha256:7a5c5bc3cf2f5446d3fdfeb0fff83e1bbeb43b69f68ca1ba4364edb2b164a5f1",
+    "pixelSha256": "sha256:6040358ad1a8a75cb19a74d09faf612440eb8101d2fca2a168d837a758f99f30",
+    "mimeType": "image/webp",
+    "width": 1800,
+    "height": 1800,
+    "byteSize": 2402452
+  },
+  "assets": [
+    {
+      "id": "hero",
+      "role": "hero",
+      "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*MZjMKeUUIJfdM5OVv1sBew@2x.jpeg",
+      "rawFile": "hero-medium.webp",
+      "siteReadyFile": "hero-sanitized.webp",
+      "outputFile": "hero.webp",
+      "sha256": "sha256:a34df5c5ef0f45071d20293344ea51144c0fc6f661e747c5863d40225b652264",
+      "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+      "captureSha256": "sha256:7a5c5bc3cf2f5446d3fdfeb0fff83e1bbeb43b69f68ca1ba4364edb2b164a5f1",
+      "pixelSha256": "sha256:6040358ad1a8a75cb19a74d09faf612440eb8101d2fca2a168d837a758f99f30",
+      "mimeType": "image/webp",
+      "width": 1800,
+      "height": 1800,
+      "byteSize": 2402452,
+      "alt": null,
+      "caption": ""
+    }
+  ],
+  "bodyDocument": {
+    "blocks": [
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Across the Global South, ambition is everywhere. Youth are more connected, credentialed, and motivated than ever before. They are told to dream big, build fast, and hustle harder.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Governments promise opportunity. Schools push performance. Social media floods them with images of success. The message is constant: if you try hard enough, you’ll make it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "But what if the system was never designed to let you through?",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In country after country, the promises of mobility are shrinking. Jobs are limited. Wages stagnate. Degrees multiply, but access stalls. A generation raised on motivation is learning that effort is not the problem. Access is.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They are not short on ambition. They are short on traction.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Generation Raised on Promise",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In India, national campaigns like Skill India and Startup India promise to unlock innovation and job growth. The language is bold. The logos are everywhere. But long-term outcomes remain limited. Graduates complete training but lack job placement. Entrepreneurial support rarely reaches the youth who need it most.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In Nigeria, where over 70 percent of the population is under 30, youth unemployment continues to rise. Many young Nigerians pursue tech bootcamps, certifications, and digital ventures. But job creation hasn’t kept pace. Structural barriers remain untouched.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Indonesia’s “Merdeka Belajar” reform encourages creative learning and flexible pathways. But in many regions, especially rural ones, schools lack reliable internet and teacher capacity. Ambition grows faster than infrastructure.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Across the Global South, youth are taught to reach higher. But the ladder is missing rungs. And the climb remains unequal by design.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Systems That Block the Climb",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Aspiration alone does not build momentum. Across the Global South, youth are told to rise, but run straight into systems designed to hold position, not create space.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In Kenya, over 60 percent of young people report being locked out of formal credit. Banks require payslips, collateral, or guarantors. Most youth have none. Microfinance rarely scales. Startup capital remains a distant concept.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In India and Egypt, public sector jobs are still considered the gold standard, but access is grueling. Competitive exams can take years to crack. Corruption and favoritism distort who gets through. The private sector demands experience, and offers few ways to earn it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Indonesia promotes innovation, but youth who win hackathons often stall afterward. Mentorship dries up. Funding disappears. Bureaucracy stretches timelines. The message is: prove yourself, then wait.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Across regions, the pattern holds. To work, you need experience. To gain experience, you need access. To launch something, you need capital. To get capital, you need proof you’ve already succeeded.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "These are not skill gaps. They are design gaps. And youth are paying the price.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Side Hustle Myth",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Across the Global South, youth are told to hustle. Build your own thing. Monetize your downtime. Turn passion into profit.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "It sounds empowering. But for most, it is not a choice. It is what’s left.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In Nigeria, young people flood into online reselling, food delivery, and influencer marketing. The platforms promise scale. But in reality, sellers face unstable demand, currency swings, and poor infrastructure. A few break through. Most burn out.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In the Philippines, more than 1.5 million people now freelance. Many are young. Many are women. The work is flexible, but fragile. Clients vanish. Payments stall. Protections are minimal. One platform down means income gone.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Entrepreneurship is framed as freedom. But in practice, it often means piecing together multiple unstable gigs to replicate one stable income.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Side hustles are survival strategies. They are not solutions. And when institutions fail to build ladders, they hand out hashtags.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Aspiration as Exploitation",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "When opportunity is scarce, ambition becomes a business model.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Across the Global South, entire industries profit from youth trying to move forward. Private universities expand quickly, promising global futures with local credentials. But many offer limited accreditation, outdated programs, and weak job placement. The tuition gets paid. The promise goes unfulfilled.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In Egypt, private universities often charge international-level fees while struggling with underqualified faculty and under-resourced campuses. The branding speaks the language of success. The outcomes rarely match.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In India, pay-to-learn bootcamps sell tech career access to youth hungry for opportunity. But many outsource job placement, inflate hiring stats, or disappear altogether. Students take on loans. Many never break into the industries they trained for.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Even social media joins the business of aspiration. Online courses, hustle influencers, self-made success stories, all monetizing the will to break through. The message is constant: if you’re not succeeding, you’re not trying hard enough.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "When ambition becomes a product, failure becomes personal.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Emotional Toll of Always Striving",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "A generation raised to believe in effort is now exhausted by it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In India, more than 7 percent of adolescents live with mental health conditions, according to national data. Anxiety, depression, and burnout are on the rise, but support remains scarce. Many young people say they feel like failures, not because they didn’t try, but because effort no longer delivers results.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In Malaysia, a 2023 youth mental health index found high levels of emotional fatigue and economic stress. In South Africa, 60 percent of youth reported needing mental health support in the past year.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Social media magnifies the gap between what youth are told they should be and what they feel they are. Success is constant. Struggle is silent. Everyone seems to be advancing, even when most are standing still.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Youth are not just working harder. They are blaming themselves for systems that no longer work.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "When the Future Doesn’t Arrive",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Aspiration is not the problem. Systems that reward ambition but restrict access are.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Across the Global South, youth are doing everything right. They study, upskill, launch side hustles, stay resilient. But the pathways they’re promised remain locked, not by lack of talent, but by design.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "When education leads to underemployment, when entrepreneurship replaces formal work, when self-worth is tied to unreachable benchmarks, the result is not laziness or failure. It is disillusionment with systems that never catch up.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And still, the message persists: keep pushing.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“When youth are denied opportunities, they become disconnected. Not just from the economy, but from society itself.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "-International Labour Organization, Global Employment Trends for Youth 2023",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "What happens when a generation trained to rise finds there’s nowhere to go?",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "What kind of future are we building if ambition no longer leads to access?",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And how long can we keep selling hope in a structure designed to stall it?",
+            "marks": []
+          }
+        ]
+      }
+    ]
+  },
+  "bodyHtml": "<p>Across the Global South, ambition is everywhere. Youth are more connected, credentialed, and motivated than ever before. They are told to dream big, build fast, and hustle harder.</p>\n<p>Governments promise opportunity. Schools push performance. Social media floods them with images of success. The message is constant: if you try hard enough, you’ll make it.</p>\n<p>But what if the system was never designed to let you through?</p>\n<p>In country after country, the promises of mobility are shrinking. Jobs are limited. Wages stagnate. Degrees multiply, but access stalls. A generation raised on motivation is learning that effort is not the problem. Access is.</p>\n<p>They are not short on ambition. They are short on traction.</p>\n<p><strong>Generation Raised on Promise</strong></p>\n<p>In India, national campaigns like Skill India and Startup India promise to unlock innovation and job growth. The language is bold. The logos are everywhere. But long-term outcomes remain limited. Graduates complete training but lack job placement. Entrepreneurial support rarely reaches the youth who need it most.</p>\n<p>In Nigeria, where over 70 percent of the population is under 30, youth unemployment continues to rise. Many young Nigerians pursue tech bootcamps, certifications, and digital ventures. But job creation hasn’t kept pace. Structural barriers remain untouched.</p>\n<p>Indonesia’s “Merdeka Belajar” reform encourages creative learning and flexible pathways. But in many regions, especially rural ones, schools lack reliable internet and teacher capacity. Ambition grows faster than infrastructure.</p>\n<p>Across the Global South, youth are taught to reach higher. But the ladder is missing rungs. And the climb remains unequal by design.</p>\n<p><strong>Systems That Block the Climb</strong></p>\n<p>Aspiration alone does not build momentum. Across the Global South, youth are told to rise, but run straight into systems designed to hold position, not create space.</p>\n<p>In Kenya, over 60 percent of young people report being locked out of formal credit. Banks require payslips, collateral, or guarantors. Most youth have none. Microfinance rarely scales. Startup capital remains a distant concept.</p>\n<p>In India and Egypt, public sector jobs are still considered the gold standard, but access is grueling. Competitive exams can take years to crack. Corruption and favoritism distort who gets through. The private sector demands experience, and offers few ways to earn it.</p>\n<p>Indonesia promotes innovation, but youth who win hackathons often stall afterward. Mentorship dries up. Funding disappears. Bureaucracy stretches timelines. The message is: prove yourself, then wait.</p>\n<p>Across regions, the pattern holds. To work, you need experience. To gain experience, you need access. To launch something, you need capital. To get capital, you need proof you’ve already succeeded.</p>\n<p>These are not skill gaps. They are design gaps. And youth are paying the price.</p>\n<p><strong>The Side Hustle Myth</strong></p>\n<p>Across the Global South, youth are told to hustle. Build your own thing. Monetize your downtime. Turn passion into profit.</p>\n<p>It sounds empowering. But for most, it is not a choice. It is what’s left.</p>\n<p>In Nigeria, young people flood into online reselling, food delivery, and influencer marketing. The platforms promise scale. But in reality, sellers face unstable demand, currency swings, and poor infrastructure. A few break through. Most burn out.</p>\n<p>In the Philippines, more than 1.5 million people now freelance. Many are young. Many are women. The work is flexible, but fragile. Clients vanish. Payments stall. Protections are minimal. One platform down means income gone.</p>\n<p>Entrepreneurship is framed as freedom. But in practice, it often means piecing together multiple unstable gigs to replicate one stable income.</p>\n<p>Side hustles are survival strategies. They are not solutions. And when institutions fail to build ladders, they hand out hashtags.</p>\n<p><strong>Aspiration as Exploitation</strong></p>\n<p>When opportunity is scarce, ambition becomes a business model.</p>\n<p>Across the Global South, entire industries profit from youth trying to move forward. Private universities expand quickly, promising global futures with local credentials. But many offer limited accreditation, outdated programs, and weak job placement. The tuition gets paid. The promise goes unfulfilled.</p>\n<p>In Egypt, private universities often charge international-level fees while struggling with underqualified faculty and under-resourced campuses. The branding speaks the language of success. The outcomes rarely match.</p>\n<p>In India, pay-to-learn bootcamps sell tech career access to youth hungry for opportunity. But many outsource job placement, inflate hiring stats, or disappear altogether. Students take on loans. Many never break into the industries they trained for.</p>\n<p>Even social media joins the business of aspiration. Online courses, hustle influencers, self-made success stories, all monetizing the will to break through. The message is constant: if you’re not succeeding, you’re not trying hard enough.</p>\n<p>When ambition becomes a product, failure becomes personal.</p>\n<p><strong>The Emotional Toll of Always Striving</strong></p>\n<p>A generation raised to believe in effort is now exhausted by it.</p>\n<p>In India, more than 7 percent of adolescents live with mental health conditions, according to national data. Anxiety, depression, and burnout are on the rise, but support remains scarce. Many young people say they feel like failures, not because they didn’t try, but because effort no longer delivers results.</p>\n<p>In Malaysia, a 2023 youth mental health index found high levels of emotional fatigue and economic stress. In South Africa, 60 percent of youth reported needing mental health support in the past year.</p>\n<p>Social media magnifies the gap between what youth are told they should be and what they feel they are. Success is constant. Struggle is silent. Everyone seems to be advancing, even when most are standing still.</p>\n<p>Youth are not just working harder. They are blaming themselves for systems that no longer work.</p>\n<p><strong>When the Future Doesn’t Arrive</strong></p>\n<p>Aspiration is not the problem. Systems that reward ambition but restrict access are.</p>\n<p>Across the Global South, youth are doing everything right. They study, upskill, launch side hustles, stay resilient. But the pathways they’re promised remain locked, not by lack of talent, but by design.</p>\n<p>When education leads to underemployment, when entrepreneurship replaces formal work, when self-worth is tied to unreachable benchmarks, the result is not laziness or failure. It is disillusionment with systems that never catch up.</p>\n<p>And still, the message persists: keep pushing.</p>\n<p>“When youth are denied opportunities, they become disconnected. Not just from the economy, but from society itself.”</p>\n<p>-International Labour Organization, Global Employment Trends for Youth 2023</p>\n<p>What happens when a generation trained to rise finds there’s nowhere to go?</p>\n<p>What kind of future are we building if ambition no longer leads to access?</p>\n<p>And how long can we keep selling hope in a structure designed to stall it?</p>",
+  "bodyTextSha256": "sha256:209738f1e07a246ea502053c737ff9056b46110b0f73ff80797e7c99d2bee524",
+  "bodyBlockCount": 47,
+  "license": {
+    "name": "All Rights Reserved"
+  }
+}
