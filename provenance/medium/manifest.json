@@ -50,6 +50,43 @@
           "byteSize": 3149986
         }
       ]
+    },
+    {
+      "slug": "the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking-b093d81a7c12",
+      "paths": {
+        "snapshot": "provenance/medium/posts/the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking.json",
+        "markdown": "src/content/posts/the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:fe12718e30c4006d191dfc8321811a356cafedbbb59b0e01e0ca736c9d9c495b",
+        "snapshot": "sha256:10d9116bb6b13e2aa2af54032799f83ebe9c8a7e02120329cfe2e2359d2ee3f2",
+        "markdown": "sha256:bf063f4864666bccc780461936683d9d59aaef3381c4cb4417ff8908f15956bb",
+        "bodyText": "sha256:989e734fd0c301d63de28b593e39ccefa0880d1f36611f358ce078f51e05c76a"
+      },
+      "content": {
+        "title": "The Future of Money",
+        "subtitle": "In a system where currency shapes control, what counts as value shifts beneath us.",
+        "seriesLine": "A Ledger Series article on currency, control, and financial power in transition.",
+        "bodyBlockCount": 27
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking/hero.webp",
+          "sha256": "sha256:04b5097187a17822aa71a80c134181c83bf9029b97e875b0d7a44de7770f0ff5",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:783c0729091a5777a63db07beb437d7f454d8321aeb1aa3fc6b4370f7bddda23",
+          "pixelSha256": "sha256:e8e40f937523bf29d39a2d12bbe93264731cd64b96fceeb43657afcb9307c8e6",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 3102338
+        }
+      ]
     }
   ]
 }
