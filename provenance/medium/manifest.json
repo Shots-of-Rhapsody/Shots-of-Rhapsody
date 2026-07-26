@@ -459,6 +459,43 @@
       ]
     },
     {
+      "slug": "the-psychology-of-belief-why-humans-prefer-comfort-over-truth",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-psychology-of-belief-why-humans-prefer-comfort-over-truth-a9787ad7f605",
+      "paths": {
+        "snapshot": "provenance/medium/posts/the-psychology-of-belief-why-humans-prefer-comfort-over-truth.json",
+        "markdown": "src/content/posts/the-psychology-of-belief-why-humans-prefer-comfort-over-truth/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:55b4d3e848f16c90b58bd2c56415886a57f1a79a281063d62ec2ea8cca6aa244",
+        "snapshot": "sha256:85c51f2bd47440b351643c17bf77b7b2bbc9b49b57fc5472e82ea7e99b64dcd2",
+        "markdown": "sha256:5d650dd4f839d1e552098cbe29bbc5ac52ca32bf1ddbaacd7cb4ba6e76c499e9",
+        "bodyText": "sha256:67c23a248be652aa2e3627ba695165c9ec8d1f0e1d1d8b6345a7fb4a9b65e181"
+      },
+      "content": {
+        "title": "The Psychology of Belief: Why Humans Prefer Comfort Over Truth",
+        "subtitle": "In a system built to reward comfort over clarity, belief becomes less about truth and more about emotional survival.",
+        "seriesLine": "A Ledger Series article on the hidden tradeoffs we make between psychological safety and intellectual honesty.",
+        "bodyBlockCount": 48
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/the-psychology-of-belief-why-humans-prefer-comfort-over-truth/hero.webp",
+          "sha256": "sha256:ba243cdd1d022b54b158e3911f1542177d77b318a6e06e31df73dbc57597eac2",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:04e83fbc4ddf8c8e4c99098d7bf811c84ae56cd481f989391540a2c36fe454e2",
+          "pixelSha256": "sha256:bb6f013a06440a62ac3ca86c61e795eec245651d93459f1545d00bf2c8fc3f97",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 2222070
+        }
+      ]
+    },
+    {
       "slug": "the-remittance-paradox",
       "capturedAt": "2026-07-25T14:11:15.789Z",
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-remittance-paradox-dc6992732720",
