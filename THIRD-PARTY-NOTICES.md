@@ -34,10 +34,12 @@ and an Artaius Midjourney showcase without preserving a reliable file-by-file
 mapping. These legacy files are excluded from the public artifact; their
 presence in repository history does not grant permission to reuse them.
 
-## Unpublished legacy podcast bundle
+## Historical podcast player
 
-The byte-preserved files under `legacy/podcast/` are retained for repository history and are excluded from the built site. No file-specific license or complete media provenance is asserted here. Their presence does not grant permission to publish or reuse the audio, artwork, player, or metadata.
+The player files under `legacy/podcast/` are retained for repository history and excluded from the built site. They are not used to render or play the approved first-party episode. Their presence does not grant permission to reuse the player or its historical metadata.
 
 ## Tai Song archive
 
 The eleven manifest-controlled article texts and original hero images are not third-party template assets. Their separate All Rights Reserved status is documented in [CONTENT-LICENSE.md](CONTENT-LICENSE.md).
+
+The 24 nonfiction essays, their verified local heroes, the podcast recording, project-owned artwork, and reviewed transcript are likewise first-party creative material rather than third-party template assets. Their separate All Rights Reserved status is documented in [CONTENT-LICENSE.md](CONTENT-LICENSE.md).

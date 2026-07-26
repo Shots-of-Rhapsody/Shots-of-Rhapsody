@@ -10,7 +10,10 @@ import {
 } from "../lib/assets.js";
 import { extractCandidateMetadata } from "../lib/html.js";
 import { sha256 } from "../lib/integrity.js";
-import { mediumCandidateSetSha256 } from "../lib/model.js";
+import {
+	mediumCandidateSetSha256,
+	mediumPresentationSetSha256,
+} from "../lib/model.js";
 import {
 	createMediumHeroChecklist,
 	createUnreviewedInventoryCandidates,
@@ -566,6 +569,8 @@ test("write mode refuses to overwrite an existing ignored checklist", async (con
 		},
 		candidateCount: 1,
 		candidateSetSha256: mediumCandidateSetSha256(candidates),
+		presentationSetVersion: 1,
+		presentationSetSha256: mediumPresentationSetSha256(candidates),
 		candidates,
 	};
 	await writeFile(
@@ -588,6 +593,9 @@ test("write mode refuses to overwrite an existing ignored checklist", async (con
 	const before = await readFile(checklistPath);
 	const alteredPresentation = structuredClone(candidateLedger);
 	alteredPresentation.candidates[0].displayTitleCandidate = "Altered display";
+	alteredPresentation.presentationSetSha256 = mediumPresentationSetSha256(
+		alteredPresentation.candidates,
+	);
 	await writeFile(
 		path.join(repoRoot, ".medium-import", "inventory-candidate.json"),
 		`${JSON.stringify(alteredPresentation, null, 2)}\n`,

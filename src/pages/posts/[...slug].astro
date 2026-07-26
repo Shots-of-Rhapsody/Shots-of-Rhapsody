@@ -4,7 +4,11 @@ import EditorialWorkCard from "@components/EditorialWorkCard.astro";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
-import { getSortedPosts } from "@utils/content-utils";
+import {
+	getPostDeck,
+	getPostHeadline,
+	getSortedPosts,
+} from "@utils/content-utils";
 import { getSocialImage } from "@utils/image-utils";
 import {
 	getAbsolutePostUrlBySlug,
@@ -52,15 +56,13 @@ export async function getStaticPaths() {
 
 const { entry, continuationEntry, returnToNonfiction } = Astro.props;
 const { Content, headings, remarkPluginFrontmatter } = await render(entry);
+const headline = getPostHeadline(entry);
+const deck = getPostDeck(entry);
 const siteUrl = Astro.site ?? Astro.url;
 const siteRoot = getSiteRootUrl(siteUrl);
 const canonicalUrl = getAbsolutePostUrlBySlug(entry.id, siteUrl).toString();
 const author = entry.data.author || profileConfig.name;
-const description =
-	entry.data.description ||
-	entry.data.subtitle ||
-	entry.data.summary ||
-	entry.data.title;
+const description = entry.data.description || deck;
 const socialImage = getSocialImage(entry.id, siteUrl);
 const coverUrl = socialImage.url;
 const isSourceVerifiedPost = Boolean(entry.data.provenance);
@@ -73,7 +75,7 @@ const authorUrl =
 		: undefined;
 const coverAlt = isSourceVerifiedPost
 	? (entry.data.imageAlt ?? "")
-	: (entry.data.imageAlt ?? `Cover image for “${entry.data.title}”`);
+	: (entry.data.imageAlt ?? `Cover image for “${headline}”`);
 const imageDescription = isSourceVerifiedPost
 	? (entry.data.imageAlt ?? undefined)
 	: coverAlt;
@@ -96,8 +98,10 @@ const jsonLd = {
 	"@context": "https://schema.org",
 	"@type": "BlogPosting",
 	"@id": `${canonicalUrl}#article`,
-	headline: entry.data.title,
-	alternativeHeadline: entry.data.subtitle || undefined,
+	headline,
+	alternativeHeadline: isMediumPost
+		? entry.data.title
+		: entry.data.subtitle || undefined,
 	description,
 	keywords: entry.data.tags,
 	author: {
@@ -140,7 +144,7 @@ const jsonLd = {
 const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 ---
 <MainGridLayout
-	title={entry.data.title}
+	title={headline}
 	description={description}
 	lang={entry.data.lang}
 	setOGTypeArticle={true}
@@ -171,17 +175,17 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 				data-pagefind-weight="10"
 				data-pagefind-meta="title"
 				data-archive-field={isSealedArchivePost ? "title" : undefined}
-				data-medium-field={isMediumPost ? "title" : undefined}
+				data-medium-field={isMediumPost ? "export-title" : undefined}
 			>
-				{entry.data.title}
+				{headline}
 			</h1>
-			{entry.data.subtitle && (
+			{(isMediumPost ? deck : entry.data.subtitle) && (
 				<p
 					data-archive-field={isSealedArchivePost ? "subtitle" : undefined}
-					data-medium-field={isMediumPost ? "subtitle" : undefined}
+					data-medium-field={isMediumPost ? "summary" : undefined}
 					class="article-subtitle"
 				>
-					{entry.data.subtitle}
+					{isMediumPost ? deck : entry.data.subtitle}
 				</p>
 			)}
 			<div class="article-byline" data-pagefind-ignore>
@@ -201,6 +205,13 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 				/>
 			</div>
 		</header>
+
+		{isMediumPost && (
+			<section class="article-medium-lead" data-medium-lead>
+				<h2 data-medium-field="title">{entry.data.title}</h2>
+				<p data-medium-field="subtitle">{entry.data.subtitle}</p>
+			</section>
+		)}
 
 		{entry.data.seriesLine && (
 			<p
@@ -269,7 +280,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 
 		{showLicense && (
 			<License
-				title={entry.data.title}
+				title={headline}
 				pubDate={entry.data.published}
 				author={author}
 				license={entry.data.license}
@@ -292,6 +303,29 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 		margin-inline: auto;
 		padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
 		border-bottom: 1px solid var(--line-divider);
+	}
+
+	.article-medium-lead {
+		max-width: 66ch;
+		margin: clamp(2rem, 5vw, 3.5rem) auto 0;
+		padding-inline: clamp(0rem, 2vw, 1rem);
+	}
+
+	.article-medium-lead h2 {
+		margin: 0;
+		color: var(--title-color);
+		font-size: clamp(1.65rem, 4vw, 2.65rem);
+		font-weight: 620;
+		letter-spacing: -0.015em;
+		line-height: 1.12;
+		text-wrap: balance;
+	}
+
+	.article-medium-lead p {
+		margin: 0.8rem 0 0;
+		color: var(--ink-soft);
+		font-size: clamp(1.02rem, 2vw, 1.2rem);
+		line-height: 1.6;
 	}
 
 	.article-header h1 {

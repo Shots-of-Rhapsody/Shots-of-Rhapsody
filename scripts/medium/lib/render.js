@@ -284,6 +284,16 @@ function yamlStringList(values) {
 
 export function renderMediumIndexMarkdown(snapshotValue) {
 	const snapshot = assertPlainObject(snapshotValue, "snapshot");
+	const exportTitle = assertNonEmptyString(
+		snapshot.exportTitle,
+		"snapshot.exportTitle",
+	);
+	const exportSummary = snapshot.exportSummary;
+	if (exportSummary !== null && typeof exportSummary !== "string") {
+		throw new MediumContractError(
+			"snapshot.exportSummary must be a string or null",
+		);
+	}
 	const title = assertNonEmptyString(snapshot.title, "snapshot.title");
 	const subtitle = assertString(snapshot.subtitle, "snapshot.subtitle");
 	const seriesLine = assertNonEmptyString(
@@ -308,6 +318,10 @@ export function renderMediumIndexMarkdown(snapshotValue) {
 		throw new MediumContractError("snapshot.tags must be an array");
 	}
 	const lines = ["---"];
+	appendString(lines, "exportTitle", exportTitle);
+	lines.push(
+		`exportSummary: ${exportSummary === null ? "null" : yamlString(exportSummary)}`,
+	);
 	appendString(lines, "title", title);
 	appendString(lines, "subtitle", subtitle);
 	appendString(lines, "seriesLine", seriesLine);

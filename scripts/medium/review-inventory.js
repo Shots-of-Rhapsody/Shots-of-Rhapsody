@@ -26,6 +26,7 @@ import an article or asset, or create human approval.
 
 Options:
   --write  Create ignored .medium-import/inventory-review-proposal.json
+  --refresh  With --write, add only the versioned presentation digest to the existing proposal
   --json   Emit the complete proposal during a dry run
   --help   Show this help
 `;
@@ -59,6 +60,7 @@ export async function main(argv = process.argv.slice(2)) {
 			args: argv,
 			options: {
 				write: { type: "boolean", default: false },
+				refresh: { type: "boolean", default: false },
 				json: { type: "boolean", default: false },
 				help: { type: "boolean", default: false },
 			},
@@ -70,6 +72,9 @@ export async function main(argv = process.argv.slice(2)) {
 		}
 		if (parsed.values.write && parsed.values.json) {
 			throw new MediumContractError("Use either --write or --json, not both");
+		}
+		if (parsed.values.refresh && !parsed.values.write) {
+			throw new MediumContractError("--refresh requires --write");
 		}
 	} catch (error) {
 		console.error(`Usage error: ${error.message}`);
@@ -87,6 +92,7 @@ export async function main(argv = process.argv.slice(2)) {
 			exportPath: parsed.positionals[0],
 			approvedAllowlist: await readApprovedAllowlist(),
 			write: parsed.values.write,
+			refresh: parsed.values.refresh,
 		});
 		if (parsed.values.json) {
 			console.log(JSON.stringify(result.proposal, null, 2));

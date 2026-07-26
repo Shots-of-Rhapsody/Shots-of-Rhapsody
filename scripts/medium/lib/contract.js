@@ -212,6 +212,11 @@ export function getMediumPaths(repoRoot = DEFAULT_REPO_ROOT) {
 			".medium-import",
 			"inventory-review-proposal.json",
 		),
+		reviewedInventoryScaffoldPath: path.join(
+			importRoot,
+			"reviewed-inventory-scaffold.json",
+		),
+		reviewScaffoldPath: path.join(importRoot, "pending-review-scaffolds.json"),
 		inventoryPath: path.join(root, "provenance", "medium", "inventory.json"),
 		manifestPath: path.join(root, "provenance", "medium", "manifest.json"),
 		approvedTitlesPath: path.join(
@@ -225,6 +230,12 @@ export function getMediumPaths(repoRoot = DEFAULT_REPO_ROOT) {
 			"provenance",
 			"medium",
 			"hero-assets.v1.json",
+		),
+		summaryFallbacksPath: path.join(
+			root,
+			"provenance",
+			"medium",
+			"summary-fallbacks.v1.json",
 		),
 		snapshotRoot: path.join(root, "provenance", "medium", "posts"),
 		postsRoot: path.join(root, "src", "content", "posts"),

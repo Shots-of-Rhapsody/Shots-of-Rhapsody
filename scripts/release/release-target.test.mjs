@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { spawnSync } from "node:child_process";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
+import { collectPresentationEvidence } from "../content/presentation.js";
 import {
 	requirePresentationTarget,
 	validateCombinedReleaseSummary,
@@ -53,6 +55,56 @@ const PODCAST = Object.freeze({
 	builtArtifactsChecked: true,
 });
 
+function git(repoRoot, args) {
+	const result = spawnSync("git", args, {
+		cwd: repoRoot,
+		encoding: "utf8",
+		windowsHide: true,
+	});
+	assert.equal(result.status, 0, result.stderr);
+	return result.stdout.trim();
+}
+
+function commitFixture(repoRoot, message) {
+	git(repoRoot, ["add", "src", "public"]);
+	git(repoRoot, [
+		"-c",
+		"user.name=Shots of Rhapsody",
+		"-c",
+		"user.email=shots@noreply.invalid",
+		"commit",
+		"--quiet",
+		"-m",
+		message,
+	]);
+}
+
+async function readPresentationLedger(repoRoot) {
+	return JSON.parse(
+		await readFile(
+			path.join(
+				repoRoot,
+				"provenance",
+				"reviews",
+				"presentation-signoffs-v2.json",
+			),
+			"utf8",
+		),
+	);
+}
+
+async function writePresentationLedger(repoRoot, ledger) {
+	await writeFile(
+		path.join(
+			repoRoot,
+			"provenance",
+			"reviews",
+			"presentation-signoffs-v2.json",
+		),
+		JSON.stringify(ledger),
+	);
+}
+
 async function createReleaseFixture(
 	context,
 	{ target = TARGET, presentationRelease = "v1.0.0" } = {},
@@ -60,17 +112,28 @@ async function createReleaseFixture(
 	const root = await mkdtemp(path.join(tmpdir(), "release-target-"));
 	context.after(() => rm(root, { recursive: true, force: true }));
 	await mkdir(path.join(root, "provenance", "reviews"), { recursive: true });
+	await mkdir(path.join(root, "src"), { recursive: true });
+	await mkdir(path.join(root, "public"), { recursive: true });
+	await mkdir(path.join(root, "dist"), { recursive: true });
+	await writeFile(path.join(root, "src", "page.ts"), "export {};\n");
+	await writeFile(path.join(root, "public", "mark.svg"), "<svg></svg>\n");
+	await writeFile(path.join(root, "dist", "index.html"), "<h1>Work</h1>\n");
 	await writeFile(
 		path.join(root, "provenance", "release-target.json"),
 		JSON.stringify(target),
 	);
+	git(root, ["init", "--quiet"]);
+	commitFixture(root, "fixture");
+	const evidence = presentationRelease
+		? await collectPresentationEvidence({
+				repoRoot: root,
+				release: presentationRelease,
+			})
+		: null;
 	const releases = presentationRelease
 		? [
 				{
-					release: presentationRelease,
-					reviewedCommit: "a".repeat(40),
-					rendererSha256: `sha256:${"b".repeat(64)}`,
-					siteSha256: `sha256:${"c".repeat(64)}`,
+					...evidence,
 					reviewer: "Tai Song",
 					reviewedAt: "2026-07-25T00:00:00.000Z",
 					responsive: "passed",
@@ -78,10 +141,7 @@ async function createReleaseFixture(
 				},
 			]
 		: [];
-	await writeFile(
-		path.join(root, "provenance", "reviews", "presentation-signoffs-v2.json"),
-		JSON.stringify({ version: 2, releases }),
-	);
+	await writePresentationLedger(root, { version: 2, releases });
 	return root;
 }
 
@@ -274,10 +334,83 @@ test("combined release rejects writing-source and public-surface drift", () => {
 	}
 });
 
+test("combined release summary reports every independent surface drift", () => {
+	assert.throws(
+		() =>
+			validateCombinedReleaseSummary({
+				target: TARGET,
+				site: { ...SITE, postPages: 34, rssItems: 36 },
+				aggregate: { ...AGGREGATE, complete: false, publishedCount: 34 },
+				medium: { ...MEDIUM, complete: false, importedCount: 23 },
+				podcast: { ...PODCAST, complete: false, episodes: 0 },
+			}),
+		(error) => {
+			assert.match(
+				error.message,
+				/aggregate content verification is incomplete/u,
+			);
+			assert.match(error.message, /exactly 24 complete, approved Medium/u);
+			assert.match(error.message, /exactly 1 complete podcast/u);
+			assert.match(error.message, /expected 35 postPages, received 34/u);
+			assert.match(error.message, /expected 35 rssItems, received 36/u);
+			return true;
+		},
+	);
+});
+
+test("combined release runs and reports every failed gate", async (context) => {
+	const repoRoot = await createReleaseFixture(context);
+	const calls = [];
+	await assert.rejects(
+		verifyRelease({
+			repoRoot,
+			dependencies: {
+				verifyBuiltSite: async () => {
+					calls.push("site");
+					throw new Error("archive review pending");
+				},
+				verifyAggregateContent: async () => {
+					calls.push("aggregate");
+					throw new Error("catalog incomplete");
+				},
+				verifyMediumArticles: async () => {
+					calls.push("medium");
+					throw new Error("Medium approvals pending");
+				},
+				verifyPodcastRelease: async () => {
+					calls.push("podcast");
+					throw new Error("podcast transcript pending");
+				},
+			},
+		}),
+		(error) => {
+			assert.match(error.message, /archive review pending/u);
+			assert.match(error.message, /catalog incomplete/u);
+			assert.match(error.message, /Medium approvals pending/u);
+			assert.match(error.message, /podcast transcript pending/u);
+			return true;
+		},
+	);
+	assert.deepEqual(calls.toSorted(), [
+		"aggregate",
+		"medium",
+		"podcast",
+		"site",
+	]);
+});
+
 test("presentation target validation rejects malformed or wrong-release ledgers", async (context) => {
 	const validRoot = await createReleaseFixture(context);
-	await assert.doesNotReject(
-		requirePresentationTarget({ repoRoot: validRoot, release: "v1.0.0" }),
+	const expected = await collectPresentationEvidence({
+		repoRoot: validRoot,
+		release: "v1.0.0",
+	});
+	assert.deepEqual(
+		await requirePresentationTarget({
+			repoRoot: validRoot,
+			release: "v1.0.0",
+		}),
+		expected,
 	);
 	const wrongRoot = await createReleaseFixture(context, {
 		presentationRelease: "v1.1.0",
@@ -285,5 +418,51 @@ test("presentation target validation rejects malformed or wrong-release ledgers"
 	await assert.rejects(
 		requirePresentationTarget({ repoRoot: wrongRoot, release: "v1.0.0" }),
 		/missing for v1\.0\.0/u,
+	);
+});
+
+test("presentation target rejects stale renderer and site hashes", async (context) => {
+	for (const field of ["rendererSha256", "siteSha256"]) {
+		const repoRoot = await createReleaseFixture(context);
+		const ledger = await readPresentationLedger(repoRoot);
+		ledger.releases[0][field] = `sha256:${"f".repeat(64)}`;
+		await writePresentationLedger(repoRoot, ledger);
+		await assert.rejects(
+			requirePresentationTarget({ repoRoot, release: "v1.0.0" }),
+			new RegExp(`stale ${field}`, "u"),
+		);
+	}
+});
+
+test("presentation target rejects a nonexistent reviewed commit", async (context) => {
+	const repoRoot = await createReleaseFixture(context);
+	const ledger = await readPresentationLedger(repoRoot);
+	ledger.releases[0].reviewedCommit = "f".repeat(40);
+	await writePresentationLedger(repoRoot, ledger);
+	await assert.rejects(
+		requirePresentationTarget({ repoRoot, release: "v1.0.0" }),
+		/reviewed commit does not exist/u,
+	);
+});
+
+test("presentation target rejects a reviewed commit outside release ancestry", async (context) => {
+	const repoRoot = await createReleaseFixture(context);
+	const tree = git(repoRoot, ["rev-parse", "HEAD^{tree}"]);
+	const unrelatedCommit = git(repoRoot, [
+		"-c",
+		"user.name=Shots of Rhapsody",
+		"-c",
+		"user.email=shots@noreply.invalid",
+		"commit-tree",
+		tree,
+		"-m",
+		"unrelated fixture",
+	]);
+	const ledger = await readPresentationLedger(repoRoot);
+	ledger.releases[0].reviewedCommit = unrelatedCommit;
+	await writePresentationLedger(repoRoot, ledger);
+	await assert.rejects(
+		requirePresentationTarget({ repoRoot, release: "v1.0.0" }),
+		/reviewed commit is not a release ancestor/u,
 	);
 });

@@ -288,6 +288,43 @@ export function mediumCandidateSetSha256(candidates) {
 	);
 }
 
+export const MEDIUM_PRESENTATION_SET_VERSION = 1;
+
+function presentationEvidence(candidate) {
+	return {
+		sourcePath: candidate.sourcePath,
+		exportSummaryCandidate: candidate.exportSummaryCandidate,
+		displayTitleCandidate: candidate.displayTitleCandidate,
+		displaySubtitleCandidate: candidate.displaySubtitleCandidate,
+		seriesLineCandidate: candidate.seriesLineCandidate,
+	};
+}
+
+export function mediumPresentationSetSha256(candidates) {
+	if (!Array.isArray(candidates)) {
+		throw new MediumContractError(
+			"Medium presentation digest candidates must be an array",
+		);
+	}
+	return sha256(
+		Buffer.from(
+			serializeJson({
+				schemaVersion: MEDIUM_PRESENTATION_SET_VERSION,
+				fields: [
+					"exportSummaryCandidate",
+					"displayTitleCandidate",
+					"displaySubtitleCandidate",
+					"seriesLineCandidate",
+				],
+				candidates: candidates.map((candidate) =>
+					presentationEvidence(candidate),
+				),
+			}),
+			"utf8",
+		),
+	);
+}
+
 function validateAsset(value, label) {
 	const asset = assertPlainObject(value, label);
 	assertOnlyKeys(
@@ -556,6 +593,8 @@ export function validateMediumInventory(value) {
 			"export",
 			"candidateCount",
 			"candidateSetSha256",
+			"presentationSetVersion",
+			"presentationSetSha256",
 			"candidates",
 			"expectedCount",
 			"articles",
@@ -596,6 +635,8 @@ export function validateMediumInventory(value) {
 			inventory.export !== null ||
 			candidateCount !== 0 ||
 			inventory.candidateSetSha256 !== null ||
+			(inventory.presentationSetVersion ?? null) !== null ||
+			(inventory.presentationSetSha256 ?? null) !== null ||
 			inventory.candidates.length !== 0 ||
 			expectedCount !== 0 ||
 			inventory.articles.length !== 0
@@ -612,6 +653,8 @@ export function validateMediumInventory(value) {
 			export: null,
 			candidateCount: 0,
 			candidateSetSha256: null,
+			presentationSetVersion: null,
+			presentationSetSha256: null,
 			candidates: [],
 			expectedCount: 0,
 			articles: [],
@@ -634,6 +677,20 @@ export function validateMediumInventory(value) {
 		throw new MediumContractError(
 			"inventory.candidateSetSha256 does not match the complete candidate ledger",
 		);
+	if (inventory.presentationSetVersion !== MEDIUM_PRESENTATION_SET_VERSION) {
+		throw new MediumContractError(
+			`inventory.presentationSetVersion must equal ${MEDIUM_PRESENTATION_SET_VERSION}`,
+		);
+	}
+	const presentationSetSha256 = assertSha256(
+		inventory.presentationSetSha256,
+		"inventory.presentationSetSha256",
+	);
+	if (presentationSetSha256 !== mediumPresentationSetSha256(candidates)) {
+		throw new MediumContractError(
+			"inventory.presentationSetSha256 does not match all source-derived presentation fields",
+		);
+	}
 	const articles = inventory.articles.map((article, index) =>
 		validateArticle(article, `inventory.articles[${index}]`),
 	);
@@ -714,6 +771,8 @@ export function validateMediumInventory(value) {
 		export: exportRecord,
 		candidateCount,
 		candidateSetSha256,
+		presentationSetVersion: MEDIUM_PRESENTATION_SET_VERSION,
+		presentationSetSha256,
 		candidates,
 		expectedCount,
 		articles,
@@ -914,6 +973,8 @@ export function validateMediumManifest(value) {
 			"author",
 			"inventoryPath",
 			"inventorySha256",
+			"presentationSetVersion",
+			"presentationSetSha256",
 			"articles",
 		]),
 		"manifest",
@@ -934,7 +995,12 @@ export function validateMediumManifest(value) {
 		throw new MediumContractError("manifest.articles must be an array");
 	}
 	if (manifest.state === "awaiting-export") {
-		if (manifest.inventorySha256 !== null || manifest.articles.length !== 0) {
+		if (
+			manifest.inventorySha256 !== null ||
+			(manifest.presentationSetVersion ?? null) !== null ||
+			(manifest.presentationSetSha256 ?? null) !== null ||
+			manifest.articles.length !== 0
+		) {
 			throw new MediumContractError(
 				"An awaiting-export manifest must have null inventory hash and no articles",
 			);
@@ -946,6 +1012,8 @@ export function validateMediumManifest(value) {
 			author,
 			inventoryPath: manifest.inventoryPath,
 			inventorySha256: null,
+			presentationSetVersion: null,
+			presentationSetSha256: null,
 			articles: [],
 			bySlug: new Map(),
 		};
@@ -965,6 +1033,11 @@ export function validateMediumManifest(value) {
 		}
 		bySlug.set(article.slug, article);
 	}
+	if (manifest.presentationSetVersion !== MEDIUM_PRESENTATION_SET_VERSION) {
+		throw new MediumContractError(
+			`manifest.presentationSetVersion must equal ${MEDIUM_PRESENTATION_SET_VERSION}`,
+		);
+	}
 	return {
 		schemaVersion: MANIFEST_SCHEMA_VERSION,
 		state: "active",
@@ -975,12 +1048,21 @@ export function validateMediumManifest(value) {
 			manifest.inventorySha256,
 			"manifest.inventorySha256",
 		),
+		presentationSetVersion: MEDIUM_PRESENTATION_SET_VERSION,
+		presentationSetSha256: assertSha256(
+			manifest.presentationSetSha256,
+			"manifest.presentationSetSha256",
+		),
 		articles,
 		bySlug,
 	};
 }
 
-export function validateMediumSnapshot(value, inventoryArticle) {
+export function validateMediumSnapshot(
+	value,
+	inventoryArticle,
+	presentationBinding,
+) {
 	const snapshot = assertPlainObject(value, "snapshot");
 	assertOnlyKeys(
 		snapshot,
@@ -1056,6 +1138,8 @@ export function validateMediumSnapshot(value, inventoryArticle) {
 			"sourcePath",
 			"sourceSha256",
 			"canonicalUrl",
+			"presentationSetVersion",
+			"presentationSetSha256",
 		]),
 		"snapshot.provenance",
 	);
@@ -1064,10 +1148,26 @@ export function validateMediumSnapshot(value, inventoryArticle) {
 		provenance.captureFormat !== "account-export-html" ||
 		provenance.sourcePath !== inventoryArticle.sourcePath ||
 		provenance.sourceSha256 !== inventoryArticle.sourceSha256 ||
-		provenance.canonicalUrl !== inventoryArticle.canonicalUrl
+		provenance.canonicalUrl !== inventoryArticle.canonicalUrl ||
+		provenance.presentationSetVersion !==
+			presentationBinding?.presentationSetVersion ||
+		provenance.presentationSetSha256 !==
+			presentationBinding?.presentationSetSha256
 	) {
 		throw new MediumContractError("snapshot.provenance differs from inventory");
 	}
+	if (
+		presentationBinding?.presentationSetVersion !==
+		MEDIUM_PRESENTATION_SET_VERSION
+	) {
+		throw new MediumContractError(
+			"snapshot presentation binding must use the supported version",
+		);
+	}
+	assertSha256(
+		presentationBinding.presentationSetSha256,
+		"snapshot presentation binding SHA-256",
+	);
 	assertCanonicalUtc(provenance.capturedAt, "snapshot.provenance.capturedAt");
 	const bodyDocument = validateMediumDocument(snapshot.bodyDocument);
 	const nonHeroAssets = inventoryArticle.assets.filter(

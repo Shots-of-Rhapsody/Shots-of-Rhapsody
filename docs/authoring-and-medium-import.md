@@ -192,13 +192,75 @@ disagreements stop the import for review. Response-like filenames or titles are
 never excluded heuristically: every exported post remains unresolved until Tai
 Song records its reviewed classification.
 
-Source fidelity and factual review are separate. Never silently correct imported prose. Bind each entry in `provenance/medium/claim-reviews.json` to the current source and Markdown hashes, and record material nonfiction claims against primary sources. An unresolved material claim blocks publication until Tai Song corrects the author master and re-imports it or excludes the article.
+Source fidelity and factual review are separate. Never silently correct imported
+prose. Bind each entry in `provenance/medium/claim-reviews.json` to the current
+source and Markdown hashes, and record material nonfiction claims against
+primary sources. A passed review must follow exactly one path: record at least
+one reviewed claim in `claims` and omit `noMaterialClaimsRationale`, or leave
+`claims` empty and provide a non-empty `noMaterialClaimsRationale` explaining
+why the essay contains no material factual claims. The two paths cannot be
+combined. A generic empty review is never sufficient. An unresolved material
+claim blocks publication until Tai Song corrects the author master and
+re-imports it or excludes the article.
 
 Importing creates sealed evidence but does not publish a work. A Medium article
 becomes eligible for `provenance/publication-catalog.json` only when the complete
 manifest, verified site-ready assets, claim review, and matching `ContentSignoffV2` record
 all verify. This separate allowlist prevents partial imports and unsigned drafts
 from entering routes, RSS, search, or the sitemap.
+
+## Create and verify the Proton Non-Fiction masters
+
+Proton Drive is a private author archive, not import authority or a website
+runtime. Create a master package only after the reviewed inventory and imported
+Medium snapshot for that slug verify. The default command is a non-writing dry
+run:
+
+```sh
+node scripts/content/master-package.js --slug <slug>
+node scripts/content/master-package.js --slug <slug> --write
+```
+
+The write mode creates exactly one ignored, self-contained file at
+`.medium-import/proton-masters/<slug>/master.html`. It embeds the approved
+sanitized hero instead of loading it over the network, refuses to overwrite an
+existing package, and contains no Proton URL or document identifier. Its visible
+order is the exact exported headline and reviewed summary, authored title,
+authored subtitle, Ledger Series sentence, hero and complete post-hero body.
+Marks, links, lists, quotations, line breaks, blank blocks and Unicode come from
+the sealed Medium snapshot without editorial rewriting.
+
+Import the package through Proton Docs, using the exact exported headline as the
+document name. Keep the Drive layout flat and exact:
+
+```text
+Blogging/
+├── Fiction/       # the existing 11 native documents; never changed here
+└── Non-Fiction/   # exactly one native document per approved Medium essay
+```
+
+Do not copy, rename, rewrite or reorganize anything in `Fiction` during this
+workflow. Do not treat the zero-byte `.protondoc` files exposed by Proton Drive
+sync as readable content or verification evidence.
+
+After importing and reviewing a document in Proton Docs, export it as HTML and
+save it beneath the ignored `.medium-import/` directory, for example
+`.medium-import/proton-exports/<slug>/page.html`. Verify that export locally:
+
+```sh
+node scripts/content/master-verify.js --slug <slug> \
+  .medium-import/proton-exports/<slug>/page.html
+```
+
+The verifier performs no network requests. It requires embedded image bytes or
+safe sibling image files and compares semantic block order, exact text, marks,
+lists, links, line breaks and Unicode with the sealed snapshot. It separately
+decodes the hero and requires the exact approved dimensions and pixel identity;
+re-encoding alone is tolerated only when every decoded pixel remains identical.
+Remote images, Proton URLs or IDs, active markup, unsafe paths, linked files,
+malformed HTML, changed semantics and `.protondoc` placeholders fail closed.
+The HTML package, Proton export and verifier result remain ignored local
+evidence and are never required by GitHub Actions or the live static site.
 
 ## Publication boundary
 
@@ -226,5 +288,6 @@ Authoritative references:
 - [Astro content collections](https://docs.astro.build/en/guides/content-collections/)
 - [Astro image handling](https://docs.astro.build/en/guides/images/)
 - [Sharp image output](https://sharp.pixelplumbing.com/api-output/)
+- [Proton Docs import and export](https://proton.me/support/drive-import-export-docs)
 - [Google people-first content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content)
 - [WCAG 2.2](https://www.w3.org/TR/WCAG22/)

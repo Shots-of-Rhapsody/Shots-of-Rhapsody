@@ -59,11 +59,11 @@ jobs:
       - name: Verify the complete committed archive
         run: pnpm archive:verify --require-complete
 
-      - name: Verify approved writing and unpublished-source boundaries
+      - name: Verify complete approved writing and podcast evidence
         run: |
           pnpm content:verify --require-complete
-          pnpm medium:verify
-          pnpm podcast:verify
+          pnpm medium:verify --require-complete
+          pnpm podcast:verify --require-complete
 
       - name: Run non-writing lint
         run: pnpm lint:ci
@@ -77,8 +77,8 @@ jobs:
       - name: Verify routes, feeds, metadata, and human signoff
         run: pnpm verify:release
 
-      - name: Verify built podcast publication boundary
-        run: pnpm podcast:verify --with-built
+      - name: Verify complete built podcast publication boundary
+        run: pnpm podcast:verify --require-complete --with-built
 
       - name: Install the pinned Chromium browser
         run: pnpm exec playwright install --with-deps chromium

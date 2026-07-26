@@ -22,7 +22,11 @@ import {
 	INVENTORY_SCHEMA_VERSION,
 	MediumContractError,
 } from "./contract.js";
-import { mediumCandidateSetSha256 } from "./model.js";
+import {
+	MEDIUM_PRESENTATION_SET_VERSION,
+	mediumCandidateSetSha256,
+	mediumPresentationSetSha256,
+} from "./model.js";
 
 export const MEDIUM_RESPONSE_EXCLUSION_REASON =
 	"Excluded because the exported item is a response, not a standalone article.";
@@ -269,6 +273,8 @@ export function validateMediumInventoryReviewProposal(
 			"export",
 			"candidateCount",
 			"candidateSetSha256",
+			"presentationSetVersion",
+			"presentationSetSha256",
 			"expectedCount",
 			"includedCount",
 			"excludedResponseCount",
@@ -337,6 +343,20 @@ export function validateMediumInventoryReviewProposal(
 		validateProposedCandidate(candidate, `proposal.candidates[${index}]`),
 	);
 	assertUniqueCandidates(candidates);
+	if (proposal.presentationSetVersion !== MEDIUM_PRESENTATION_SET_VERSION) {
+		throw new MediumContractError(
+			`proposal.presentationSetVersion must equal ${MEDIUM_PRESENTATION_SET_VERSION}`,
+		);
+	}
+	const presentationSetSha256 = assertSha256(
+		proposal.presentationSetSha256,
+		"proposal.presentationSetSha256",
+	);
+	if (presentationSetSha256 !== mediumPresentationSetSha256(candidates)) {
+		throw new MediumContractError(
+			"Medium inventory review proposal presentation set differs from its candidates",
+		);
+	}
 	const candidateSetSha256 = assertSha256(
 		proposal.candidateSetSha256,
 		"proposal.candidateSetSha256",
@@ -392,6 +412,8 @@ export function validateMediumInventoryReviewProposal(
 		export: exportRecord,
 		candidateCount,
 		candidateSetSha256,
+		presentationSetVersion: MEDIUM_PRESENTATION_SET_VERSION,
+		presentationSetSha256,
 		expectedCount,
 		includedCount: included.length,
 		excludedResponseCount: excluded.length,
@@ -459,6 +481,8 @@ export function buildMediumInventoryReviewProposal({
 			export: reviewedExport,
 			candidateCount: proposed.length,
 			candidateSetSha256: mediumCandidateSetSha256(proposed),
+			presentationSetVersion: MEDIUM_PRESENTATION_SET_VERSION,
+			presentationSetSha256: mediumPresentationSetSha256(proposed),
 			expectedCount,
 			includedCount: proposed.filter((candidate) => candidate.include).length,
 			excludedResponseCount: proposed.filter((candidate) => !candidate.include)

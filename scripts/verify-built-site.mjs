@@ -2325,11 +2325,22 @@ export async function verifyMediumRenderedBodies(
 		}
 		if (
 			snapshot?.slug !== slug ||
+			typeof snapshot.exportTitle !== "string" ||
+			snapshot.exportTitle.length === 0 ||
+			(snapshot.exportSummary !== null &&
+				typeof snapshot.exportSummary !== "string") ||
 			typeof snapshot.title !== "string" ||
+			snapshot.title.length === 0 ||
 			typeof snapshot.subtitle !== "string" ||
+			snapshot.subtitle.length === 0 ||
 			typeof snapshot.seriesLine !== "string" ||
+			snapshot.seriesLine.length === 0 ||
 			typeof snapshot.summary !== "string" ||
+			snapshot.summary.length === 0 ||
 			typeof snapshot.description !== "string" ||
+			snapshot.description !== snapshot.summary ||
+			(snapshot.exportSummary !== null &&
+				snapshot.exportSummary !== snapshot.summary) ||
 			snapshot.author !== "Tai Song" ||
 			!isoString(snapshot.published) ||
 			typeof snapshot.category !== "string" ||
@@ -2361,6 +2372,8 @@ export async function verifyMediumRenderedBodies(
 			fieldByName.set(field, node);
 		}
 		for (const [field, expected] of [
+			["export-title", snapshot.exportTitle],
+			["summary", snapshot.summary],
 			["title", snapshot.title],
 			["subtitle", snapshot.subtitle],
 			["series-line", snapshot.seriesLine],
@@ -2376,19 +2389,21 @@ export async function verifyMediumRenderedBodies(
 				);
 			}
 		}
-		if (fieldByName.size !== 4) {
+		if (fieldByName.size !== 6) {
 			failures.push(
-				`Medium ${slug}: rendered presentation must contain exactly title, subtitle, series-line, and author fields`,
+				`Medium ${slug}: rendered presentation must contain exactly export-title, summary, title, subtitle, series-line, and author fields`,
 			);
 		}
 		if (
-			fieldByName.get("title")?.tagName !== "h1" ||
+			fieldByName.get("export-title")?.tagName !== "h1" ||
+			fieldByName.get("summary")?.tagName !== "p" ||
+			fieldByName.get("title")?.tagName !== "h2" ||
 			fieldByName.get("subtitle")?.tagName !== "p" ||
 			fieldByName.get("series-line")?.tagName !== "p" ||
 			fieldByName.get("author")?.tagName !== "span"
 		) {
 			failures.push(
-				`Medium ${slug}: title, subtitle, Ledger Series line, or author uses the wrong semantic element`,
+				`Medium ${slug}: headline, summary, authored title, subtitle, Ledger Series line, or author uses the wrong semantic element`,
 			);
 		}
 		const heroes = elementsWithAttribute(document, "data-medium-hero");
@@ -2414,19 +2429,90 @@ export async function verifyMediumRenderedBodies(
 			for (const child of node.childNodes ?? []) visitHero(child);
 		};
 		visitHero(heroes[0]);
+		const heroPictures = heroDescendants.filter(
+			(node) => node.tagName === "picture",
+		);
+		const heroSources = heroDescendants.filter(
+			(node) => node.tagName === "source",
+		);
 		const heroImages = heroDescendants.filter((node) => node.tagName === "img");
 		const heroCaptions = heroDescendants.filter(
 			(node) => node.tagName === "figcaption",
 		);
 		const expectedAlt = snapshot.imageAlt ?? "";
+		const manifestHeroAssets = Array.isArray(article.assets)
+			? article.assets.filter((asset) => asset?.role === "hero")
+			: [];
+		const manifestHero = manifestHeroAssets[0];
+		if (manifestHeroAssets.length !== 1) {
+			failures.push(
+				`Medium ${slug}: manifest must contain exactly one hero asset`,
+			);
+		} else {
+			const heroAssetPath = resolveManifestPath(
+				repoRoot,
+				manifestHero.path,
+				`Medium ${slug} hero asset`,
+				failures,
+			);
+			if (!heroAssetPath || !(await isFile(heroAssetPath))) {
+				failures.push(`Medium ${slug}: approved hero asset is missing`);
+			} else {
+				const heroAssetBytes = await readFile(heroAssetPath);
+				if (
+					sha256(heroAssetBytes) !== exactSha256(manifestHero.sha256) ||
+					heroAssetBytes.length !== manifestHero.byteSize
+				) {
+					failures.push(
+						`Medium ${slug}: approved hero bytes differ from manifest evidence`,
+					);
+				}
+			}
+			for (const [field, actual, expected] of [
+				[
+					"path",
+					typeof manifestHero.path === "string"
+						? path.basename(manifestHero.path)
+						: undefined,
+					snapshot.hero?.outputFile,
+				],
+				["digest", manifestHero.sha256, snapshot.hero?.sha256],
+				[
+					"acquisition digest",
+					manifestHero.acquisitionManifestSha256,
+					snapshot.hero?.acquisitionManifestSha256,
+				],
+				[
+					"capture digest",
+					manifestHero.captureSha256,
+					snapshot.hero?.captureSha256,
+				],
+				["pixel digest", manifestHero.pixelSha256, snapshot.hero?.pixelSha256],
+				["MIME type", manifestHero.mimeType, snapshot.hero?.mimeType],
+				["width", manifestHero.width, snapshot.hero?.width],
+				["height", manifestHero.height, snapshot.hero?.height],
+				["byte length", manifestHero.byteSize, snapshot.hero?.byteSize],
+			]) {
+				if (actual !== expected) {
+					failures.push(
+						`Medium ${slug}: hero ${field} differs between manifest and snapshot`,
+					);
+				}
+			}
+		}
 		if (
 			heroWrappers.length !== 1 ||
 			attributeValue(heroWrappers[0], "data-source-width") !==
 				String(snapshot.hero?.width) ||
 			attributeValue(heroWrappers[0], "data-source-height") !==
 				String(snapshot.hero?.height) ||
+			heroPictures.length !== 1 ||
+			heroSources.length !== 1 ||
+			attributeValue(heroSources[0], "type") !== "image/avif" ||
 			heroImages.length !== 1 ||
-			attributeValue(heroImages[0], "alt") !== expectedAlt
+			attributeValue(heroImages[0], "alt") !== expectedAlt ||
+			attributeValue(heroImages[0], "width") !== String(snapshot.hero?.width) ||
+			attributeValue(heroImages[0], "height") !== String(snapshot.hero?.height)
 		) {
 			failures.push(
 				`Medium ${slug}: rendered hero dimensions or alt text differ from its snapshot`,
@@ -2446,6 +2532,22 @@ export async function verifyMediumRenderedBodies(
 				`Medium ${slug}: rendered hero caption differs from its snapshot`,
 			);
 		}
+		const heroImage = heroImages[0];
+		const captionId = heroCaptions[0]
+			? attributeValue(heroCaptions[0], "id")
+			: undefined;
+		const describedBy = heroImage
+			? attributeValue(heroImage, "aria-describedby")
+			: undefined;
+		if (
+			(snapshot.imageCaption === "" && describedBy !== undefined) ||
+			(snapshot.imageCaption !== "" &&
+				(!captionId || describedBy !== captionId))
+		) {
+			failures.push(
+				`Medium ${slug}: rendered hero must reference its exact visible caption`,
+			);
+		}
 		if (bodies.length !== 1) {
 			failures.push(`Medium ${slug}: rendered authored body is ambiguous`);
 			continue;
@@ -2460,17 +2562,27 @@ export async function verifyMediumRenderedBodies(
 			(node) => node.tagName === "header",
 		);
 		const seriesIndex = directElements.indexOf(fieldByName.get("series-line"));
+		const leads = elementsWithAttribute(document, "data-medium-lead");
+		const leadIndex = directElements.indexOf(leads[0]);
 		const heroIndex = directElements.indexOf(heroes[0]);
 		const bodyIndex = directElements.indexOf(bodies[0]);
+		const preBodyFigures = directElements
+			.slice(0, bodyIndex < 0 ? directElements.length : bodyIndex)
+			.filter((node) => node.tagName === "figure");
 		if (
 			articleShells.length !== 1 ||
 			headerIndex !== 0 ||
-			seriesIndex !== headerIndex + 1 ||
+			leads.length !== 1 ||
+			leads[0].tagName !== "section" ||
+			leadIndex !== headerIndex + 1 ||
+			seriesIndex !== leadIndex + 1 ||
 			heroIndex !== seriesIndex + 1 ||
-			bodyIndex !== heroIndex + 1
+			bodyIndex !== heroIndex + 1 ||
+			preBodyFigures.length !== 1 ||
+			preBodyFigures[0] !== heroes[0]
 		) {
 			failures.push(
-				`Medium ${slug}: rendered order must be series line, hero, then authored body`,
+				`Medium ${slug}: rendered order must be header, authored lead, series line, hero, then authored body`,
 			);
 		}
 		const header = directElements[headerIndex];
@@ -2481,14 +2593,65 @@ export async function verifyMediumRenderedBodies(
 		};
 		if (header) visitHeader(header);
 		if (
-			headerElements.indexOf(fieldByName.get("title")) < 0 ||
-			headerElements.indexOf(fieldByName.get("subtitle")) <=
-				headerElements.indexOf(fieldByName.get("title")) ||
+			headerElements.indexOf(fieldByName.get("export-title")) < 0 ||
+			headerElements.indexOf(fieldByName.get("summary")) <=
+				headerElements.indexOf(fieldByName.get("export-title")) ||
 			headerElements.indexOf(fieldByName.get("author")) <=
-				headerElements.indexOf(fieldByName.get("subtitle"))
+				headerElements.indexOf(fieldByName.get("summary"))
 		) {
 			failures.push(
-				`Medium ${slug}: rendered header must preserve title, subtitle, then author order`,
+				`Medium ${slug}: rendered header must preserve export title, summary, then author order`,
+			);
+		}
+		const leadElements = [];
+		const visitLead = (node) => {
+			if (node.tagName) leadElements.push(node);
+			for (const child of node.childNodes ?? []) visitLead(child);
+		};
+		if (leads[0]) visitLead(leads[0]);
+		if (
+			leadElements.length !== 3 ||
+			leadElements[0] !== leads[0] ||
+			leadElements[1] !== fieldByName.get("title") ||
+			leadElements[2] !== fieldByName.get("subtitle")
+		) {
+			failures.push(
+				`Medium ${slug}: authored lead must contain exactly its title then subtitle`,
+			);
+		}
+		const documentOrder = [];
+		const visitDocumentOrder = (node) => {
+			documentOrder.push(node);
+			for (const child of node.childNodes ?? []) visitDocumentOrder(child);
+		};
+		visitDocumentOrder(document);
+		const presentationOrder = [...mediumFields, ...heroes, ...bodies]
+			.toSorted(
+				(left, right) =>
+					documentOrder.indexOf(left) - documentOrder.indexOf(right),
+			)
+			.map((node) =>
+				node === heroes[0]
+					? "hero"
+					: node === bodies[0]
+						? "body"
+						: attributeValue(node, "data-medium-field"),
+			)
+			.filter((field) => field !== "author");
+		if (
+			JSON.stringify(presentationOrder) !==
+			JSON.stringify([
+				"export-title",
+				"summary",
+				"title",
+				"subtitle",
+				"series-line",
+				"hero",
+				"body",
+			])
+		) {
+			failures.push(
+				`Medium ${slug}: public presentation order differs from the approved contract`,
 			);
 		}
 		const expectedUrl = new URL(`posts/${slug}/`, site).toString();
@@ -2506,7 +2669,7 @@ export async function verifyMediumRenderedBodies(
 		for (const [selector, expected] of [
 			["author", snapshot.author],
 			["description", snapshot.description],
-			["og:title", snapshot.title],
+			["og:title", snapshot.exportTitle],
 			["og:description", snapshot.description],
 			["article:published_time", snapshot.published],
 			["article:section", snapshot.category],
@@ -2535,21 +2698,39 @@ export async function verifyMediumRenderedBodies(
 		}
 		const jsonLd = extractJsonLd(html, `Medium ${slug}`, failures);
 		if (jsonLd) {
+			const expectedSocialImageUrl = new URL(
+				`social/${slug}.jpg`,
+				site,
+			).toString();
 			for (const [field, actual, expected] of [
-				["headline", jsonLd.headline, snapshot.title],
-				["alternativeHeadline", jsonLd.alternativeHeadline, snapshot.subtitle],
+				["type", jsonLd["@type"], "BlogPosting"],
+				["headline", jsonLd.headline, snapshot.exportTitle],
+				["alternativeHeadline", jsonLd.alternativeHeadline, snapshot.title],
 				["description", jsonLd.description, snapshot.description],
 				["author", jsonLd.author?.name, snapshot.author],
+				[
+					"author URL",
+					jsonLd.author?.url,
+					new URL("authors/tai-song/", site).toString(),
+				],
 				["datePublished", jsonLd.datePublished, snapshot.published],
+				["dateModified", jsonLd.dateModified, undefined],
 				["url", jsonLd.url, expectedUrl],
+				["mainEntityOfPage", jsonLd.mainEntityOfPage?.["@id"], expectedUrl],
 				["category", jsonLd.articleSection, snapshot.category],
 				["license", jsonLd.copyrightNotice, "All Rights Reserved"],
 				["caption", jsonLd.image?.caption, snapshot.imageCaption || undefined],
+				["image type", jsonLd.image?.["@type"], "ImageObject"],
 				[
 					"image alt",
 					jsonLd.image?.description,
 					snapshot.imageAlt ?? undefined,
 				],
+				["image URL", jsonLd.image?.url, expectedSocialImageUrl],
+				["image content URL", jsonLd.image?.contentUrl, expectedSocialImageUrl],
+				["image MIME type", jsonLd.image?.encodingFormat, "image/jpeg"],
+				["image width", jsonLd.image?.width, 1200],
+				["image height", jsonLd.image?.height, 1200],
 			]) {
 				if (actual !== expected) {
 					failures.push(
@@ -2560,6 +2741,30 @@ export async function verifyMediumRenderedBodies(
 			if (!sameStringArray(jsonLd.keywords, snapshot.tags)) {
 				failures.push(`Medium ${slug}: JSON-LD tags differ from its snapshot`);
 			}
+			if (Object.hasOwn(jsonLd, "isBasedOn")) {
+				failures.push(
+					`Medium ${slug}: JSON-LD must not expose source provenance`,
+				);
+			}
+			if (Object.hasOwn(jsonLd.image ?? {}, "sameAs")) {
+				failures.push(
+					`Medium ${slug}: JSON-LD image must not expose a source URL`,
+				);
+			}
+			for (const [selector, expected] of [
+				["og:image", expectedSocialImageUrl],
+				["og:image:alt", expectedAlt],
+				["og:image:type", "image/jpeg"],
+				["og:image:width", "1200"],
+				["og:image:height", "1200"],
+			]) {
+				const values = metaContent(html, selector);
+				if (values.length !== 1 || values[0] !== expected) {
+					failures.push(
+						`Medium ${slug}: ${selector} differs from approved social image evidence`,
+					);
+				}
+			}
 		}
 		const matchingRssItems = rssItems.filter(
 			(item) => xmlElementText(item, "link") === expectedUrl,
@@ -2569,7 +2774,7 @@ export async function verifyMediumRenderedBodies(
 		} else {
 			const item = matchingRssItems[0];
 			for (const [field, actual, expected] of [
-				["title", xmlElementText(item, "title"), snapshot.title],
+				["title", xmlElementText(item, "title"), snapshot.exportTitle],
 				["GUID", xmlElementText(item, "guid"), expectedUrl],
 				["summary", xmlElementText(item, "description"), snapshot.summary],
 				["author", xmlElementText(item, "dc:creator"), snapshot.author],
@@ -2596,6 +2801,7 @@ export async function verifyMediumRenderedBodies(
 			if (
 				mediaImages.length !== 1 ||
 				mediaImages[0].attributes.url !== jsonLd?.image?.url ||
+				mediaImages[0].attributes.medium !== "image" ||
 				mediaImages[0].attributes.type !== "image/jpeg" ||
 				mediaImages[0].attributes.width !== "1200" ||
 				mediaImages[0].attributes.height !== "1200"
@@ -2619,28 +2825,54 @@ export async function verifyMediumRenderedBodies(
 			const encodedNodes = (encodedFragment.childNodes ?? []).filter(
 				(node) => node.nodeName !== "#text" || /\S/u.test(node.value ?? ""),
 			);
-			if (encodedNodes[0]?.tagName !== "figure") {
-				failures.push(`Medium ${slug}: RSS content must begin with its hero`);
-			}
-			const encodedHeroImages = tags(encodedContent, "img").filter(
-				(tag) => tag.attributes.src === jsonLd?.image?.url,
+			const encodedLead = encodedNodes[0];
+			const encodedLeadElements = (encodedLead?.childNodes ?? []).filter(
+				(node) => Boolean(node.tagName),
 			);
 			if (
+				encodedLead?.tagName !== "section" ||
+				encodedLeadElements.length !== 3 ||
+				encodedLeadElements[0].tagName !== "h2" ||
+				nodeText(encodedLeadElements[0]) !== snapshot.title ||
+				encodedLeadElements[1].tagName !== "p" ||
+				nodeText(encodedLeadElements[1]) !== snapshot.subtitle ||
+				encodedLeadElements[2].tagName !== "p" ||
+				nodeText(encodedLeadElements[2]) !== snapshot.seriesLine
+			) {
+				failures.push(
+					`Medium ${slug}: RSS content lead differs from its approved title, subtitle, and Ledger Series sentence`,
+				);
+			}
+			const encodedHero = encodedNodes[1];
+			const encodedHeroDescendants = [];
+			const visitEncodedHero = (node) => {
+				if (node.tagName) encodedHeroDescendants.push(node);
+				for (const child of node.childNodes ?? []) visitEncodedHero(child);
+			};
+			if (encodedHero) visitEncodedHero(encodedHero);
+			const encodedHeroImages = encodedHeroDescendants.filter(
+				(node) => node.tagName === "img",
+			);
+			const encodedHeroCaptions = encodedHeroDescendants.filter(
+				(node) => node.tagName === "figcaption",
+			);
+			if (
+				encodedHero?.tagName !== "figure" ||
 				encodedHeroImages.length !== 1 ||
-				encodedHeroImages[0].attributes.alt !== expectedAlt
+				attributeValue(encodedHeroImages[0], "src") !== jsonLd?.image?.url ||
+				attributeValue(encodedHeroImages[0], "alt") !== expectedAlt ||
+				attributeValue(encodedHeroImages[0], "width") !== "1200" ||
+				attributeValue(encodedHeroImages[0], "height") !== "1200"
 			) {
 				failures.push(
 					`Medium ${slug}: RSS content hero alt differs from its snapshot`,
 				);
 			}
-			const encodedCaption = encodedContent.match(
-				/<figcaption\b[^>]*>([\s\S]*?)<\/figcaption>/iu,
-			);
 			if (
-				(snapshot.imageCaption === "" && encodedCaption) ||
+				(snapshot.imageCaption === "" && encodedHeroCaptions.length !== 0) ||
 				(snapshot.imageCaption !== "" &&
-					(!encodedCaption ||
-						visibleText(encodedCaption[1]) !== snapshot.imageCaption))
+					(encodedHeroCaptions.length !== 1 ||
+						nodeText(encodedHeroCaptions[0]) !== snapshot.imageCaption))
 			) {
 				failures.push(
 					`Medium ${slug}: RSS content caption differs from its snapshot`,
@@ -2656,7 +2888,7 @@ export async function verifyMediumRenderedBodies(
 					`Medium ${slug}: RSS category order differs from its snapshot`,
 				);
 			}
-			const rssBody = archiveBodyStructureFromNodes(encodedNodes.slice(1));
+			const rssBody = archiveBodyStructureFromNodes(encodedNodes.slice(2));
 			const snapshotBody = archiveBodyStructure(snapshot.bodyHtml);
 			if (JSON.stringify(rssBody) !== JSON.stringify(snapshotBody)) {
 				failures.push(

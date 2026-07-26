@@ -50,7 +50,9 @@ passed the archive, browser, dependency, human-signoff, and disclosure gates.
 
 ## First public conversion
 
-After all 11 `ReviewSignoffV1` records pass for the exact candidate:
+After all 11 `ReviewSignoffV1` records, 25 `ContentSignoffV2` records, the 24
+nonfiction claim reviews, and the release-wide `PresentationSignoffV2` record
+pass for the exact candidate:
 
 1. Change `Shots-of-Rhapsody/Shots-of-Rhapsody` from private to public.
 2. Wait for GitHub secret scanning to complete and confirm there are no open

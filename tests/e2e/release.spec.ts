@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
@@ -17,6 +18,7 @@ import {
 	HERO_IMAGE_SIZES,
 } from "../../src/utils/image-policy";
 import {
+	hasExternalPlaywrightBaseURL,
 	playwrightBasePathname,
 	playwrightBaseURL,
 	playwrightOrigin,
@@ -43,9 +45,13 @@ interface PublicationCatalogEntry {
 
 interface MediumArticle {
 	slug: string;
+	exportTitle: string;
+	exportSummary: string | null;
 	title: string;
 	subtitle: string;
 	seriesLine: string;
+	summary: string;
+	description: string;
 	author: string;
 	imageAlt: string | null;
 	imageCaption: string;
@@ -104,33 +110,33 @@ const mediumManifest = JSON.parse(
 	state: string;
 	articles: Array<{ slug: string; paths: { snapshot: string } }>;
 };
-const mediumArticles: MediumArticle[] =
-	mediumManifest.state === "active"
-		? mediumManifest.articles.map((entry) => {
-				const snapshot = JSON.parse(
-					readFileSync(path.join(repositoryRoot, entry.paths.snapshot), "utf8"),
-				) as MediumArticle;
-				if (snapshot.slug !== entry.slug) {
-					throw new Error(`${entry.slug}: Medium snapshot slug differs`);
-				}
-				return snapshot;
-			})
-		: [];
 const catalogMediumSlugs = catalogEntries
 	.filter(({ source }) => source === "medium")
 	.map(({ slug }) => slug)
 	.toSorted();
-if (
-	catalogMediumSlugs.length !== mediumArticles.length ||
-	mediumArticles
-		.map(({ slug }) => slug)
-		.toSorted()
-		.some((slug, index) => slug !== catalogMediumSlugs[index])
-) {
-	throw new Error(
-		"Publication catalog and active Medium manifest must expose the same essays",
-	);
-}
+const mediumManifestBySlug = new Map(
+	mediumManifest.articles.map((entry) => [entry.slug, entry]),
+);
+const mediumArticles: MediumArticle[] = catalogMediumSlugs.map((slug) => {
+	if (mediumManifest.state !== "active") {
+		throw new Error(
+			`Publication catalog exposes Medium essay ${slug} before its manifest is active`,
+		);
+	}
+	const entry = mediumManifestBySlug.get(slug);
+	if (!entry) {
+		throw new Error(
+			`Publication catalog exposes Medium essay ${slug} without manifest evidence`,
+		);
+	}
+	const snapshot = JSON.parse(
+		readFileSync(path.join(repositoryRoot, entry.paths.snapshot), "utf8"),
+	) as MediumArticle;
+	if (snapshot.slug !== entry.slug) {
+		throw new Error(`${entry.slug}: Medium snapshot slug differs`);
+	}
+	return snapshot;
+});
 const sealedArchiveSlugSet = new Set(articles.map(({ slug }) => slug));
 const expectedWritingSlugs = catalogEntries.map(({ slug }) => slug).toSorted();
 if (
@@ -758,7 +764,7 @@ test.describe("public release inventory", () => {
 	test("Podcast routes and media expose only fully approved episodes", async ({
 		page,
 		request,
-	}) => {
+	}, testInfo) => {
 		const unpublishedEpisodes = PODCAST_EPISODES.filter(
 			(episode) => !approvedPodcastSlugSet.has(episode.slug),
 		);
@@ -867,6 +873,61 @@ test.describe("public release inventory", () => {
 			);
 			await expectNoSeriousAxeViolations(page);
 
+			if (testInfo.project.name === "desktop-chromium") {
+				if (episode.audio.durationSeconds === null) {
+					throw new Error(
+						`${episode.slug}: approved audio lacks a measured duration`,
+					);
+				}
+				const playback = await player.evaluate(
+					async (element, expectedDuration) => {
+						const audio = element as HTMLAudioElement;
+						const waitFor = (eventName: string) =>
+							new Promise<void>((resolve, reject) => {
+								const timeout = window.setTimeout(
+									() => reject(new Error(`Timed out waiting for ${eventName}`)),
+									15_000,
+								);
+								audio.addEventListener(
+									eventName,
+									() => {
+										window.clearTimeout(timeout);
+										resolve();
+									},
+									{ once: true },
+								);
+							});
+						if (!Number.isFinite(audio.duration)) {
+							const metadata = waitFor("loadedmetadata");
+							audio.load();
+							await metadata;
+						}
+						audio.muted = true;
+						await audio.play();
+						const played = !audio.paused;
+						const target = Math.min(
+							30,
+							Math.max(1, Math.min(expectedDuration, audio.duration) - 1),
+						);
+						const seeked = waitFor("seeked");
+						audio.currentTime = target;
+						await seeked;
+						const result = {
+							played,
+							duration: audio.duration,
+							target,
+							currentTime: audio.currentTime,
+						};
+						audio.pause();
+						return result;
+					},
+					episode.audio.durationSeconds,
+				);
+				expect(playback.played).toBe(true);
+				expect(playback.duration).toBeCloseTo(episode.audio.durationSeconds, 0);
+				expect(playback.currentTime).toBeCloseTo(playback.target, 0);
+			}
+
 			await expectHealthyPage(page, `podcast/${episode.slug}/transcript/`);
 			await expect(page.locator("[data-podcast-transcript]")).not.toBeEmpty();
 			await expectNoSeriousAxeViolations(page);
@@ -910,6 +971,52 @@ test.describe("public release inventory", () => {
 				episode.audio.byteLength - 1,
 				episode.audio.byteLength,
 			);
+		}
+	});
+
+	test("deployed podcast audio matches approved bytes and cache validators", async ({
+		request,
+	}, testInfo) => {
+		test.skip(
+			!hasExternalPlaywrightBaseURL ||
+				testInfo.project.name !== "desktop-chromium" ||
+				approvedPodcastEpisodes.length === 0,
+			"The full-byte media proof runs once against the deployed site.",
+		);
+		test.setTimeout(180_000);
+
+		for (const episode of approvedPodcastEpisodes) {
+			const audioPath = publicPath(episode.audio.publicPath);
+			const response = await request.get(audioPath);
+			expect(response.status(), `${episode.slug}: full audio status`).toBe(200);
+			expect(response.headers()["content-type"]).toContain("audio/mpeg");
+			expect(Number(response.headers()["content-length"])).toBe(
+				episode.audio.byteLength,
+			);
+			const cacheControl = response.headers()["cache-control"] ?? "";
+			expect(cacheControl).not.toMatch(/\b(?:no-store|private)\b/iu);
+			expect(cacheControl).toMatch(/\b(?:public|max-age=\d+)\b/iu);
+			const validator = response.headers().etag
+				? { "If-None-Match": response.headers().etag }
+				: response.headers()["last-modified"]
+					? { "If-Modified-Since": response.headers()["last-modified"] }
+					: null;
+			expect(validator, `${episode.slug}: cache validator`).not.toBeNull();
+
+			const body = await response.body();
+			expect(body.byteLength).toBe(episode.audio.byteLength);
+			expect(`sha256:${createHash("sha256").update(body).digest("hex")}`).toBe(
+				episode.audio.sha256,
+			);
+			if (validator) {
+				const conditional = await request.get(audioPath, {
+					headers: validator,
+				});
+				expect(
+					conditional.status(),
+					`${episode.slug}: conditional cache response`,
+				).toBe(304);
+			}
 		}
 	});
 
@@ -1343,22 +1450,31 @@ test.describe("article release contract", () => {
 
 test.describe("Medium article presentation contract", () => {
 	for (const article of mediumArticles) {
-		test(article.title, async ({ page }, testInfo) => {
+		test(article.exportTitle, async ({ page }, testInfo) => {
 			for (const theme of ["light", "dark"] as const) {
 				await setTheme(page, theme);
 				await expectHealthyPage(page, `posts/${article.slug}/`);
 				await expectTheme(page, theme);
+				const exportTitle = page.locator('[data-medium-field="export-title"]');
+				await expect(exportTitle).toHaveCount(1);
+				await expect(exportTitle).toHaveJSProperty("tagName", "H1");
+				await expect(exportTitle).toHaveText(article.exportTitle);
+				const summary = page.locator('[data-medium-field="summary"]');
+				await expect(summary).toHaveCount(1);
+				await expect(summary).toHaveJSProperty("tagName", "P");
+				await expect(summary).toHaveText(article.summary);
 				const title = page.locator('[data-medium-field="title"]');
 				await expect(title).toHaveCount(1);
-				await expect(title).toHaveJSProperty("tagName", "H1");
+				await expect(title).toHaveJSProperty("tagName", "H2");
 				await expect(title).toHaveText(article.title);
 				const subtitle = page.locator('[data-medium-field="subtitle"]');
 				await expect(subtitle).toHaveCount(1);
 				await expect(subtitle).toHaveJSProperty("tagName", "P");
 				await expect(subtitle).toHaveText(article.subtitle);
-				await expect(
-					page.locator('[data-medium-field="series-line"]'),
-				).toHaveText(article.seriesLine);
+				const seriesLine = page.locator('[data-medium-field="series-line"]');
+				await expect(seriesLine).toHaveCount(1);
+				await expect(seriesLine).toHaveJSProperty("tagName", "P");
+				await expect(seriesLine).toHaveText(article.seriesLine);
 				await expect(
 					page.locator('[data-medium-field="author"]'),
 				).toContainText(`By ${article.author}`);
@@ -1371,7 +1487,17 @@ test.describe("Medium article presentation contract", () => {
 						.evaluateAll((nodes) =>
 							nodes.map((node) => node.getAttribute("data-medium-field")),
 						),
-				).toEqual(["title", "subtitle", "author"]);
+				).toEqual(["export-title", "summary", "author"]);
+				const authoredLead = page.locator("[data-medium-lead]");
+				await expect(authoredLead).toHaveCount(1);
+				await expect(authoredLead).toHaveJSProperty("tagName", "SECTION");
+				expect(
+					await authoredLead
+						.locator(":scope > [data-medium-field]")
+						.evaluateAll((nodes) =>
+							nodes.map((node) => node.getAttribute("data-medium-field")),
+						),
+				).toEqual(["title", "subtitle"]);
 
 				const shellOrder = await page
 					.locator("#post-container > *")
@@ -1379,22 +1505,58 @@ test.describe("Medium article presentation contract", () => {
 						nodes
 							.map((node) => {
 								if (node.tagName === "HEADER") return "header";
+								if (node.hasAttribute("data-medium-lead")) return "lead";
 								if (node.hasAttribute("data-medium-hero")) return "hero";
 								if (node.hasAttribute("data-authored-content")) return "body";
 								return node.getAttribute("data-medium-field");
 							})
 							.filter(Boolean),
 					);
-				expect(shellOrder.slice(0, 4)).toEqual([
+				expect(shellOrder.slice(0, 5)).toEqual([
 					"header",
+					"lead",
+					"series-line",
+					"hero",
+					"body",
+				]);
+				const presentationOrder = await page
+					.locator(
+						"[data-medium-field], [data-medium-hero], [data-authored-content].article-body",
+					)
+					.evaluateAll((nodes) =>
+						nodes
+							.map((node) =>
+								node.hasAttribute("data-medium-hero")
+									? "hero"
+									: node.matches("[data-authored-content].article-body")
+										? "body"
+										: node.getAttribute("data-medium-field"),
+							)
+							.filter((field) => field !== "author"),
+					);
+				expect(presentationOrder).toEqual([
+					"export-title",
+					"summary",
+					"title",
+					"subtitle",
 					"series-line",
 					"hero",
 					"body",
 				]);
 
-				const hero = page.locator("[data-medium-hero] img");
+				const heroFigure = page.locator("[data-medium-hero]");
+				await expect(heroFigure).toHaveCount(1);
+				await expect(heroFigure).toHaveJSProperty("tagName", "FIGURE");
+				await expect(heroFigure.locator("picture")).toHaveCount(1);
+				await expect(heroFigure.locator("source")).toHaveCount(1);
+				const hero = heroFigure.locator("img");
 				await expect(hero).toHaveCount(1);
 				await expect(hero).toHaveAttribute("alt", article.imageAlt ?? "");
+				await expect(hero).toHaveAttribute("width", String(article.hero.width));
+				await expect(hero).toHaveAttribute(
+					"height",
+					String(article.hero.height),
+				);
 				await expect(hero).toHaveCSS("object-fit", "contain");
 				const sourceWrapper = page.locator(
 					'[data-medium-hero] [data-image-variant="hero"]',
@@ -1407,9 +1569,20 @@ test.describe("Medium article presentation contract", () => {
 					"data-source-height",
 					String(article.hero.height),
 				);
-				const caption = page.locator("[data-medium-hero] figcaption");
-				if (article.imageCaption === "") await expect(caption).toHaveCount(0);
-				else await expect(caption).toHaveText(article.imageCaption);
+				const caption = heroFigure.locator("figcaption");
+				if (article.imageCaption === "") {
+					await expect(caption).toHaveCount(0);
+					await expect(hero).not.toHaveAttribute("aria-describedby", /.*/u);
+				} else {
+					await expect(caption).toHaveCount(1);
+					await expect(caption).toHaveText(article.imageCaption);
+					const captionId = await caption.getAttribute("id");
+					expect(captionId).not.toBeNull();
+					await expect(hero).toHaveAttribute(
+						"aria-describedby",
+						captionId ?? "",
+					);
+				}
 
 				const exactBody = await page
 					.locator("[data-authored-content].article-body")
@@ -1451,9 +1624,28 @@ test.describe("Medium article presentation contract", () => {
 						.locator('script[type="application/ld+json"]')
 						.textContent()) ?? "",
 				);
-				expect(jsonLd.headline).toBe(article.title);
-				expect(jsonLd.alternativeHeadline).toBe(article.subtitle);
+				const expectedSocialImage = `https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/social/${article.slug}.jpg`;
+				expect(jsonLd.headline).toBe(article.exportTitle);
+				expect(jsonLd.alternativeHeadline).toBe(article.title);
+				expect(jsonLd.description).toBe(article.description);
 				expect(jsonLd.datePublished).toBe(article.published);
+				expect(jsonLd.image).toMatchObject({
+					"@type": "ImageObject",
+					url: expectedSocialImage,
+					contentUrl: expectedSocialImage,
+					encodingFormat: "image/jpeg",
+					width: 1200,
+					height: 1200,
+				});
+				expect(jsonLd.image.description).toBe(article.imageAlt ?? undefined);
+				expect(jsonLd.image.caption).toBe(article.imageCaption || undefined);
+				await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+					"content",
+					expectedSocialImage,
+				);
+				await expect(
+					page.locator('meta[property="og:image:alt"]'),
+				).toHaveAttribute("content", article.imageAlt ?? "");
 				await expectNoSeriousAxeViolations(page);
 				if (testInfo.project.name === "mobile-chromium") {
 					const overflow = await page.evaluate(

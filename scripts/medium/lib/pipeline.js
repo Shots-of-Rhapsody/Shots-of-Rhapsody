@@ -20,13 +20,18 @@ import {
 	loadMediumHeroAcquisition,
 	loadMediumHeroAssetLedger,
 } from "./acquisition.js";
-import { buildMediumHeroChecklist } from "./assets.js";
+import {
+	buildMediumHeroChecklist,
+	parseApprovedMediumTitleFile,
+} from "./assets.js";
 import {
 	ALL_RIGHTS_RESERVED,
 	AUTHOR_NAME,
 	AUTHOR_PROFILE_URL,
 	AUTHORITY_PLATFORM,
 	assertCanonicalUtc,
+	assertInteger,
+	assertNonEmptyString,
 	assertOnlyKeys,
 	assertPlainObject,
 	assertSafeRepositoryPath,
@@ -43,6 +48,11 @@ import {
 	toRepositoryPath,
 } from "./contract.js";
 import {
+	buildMediumReviewedInventoryScaffold,
+	finalizeMediumReviewedInventory,
+	validateMediumSummaryFallbacks,
+} from "./finalize.js";
+import {
 	decodeUtf8,
 	extractCandidateMetadata,
 	extractMediumAuthorEvidence,
@@ -52,7 +62,9 @@ import {
 import { readVerifiedMediumHero } from "./image-sanitizer.js";
 import { inspectImage, sha256 } from "./integrity.js";
 import {
+	MEDIUM_PRESENTATION_SET_VERSION,
 	mediumCandidateSetSha256,
+	mediumPresentationSetSha256,
 	validateMediumInventory,
 	validateMediumManifest,
 	validateMediumSnapshot,
@@ -66,6 +78,7 @@ import {
 	buildMediumInventoryReviewProposal,
 	validateUnresolvedMediumCandidate,
 } from "./review.js";
+import { buildPendingMediumReviewScaffold } from "./review-scaffold.js";
 import { readZipEntries } from "./zip.js";
 
 function parseJson(buffer, label) {
@@ -310,6 +323,8 @@ async function loadAssetCandidateLedger(
 			"export",
 			"candidateCount",
 			"candidateSetSha256",
+			"presentationSetVersion",
+			"presentationSetSha256",
 			"candidates",
 		]),
 		"Medium inventory candidate ledger",
@@ -366,6 +381,22 @@ async function loadAssetCandidateLedger(
 			"Medium inventory candidate ledger candidate-set SHA-256 is invalid",
 		);
 	}
+	if (ledger.presentationSetVersion !== MEDIUM_PRESENTATION_SET_VERSION) {
+		throw new MediumContractError(
+			`Medium inventory candidate ledger presentationSetVersion must equal ${MEDIUM_PRESENTATION_SET_VERSION}`,
+		);
+	}
+	const presentationSetSha256 = assertSha256(
+		ledger.presentationSetSha256,
+		"Medium inventory candidate ledger presentationSetSha256",
+	);
+	if (
+		presentationSetSha256 !== mediumPresentationSetSha256(ledger.candidates)
+	) {
+		throw new MediumContractError(
+			"Medium inventory candidate ledger presentation-set SHA-256 is invalid",
+		);
+	}
 	const sourcePaths = new Set();
 	const extractedByPath = new Map(
 		exportedCandidates(entries).map((candidate) => [
@@ -418,6 +449,8 @@ async function loadAssetCandidateLedger(
 	return {
 		candidates: ledger.candidates,
 		candidateSetSha256,
+		presentationSetVersion: MEDIUM_PRESENTATION_SET_VERSION,
+		presentationSetSha256,
 		exportRecord: {
 			fileName: exportRecord.fileName,
 			sha256: exportRecord.sha256,
@@ -473,6 +506,8 @@ export async function createInventoryCandidate({
 		},
 		candidateCount: candidates.length,
 		candidateSetSha256: mediumCandidateSetSha256(candidates),
+		presentationSetVersion: MEDIUM_PRESENTATION_SET_VERSION,
+		presentationSetSha256: mediumPresentationSetSha256(candidates),
 		candidates,
 	};
 	if (write) {
@@ -542,7 +577,11 @@ export async function createMediumInventoryReviewProposal({
 	exportPath,
 	approvedAllowlist,
 	write = false,
+	refresh = false,
 } = {}) {
+	if (refresh && !write) {
+		throw new MediumContractError("Refreshing a proposal requires write mode");
+	}
 	const { absoluteExport, exportBuffer, entries } = await loadOfficialExport(
 		repoRoot,
 		exportPath,
@@ -577,16 +616,194 @@ export async function createMediumInventoryReviewProposal({
 	});
 	const reviewProposalPath = getMediumPaths(repoRoot).reviewProposalPath;
 	if (write) {
-		await writeNewFile(
-			reviewProposalPath,
-			Buffer.from(serializeJson(proposal), "utf8"),
-			"Medium inventory review proposal",
-		);
+		const nextBuffer = Buffer.from(serializeJson(proposal), "utf8");
+		if (refresh) {
+			const currentBuffer = await readRequired(
+				reviewProposalPath,
+				"Existing Medium inventory review proposal",
+			);
+			parseJson(currentBuffer, "Existing Medium inventory review proposal");
+			const legacy = structuredClone(proposal);
+			delete legacy.presentationSetVersion;
+			delete legacy.presentationSetSha256;
+			if (
+				!currentBuffer.equals(nextBuffer) &&
+				!currentBuffer.equals(Buffer.from(serializeJson(legacy), "utf8"))
+			) {
+				throw new MediumContractError(
+					"Refusing to refresh a proposal with changes beyond the new presentation digest",
+				);
+			}
+			if (!currentBuffer.equals(nextBuffer)) {
+				await writeAtomic(reviewProposalPath, nextBuffer);
+			}
+		} else {
+			await writeNewFile(
+				reviewProposalPath,
+				nextBuffer,
+				"Medium inventory review proposal",
+			);
+		}
 	}
 	return {
 		mode: write ? "write" : "dry-run",
 		reviewProposalPath: toRepositoryPath(repoRoot, reviewProposalPath),
 		proposal,
+	};
+}
+
+export async function createReviewedMediumInventory({
+	repoRoot,
+	exportPath,
+	approvedAllowlist,
+	summaryFallbacks,
+	writeScaffold = false,
+	writeInventory = false,
+} = {}) {
+	if (writeInventory && summaryFallbacks === undefined) {
+		throw new MediumContractError(
+			"Writing the reviewed inventory requires an explicit summary-fallback record",
+		);
+	}
+	const { absoluteExport, exportBuffer, entries } = await loadOfficialExport(
+		repoRoot,
+		exportPath,
+	);
+	const { candidates, candidateSetSha256, exportRecord } =
+		await loadAssetCandidateLedger(repoRoot, {
+			absoluteExport,
+			exportBuffer,
+			entries,
+		});
+	let authorEvidenceCount = 0;
+	for (const candidate of candidates) {
+		extractMediumAuthorEvidence(
+			decodeUtf8(entries.get(candidate.sourcePath), candidate.sourcePath),
+			candidate.sourcePath,
+		);
+		authorEvidenceCount += 1;
+	}
+	const generatedProposal = buildMediumInventoryReviewProposal({
+		candidates,
+		approvedAllowlist,
+		exportRecord,
+		authorEvidenceCount,
+	});
+	const proposalBuffer = await readRequired(
+		getMediumPaths(repoRoot).reviewProposalPath,
+		"Medium inventory review proposal",
+	);
+	const proposal = parseJson(
+		proposalBuffer,
+		"Medium inventory review proposal",
+	);
+	if (
+		!proposalBuffer.equals(
+			Buffer.from(serializeJson(generatedProposal), "utf8"),
+		)
+	) {
+		throw new MediumContractError(
+			"Stored Medium inventory review proposal differs from the current official export",
+		);
+	}
+	const heroChecklist = buildMediumHeroChecklist({
+		entries,
+		candidates,
+		approvedAllowlist,
+		exportFileName: path.basename(absoluteExport),
+		exportSha256: sha256(exportBuffer),
+		candidateSetSha256,
+	});
+	const loadedAcquisition = await loadMediumHeroAcquisition(repoRoot);
+	for (const item of loadedAcquisition.assetLedger.items) {
+		await readVerifiedMediumHero({
+			repoRoot,
+			slug: item.slug,
+			loadedAcquisition,
+		});
+	}
+	const scaffold = buildMediumReviewedInventoryScaffold({
+		proposal,
+		approvedAllowlist,
+		heroAssetLedger: loadedAcquisition.assetLedger,
+		heroChecklist,
+	});
+	if (writeScaffold) {
+		await writeNewFile(
+			getMediumPaths(repoRoot).reviewedInventoryScaffoldPath,
+			Buffer.from(serializeJson(scaffold), "utf8"),
+			"Medium reviewed inventory scaffold",
+		);
+	}
+	const inventory =
+		summaryFallbacks === undefined
+			? null
+			: finalizeMediumReviewedInventory({ scaffold, summaryFallbacks });
+	if (writeInventory) {
+		await replaceAwaitingMediumInventory(repoRoot, inventory);
+	}
+	return {
+		mode: writeInventory
+			? "write-inventory"
+			: writeScaffold
+				? "write-scaffold"
+				: "dry-run",
+		scaffoldPath: toRepositoryPath(
+			repoRoot,
+			getMediumPaths(repoRoot).reviewedInventoryScaffoldPath,
+		),
+		scaffold,
+		inventory,
+	};
+}
+
+export async function replaceAwaitingMediumInventory(repoRoot, inventoryValue) {
+	const inventory = validateMediumInventory(inventoryValue);
+	if (inventory.state !== "reviewed") {
+		throw new MediumContractError(
+			"Replacement Medium inventory must already pass the reviewed contract",
+		);
+	}
+	const current = await loadInventory(repoRoot);
+	if (current.state !== "awaiting-export") {
+		throw new MediumContractError(
+			"Refusing to overwrite a Medium inventory that is not the known awaiting-export placeholder",
+		);
+	}
+	const { bySlug: _bySlug, ...serializableInventory } = inventory;
+	await writeTransaction([
+		{
+			path: getMediumPaths(repoRoot).inventoryPath,
+			contents: Buffer.from(serializeJson(serializableInventory), "utf8"),
+		},
+	]);
+}
+
+export async function verifyMediumHeroAnchor({ repoRoot } = {}) {
+	const loadedAcquisition = await loadMediumHeroAcquisition(repoRoot);
+	const items = [];
+	for (const asset of loadedAcquisition.assetLedger.items) {
+		const verified = await readVerifiedMediumHero({
+			repoRoot,
+			slug: asset.slug,
+			loadedAcquisition,
+		});
+		items.push({
+			slug: asset.slug,
+			captureSha256: verified.record.capture.sha256,
+			siteReadySha256: verified.record.output.sha256,
+			pixelSha256: verified.record.pixels.sha256,
+		});
+	}
+	return {
+		schemaVersion: 1,
+		state: "verified-durable-anchor",
+		exportSha256: loadedAcquisition.assetLedger.exportSha256,
+		candidateSetSha256: loadedAcquisition.assetLedger.candidateSetSha256,
+		acquisitionManifestSha256: loadedAcquisition.acquisitionManifestSha256,
+		assetLedgerSha256: sha256(loadedAcquisition.assetLedger.buffer),
+		itemCount: items.length,
+		items,
 	};
 }
 
@@ -602,6 +819,114 @@ async function loadManifest(repoRoot) {
 	const buffer = await readRequired(manifestPath, "Medium manifest");
 	const value = parseJson(buffer, "Medium manifest");
 	return { value, buffer, ...validateMediumManifest(value) };
+}
+
+function unresolvedCandidateFromReviewed(candidate) {
+	return {
+		...candidate,
+		include: null,
+		exclusionReason: "",
+		classification: { visibility: null, authorship: null, format: null },
+	};
+}
+
+async function loadMediumSummaryFallbackEvidence(repoRoot, inventory) {
+	const paths = getMediumPaths(repoRoot);
+	const [fallbackBuffer, approvedAllowlistBuffer] = await Promise.all([
+		readRequired(
+			paths.summaryFallbacksPath,
+			"Committed Medium summary fallbacks",
+		),
+		readRequired(paths.approvedTitlesPath, "Approved Medium title allowlist"),
+	]);
+	let fallbackValue;
+	try {
+		fallbackValue = JSON.parse(
+			decodeUtf8(fallbackBuffer, "Committed Medium summary fallbacks"),
+		);
+	} catch (error) {
+		if (error instanceof MediumContractError) throw error;
+		throw new MediumContractError(
+			"Committed Medium summary fallbacks is not valid JSON",
+			{ cause: error },
+		);
+	}
+	const canonicalFallbackBuffer = Buffer.from(
+		`${JSON.stringify(fallbackValue, null, "\t")}\n`,
+		"utf8",
+	);
+	if (!fallbackBuffer.equals(canonicalFallbackBuffer)) {
+		throw new MediumContractError(
+			"Committed Medium summary fallbacks must use canonical JSON formatting",
+		);
+	}
+	const approvedAllowlist = parseApprovedMediumTitleFile(
+		decodeUtf8(approvedAllowlistBuffer, "Approved Medium title allowlist"),
+	);
+	const proposal = buildMediumInventoryReviewProposal({
+		candidates: inventory.candidates.map(unresolvedCandidateFromReviewed),
+		approvedAllowlist,
+		exportRecord: inventory.export,
+		authorEvidenceCount: inventory.candidateCount,
+	});
+	const pendingSummarySlugs = inventory.articles
+		.filter((article) => article.exportSummary === null)
+		.map((article) => article.slug);
+	const fallbacks = validateMediumSummaryFallbacks(fallbackValue, {
+		proposalSha256: sha256(Buffer.from(serializeJson(proposal), "utf8")),
+		presentationSetSha256: inventory.presentationSetSha256,
+		pendingSummarySlugs,
+	});
+	for (const slug of pendingSummarySlugs) {
+		const article = inventory.bySlug.get(slug);
+		if (fallbacks.get(slug) !== article?.summary) {
+			throw new MediumContractError(
+				`Committed Medium summary fallback differs from the reviewed inventory for ${slug}`,
+			);
+		}
+	}
+	return {
+		buffer: fallbackBuffer,
+		value: fallbackValue,
+		proposalSha256: fallbackValue.proposalSha256,
+		presentationSetSha256: fallbackValue.presentationSetSha256,
+		fallbackCount: fallbacks.size,
+		fallbacks,
+	};
+}
+
+export async function verifyMediumSummaryFallbackEvidence({
+	repoRoot,
+	inventoryValue,
+} = {}) {
+	const inventory = validateMediumInventory(inventoryValue);
+	if (inventory.state !== "reviewed") {
+		throw new MediumContractError(
+			"Medium summary fallback evidence requires a reviewed inventory",
+		);
+	}
+	return loadMediumSummaryFallbackEvidence(repoRoot, inventory);
+}
+
+export async function createPendingMediumReviewScaffold({
+	repoRoot,
+	write = false,
+} = {}) {
+	const manifest = await loadManifest(repoRoot);
+	const scaffold = buildPendingMediumReviewScaffold(manifest.value);
+	const scaffoldPath = getMediumPaths(repoRoot).reviewScaffoldPath;
+	if (write) {
+		await writeNewFile(
+			scaffoldPath,
+			Buffer.from(serializeJson(scaffold), "utf8"),
+			"Pending Medium review scaffold",
+		);
+	}
+	return {
+		mode: write ? "write" : "dry-run",
+		scaffoldPath: toRepositoryPath(repoRoot, scaffoldPath),
+		scaffold,
+	};
 }
 
 async function loadRawExport(repoRoot, inventory) {
@@ -778,7 +1103,13 @@ async function loadAssets(repoRoot, article) {
 	return assets;
 }
 
-async function buildArticle(repoRoot, article, rawExport, capturedAt) {
+async function buildArticle(
+	repoRoot,
+	article,
+	rawExport,
+	capturedAt,
+	presentationBinding,
+) {
 	const sourceBuffer = rawExport.entries.get(article.sourcePath);
 	if (!sourceBuffer) {
 		throw new MediumContractError(
@@ -859,6 +1190,8 @@ async function buildArticle(repoRoot, article, rawExport, capturedAt) {
 			sourcePath: article.sourcePath,
 			sourceSha256: article.sourceSha256,
 			canonicalUrl: article.canonicalUrl,
+			presentationSetVersion: presentationBinding.presentationSetVersion,
+			presentationSetSha256: presentationBinding.presentationSetSha256,
 		},
 		hero: {
 			id: hero.id,
@@ -879,7 +1212,7 @@ async function buildArticle(repoRoot, article, rawExport, capturedAt) {
 		bodyBlockCount: bodyDocument.blocks.length,
 		license: { name: ALL_RIGHTS_RESERVED },
 	};
-	validateMediumSnapshot(snapshot, article);
+	validateMediumSnapshot(snapshot, article, presentationBinding);
 	const snapshotBuffer = Buffer.from(serializeJson(snapshot), "utf8");
 	const markdownBuffer = Buffer.from(
 		renderMediumIndexMarkdown(snapshot),
@@ -896,7 +1229,7 @@ async function buildArticle(repoRoot, article, rawExport, capturedAt) {
 	};
 }
 
-function activeManifestBase(inventoryBuffer) {
+function activeManifestBase(inventoryBuffer, inventory) {
 	return {
 		schemaVersion: MANIFEST_SCHEMA_VERSION,
 		state: "active",
@@ -907,6 +1240,8 @@ function activeManifestBase(inventoryBuffer) {
 		author: { name: AUTHOR_NAME, profileUrl: AUTHOR_PROFILE_URL },
 		inventoryPath: "provenance/medium/inventory.json",
 		inventorySha256: sha256(inventoryBuffer),
+		presentationSetVersion: inventory.presentationSetVersion,
+		presentationSetSha256: inventory.presentationSetSha256,
 	};
 }
 
@@ -1045,6 +1380,7 @@ export async function importMediumArticles({
 			article,
 			rawExport,
 			inventory.export.capturedAt,
+			inventory,
 		);
 		const entry = makeManifestEntry(
 			repoRoot,
@@ -1106,7 +1442,7 @@ export async function importMediumArticles({
 	const nextEntries = inventoryChanged ? new Map() : new Map(existingEntries);
 	for (const plan of plans) nextEntries.set(plan.slug, plan.entry);
 	const nextManifest = {
-		...activeManifestBase(inventory.buffer),
+		...activeManifestBase(inventory.buffer, inventory),
 		articles: [...nextEntries.values()].sort((left, right) =>
 			left.slug.localeCompare(right.slug),
 		),
@@ -1200,6 +1536,7 @@ export async function verifyMediumArticles({
 			plannedAssetCount: heroAssetLedger.itemCount,
 		};
 	}
+	await loadMediumSummaryFallbackEvidence(repoRoot, inventory);
 	if (manifest.state !== "active") {
 		throw new MediumContractError(
 			"Reviewed Medium inventory requires an active manifest",
@@ -1208,6 +1545,14 @@ export async function verifyMediumArticles({
 	if (manifest.inventorySha256 !== sha256(inventory.buffer)) {
 		throw new MediumContractError(
 			"Medium manifest inventory hash does not match the reviewed inventory",
+		);
+	}
+	if (
+		manifest.presentationSetVersion !== inventory.presentationSetVersion ||
+		manifest.presentationSetSha256 !== inventory.presentationSetSha256
+	) {
+		throw new MediumContractError(
+			"Medium manifest presentation digest does not match the reviewed inventory",
 		);
 	}
 	const selected =
@@ -1294,7 +1639,7 @@ export async function verifyMediumArticles({
 			`Markdown for ${slug}`,
 		);
 		const snapshotValue = parseJson(snapshotBuffer, `Snapshot for ${slug}`);
-		const snapshot = validateMediumSnapshot(snapshotValue, article);
+		const snapshot = validateMediumSnapshot(snapshotValue, article, inventory);
 		if (
 			sha256(snapshotBuffer) !== entry.hashes.snapshot ||
 			sha256(markdownBuffer) !== entry.hashes.markdown ||
@@ -1337,6 +1682,7 @@ export async function verifyMediumArticles({
 				article,
 				rawExport,
 				entry.capturedAt,
+				inventory,
 			);
 			if (
 				!rebuilt.snapshotBuffer.equals(snapshotBuffer) ||
@@ -1581,6 +1927,115 @@ export function verifyFirstPartyMarkdown(article, markdown) {
 	return digest;
 }
 
+export function validateAggregateReleaseTarget(value) {
+	const target = assertPlainObject(value, "release target");
+	assertOnlyKeys(
+		target,
+		new Set(["schemaVersion", "release", "expected"]),
+		"release target",
+	);
+	if (target.schemaVersion !== 2) {
+		throw new MediumContractError("release target schemaVersion must equal 2");
+	}
+	const expected = assertPlainObject(
+		target.expected,
+		"release target.expected",
+	);
+	assertOnlyKeys(
+		expected,
+		new Set(["archiveWriting", "mediumWriting", "podcastEpisodes"]),
+		"release target.expected",
+	);
+	return {
+		schemaVersion: 2,
+		release: assertNonEmptyString(target.release, "release target.release"),
+		expected: {
+			archiveWriting: assertInteger(
+				expected.archiveWriting,
+				"release target.expected.archiveWriting",
+				{ positive: true },
+			),
+			mediumWriting: assertInteger(
+				expected.mediumWriting,
+				"release target.expected.mediumWriting",
+				{ positive: true },
+			),
+			podcastEpisodes: assertInteger(
+				expected.podcastEpisodes,
+				"release target.expected.podcastEpisodes",
+				{ positive: true },
+			),
+		},
+	};
+}
+
+export function reconcileAggregateReleaseTarget({ target, archive, medium }) {
+	const releaseTarget = validateAggregateReleaseTarget(target);
+	if (
+		archive?.importedCount !== releaseTarget.expected.archiveWriting ||
+		medium?.importedCount !== releaseTarget.expected.mediumWriting ||
+		archive?.complete !== true ||
+		medium?.complete !== true
+	) {
+		throw new MediumContractError(
+			`Aggregate release target is incomplete: archive ${archive?.importedCount ?? 0}/${releaseTarget.expected.archiveWriting}, Medium ${medium?.importedCount ?? 0}/${releaseTarget.expected.mediumWriting}`,
+		);
+	}
+	return releaseTarget;
+}
+
+function requireExactIdentitySet(actualValues, expectedValues, label) {
+	const actual = new Set(actualValues);
+	const expected = new Set(expectedValues);
+	const missing = [...expected].filter((value) => !actual.has(value)).sort();
+	const extra = [...actual].filter((value) => !expected.has(value)).sort();
+	if (
+		actual.size !== actualValues.length ||
+		expected.size !== expectedValues.length ||
+		missing.length > 0 ||
+		extra.length > 0
+	) {
+		throw new MediumContractError(
+			`${label} must exactly match the combined release identities; missing: ${missing.join(", ") || "none"}; extra: ${extra.join(", ") || "none"}`,
+		);
+	}
+}
+
+export function validateAggregateReviewIdentitySets({
+	mediumSlugs,
+	claimReviews,
+	contentSignoffs,
+} = {}) {
+	if (
+		!Array.isArray(mediumSlugs) ||
+		!Array.isArray(claimReviews) ||
+		!Array.isArray(contentSignoffs)
+	) {
+		throw new MediumContractError(
+			"Aggregate review identity inputs must be arrays",
+		);
+	}
+	const writingIdentities = mediumSlugs.map(
+		(slug) => `writing:${assertSlug(slug)}`,
+	);
+	requireExactIdentitySet(
+		claimReviews.map((review) => assertSlug(review?.slug)),
+		mediumSlugs,
+		"Medium claim reviews",
+	);
+	requireExactIdentitySet(
+		contentSignoffs.map(
+			(signoff) => `${signoff?.kind}:${assertSlug(signoff?.slug)}`,
+		),
+		[...writingIdentities, "podcast:modular-ethics"],
+		"Content signoffs",
+	);
+	return {
+		claimReviewCount: claimReviews.length,
+		contentSignoffCount: contentSignoffs.length,
+	};
+}
+
 export async function verifyAggregateContent({
 	repoRoot,
 	requireComplete = false,
@@ -1598,6 +2053,19 @@ export async function verifyAggregateContent({
 		),
 	);
 	const mediumManifest = await loadManifest(repoRoot);
+	const releaseTarget = requireComplete
+		? reconcileAggregateReleaseTarget({
+				target: parseJson(
+					await readRequired(
+						path.join(repoRoot, "provenance", "release-target.json"),
+						"Release target",
+					),
+					"Release target",
+				),
+				archive,
+				medium,
+			})
+		: null;
 	const firstPartyManifest = validateFirstPartyManifest(
 		parseJson(
 			await readRequired(
@@ -1675,16 +2143,24 @@ export async function verifyAggregateContent({
 			.filter((entry) => entry.kind === "writing")
 			.map((entry) => [entry.slug, entry]),
 	);
-	const claimReviews = new Map(
-		validateClaimReviews(
-			parseJson(
-				await readRequired(
-					path.join(repoRoot, "provenance", "medium", "claim-reviews.json"),
-					"Medium claim reviews",
-				),
+	const claimReviewEntries = validateClaimReviews(
+		parseJson(
+			await readRequired(
+				path.join(repoRoot, "provenance", "medium", "claim-reviews.json"),
 				"Medium claim reviews",
 			),
-		).map((review) => [review.slug, review]),
+			"Medium claim reviews",
+		),
+	);
+	if (requireComplete) {
+		validateAggregateReviewIdentitySets({
+			mediumSlugs: mediumManifest.articles.map((article) => article.slug),
+			claimReviews: claimReviewEntries,
+			contentSignoffs,
+		});
+	}
+	const claimReviews = new Map(
+		claimReviewEntries.map((review) => [review.slug, review]),
 	);
 	const archiveBySlug = new Map(
 		archiveManifest.articles.map((article) => [article.slug, article]),
@@ -1813,8 +2289,8 @@ export async function verifyAggregateContent({
 	);
 	if (
 		requireComplete &&
-		medium.expectedCount > 0 &&
 		(!medium.complete ||
+			catalogMediumSlugs.size !== releaseTarget.expected.mediumWriting ||
 			mediumManifest.articles.some(
 				(article) => !catalogMediumSlugs.has(article.slug),
 			))
@@ -1836,9 +2312,12 @@ export async function verifyAggregateContent({
 	return {
 		complete:
 			archive.complete &&
-			(medium.expectedCount === 0 ||
-				(medium.complete &&
-					catalogMediumSlugs.size === medium.expectedCount)) &&
+			(requireComplete
+				? medium.complete &&
+					catalogMediumSlugs.size === releaseTarget.expected.mediumWriting
+				: medium.expectedCount === 0 ||
+					(medium.complete &&
+						catalogMediumSlugs.size === medium.expectedCount)) &&
 			catalogFirstPartySlugs.size === firstPartyManifest.length,
 		publishedCount: catalog.length,
 		sources: {

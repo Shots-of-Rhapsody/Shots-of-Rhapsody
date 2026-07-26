@@ -13,12 +13,11 @@ addition, or content-model change. Keep pull requests focused on one purpose
 and preserve the existing code/content licensing boundary.
 
 Never hand-edit an imported article, its source metadata, provenance snapshot,
-or archival hero image. A writing correction must be approved by the author,
+or approved hero image. A writing correction must be approved by the author,
 applied to the private source master, and regenerated through the reviewed
-import path. The resulting hash mismatch identifies the exact article whose
-evidence changed. Because every release binds all eleven presentation reviews
-to one frozen candidate commit, any source change still requires a new clean
-candidate and a fresh presentation review of all eleven works.
+import path. The resulting hash mismatch identifies the exact work whose
+evidence changed. Shared presentation changes require a new frozen candidate
+and a fresh release-wide presentation review.
 
 ## Submitting Code
 
@@ -35,19 +34,25 @@ Run the applicable non-writing release checks before submitting a pull request:
 ```bash
 pnpm install --frozen-lockfile
 pnpm test:archive
+pnpm test:future-content
 pnpm archive:verify --require-complete
+pnpm medium:verify --require-complete
+pnpm content:verify --require-complete
+pnpm podcast:verify --require-complete
 pnpm test:migration
 pnpm test:release-tools
 pnpm lint:ci
 pnpm type-check
 pnpm build
 pnpm verify:site
+pnpm podcast:verify --require-complete --with-built
 pnpm test:e2e
 pnpm audit --json
 git diff --check
 ```
 
 `pnpm verify:release` is reserved for a frozen publication candidate with all
-11 genuine, hash-bound human signoffs. It must not be bypassed or satisfied
-with generated reviewer data. Formatting commands write files; run them only
-when intentional and confirm that imported content remains unchanged.
+genuine, hash-bound content, claim, rights, and presentation signoffs. It must
+not be bypassed or satisfied with generated reviewer data. Formatting commands
+write files; run them only when intentional and confirm that imported content
+remains unchanged.

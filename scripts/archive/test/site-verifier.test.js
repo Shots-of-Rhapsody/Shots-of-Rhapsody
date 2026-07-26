@@ -277,6 +277,8 @@ test("Medium rendered-body verification binds exact snapshot bytes and HTML", as
 	const snapshotRelative = `provenance/medium/posts/${slug}.json`;
 	const snapshot = {
 		slug,
+		exportTitle: "The Exported Headline",
+		exportSummary: "The exported summary.",
 		title: "The Display Title",
 		subtitle: "The exact display subtitle.",
 		seriesLine: "A Ledger Series article on exact presentation roles.",
@@ -288,7 +290,17 @@ test("Medium rendered-body verification binds exact snapshot bytes and HTML", as
 		tags: ["Economics", "Society"],
 		imageAlt: null,
 		imageCaption: "",
-		hero: { width: 1200, height: 800 },
+		hero: {
+			outputFile: "hero.webp",
+			sha256: "sha256:placeholder",
+			acquisitionManifestSha256: `sha256:${"1".repeat(64)}`,
+			captureSha256: `sha256:${"2".repeat(64)}`,
+			pixelSha256: `sha256:${"3".repeat(64)}`,
+			mimeType: "image/webp",
+			width: 1200,
+			height: 800,
+			byteSize: 0,
+		},
 		license: { name: "All Rights Reserved" },
 		bodyHtml: "<p>Exact <em>authored</em> text.</p><p></p>",
 	};
@@ -296,25 +308,32 @@ test("Medium rendered-body verification binds exact snapshot bytes and HTML", as
 		"https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/posts/verified-essay/";
 	const socialImageUrl =
 		"https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/social/verified-essay.jpg";
+	const authorUrl =
+		"https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/authors/tai-song/";
+	const heroBytes = Buffer.from("synthetic-medium-hero", "utf8");
+	snapshot.hero.sha256 = testSha256(heroBytes);
+	snapshot.hero.byteSize = heroBytes.byteLength;
 	const renderPage = (
 		bodyHtml,
 		{ heroFirst = false, titleTag = "h1", subtitleFirst = false } = {},
 	) => {
 		const series = `<p data-medium-field="series-line">${snapshot.seriesLine}</p>`;
-		const hero = `<figure data-medium-hero><div data-image-variant="hero" data-source-width="${snapshot.hero.width}" data-source-height="${snapshot.hero.height}"><picture><img src="/hero.webp" alt=""></picture></div></figure>`;
+		const hero = `<figure data-medium-hero><div data-image-variant="hero" data-source-width="${snapshot.hero.width}" data-source-height="${snapshot.hero.height}"><picture><source type="image/avif" srcset="/hero.avif"><img src="/hero.webp" alt="" width="${snapshot.hero.width}" height="${snapshot.hero.height}"></picture></div></figure>`;
 		const jsonLd = JSON.stringify({
 			"@context": "https://schema.org",
 			"@type": "BlogPosting",
-			headline: snapshot.title,
-			alternativeHeadline: snapshot.subtitle,
+			headline: snapshot.exportTitle,
+			alternativeHeadline: snapshot.title,
 			description: snapshot.description,
-			author: { "@type": "Person", name: snapshot.author },
+			author: { "@type": "Person", name: snapshot.author, url: authorUrl },
 			datePublished: snapshot.published,
 			url: pageUrl,
+			mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
 			articleSection: snapshot.category,
 			keywords: snapshot.tags,
 			copyrightNotice: "All Rights Reserved",
 			image: {
+				"@type": "ImageObject",
 				url: socialImageUrl,
 				contentUrl: socialImageUrl,
 				encodingFormat: "image/jpeg",
@@ -322,20 +341,28 @@ test("Medium rendered-body verification binds exact snapshot bytes and HTML", as
 				height: 1200,
 			},
 		});
-		const title = `<${titleTag} data-medium-field="title">${snapshot.title}</${titleTag}>`;
-		const subtitle = `<p data-medium-field="subtitle">${snapshot.subtitle}</p>`;
-		return `<!doctype html><html><head><link rel="canonical" href="${pageUrl}"><meta name="author" content="${snapshot.author}"><meta name="description" content="${snapshot.description}"><meta property="og:title" content="${snapshot.title}"><meta property="og:description" content="${snapshot.description}"><meta property="article:published_time" content="${snapshot.published}"><meta property="article:section" content="${snapshot.category}">${snapshot.tags.map((tag) => `<meta property="article:tag" content="${tag}">`).join("")}<script type="application/ld+json">${jsonLd}</script></head><body><article id="post-container"><header>${subtitleFirst ? `${subtitle}${title}` : `${title}${subtitle}`}<span data-medium-field="author">By ${snapshot.author}</span><time data-post-published datetime="${snapshot.published}">${snapshot.published.slice(0, 10)}</time></header>${heroFirst ? `${hero}${series}` : `${series}${hero}`}<div class="article-body" data-authored-content>${bodyHtml}</div><aside data-license-name="All Rights Reserved"></aside></article></body></html>`;
+		const exportTitle = `<${titleTag} data-medium-field="export-title">${snapshot.exportTitle}</${titleTag}>`;
+		const summary = `<p data-medium-field="summary">${snapshot.summary}</p>`;
+		const lead = `<section data-medium-lead><h2 data-medium-field="title">${snapshot.title}</h2><p data-medium-field="subtitle">${snapshot.subtitle}</p></section>`;
+		return `<!doctype html><html><head><link rel="canonical" href="${pageUrl}"><meta name="author" content="${snapshot.author}"><meta name="description" content="${snapshot.description}"><meta property="og:title" content="${snapshot.exportTitle}"><meta property="og:description" content="${snapshot.description}"><meta property="og:image" content="${socialImageUrl}"><meta property="og:image:alt" content=""><meta property="og:image:type" content="image/jpeg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="1200"><meta property="article:published_time" content="${snapshot.published}"><meta property="article:section" content="${snapshot.category}">${snapshot.tags.map((tag) => `<meta property="article:tag" content="${tag}">`).join("")}<script type="application/ld+json">${jsonLd}</script></head><body><article id="post-container"><header>${subtitleFirst ? `${summary}${exportTitle}` : `${exportTitle}${summary}`}<span data-medium-field="author">By ${snapshot.author}</span><time data-post-published datetime="${snapshot.published}">${snapshot.published.slice(0, 10)}</time></header>${lead}${heroFirst ? `${hero}${series}` : `${series}${hero}`}<div class="article-body" data-authored-content>${bodyHtml}</div><aside data-license-name="All Rights Reserved"></aside></article></body></html>`;
 	};
 	const renderRss = ({
-		title = snapshot.title,
+		title = snapshot.exportTitle,
 		body = snapshot.bodyHtml,
 	} = {}) =>
-		`<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:media="http://search.yahoo.com/mrss/" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><item><title>${title}</title><link>${pageUrl}</link><guid>${pageUrl}</guid><description>${snapshot.summary}</description><pubDate>${new Date(snapshot.published).toUTCString()}</pubDate><dc:creator>${snapshot.author}</dc:creator>${snapshot.tags.map((tag) => `<category>${tag}</category>`).join("")}<category>${snapshot.category}</category><media:content url="${socialImageUrl}" medium="image" type="image/jpeg" width="1200" height="1200" /><content:encoded><![CDATA[<figure><img src="${socialImageUrl}" alt="" width="1200" height="1200"></figure>${body}]]></content:encoded></item></channel></rss>`;
+		`<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:media="http://search.yahoo.com/mrss/" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><item><title>${title}</title><link>${pageUrl}</link><guid>${pageUrl}</guid><description>${snapshot.summary}</description><pubDate>${new Date(snapshot.published).toUTCString()}</pubDate><dc:creator>${snapshot.author}</dc:creator>${snapshot.tags.map((tag) => `<category>${tag}</category>`).join("")}<category>${snapshot.category}</category><media:content url="${socialImageUrl}" medium="image" type="image/jpeg" width="1200" height="1200" /><content:encoded><![CDATA[<section><h2>${snapshot.title}</h2><p>${snapshot.subtitle}</p><p>${snapshot.seriesLine}</p></section><figure><img src="${socialImageUrl}" alt="" width="1200" height="1200"></figure>${body}]]></content:encoded></item></channel></rss>`;
 	const snapshotBytes = Buffer.from(JSON.stringify(snapshot), "utf8");
 	await mkdir(path.join(root, "provenance", "medium", "posts"), {
 		recursive: true,
 	});
 	await mkdir(path.join(root, "dist", "posts", slug), { recursive: true });
+	await mkdir(path.join(root, "src", "content", "posts", slug), {
+		recursive: true,
+	});
+	await writeFile(
+		path.join(root, "src", "content", "posts", slug, "hero.webp"),
+		heroBytes,
+	);
 	await writeFile(
 		path.join(root, ...snapshotRelative.split("/")),
 		snapshotBytes,
@@ -347,6 +374,20 @@ test("Medium rendered-body verification binds exact snapshot bytes and HTML", as
 				slug,
 				paths: { snapshot: snapshotRelative },
 				hashes: { snapshot: testSha256(snapshotBytes) },
+				assets: [
+					{
+						role: "hero",
+						path: `src/content/posts/${slug}/hero.webp`,
+						sha256: snapshot.hero.sha256,
+						acquisitionManifestSha256: snapshot.hero.acquisitionManifestSha256,
+						captureSha256: snapshot.hero.captureSha256,
+						pixelSha256: snapshot.hero.pixelSha256,
+						mimeType: snapshot.hero.mimeType,
+						width: snapshot.hero.width,
+						height: snapshot.hero.height,
+						byteSize: snapshot.hero.byteSize,
+					},
+				],
 			},
 		],
 	};

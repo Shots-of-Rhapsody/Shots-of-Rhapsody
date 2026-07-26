@@ -3,7 +3,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { validatePresentationSignoffsV2 } from "../content/signoffs.js";
+import { verifyPresentationSignoffV2 } from "../content/presentation.js";
 import {
 	verifyAggregateContent,
 	verifyMediumArticles,
@@ -55,9 +55,11 @@ function hasExactKeys(value, expected) {
 	);
 }
 
-function assertInteger(value, label) {
-	if (!Number.isInteger(value) || value < 0)
-		throw new Error(`Release summary has an invalid ${label}`);
+function collectInteger(value, label, failures) {
+	if (!Number.isInteger(value) || value < 0) {
+		failures.push(`Release summary has an invalid ${label}`);
+		return undefined;
+	}
 	return value;
 }
 
@@ -68,39 +70,44 @@ export function validateCombinedReleaseSummary({
 	medium,
 	podcast,
 }) {
+	const failures = [];
 	const { archiveWriting, mediumWriting, podcastEpisodes } = target.expected;
 	const publishedWriting = archiveWriting + mediumWriting;
-	const publishedCount = assertInteger(
+	const publishedCount = collectInteger(
 		aggregate?.publishedCount,
 		"aggregate published count",
+		failures,
 	);
-	const mediumCount = assertInteger(
+	const mediumCount = collectInteger(
 		medium?.expectedCount,
 		"Medium expected count",
+		failures,
 	);
-	const podcastCount = assertInteger(
+	const podcastCount = collectInteger(
 		podcast?.episodes,
 		"podcast episode count",
+		failures,
 	);
 	if (aggregate?.complete !== true)
-		throw new Error("v1.0.0 aggregate content verification is incomplete");
+		failures.push("v1.0.0 aggregate content verification is incomplete");
 	if (
 		medium?.complete !== true ||
 		mediumCount !== mediumWriting ||
 		medium?.importedCount !== mediumWriting
 	)
-		throw new Error(
+		failures.push(
 			`v1.0.0 requires exactly ${mediumWriting} complete, approved Medium articles`,
 		);
 	if (
 		aggregate?.sources?.medium?.importedCount !== mediumWriting ||
 		aggregate?.sources?.medium?.complete !== true
 	) {
-		throw new Error("v1.0.0 Medium inventory and aggregate catalog disagree");
+		failures.push("v1.0.0 Medium inventory and aggregate catalog disagree");
 	}
-	const firstPartyCount = assertInteger(
+	const firstPartyCount = collectInteger(
 		aggregate?.sources?.firstParty?.importedCount,
 		"first-party writing count",
+		failures,
 	);
 	if (
 		aggregate?.sources?.archive?.importedCount !== archiveWriting ||
@@ -109,7 +116,7 @@ export function validateCombinedReleaseSummary({
 		aggregate?.sources?.firstParty?.complete !== true ||
 		publishedCount !== publishedWriting
 	) {
-		throw new Error(
+		failures.push(
 			"v1.0.0 aggregate catalog does not reconcile its exact approved writing sources",
 		);
 	}
@@ -118,7 +125,7 @@ export function validateCombinedReleaseSummary({
 		podcast?.builtArtifactsChecked !== true ||
 		podcastCount !== podcastEpisodes
 	) {
-		throw new Error(
+		failures.push(
 			`v1.0.0 requires exactly ${podcastEpisodes} complete podcast episode with built artifacts`,
 		);
 	}
@@ -133,12 +140,25 @@ export function validateCombinedReleaseSummary({
 		["htmlPages", publishedWriting + podcastEpisodes * 2 + 8],
 	]) {
 		if (site?.[field] !== expected) {
-			throw new Error(
+			failures.push(
 				`v1.0.0 release surfaces disagree: expected ${expected} ${field}, received ${site?.[field] ?? "missing"}`,
 			);
 		}
 	}
+	if (failures.length > 0) {
+		throw new Error(
+			`Combined release summary is invalid:\n- ${failures.join("\n- ")}`,
+		);
+	}
 	return { site, aggregate, medium, podcast };
+}
+
+function failureMessage(error) {
+	return error instanceof Error ? error.message : String(error);
+}
+
+function settledValue(result) {
+	return result.status === "fulfilled" ? result.value : undefined;
 }
 
 export async function requirePresentationTarget({ repoRoot, release }) {
@@ -160,10 +180,7 @@ export async function requirePresentationTarget({ repoRoot, release }) {
 			`Presentation signoff ledger is invalid (${error.message})`,
 		);
 	}
-	const releases = validatePresentationSignoffsV2(ledger);
-	if (!releases.some((record) => record.release === release)) {
-		throw new Error(`Presentation signoff is missing for ${release}`);
-	}
+	return verifyPresentationSignoffV2({ ledger, repoRoot, release });
 }
 
 async function readReleaseTarget(repoRoot) {
@@ -187,31 +204,72 @@ export async function verifyRelease({
 } = {}) {
 	const dependencies = { ...defaultDependencies, ...dependencyOverrides };
 	const target = await readReleaseTarget(repoRoot);
-	const site = await dependencies.verifyBuiltSite({
-		repoRoot,
-		requireSignoff: true,
-		releaseTarget: "catalog",
-	});
-	const aggregate = await dependencies.verifyAggregateContent({
-		repoRoot,
-		requireComplete: true,
-	});
-	const medium = await dependencies.verifyMediumArticles({
-		repoRoot,
-		requireComplete: true,
-	});
-	await requirePresentationTarget({ repoRoot, release: target.release });
-	const podcast = await dependencies.verifyPodcastRelease({
-		withBuilt: true,
-		release: target.release,
-	});
-	validateCombinedReleaseSummary({
-		target,
-		site,
-		aggregate,
-		medium,
-		podcast,
-	});
+	const checks = [
+		[
+			"built site and archive signoffs",
+			() =>
+				dependencies.verifyBuiltSite({
+					repoRoot,
+					requireSignoff: true,
+					releaseTarget: "catalog",
+				}),
+		],
+		[
+			"aggregate writing catalog",
+			() =>
+				dependencies.verifyAggregateContent({
+					repoRoot,
+					requireComplete: true,
+				}),
+		],
+		[
+			"Medium writing",
+			() =>
+				dependencies.verifyMediumArticles({
+					repoRoot,
+					requireComplete: true,
+				}),
+		],
+		[
+			"presentation signoff",
+			() => requirePresentationTarget({ repoRoot, release: target.release }),
+		],
+		[
+			"podcast release",
+			() =>
+				dependencies.verifyPodcastRelease({
+					withBuilt: true,
+					release: target.release,
+				}),
+		],
+	];
+	const settled = await Promise.allSettled(checks.map(([, run]) => run()));
+	const failures = settled.flatMap((result, index) =>
+		result.status === "rejected"
+			? [`${checks[index][0]}: ${failureMessage(result.reason)}`]
+			: [],
+	);
+	const [siteResult, aggregateResult, mediumResult, , podcastResult] = settled;
+	const site = settledValue(siteResult);
+	const aggregate = settledValue(aggregateResult);
+	const medium = settledValue(mediumResult);
+	const podcast = settledValue(podcastResult);
+	try {
+		validateCombinedReleaseSummary({
+			target,
+			site,
+			aggregate,
+			medium,
+			podcast,
+		});
+	} catch (error) {
+		failures.push(failureMessage(error));
+	}
+	if (failures.length > 0) {
+		throw new Error(
+			`Combined release verification failed:\n- ${failures.join("\n- ")}`,
+		);
+	}
 	return { target: target.release, site, aggregate, medium, podcast };
 }
 

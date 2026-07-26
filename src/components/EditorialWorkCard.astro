@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { getPostDeck, getPostHeadline } from "@utils/content-utils";
 import { formatDateToYYYYMMDD } from "@utils/date-utils";
 import { getPostUrlBySlug } from "@utils/url-utils";
 import {
@@ -49,8 +50,13 @@ const eyebrow =
 		: getWritingTypeLabel(entry.id, entry.data.category ?? ""));
 const TitleTag = variant === "catalog" ? "h4" : "h3";
 const imageVariant = variant === "catalog" ? "card" : variant;
+const cardTitle = getPostHeadline(entry);
+const isMediumPost =
+	entry.data.provenance?.authority === "Medium account export";
 const cardDescription =
-	variant === "continuation" ? entry.data.subtitle : entry.data.summary;
+	variant === "continuation" && !isMediumPost
+		? entry.data.subtitle || getPostDeck(entry)
+		: getPostDeck(entry);
 ---
 
 <article
@@ -84,7 +90,7 @@ const cardDescription =
 		<div class="editorial-card__body">
 			<p class="editorial-card__eyebrow">{eyebrow}</p>
 			<TitleTag class="editorial-card__title">
-				<a href={getPostUrlBySlug(entry.id)}>{entry.data.title}</a>
+				<a href={getPostUrlBySlug(entry.id)}>{cardTitle}</a>
 			</TitleTag>
 			<p class="editorial-card__subtitle">{cardDescription}</p>
 			<p class="editorial-card__meta">

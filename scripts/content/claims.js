@@ -1,6 +1,7 @@
 import {
 	assertCanonicalUtc,
 	assertHttpsUrl,
+	assertNonEmptyString,
 	assertOnlyKeys,
 	assertPlainObject,
 	assertSha256,
@@ -38,6 +39,7 @@ export function validateClaimReviews(value) {
 				"outcome",
 				"notes",
 				"claims",
+				"noMaterialClaimsRationale",
 			]),
 			label,
 		);
@@ -103,6 +105,31 @@ export function validateClaimReviews(value) {
 		const claimIds = claims.map((claim) => claim.id);
 		if (new Set(claimIds).size !== claimIds.length)
 			throw new MediumContractError(`${label} repeats a claim id`);
+		const hasNoMaterialClaimsRationale = Object.hasOwn(
+			article,
+			"noMaterialClaimsRationale",
+		);
+		let noMaterialClaimsRationale;
+		if (claims.length === 0) {
+			if (!hasNoMaterialClaimsRationale) {
+				throw new MediumContractError(
+					`${label} must include at least one reviewed claim or an explicit noMaterialClaimsRationale`,
+				);
+			}
+			noMaterialClaimsRationale = assertNonEmptyString(
+				article.noMaterialClaimsRationale,
+				`${label}.noMaterialClaimsRationale`,
+			);
+			if (noMaterialClaimsRationale.trim().length === 0) {
+				throw new MediumContractError(
+					`${label}.noMaterialClaimsRationale must contain non-whitespace text`,
+				);
+			}
+		} else if (hasNoMaterialClaimsRationale) {
+			throw new MediumContractError(
+				`${label} must not combine reviewed claims with noMaterialClaimsRationale`,
+			);
+		}
 		return {
 			slug: assertSlug(article.slug, `${label}.slug`),
 			sourceSha256: assertSha256(article.sourceSha256, `${label}.sourceSha256`),
@@ -112,6 +139,9 @@ export function validateClaimReviews(value) {
 			outcome: "passed",
 			notes: assertString(article.notes, `${label}.notes`),
 			claims,
+			...(noMaterialClaimsRationale === undefined
+				? {}
+				: { noMaterialClaimsRationale }),
 		};
 	});
 	const slugs = articles.map((article) => article.slug);

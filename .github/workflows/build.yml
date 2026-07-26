@@ -61,10 +61,10 @@ jobs:
       - name: Verify the aggregate writing catalog
         run: pnpm content:verify --require-complete
 
-      - name: Verify unpublished Medium and podcast boundaries
+      - name: Verify complete Medium and podcast release evidence
         run: |
-          pnpm medium:verify
-          pnpm podcast:verify
+          pnpm medium:verify --require-complete
+          pnpm podcast:verify --require-complete
 
       - name: Test release audit tooling
         run: pnpm test:release-tools
@@ -107,8 +107,11 @@ jobs:
       - name: Verify built routes and metadata
         run: pnpm verify:site
 
-      - name: Verify built podcast publication boundary
-        run: pnpm podcast:verify --with-built
+      - name: Verify complete built podcast publication boundary
+        run: pnpm podcast:verify --require-complete --with-built
+
+      - name: Verify the complete combined release
+        run: pnpm verify:release
 
   dependency-security:
     runs-on: ubuntu-latest

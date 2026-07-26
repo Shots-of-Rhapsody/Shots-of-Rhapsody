@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import {
@@ -197,9 +198,58 @@ test("acquisition manifest hash must equal the durable anchor", async () => {
 	);
 });
 
-test("asset planning cannot impersonate imported article completeness", async () => {
+test("asset planning cannot impersonate imported article completeness", async (context) => {
+	const repoRoot = await mkdtemp(path.join(os.tmpdir(), "medium-planning-"));
+	context.after(() => rm(repoRoot, { recursive: true, force: true }));
+	const provenanceRoot = path.join(repoRoot, "provenance", "medium");
+	await mkdir(provenanceRoot, { recursive: true });
+	const awaitingInventory = {
+		schemaVersion: 1,
+		state: "awaiting-export",
+		authority: { platform: "Medium", captureFormat: "account-export-zip" },
+		author: {
+			name: "Tai Song",
+			profileUrl: "https://medium.com/@ShotsOfRhapsody",
+		},
+		export: null,
+		candidateCount: 0,
+		candidateSetSha256: null,
+		candidates: [],
+		expectedCount: 0,
+		articles: [],
+	};
+	const awaitingManifest = {
+		schemaVersion: 1,
+		state: "awaiting-export",
+		authority: { platform: "Medium", captureFormat: "account-export-zip" },
+		author: {
+			name: "Tai Song",
+			profileUrl: "https://medium.com/@ShotsOfRhapsody",
+		},
+		inventoryPath: "provenance/medium/inventory.json",
+		inventorySha256: null,
+		articles: [],
+	};
+	await Promise.all([
+		writeFile(
+			path.join(provenanceRoot, "approved-titles.v1.json"),
+			await readFile(approvedPath),
+		),
+		writeFile(
+			path.join(provenanceRoot, "hero-assets.v1.json"),
+			await readFile(assetLedgerPath),
+		),
+		writeFile(
+			path.join(provenanceRoot, "inventory.json"),
+			`${JSON.stringify(awaitingInventory, null, 2)}\n`,
+		),
+		writeFile(
+			path.join(provenanceRoot, "manifest.json"),
+			`${JSON.stringify(awaitingManifest, null, 2)}\n`,
+		),
+	]);
 	const result = await verifyMediumArticles({
-		repoRoot: DEFAULT_REPO_ROOT,
+		repoRoot,
 		requireComplete: false,
 	});
 	assert.equal(result.importedCount, 0);

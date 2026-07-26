@@ -185,6 +185,8 @@ const createPostSchema = (image: ImageFunction) =>
 		.object({
 			title: z.string(),
 			subtitle: z.string().optional().default(""),
+			exportTitle: z.string().optional().default(""),
+			exportSummary: z.string().nullable().optional().default(null),
 			seriesLine: z.string().optional().default(""),
 			summary: z.string().optional().default(""),
 			author: z.string().optional().default(""),
@@ -301,6 +303,34 @@ const createPostSchema = (image: ImageFunction) =>
 					message:
 						"Medium archive posts must preserve their reviewed Ledger Series sentence",
 					path: ["seriesLine"],
+				});
+			}
+			if (post.provenance.authority === "Medium account export") {
+				if (post.exportTitle.length === 0) {
+					context.addIssue({
+						code: "custom",
+						message:
+							"Medium account-export posts must preserve the exported story title",
+						path: ["exportTitle"],
+					});
+				}
+				if (
+					post.exportSummary !== null &&
+					post.summary !== post.exportSummary
+				) {
+					context.addIssue({
+						code: "custom",
+						message:
+							"Medium public summaries must preserve the exported story summary when present",
+						path: ["summary"],
+					});
+				}
+			} else if (post.exportTitle || post.exportSummary !== null) {
+				context.addIssue({
+					code: "custom",
+					message:
+						"Only Medium account-export posts may carry exported presentation fields",
+					path: [post.exportTitle ? "exportTitle" : "exportSummary"],
 				});
 			}
 

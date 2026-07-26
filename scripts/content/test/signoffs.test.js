@@ -7,6 +7,35 @@ import {
 	validatePresentationSignoffsV2,
 } from "../signoffs.js";
 
+const DIGEST_A = `sha256:${"a".repeat(64)}`;
+const DIGEST_B = `sha256:${"b".repeat(64)}`;
+const DIGEST_C = `sha256:${"c".repeat(64)}`;
+
+function claimReviewArticle(overrides = {}) {
+	return {
+		slug: "essay",
+		sourceSha256: DIGEST_B,
+		outputSha256: DIGEST_C,
+		reviewer: "Tai Song",
+		reviewedAt: "2026-07-25T12:00:00.000Z",
+		outcome: "passed",
+		notes: "",
+		claims: [],
+		...overrides,
+	};
+}
+
+function supportedClaim() {
+	return {
+		id: "claim-one",
+		statementSha256: DIGEST_A,
+		material: true,
+		status: "supported",
+		sources: ["https://www.example.gov/primary-source"],
+		notes: "The primary source supports the material statement.",
+	};
+}
+
 test("empty v2 signoff ledgers are valid pending evidence", () => {
 	assert.deepEqual(validateContentSignoffsV2({ version: 2, entries: [] }), []);
 	assert.deepEqual(
@@ -43,6 +72,69 @@ test("material unsupported claims block a passed review", () => {
 				],
 			}),
 		/unresolved material claim/u,
+	);
+});
+
+test("claim-bearing version 1 reviews remain valid without a no-claims rationale", () => {
+	const [review] = validateClaimReviews({
+		version: 1,
+		articles: [claimReviewArticle({ claims: [supportedClaim()] })],
+	});
+
+	assert.equal(review.claims.length, 1);
+	assert.equal(Object.hasOwn(review, "noMaterialClaimsRationale"), false);
+});
+
+test("a passed review cannot omit both reviewed claims and a no-claims rationale", () => {
+	assert.throws(
+		() =>
+			validateClaimReviews({
+				version: 1,
+				articles: [claimReviewArticle()],
+			}),
+		/at least one reviewed claim or an explicit noMaterialClaimsRationale/u,
+	);
+});
+
+test("a passed review can explicitly explain why it has no material claims", () => {
+	const rationale =
+		"This personal reflection makes no material factual claim requiring source verification.";
+	const [review] = validateClaimReviews({
+		version: 1,
+		articles: [claimReviewArticle({ noMaterialClaimsRationale: rationale })],
+	});
+
+	assert.equal(review.claims.length, 0);
+	assert.equal(review.noMaterialClaimsRationale, rationale);
+});
+
+test("a no-claims rationale must contain non-whitespace text", () => {
+	for (const noMaterialClaimsRationale of ["", " \t\r\n", null]) {
+		assert.throws(
+			() =>
+				validateClaimReviews({
+					version: 1,
+					articles: [claimReviewArticle({ noMaterialClaimsRationale })],
+				}),
+			/noMaterialClaimsRationale must/u,
+		);
+	}
+});
+
+test("reviewed claims and a no-claims rationale are mutually exclusive", () => {
+	assert.throws(
+		() =>
+			validateClaimReviews({
+				version: 1,
+				articles: [
+					claimReviewArticle({
+						claims: [supportedClaim()],
+						noMaterialClaimsRationale:
+							"This must not accompany a reviewed claim.",
+					}),
+				],
+			}),
+		/must not combine reviewed claims with noMaterialClaimsRationale/u,
 	);
 });
 

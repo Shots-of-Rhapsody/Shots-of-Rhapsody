@@ -60,12 +60,13 @@ the final privacy and credential audit passes:
 - the Fuwari-derived Git history and merged pull requests;
 - the four unpublished draft-post source files and their legacy history;
 - prior GitHub Actions logs;
-- author-controlled imported article snapshots and original hero images;
-- the tracked 57,831,360-byte legacy podcast MP3, which remains excluded from
-  the built website.
+- author-controlled imported article snapshots and approved hero images;
+- the exact 57,831,360-byte Episode 1 MP3, intended for the verified public
+  episode route after transcript and release approval.
 
-Acceptance of disclosure is not a content license. Tai Song's 11 articles and
-their original hero images remain All Rights Reserved.
+Acceptance of disclosure is not a content license. Tai Song's 35 written works,
+their approved images, podcast audio, artwork, and transcript remain All Rights
+Reserved.
 
 ## Fail-closed outcomes
 

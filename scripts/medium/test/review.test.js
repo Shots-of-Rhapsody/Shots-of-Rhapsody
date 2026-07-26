@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { extractMediumAuthorEvidence } from "../lib/html.js";
-import { mediumCandidateSetSha256 } from "../lib/model.js";
+import {
+	mediumCandidateSetSha256,
+	mediumPresentationSetSha256,
+} from "../lib/model.js";
 import {
 	buildMediumInventoryReviewProposal,
 	MEDIUM_RESPONSE_EXCLUSION_REASON,
@@ -88,6 +91,11 @@ test("review proposal preserves all candidate evidence and records exact disposi
 	});
 	assert.equal(Object.hasOwn(proposal, "articles"), false);
 	assert.equal(Object.hasOwn(proposal, "reviewer"), false);
+	assert.equal(proposal.presentationSetVersion, 1);
+	assert.equal(
+		proposal.presentationSetSha256,
+		mediumPresentationSetSha256(proposal.candidates),
+	);
 	for (const [index, source] of candidates.entries()) {
 		for (const field of [
 			"suggestedSlug",
@@ -173,6 +181,28 @@ test("review proposal rejects altered evidence, dispositions, and author counts"
 				...options,
 			}),
 		/complete source author evidence/u,
+	);
+});
+
+test("presentation digest detects changes the legacy acquisition digest omits", () => {
+	const { approvedAllowlist, options, proposal } = fixture();
+	const changed = structuredClone(proposal);
+	changed.candidates[0].displaySubtitleCandidate = "Altered presentation.";
+	assert.equal(
+		mediumCandidateSetSha256(changed.candidates),
+		proposal.candidateSetSha256,
+	);
+	assert.notEqual(
+		mediumPresentationSetSha256(changed.candidates),
+		proposal.presentationSetSha256,
+	);
+	assert.throws(
+		() =>
+			validateMediumInventoryReviewProposal(changed, {
+				approvedAllowlist,
+				...options,
+			}),
+		/presentation set differs/u,
 	);
 });
 

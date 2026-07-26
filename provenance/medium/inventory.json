@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "state": "awaiting-export",
+  "state": "reviewed",
   "authority": {
     "platform": "Medium",
     "captureFormat": "account-export-zip"
@@ -9,10 +9,1662 @@
     "name": "Tai Song",
     "profileUrl": "https://medium.com/@ShotsOfRhapsody"
   },
-  "export": null,
-  "candidateCount": 0,
-  "candidateSetSha256": null,
-  "candidates": [],
-  "expectedCount": 0,
-  "articles": []
+  "export": {
+    "fileName": "medium-export.zip",
+    "sha256": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+    "capturedAt": "2026-07-25T14:11:15.789Z"
+  },
+  "candidateCount": 33,
+  "candidateSetSha256": "sha256:5aacb429b819f4bb7bd51304fc414d6be54b62b5231433b0797d6672b265e38a",
+  "presentationSetVersion": 1,
+  "presentationSetSha256": "sha256:ef4258dc651853433de14371682bb3603c7e58852672587fc6f0a9ce8e1484a2",
+  "candidates": [
+    {
+      "suggestedSlug": "beyond-scarcity-how-automation-ai-could-end-economic-struggle",
+      "title": "Beyond Scarcity: How Automation & AI Could End Economic Struggle",
+      "descriptionCandidate": "Imagine a World Without Financial Survival Anxiety",
+      "exportSummaryCandidate": "Imagine a World Without Financial Survival Anxiety",
+      "displayTitleCandidate": "The Post-Growth Premise",
+      "displaySubtitleCandidate": "In a system built on endless expansion, enough is never enough.",
+      "seriesLineCandidate": "A Ledger Series article on what comes after scarcity economics.",
+      "publishedAtCandidate": "2025-03-18T09:08:05.163Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/beyond-scarcity-how-automation-ai-could-end-economic-struggle-1b84e081e845",
+      "sourcePath": "posts/2025-03-18_Beyond-Scarcity--How-Automation---AI-Could-End-Economic-Struggle-1b84e081e845.html",
+      "sourceSha256": "sha256:d4e98625e0916126a2e9369d030436586abd724fd7dca9986293b65afa613c82",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking",
+      "title": "The Future of Money: Will Cryptocurrency and AI Kill Traditional Banking?",
+      "descriptionCandidate": "Your Bank is Dying, Here’s What’s Replacing It",
+      "exportSummaryCandidate": "Your Bank is Dying, Here’s What’s Replacing It",
+      "displayTitleCandidate": "The Future of Money",
+      "displaySubtitleCandidate": "In a system where currency shapes control, what counts as value shifts beneath us.",
+      "seriesLineCandidate": "A Ledger Series article on currency, control, and financial power in transition.",
+      "publishedAtCandidate": "2025-03-19T08:41:03.729Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking-b093d81a7c12",
+      "sourcePath": "posts/2025-03-19_The-Future-of-Money--Will-Cryptocurrency-and-AI-Kill-Traditional-Banking--b093d81a7c12.html",
+      "sourceSha256": "sha256:fe12718e30c4006d191dfc8321811a356cafedbbb59b0e01e0ca736c9d9c495b",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "what-comes-after-work-designing-a-purpose-driven-life",
+      "title": "What Comes After Work? Designing a Purpose-Driven Life",
+      "descriptionCandidate": "Rethinking the Purpose of Time",
+      "exportSummaryCandidate": "Rethinking the Purpose of Time",
+      "displayTitleCandidate": "The End of Work",
+      "displaySubtitleCandidate": "In a system where labor defines worth, automation threatens more than income.",
+      "seriesLineCandidate": "A Ledger Series article on obsolescence, automation, and the myths of labor loss.",
+      "publishedAtCandidate": "2025-03-22T19:44:47.769Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/what-comes-after-work-designing-a-purpose-driven-life-06fcd3447f09",
+      "sourcePath": "posts/2025-03-22_What-Comes-After-Work--Designing-a-Purpose-Driven-Life-06fcd3447f09.html",
+      "sourceSha256": "sha256:a239e097acb630494ffe0d2bb51c1a6ee6af164f4684dc4bbfac79b9f82c0ba9",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "the-rise-of-zero-cost-economies-what-happens-when-prices-disappear",
+      "title": "The Rise of Zero-Cost Economies: What Happens When Prices Disappear?",
+      "descriptionCandidate": "Imagine a World Where Essentials Cost Nothing",
+      "exportSummaryCandidate": "Imagine a World Where Essentials Cost Nothing",
+      "displayTitleCandidate": "The Price of Free",
+      "displaySubtitleCandidate": "In a system obsessed with scale, zero-cost isn’t freedom. It’s capture.",
+      "seriesLineCandidate": "A Ledger Series article on moving from global competition to systems cooperation.",
+      "publishedAtCandidate": "2025-03-24T05:50:03.781Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/the-rise-of-zero-cost-economies-what-happens-when-prices-disappear-6757f5dd592e",
+      "sourcePath": "posts/2025-03-24_The-Rise-of-Zero-Cost-Economies--What-Happens-When-Prices-Disappear--6757f5dd592e.html",
+      "sourceSha256": "sha256:71e46d3e502cf2c5bc856dcaf2ed5b9e998de0fd4d8d61c66a9cb8ceb216281d",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "the-next-leap-from-global-competition-to-human-cooperation",
+      "title": "The Next Leap: From Global Competition to Human Cooperation",
+      "descriptionCandidate": "Imagine a World Built on Shared Purpose, Not Profit",
+      "exportSummaryCandidate": "Imagine a World Built on Shared Purpose, Not Profit",
+      "displayTitleCandidate": "The Next Leap",
+      "displaySubtitleCandidate": "In a system that rewards competition, cooperation is treated as risk.",
+      "seriesLineCandidate": "A Ledger Series article on moving from global competition to systems cooperation.",
+      "publishedAtCandidate": "2025-03-25T06:13:40.072Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/the-next-leap-from-global-competition-to-human-cooperation-b0f2805608c5",
+      "sourcePath": "posts/2025-03-25_The-Next-Leap--From-Global-Competition-to-Human-Cooperation-b0f2805608c5.html",
+      "sourceSha256": "sha256:415633c3e2b8060d3346f316745b95883c4e9e0c66e9fcd64b65897dba68b696",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "closing-the-gap-how-a-fairer-global-economy-could-lift-billions",
+      "title": "Closing the Gap: How a Fairer Global Economy Could Lift Billions",
+      "descriptionCandidate": "Imagine a World Where Progress Doesn’t Leave People Behind",
+      "exportSummaryCandidate": "Imagine a World Where Progress Doesn’t Leave People Behind",
+      "displayTitleCandidate": "The Distribution Myth",
+      "displaySubtitleCandidate": "In a system flooded with wealth, fairness remains an accounting illusion.",
+      "seriesLineCandidate": "A Ledger Series article on fairness, inequality, and the illusion of equal access.",
+      "publishedAtCandidate": "2025-03-26T06:47:49.110Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/closing-the-gap-how-a-fairer-global-economy-could-lift-billions-24c9923e2f19",
+      "sourcePath": "posts/2025-03-26_Closing-the-Gap--How-a-Fairer-Global-Economy-Could-Lift-Billions-24c9923e2f19.html",
+      "sourceSha256": "sha256:65ebdf9da501df0a45049777a9de7267bfd5283f10d4d9feddbc99e1a0bb2052",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "the-economy-is-built-on-nature-we-just-dont-count-it",
+      "title": "The Economy Is Built on Nature, We Just Don’t Count It",
+      "descriptionCandidate": "We measure profits, but not the ecosystems that make them possible. A new kind of accounting could change that.",
+      "exportSummaryCandidate": "We measure profits, but not the ecosystems that make them possible. A new kind of accounting could change that.",
+      "displayTitleCandidate": "The Natural Economy",
+      "displaySubtitleCandidate": "In a system that extracts but never replenishes, nature becomes invisible.",
+      "seriesLineCandidate": "A Ledger Series article on environmental value and the cost of exclusion.",
+      "publishedAtCandidate": "2025-03-27T07:37:27.425Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/the-economy-is-built-on-nature-we-just-dont-count-it-6c801f9d71cc",
+      "sourcePath": "posts/2025-03-27_The-Economy-Is-Built-on-Nature--We-Just-Don-t-Count-It-6c801f9d71cc.html",
+      "sourceSha256": "sha256:900cedf4b478d696bb41a656aaa9f12284cb7fc702916bc838c54d471704878c",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "the-trillion-dollar-economy-no-one-talks-about",
+      "title": "The Trillion Dollar Economy No One Talks About",
+      "descriptionCandidate": "Unpaid care work props up the global economy. We just don’t count it, or support it.",
+      "exportSummaryCandidate": "Unpaid care work props up the global economy. We just don’t count it, or support it.",
+      "displayTitleCandidate": "The Care Economy",
+      "displaySubtitleCandidate": "In a system that runs on unpaid labor, what’s essential is what’s ignored.",
+      "seriesLineCandidate": "A Ledger Series article on the unpaid labor that props up everything.",
+      "publishedAtCandidate": "2025-03-28T12:17:40.188Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/the-trillion-dollar-economy-no-one-talks-about-b1810889d3b6",
+      "sourcePath": "posts/2025-03-28_The-Trillion-Dollar-Economy-No-One-Talks-About-b1810889d3b6.html",
+      "sourceSha256": "sha256:18b3605b79eaae7e5d5b6e2cc79254173a376aca60fe421cfff04b38a5f27355",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "the-economics-of-loneliness-how-disconnection-became-a-market-failure",
+      "title": "The Economics of Loneliness: How Disconnection Became a Market Failure",
+      "descriptionCandidate": "We talk about inflation, unemployment, and GDP. But we rarely talk about the cost of being alone.",
+      "exportSummaryCandidate": "We talk about inflation, unemployment, and GDP. But we rarely talk about the cost of being alone.",
+      "displayTitleCandidate": "The Loneliness Economy",
+      "displaySubtitleCandidate": "In a system that monetizes connection, isolation becomes profitable.",
+      "seriesLineCandidate": "A Ledger Series article on isolation as a structural outcome of modern systems.",
+      "publishedAtCandidate": "2025-03-29T13:23:55.504Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/the-economics-of-loneliness-how-disconnection-became-a-market-failure-e9a8dfdba5f3",
+      "sourcePath": "posts/2025-03-29_The-Economics-of-Loneliness--How-Disconnection-Became-a-Market-Failure-e9a8dfdba5f3.html",
+      "sourceSha256": "sha256:344b04b5cded127e3e365b0e25eac76e01a4e73fa583628c259a19c9a1d545ba",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "fair-point-childcare-doesnt-last-forever-and-eldercare-might-not-be-needed-at-all",
+      "title": "Fair point, childcare doesn’t last forever, and eldercare might not be needed at all.",
+      "descriptionCandidate": "But when we talk about care work “never ending,” we're pointing to the cumulative, recurring nature of caregiving, especially for women…",
+      "exportSummaryCandidate": "But when we talk about care work “never ending,” we're pointing to the cumulative, recurring nature of caregiving, especially for women…",
+      "displayTitleCandidate": null,
+      "displaySubtitleCandidate": null,
+      "seriesLineCandidate": null,
+      "publishedAtCandidate": "2025-03-30T04:28:44.223Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/fair-point-childcare-doesnt-last-forever-and-eldercare-might-not-be-needed-at-all-baec4bb353c1",
+      "sourcePath": "posts/2025-03-30_Fair-point--childcare-doesn-t-last-forever--and-eldercare-might-not-be-needed-at-all--baec4bb353c1.html",
+      "sourceSha256": "sha256:c5b16cd50f82003c76d8cf036279b55901706525f9949d9bb4b467b0b628e41b",
+      "include": false,
+      "exclusionReason": "Excluded because the exported item is a response, not a standalone article.",
+      "classification": {
+        "visibility": "public",
+        "authorship": "response",
+        "format": "response"
+      }
+    },
+    {
+      "suggestedSlug": "these-are-all-thoughtful-points",
+      "title": "These are all thoughtful points.",
+      "descriptionCandidate": "You're right that many people do appreciate unpaid labor personally. But the issue here is structural. Women still do 76% of all unpaid…",
+      "exportSummaryCandidate": "You're right that many people do appreciate unpaid labor personally. But the issue here is structural. Women still do 76% of all unpaid…",
+      "displayTitleCandidate": null,
+      "displaySubtitleCandidate": null,
+      "seriesLineCandidate": null,
+      "publishedAtCandidate": "2025-03-30T05:01:25.746Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/these-are-all-thoughtful-points-2816806f5900",
+      "sourcePath": "posts/2025-03-30_These-are-all-thoughtful-points--2816806f5900.html",
+      "sourceSha256": "sha256:720e91c68327a0dd4715b804b38f098e50d7f30d2bffe035ab1591857e80f04e",
+      "include": false,
+      "exclusionReason": "Excluded because the exported item is a response, not a standalone article.",
+      "classification": {
+        "visibility": "public",
+        "authorship": "response",
+        "format": "response"
+      }
+    },
+    {
+      "suggestedSlug": "youre-right-to-raise-that-as-a-false-dilemma-or-dichotomy-where-only-two-options-are-presented",
+      "title": "You're right to raise that as a false dilemma or dichotomy, where only two options are presented…",
+      "descriptionCandidate": "Here, though, the contrast is rhetorical, not literal. It's meant to point out two dominant directions we keep circling: either we continue…",
+      "exportSummaryCandidate": "Here, though, the contrast is rhetorical, not literal. It's meant to point out two dominant directions we keep circling: either we continue…",
+      "displayTitleCandidate": null,
+      "displaySubtitleCandidate": null,
+      "seriesLineCandidate": null,
+      "publishedAtCandidate": "2025-03-30T04:29:32.593Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/youre-right-to-raise-that-as-a-false-dilemma-or-dichotomy-where-only-two-options-are-presented-0f3a091b6dec",
+      "sourcePath": "posts/2025-03-30_You-re-right-to-raise-that-as-a-false-dilemma-or-dichotomy--where-only-two-options-are-presented--0f3a091b6dec.html",
+      "sourceSha256": "sha256:b9ea1653bc8b04c9385506f0544712a9352eb7913caad4028df83894d452c144",
+      "include": false,
+      "exclusionReason": "Excluded because the exported item is a response, not a standalone article.",
+      "classification": {
+        "visibility": "public",
+        "authorship": "response",
+        "format": "response"
+      }
+    },
+    {
+      "suggestedSlug": "appreciate-the-continued-responses",
+      "title": "Appreciate the continued responses.",
+      "descriptionCandidate": null,
+      "exportSummaryCandidate": null,
+      "displayTitleCandidate": null,
+      "displaySubtitleCandidate": null,
+      "seriesLineCandidate": null,
+      "publishedAtCandidate": "2025-03-31T07:31:46.406Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/appreciate-the-continued-responses-3b1215bb848a",
+      "sourcePath": "posts/2025-03-31_Appreciate-the-continued-responses--3b1215bb848a.html",
+      "sourceSha256": "sha256:0c1d24bab1243d197bf50a104d7b4246b21b769c3606c04fd45e397ea0b4afb6",
+      "include": false,
+      "exclusionReason": "Excluded because the exported item is a response, not a standalone article.",
+      "classification": {
+        "visibility": "public",
+        "authorship": "response",
+        "format": "response"
+      }
+    },
+    {
+      "suggestedSlug": "debt-as-destiny-how-the-credit-system-controls-lives",
+      "title": "Debt as Destiny: How the Credit System Controls Lives",
+      "descriptionCandidate": "More Than Just a Number",
+      "exportSummaryCandidate": "More Than Just a Number",
+      "displayTitleCandidate": "The Debt Economy",
+      "displaySubtitleCandidate": "In a system that defines future access through credit, survival becomes collateral.",
+      "seriesLineCandidate": "A Ledger Series article on how credit defines power, limits, and dependency.",
+      "publishedAtCandidate": "2025-03-31T01:50:18.320Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/debt-as-destiny-how-the-credit-system-controls-lives-5f67cd4ff1c5",
+      "sourcePath": "posts/2025-03-31_Debt-as-Destiny--How-the-Credit-System-Controls-Lives-5f67cd4ff1c5.html",
+      "sourceSha256": "sha256:60ddbec0be7e6a0bf36891c78f7f395e81725258279a12c84f1d0179aef346f5",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "youre-absolutely-right-in-that-experiences-vary-widely-especially-across-countries-and-class",
+      "title": "You’re absolutely right in that experiences vary widely, especially across countries and class…",
+      "descriptionCandidate": null,
+      "exportSummaryCandidate": null,
+      "displayTitleCandidate": null,
+      "displaySubtitleCandidate": null,
+      "seriesLineCandidate": null,
+      "publishedAtCandidate": "2025-03-31T07:45:42.221Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/youre-absolutely-right-in-that-experiences-vary-widely-especially-across-countries-and-class-2248e70f332a",
+      "sourcePath": "posts/2025-03-31_You-re-absolutely-right-in-that-experiences-vary-widely--especially-across-countries-and-class--2248e70f332a.html",
+      "sourceSha256": "sha256:7870385739c8e22bc8f4d6abd11aa8746b2d573e9298f201a234373cac951211",
+      "include": false,
+      "exclusionReason": "Excluded because the exported item is a response, not a standalone article.",
+      "classification": {
+        "visibility": "public",
+        "authorship": "response",
+        "format": "response"
+      }
+    },
+    {
+      "suggestedSlug": "thank-you-again-not-just-for-your-openness-but-for-staying-in-the-conversation",
+      "title": "Thank you again, not just for your openness, but for staying in the conversation.",
+      "descriptionCandidate": "Hearing the perspectives of others is always incredibly valuable, not because of credentials, but because it reflects lived logic. The…",
+      "exportSummaryCandidate": "Hearing the perspectives of others is always incredibly valuable, not because of credentials, but because it reflects lived logic. The…",
+      "displayTitleCandidate": null,
+      "displaySubtitleCandidate": null,
+      "seriesLineCandidate": null,
+      "publishedAtCandidate": "2025-04-01T23:10:35.364Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/thank-you-again-not-just-for-your-openness-but-for-staying-in-the-conversation-03c7b54a1367",
+      "sourcePath": "posts/2025-04-01_Thank-you-again--not-just-for-your-openness--but-for-staying-in-the-conversation--03c7b54a1367.html",
+      "sourceSha256": "sha256:746f362b8e21b8c69d819030b11924292f12ab69f037ab75259cfec39abe9e05",
+      "include": false,
+      "exclusionReason": "Excluded because the exported item is a response, not a standalone article.",
+      "classification": {
+        "visibility": "public",
+        "authorship": "response",
+        "format": "response"
+      }
+    },
+    {
+      "suggestedSlug": "thats-an-important-point-invisibility-isnt-always-accidental",
+      "title": "That’s an important point, invisibility isn’t always accidental.",
+      "descriptionCandidate": null,
+      "exportSummaryCandidate": null,
+      "displayTitleCandidate": null,
+      "displaySubtitleCandidate": null,
+      "seriesLineCandidate": null,
+      "publishedAtCandidate": "2025-04-01T23:14:28.330Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/thats-an-important-point-invisibility-isn-t-always-accidental-3bbb3cd77ad3",
+      "sourcePath": "posts/2025-04-01_That-s-an-important-point--invisibility-isn-t-always-accidental--3bbb3cd77ad3.html",
+      "sourceSha256": "sha256:02b4a6b686cc316748037596e117c2274b384edd15a67739c3521d82a5d0fd95",
+      "include": false,
+      "exclusionReason": "Excluded because the exported item is a response, not a standalone article.",
+      "classification": {
+        "visibility": "public",
+        "authorship": "response",
+        "format": "response"
+      }
+    },
+    {
+      "suggestedSlug": "who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource",
+      "title": "Who Stole Your Time? The Silent Economics of a Vanishing Life Resource",
+      "descriptionCandidate": "We measure everything except what matters most: time.",
+      "exportSummaryCandidate": "We measure everything except what matters most: time.",
+      "displayTitleCandidate": "The Time Economy",
+      "displaySubtitleCandidate": "In a system that only counts paid hours, time itself becomes a silent sacrifice.",
+      "seriesLineCandidate": "A Ledger Series article on how unpaid hours keep paid systems running.",
+      "publishedAtCandidate": "2025-04-01T06:26:21.475Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource-c2f680f7c679",
+      "sourcePath": "posts/2025-04-01_Who-Stole-Your-Time--The-Silent-Economics-of-a-Vanishing-Life-Resource-c2f680f7c679.html",
+      "sourceSha256": "sha256:6ad2918190f9729bf365773d2d928d7ad20d6f66d52c53174b43bf7815fcb3c3",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "youre-right-that-financial-literacy-is-essential-especially-as-the-tools-and-systems-around-us",
+      "title": "You're right that financial literacy is essential, especially as the tools and systems around us…",
+      "descriptionCandidate": "One thing this series keeps circling back to is who gets to navigate that change, and who gets left behind. When new systems emerge, they…",
+      "exportSummaryCandidate": "One thing this series keeps circling back to is who gets to navigate that change, and who gets left behind. When new systems emerge, they…",
+      "displayTitleCandidate": null,
+      "displaySubtitleCandidate": null,
+      "seriesLineCandidate": null,
+      "publishedAtCandidate": "2025-04-01T23:19:48.063Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/youre-right-that-financial-literacy-is-essential-especially-as-the-tools-and-systems-around-us-37933445676e",
+      "sourcePath": "posts/2025-04-01_You-re-right-that-financial-literacy-is-essential--especially-as-the-tools-and-systems-around-us--37933445676e.html",
+      "sourceSha256": "sha256:77ee3e7207c18fe5f24d420d30ede744151c446352db4bba4145c8eb903a8ade",
+      "include": false,
+      "exclusionReason": "Excluded because the exported item is a response, not a standalone article.",
+      "classification": {
+        "visibility": "public",
+        "authorship": "response",
+        "format": "response"
+      }
+    },
+    {
+      "suggestedSlug": "youve-summed-up-the-tension-well-the-gap-between-the-time-rich-life-many-of-us-want-and-the",
+      "title": "You’ve summed up the tension well, the gap between the time-rich life many of us want and the…",
+      "descriptionCandidate": "What’s especially important in your point is that time isn’t just about personal choice, it’s shaped by policy, wage structures, and who…",
+      "exportSummaryCandidate": "What’s especially important in your point is that time isn’t just about personal choice, it’s shaped by policy, wage structures, and who…",
+      "displayTitleCandidate": null,
+      "displaySubtitleCandidate": null,
+      "seriesLineCandidate": null,
+      "publishedAtCandidate": "2025-04-01T23:25:15.031Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/youve-summed-up-the-tension-well-the-gap-between-the-time-rich-life-many-of-us-want-and-the-91f1cdce0521",
+      "sourcePath": "posts/2025-04-01_You-ve-summed-up-the-tension-well--the-gap-between-the-time-rich-life-many-of-us-want-and-the--91f1cdce0521.html",
+      "sourceSha256": "sha256:5b78f141de1356a810590cccf38bf939be0648bf5eb1ca22eaca6a20b7910a19",
+      "include": false,
+      "exclusionReason": "Excluded because the exported item is a response, not a standalone article.",
+      "classification": {
+        "visibility": "public",
+        "authorship": "response",
+        "format": "response"
+      }
+    },
+    {
+      "suggestedSlug": "the-identity-economy",
+      "title": "The Identity Economy",
+      "descriptionCandidate": "A Ledger Series article on who gets counted, documented, and erased.",
+      "exportSummaryCandidate": "A Ledger Series article on who gets counted, documented, and erased.",
+      "displayTitleCandidate": "The Identity Economy",
+      "displaySubtitleCandidate": "In a system that requires proof to exist, whole lives remain undocumented.",
+      "seriesLineCandidate": "A Ledger Series article on who gets counted, documented, and erased.",
+      "publishedAtCandidate": "2025-04-02T08:16:55.401Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/the-identity-economy-8db3aed3582c",
+      "sourcePath": "posts/2025-04-02_The-Identity-Economy-8db3aed3582c.html",
+      "sourceSha256": "sha256:271d094e4b8e251324fff50505f5c89bbba2161c9d5cd7e025c5af153a1e255f",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "the-informal-majority",
+      "title": "The Informal Majority",
+      "descriptionCandidate": "A Ledger Series article on the real economy most of the world works in.",
+      "exportSummaryCandidate": "A Ledger Series article on the real economy most of the world works in.",
+      "displayTitleCandidate": "The Informal Majority",
+      "displaySubtitleCandidate": "In a system that only sees the formal, most of the world disappears from the ledger.",
+      "seriesLineCandidate": "A Ledger Series article on the real economy most of the world works in.",
+      "publishedAtCandidate": "2025-04-03T09:50:23.180Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/the-informal-majority-e44dfd41f3ce",
+      "sourcePath": "posts/2025-04-03_The-Informal-Majority-e44dfd41f3ce.html",
+      "sourceSha256": "sha256:5afd6e64e4962541e849be18128cd71e9c5055f786655ae02fb9b806444bc525",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "the-invisible-ledger",
+      "title": "The Invisible Ledger",
+      "descriptionCandidate": "A Ledger Series article on hidden labor, data, and the systems that ignore both.",
+      "exportSummaryCandidate": "A Ledger Series article on hidden labor, data, and the systems that ignore both.",
+      "displayTitleCandidate": "The Invisible Ledger",
+      "displaySubtitleCandidate": "In a system powered by human labor, what we don’t count defines what we do.",
+      "seriesLineCandidate": "A Ledger Series article on hidden labor, data, and the systems that ignore both.",
+      "publishedAtCandidate": "2025-04-04T17:00:06.123Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/the-invisible-ledger-2505f05b7201",
+      "sourcePath": "posts/2025-04-04_The-Invisible-Ledger-2505f05b7201.html",
+      "sourceSha256": "sha256:39fc0cb6002d9006ce8b5cc11f03bce034b223230b3727ab3be41f8146edcc6f",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "the-remittance-paradox",
+      "title": "The Remittance Paradox",
+      "descriptionCandidate": "Who Really Carries the Global Economy",
+      "exportSummaryCandidate": "Who Really Carries the Global Economy",
+      "displayTitleCandidate": "The Remittance Paradox",
+      "displaySubtitleCandidate": "In a system that counts the money but not the migrant, distance becomes a currency.",
+      "seriesLineCandidate": "A Ledger Series article on hidden labor, data, and the systems that ignore both.",
+      "publishedAtCandidate": "2025-04-06T05:06:18.331Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/the-remittance-paradox-dc6992732720",
+      "sourcePath": "posts/2025-04-06_The-Remittance-Paradox-dc6992732720.html",
+      "sourceSha256": "sha256:f223e21b3dfa3f173380a60a419aa01925c429ad944231c3ee6d5a79fea1b1ee",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "the-water-economy",
+      "title": "The Water Economy",
+      "descriptionCandidate": "When access becomes a market, survival becomes a transaction.",
+      "exportSummaryCandidate": "When access becomes a market, survival becomes a transaction.",
+      "displayTitleCandidate": "The Water Economy",
+      "displaySubtitleCandidate": "In a system where scarcity is profitable, even survival comes with a price.",
+      "seriesLineCandidate": "A Ledger Series article on the global cost of water access and the systems that profit from scarcity.",
+      "publishedAtCandidate": "2025-04-07T10:14:06.675Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/the-water-economy-2bb7ef210efd",
+      "sourcePath": "posts/2025-04-07_The-Water-Economy-2bb7ef210efd.html",
+      "sourceSha256": "sha256:db0ec3592d86f7bb8b550203a65458fe3837fed7c500aca2a847ada90dc64c38",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "the-education-illusion",
+      "title": "The Education Illusion",
+      "descriptionCandidate": "In a system that rewards diplomas but not outcomes, learning becomes performance.",
+      "exportSummaryCandidate": "In a system that rewards diplomas but not outcomes, learning becomes performance.",
+      "displayTitleCandidate": "The Education Illusion",
+      "displaySubtitleCandidate": "In a system that rewards diplomas but not outcomes, learning becomes performance.",
+      "seriesLineCandidate": "A Ledger Series article on broken pipelines between education and opportunity.",
+      "publishedAtCandidate": "2025-04-08T14:12:36.413Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/the-education-illusion-5ebad0c48b7e",
+      "sourcePath": "posts/2025-04-08_The-Education-Illusion-5ebad0c48b7e.html",
+      "sourceSha256": "sha256:d9ba303a5057b0626636a309b4feb0a642f881803bad4fa0b2d211d1d05076d7",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "the-aspiration-economy",
+      "title": "The Aspiration Economy",
+      "descriptionCandidate": "In a system that sells success but stalls mobility, youth grow up working for a future that isn’t arriving.",
+      "exportSummaryCandidate": "In a system that sells success but stalls mobility, youth grow up working for a future that isn’t arriving.",
+      "displayTitleCandidate": "The Aspiration Economy",
+      "displaySubtitleCandidate": "In a system that sells success but stalls mobility, youth grow up working for a future that isn’t arriving.",
+      "seriesLineCandidate": "A Ledger Series article on the gap between ambition and access in the Global South.",
+      "publishedAtCandidate": "2025-04-10T12:47:39.634Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/the-aspiration-economy-c79c4bd2c4ff",
+      "sourcePath": "posts/2025-04-10_The-Aspiration-Economy-c79c4bd2c4ff.html",
+      "sourceSha256": "sha256:e0720bf67a0bc71edac831bdd906ac44a44d10d113f1c198826db890ddf7ae2a",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "what-we-call-freedom-isnt-really-freedom",
+      "title": "What We Call Freedom Isn’t Really Freedom",
+      "descriptionCandidate": null,
+      "exportSummaryCandidate": null,
+      "displayTitleCandidate": "What We Call Freedom Isn’t Really Freedom",
+      "displaySubtitleCandidate": "In a system where structure keeps the peace but limits the self, true freedom remains both desired and impossible.",
+      "seriesLineCandidate": "A Ledger Series article on the paradox of autonomy in a world built on rules, compromise, and invisible contracts.",
+      "publishedAtCandidate": "2025-04-11T20:51:30.710Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/what-we-call-freedom-isnt-really-freedom-26ecc317aa63",
+      "sourcePath": "posts/2025-04-11_What-We-Call-Freedom-Isn-t-Really-Freedom-26ecc317aa63.html",
+      "sourceSha256": "sha256:71153f592190d0d93bceade154e465a602f822dc29b4fd98e37b86059fbf0a7e",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "the-psychology-of-belief-why-humans-prefer-comfort-over-truth",
+      "title": "The Psychology of Belief: Why Humans Prefer Comfort Over Truth",
+      "descriptionCandidate": "In a system built to reward comfort over clarity, belief becomes less about truth and more about emotional survival.",
+      "exportSummaryCandidate": "In a system built to reward comfort over clarity, belief becomes less about truth and more about emotional survival.",
+      "displayTitleCandidate": "The Psychology of Belief: Why Humans Prefer Comfort Over Truth",
+      "displaySubtitleCandidate": "In a system built to reward comfort over clarity, belief becomes less about truth and more about emotional survival.",
+      "seriesLineCandidate": "A Ledger Series article on the hidden tradeoffs we make between psychological safety and intellectual honesty.",
+      "publishedAtCandidate": "2025-04-13T02:31:38.792Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/the-psychology-of-belief-why-humans-prefer-comfort-over-truth-a9787ad7f605",
+      "sourcePath": "posts/2025-04-13_The-Psychology-of-Belief--Why-Humans-Prefer-Comfort-Over-Truth-a9787ad7f605.html",
+      "sourceSha256": "sha256:55b4d3e848f16c90b58bd2c56415886a57f1a79a281063d62ec2ea8cca6aa244",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "why-family-is-not-sacred-by-default",
+      "title": "Why Family Is Not Sacred by Default",
+      "descriptionCandidate": "In a system that glorifies inheritance and tradition, choosing your people becomes a radical act of self-respect.",
+      "exportSummaryCandidate": "In a system that glorifies inheritance and tradition, choosing your people becomes a radical act of self-respect.",
+      "displayTitleCandidate": "Why Family Is Not Sacred by Default",
+      "displaySubtitleCandidate": "In a system that glorifies inheritance and tradition, choosing your people becomes a radical act of self-respect.",
+      "seriesLineCandidate": "A Ledger Series article on what we owe to those we never chose, and the quiet rebellion of redefining family on our own terms.",
+      "publishedAtCandidate": "2025-04-14T07:22:47.197Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/why-family-is-not-sacred-by-default-62dc7ecda7cb",
+      "sourcePath": "posts/2025-04-14_Why-Family-Is-Not-Sacred-by-Default-62dc7ecda7cb.html",
+      "sourceSha256": "sha256:57efb98067c1fc5e15fa0fa78339fe4c367e91a387c165b69cf097e470816b76",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "the-shadow-subsidy",
+      "title": "The Shadow Subsidy",
+      "descriptionCandidate": "In a system where wealth is preserved by policy, the poor pay for the price of protection.",
+      "exportSummaryCandidate": "In a system where wealth is preserved by policy, the poor pay for the price of protection.",
+      "displayTitleCandidate": "The Shadow Subsidy",
+      "displaySubtitleCandidate": "In a system where wealth is preserved by policy, the poor pay for the price of protection.",
+      "seriesLineCandidate": "A Ledger Series article on how fiscal structures quietly redistribute upward.",
+      "publishedAtCandidate": "2025-04-22T05:19:03.091Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/the-shadow-subsidy-90d432a7abea",
+      "sourcePath": "posts/2025-04-22_The-Shadow-Subsidy-90d432a7abea.html",
+      "sourceSha256": "sha256:1e943769e137c3a3a830bbc79712192fc5d0fccc45cfa4597f47f9f68e0c2454",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "the-collateral-shift",
+      "title": "The Collateral Shift",
+      "descriptionCandidate": "In a system where access determines power, even liquidity becomes a geopolitical tool.",
+      "exportSummaryCandidate": "In a system where access determines power, even liquidity becomes a geopolitical tool.",
+      "displayTitleCandidate": "The Collateral Shift",
+      "displaySubtitleCandidate": "In a system where access determines power, even liquidity becomes a geopolitical tool.",
+      "seriesLineCandidate": "A Ledger Series article on how the global energy trade is restructuring risk and rewriting financial norms.",
+      "publishedAtCandidate": "2025-04-28T07:00:36.690Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/the-collateral-shift-2e24528b3eb4",
+      "sourcePath": "posts/2025-04-28_The-Collateral-Shift-2e24528b3eb4.html",
+      "sourceSha256": "sha256:26a4948705deb40f43038b83b29c684a6ad8efddd3597546adaedd8efe54a5d7",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    },
+    {
+      "suggestedSlug": "origins-orders",
+      "title": "Origins & Orders",
+      "descriptionCandidate": "In a system where meaning and measurement collide, how ancient narratives and modern science shape our view of creation.",
+      "exportSummaryCandidate": "In a system where meaning and measurement collide, how ancient narratives and modern science shape our view of creation.",
+      "displayTitleCandidate": "Origins & Orders",
+      "displaySubtitleCandidate": "In a system where meaning and measurement collide, how ancient narratives and modern science shape our view of creation.",
+      "seriesLineCandidate": "A Ledger Series article on the crossroads of sacred origins, scientific discovery, and the economics of belief.",
+      "publishedAtCandidate": "2025-05-05T09:23:15.304Z",
+      "canonicalUrlCandidate": "https://medium.com/@ShotsOfRhapsody/origins-orders-d3f3f81fe11f",
+      "sourcePath": "posts/2025-05-05_Origins---Orders-d3f3f81fe11f.html",
+      "sourceSha256": "sha256:72655569dfb40d93bb75106d07aa17a477fd7c9c66f671d31a1afa519c87271a",
+      "include": true,
+      "exclusionReason": "",
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      }
+    }
+  ],
+  "expectedCount": 24,
+  "articles": [
+    {
+      "slug": "beyond-scarcity-how-automation-ai-could-end-economic-struggle",
+      "exportTitle": "Beyond Scarcity: How Automation & AI Could End Economic Struggle",
+      "exportSummary": "Imagine a World Without Financial Survival Anxiety",
+      "title": "The Post-Growth Premise",
+      "subtitle": "In a system built on endless expansion, enough is never enough.",
+      "seriesLine": "A Ledger Series article on what comes after scarcity economics.",
+      "summary": "Imagine a World Without Financial Survival Anxiety",
+      "description": "Imagine a World Without Financial Survival Anxiety",
+      "publishedAt": "2025-03-18T09:08:05.163Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/beyond-scarcity-how-automation-ai-could-end-economic-struggle-1b84e081e845",
+      "sourcePath": "posts/2025-03-18_Beyond-Scarcity--How-Automation---AI-Could-End-Economic-Struggle-1b84e081e845.html",
+      "sourceSha256": "sha256:d4e98625e0916126a2e9369d030436586abd724fd7dca9986293b65afa613c82",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*sJKT43w2CHPy5SrSrnkvCg@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:c2c5b08f8ccc6efce7d56a8ad8e8bb4ce013c62fb338071700a10c170607e798",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:75fbcdf3b84b470251b848cb8ae7ccdb18b4fa768268b4979220226ef55657de",
+          "pixelSha256": "sha256:945ab9f2557425d4364ea87e279c49d7591aeb04eeabd78bc9d4c44371cb9320",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 3149986,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking",
+      "exportTitle": "The Future of Money: Will Cryptocurrency and AI Kill Traditional Banking?",
+      "exportSummary": "Your Bank is Dying, Here’s What’s Replacing It",
+      "title": "The Future of Money",
+      "subtitle": "In a system where currency shapes control, what counts as value shifts beneath us.",
+      "seriesLine": "A Ledger Series article on currency, control, and financial power in transition.",
+      "summary": "Your Bank is Dying, Here’s What’s Replacing It",
+      "description": "Your Bank is Dying, Here’s What’s Replacing It",
+      "publishedAt": "2025-03-19T08:41:03.729Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking-b093d81a7c12",
+      "sourcePath": "posts/2025-03-19_The-Future-of-Money--Will-Cryptocurrency-and-AI-Kill-Traditional-Banking--b093d81a7c12.html",
+      "sourceSha256": "sha256:fe12718e30c4006d191dfc8321811a356cafedbbb59b0e01e0ca736c9d9c495b",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*FuoqDJKI9v48Eg34kvBHvg@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:04b5097187a17822aa71a80c134181c83bf9029b97e875b0d7a44de7770f0ff5",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:783c0729091a5777a63db07beb437d7f454d8321aeb1aa3fc6b4370f7bddda23",
+          "pixelSha256": "sha256:e8e40f937523bf29d39a2d12bbe93264731cd64b96fceeb43657afcb9307c8e6",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 3102338,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "what-comes-after-work-designing-a-purpose-driven-life",
+      "exportTitle": "What Comes After Work? Designing a Purpose-Driven Life",
+      "exportSummary": "Rethinking the Purpose of Time",
+      "title": "The End of Work",
+      "subtitle": "In a system where labor defines worth, automation threatens more than income.",
+      "seriesLine": "A Ledger Series article on obsolescence, automation, and the myths of labor loss.",
+      "summary": "Rethinking the Purpose of Time",
+      "description": "Rethinking the Purpose of Time",
+      "publishedAt": "2025-03-22T19:44:47.769Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/what-comes-after-work-designing-a-purpose-driven-life-06fcd3447f09",
+      "sourcePath": "posts/2025-03-22_What-Comes-After-Work--Designing-a-Purpose-Driven-Life-06fcd3447f09.html",
+      "sourceSha256": "sha256:a239e097acb630494ffe0d2bb51c1a6ee6af164f4684dc4bbfac79b9f82c0ba9",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*FSC-iA8LR9VRNBFWXrLnvA@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:69ecacac3ce4abb5ef4e535fc082d25eec05b2d2c61411327df9f7f2e9550393",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:cc58d93272b42c5931b827a592ae2377a14210a3fc1c63aa60724b9fb24bb8f0",
+          "pixelSha256": "sha256:9eedfbf2e0284849f88ce3d1b0d68af6cb2575739d33b060fe84332ef0927685",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 2360566,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "the-rise-of-zero-cost-economies-what-happens-when-prices-disappear",
+      "exportTitle": "The Rise of Zero-Cost Economies: What Happens When Prices Disappear?",
+      "exportSummary": "Imagine a World Where Essentials Cost Nothing",
+      "title": "The Price of Free",
+      "subtitle": "In a system obsessed with scale, zero-cost isn’t freedom. It’s capture.",
+      "seriesLine": "A Ledger Series article on moving from global competition to systems cooperation.",
+      "summary": "Imagine a World Where Essentials Cost Nothing",
+      "description": "Imagine a World Where Essentials Cost Nothing",
+      "publishedAt": "2025-03-24T05:50:03.781Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-rise-of-zero-cost-economies-what-happens-when-prices-disappear-6757f5dd592e",
+      "sourcePath": "posts/2025-03-24_The-Rise-of-Zero-Cost-Economies--What-Happens-When-Prices-Disappear--6757f5dd592e.html",
+      "sourceSha256": "sha256:71e46d3e502cf2c5bc856dcaf2ed5b9e998de0fd4d8d61c66a9cb8ceb216281d",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*e5Q2fWtvlA9N_6RyKuTUhg@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:108203f226621c550a84ea746a577fe6b13b41dc3e870fe3497e9256dd7e5a13",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:3d72193481fd2372681b331f0d9cd25adef3707684ce6e80de82e23c2472a8b2",
+          "pixelSha256": "sha256:7e4e310a7d1ba9adbfd21e056d1345e0fb1385a2397b0ad2cbe7fa6529fe3655",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 2677928,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "the-next-leap-from-global-competition-to-human-cooperation",
+      "exportTitle": "The Next Leap: From Global Competition to Human Cooperation",
+      "exportSummary": "Imagine a World Built on Shared Purpose, Not Profit",
+      "title": "The Next Leap",
+      "subtitle": "In a system that rewards competition, cooperation is treated as risk.",
+      "seriesLine": "A Ledger Series article on moving from global competition to systems cooperation.",
+      "summary": "Imagine a World Built on Shared Purpose, Not Profit",
+      "description": "Imagine a World Built on Shared Purpose, Not Profit",
+      "publishedAt": "2025-03-25T06:13:40.072Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-next-leap-from-global-competition-to-human-cooperation-b0f2805608c5",
+      "sourcePath": "posts/2025-03-25_The-Next-Leap--From-Global-Competition-to-Human-Cooperation-b0f2805608c5.html",
+      "sourceSha256": "sha256:415633c3e2b8060d3346f316745b95883c4e9e0c66e9fcd64b65897dba68b696",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*3adt6isWbkZAMjk19sM6xg@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:5743628e2f2949fcf9faafb533e4c39ee028564d3a4c4fb2d8f85887319113ad",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:9174f7fb0505465c9f26679cda18a29a0f856d480f3f639341b50feb4a2af683",
+          "pixelSha256": "sha256:c427aa59f27e848be904a7b70a78a885aed611c05971668b05ebd34a574d8e1f",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 2703162,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "closing-the-gap-how-a-fairer-global-economy-could-lift-billions",
+      "exportTitle": "Closing the Gap: How a Fairer Global Economy Could Lift Billions",
+      "exportSummary": "Imagine a World Where Progress Doesn’t Leave People Behind",
+      "title": "The Distribution Myth",
+      "subtitle": "In a system flooded with wealth, fairness remains an accounting illusion.",
+      "seriesLine": "A Ledger Series article on fairness, inequality, and the illusion of equal access.",
+      "summary": "Imagine a World Where Progress Doesn’t Leave People Behind",
+      "description": "Imagine a World Where Progress Doesn’t Leave People Behind",
+      "publishedAt": "2025-03-26T06:47:49.110Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/closing-the-gap-how-a-fairer-global-economy-could-lift-billions-24c9923e2f19",
+      "sourcePath": "posts/2025-03-26_Closing-the-Gap--How-a-Fairer-Global-Economy-Could-Lift-Billions-24c9923e2f19.html",
+      "sourceSha256": "sha256:65ebdf9da501df0a45049777a9de7267bfd5283f10d4d9feddbc99e1a0bb2052",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*oeZxnSSsVJMolSWK_xJ6IQ@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:f4c8327008607706341cfd26800fb9e2a87d106d693ec6c56a7d2a85afc6cde1",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:2efc8cbe4206f58151de6b3cd0a0f606a1039426f93a00fb099f86af7f8c555d",
+          "pixelSha256": "sha256:14238f17a001032286063d8bea39efd7d9c654d5e8d94a3de5f5d86fc77b81f4",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 3274756,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "the-economy-is-built-on-nature-we-just-dont-count-it",
+      "exportTitle": "The Economy Is Built on Nature, We Just Don’t Count It",
+      "exportSummary": "We measure profits, but not the ecosystems that make them possible. A new kind of accounting could change that.",
+      "title": "The Natural Economy",
+      "subtitle": "In a system that extracts but never replenishes, nature becomes invisible.",
+      "seriesLine": "A Ledger Series article on environmental value and the cost of exclusion.",
+      "summary": "We measure profits, but not the ecosystems that make them possible. A new kind of accounting could change that.",
+      "description": "We measure profits, but not the ecosystems that make them possible. A new kind of accounting could change that.",
+      "publishedAt": "2025-03-27T07:37:27.425Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-economy-is-built-on-nature-we-just-dont-count-it-6c801f9d71cc",
+      "sourcePath": "posts/2025-03-27_The-Economy-Is-Built-on-Nature--We-Just-Don-t-Count-It-6c801f9d71cc.html",
+      "sourceSha256": "sha256:900cedf4b478d696bb41a656aaa9f12284cb7fc702916bc838c54d471704878c",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*6xNcXBkeMw7u0iYgghZ86Q@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:1fdb3a0ddf2ce33a87ef1b41da563e9c2d285d8f6fbae90301ff2971e9101dcf",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:45c0de0c7002008db6139295ced61a78c55f8abfbbb8b659fe56c9d8536a54cd",
+          "pixelSha256": "sha256:18945d661df915dc3022782ec49470e7d3cd940000eab83cec86a4348ea39c2e",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1029,
+          "byteSize": 1859918,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "the-trillion-dollar-economy-no-one-talks-about",
+      "exportTitle": "The Trillion Dollar Economy No One Talks About",
+      "exportSummary": "Unpaid care work props up the global economy. We just don’t count it, or support it.",
+      "title": "The Care Economy",
+      "subtitle": "In a system that runs on unpaid labor, what’s essential is what’s ignored.",
+      "seriesLine": "A Ledger Series article on the unpaid labor that props up everything.",
+      "summary": "Unpaid care work props up the global economy. We just don’t count it, or support it.",
+      "description": "Unpaid care work props up the global economy. We just don’t count it, or support it.",
+      "publishedAt": "2025-03-28T12:17:40.188Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-trillion-dollar-economy-no-one-talks-about-b1810889d3b6",
+      "sourcePath": "posts/2025-03-28_The-Trillion-Dollar-Economy-No-One-Talks-About-b1810889d3b6.html",
+      "sourceSha256": "sha256:18b3605b79eaae7e5d5b6e2cc79254173a376aca60fe421cfff04b38a5f27355",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*2c7ZLS5ccmHssoR8P1f5jA@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:93b38a1e92f4254279dca447fcfc1744d4cf7e0b2b882687db8e356ca60336fc",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:5037dd253edeb04a01af226f63299b2136fb549e6faa6424ea4856720a739fe5",
+          "pixelSha256": "sha256:0c773cc09baa0a5415d9c9266d5ed58566b275f3e5c4e0a6022bc6348572744f",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 1723306,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "the-economics-of-loneliness-how-disconnection-became-a-market-failure",
+      "exportTitle": "The Economics of Loneliness: How Disconnection Became a Market Failure",
+      "exportSummary": "We talk about inflation, unemployment, and GDP. But we rarely talk about the cost of being alone.",
+      "title": "The Loneliness Economy",
+      "subtitle": "In a system that monetizes connection, isolation becomes profitable.",
+      "seriesLine": "A Ledger Series article on isolation as a structural outcome of modern systems.",
+      "summary": "We talk about inflation, unemployment, and GDP. But we rarely talk about the cost of being alone.",
+      "description": "We talk about inflation, unemployment, and GDP. But we rarely talk about the cost of being alone.",
+      "publishedAt": "2025-03-29T13:23:55.504Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-economics-of-loneliness-how-disconnection-became-a-market-failure-e9a8dfdba5f3",
+      "sourcePath": "posts/2025-03-29_The-Economics-of-Loneliness--How-Disconnection-Became-a-Market-Failure-e9a8dfdba5f3.html",
+      "sourceSha256": "sha256:344b04b5cded127e3e365b0e25eac76e01a4e73fa583628c259a19c9a1d545ba",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*L_1kq7v_vVP-TSjSwdFo9Q@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:37a566db82bf6152e2d434c18acaf4a5c31c62585be81ab77fa1643531f239a3",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:e8fdfb192b8bccc8cfe82cbe6cf8799417499032089c2e1c81098354dbe38913",
+          "pixelSha256": "sha256:31b9fad27b644955e86c922a80a3c8090ce28a075d63a5a6cc842822d90c7eec",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1029,
+          "byteSize": 2182056,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "debt-as-destiny-how-the-credit-system-controls-lives",
+      "exportTitle": "Debt as Destiny: How the Credit System Controls Lives",
+      "exportSummary": "More Than Just a Number",
+      "title": "The Debt Economy",
+      "subtitle": "In a system that defines future access through credit, survival becomes collateral.",
+      "seriesLine": "A Ledger Series article on how credit defines power, limits, and dependency.",
+      "summary": "More Than Just a Number",
+      "description": "More Than Just a Number",
+      "publishedAt": "2025-03-31T01:50:18.320Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/debt-as-destiny-how-the-credit-system-controls-lives-5f67cd4ff1c5",
+      "sourcePath": "posts/2025-03-31_Debt-as-Destiny--How-the-Credit-System-Controls-Lives-5f67cd4ff1c5.html",
+      "sourceSha256": "sha256:60ddbec0be7e6a0bf36891c78f7f395e81725258279a12c84f1d0179aef346f5",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*k7pKgyBBrM9Usuteb0r7Zg@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:e6f310b0231c8960e9ef1e6b14b66e0e22f674d31382e7476a49d83ebd1fcc3c",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:1ae7c898181cd94ec2eb607d9b228e4cd0762af2fedc18095208a31b7b723275",
+          "pixelSha256": "sha256:1205b26a3544c39c09103b7d2c9ff7ac8f9b9e9fc68e2c0c1ed424a79bfc8fb9",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1029,
+          "byteSize": 2268348,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource",
+      "exportTitle": "Who Stole Your Time? The Silent Economics of a Vanishing Life Resource",
+      "exportSummary": "We measure everything except what matters most: time.",
+      "title": "The Time Economy",
+      "subtitle": "In a system that only counts paid hours, time itself becomes a silent sacrifice.",
+      "seriesLine": "A Ledger Series article on how unpaid hours keep paid systems running.",
+      "summary": "We measure everything except what matters most: time.",
+      "description": "We measure everything except what matters most: time.",
+      "publishedAt": "2025-04-01T06:26:21.475Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource-c2f680f7c679",
+      "sourcePath": "posts/2025-04-01_Who-Stole-Your-Time--The-Silent-Economics-of-a-Vanishing-Life-Resource-c2f680f7c679.html",
+      "sourceSha256": "sha256:6ad2918190f9729bf365773d2d928d7ad20d6f66d52c53174b43bf7815fcb3c3",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*YT1F0DJ_ysD1oQe6QaqnOg@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:825d61f7c32c3354086d675f36b98b08244961721374974500491b0bb227eb86",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:926389d208c4ca47918b554d8833e118f679c7cb2aff6b8db6136a277f4cc76b",
+          "pixelSha256": "sha256:584556f03b35b399ad4ae9e2d494a75527a5d4cdc4672c7a6c5d72f91f6e7550",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 3558860,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "the-identity-economy",
+      "exportTitle": "The Identity Economy",
+      "exportSummary": "A Ledger Series article on who gets counted, documented, and erased.",
+      "title": "The Identity Economy",
+      "subtitle": "In a system that requires proof to exist, whole lives remain undocumented.",
+      "seriesLine": "A Ledger Series article on who gets counted, documented, and erased.",
+      "summary": "A Ledger Series article on who gets counted, documented, and erased.",
+      "description": "A Ledger Series article on who gets counted, documented, and erased.",
+      "publishedAt": "2025-04-02T08:16:55.401Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-identity-economy-8db3aed3582c",
+      "sourcePath": "posts/2025-04-02_The-Identity-Economy-8db3aed3582c.html",
+      "sourceSha256": "sha256:271d094e4b8e251324fff50505f5c89bbba2161c9d5cd7e025c5af153a1e255f",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*28LGJAa9JFWc5M-gJN9LJQ@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:48c6dd24904bd63fbb100e8b8ff0f6756b98314749aa7dac3416b97e5f3d6360",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:a52ec1e3496ec4514bc1e78ca604f09abad3e334ef3b7f2f3c735a8bb997c3d8",
+          "pixelSha256": "sha256:3b91ec49ce40ffcfae8ef0c8bb4216e0a8ccdd6ecfe3e182be86d103bc1e5379",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 2813638,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "the-informal-majority",
+      "exportTitle": "The Informal Majority",
+      "exportSummary": "A Ledger Series article on the real economy most of the world works in.",
+      "title": "The Informal Majority",
+      "subtitle": "In a system that only sees the formal, most of the world disappears from the ledger.",
+      "seriesLine": "A Ledger Series article on the real economy most of the world works in.",
+      "summary": "A Ledger Series article on the real economy most of the world works in.",
+      "description": "A Ledger Series article on the real economy most of the world works in.",
+      "publishedAt": "2025-04-03T09:50:23.180Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-informal-majority-e44dfd41f3ce",
+      "sourcePath": "posts/2025-04-03_The-Informal-Majority-e44dfd41f3ce.html",
+      "sourceSha256": "sha256:5afd6e64e4962541e849be18128cd71e9c5055f786655ae02fb9b806444bc525",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*XJ1q9M0ySA7gB_BzpA6DHQ@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:00b1f3ad0eaa0d8f2693920fff97ae1ebc61656651aefcf1531dc5870eb8ff5c",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:055a007cb95768cff7bdb744c322ece3bf518fa0e7c2723d2bc0923bd1016251",
+          "pixelSha256": "sha256:0ec1954a165cf28d02f8e162a5368a86cfcc57029aea08d6bdd0f4beabcb59d6",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 3400864,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "the-invisible-ledger",
+      "exportTitle": "The Invisible Ledger",
+      "exportSummary": "A Ledger Series article on hidden labor, data, and the systems that ignore both.",
+      "title": "The Invisible Ledger",
+      "subtitle": "In a system powered by human labor, what we don’t count defines what we do.",
+      "seriesLine": "A Ledger Series article on hidden labor, data, and the systems that ignore both.",
+      "summary": "A Ledger Series article on hidden labor, data, and the systems that ignore both.",
+      "description": "A Ledger Series article on hidden labor, data, and the systems that ignore both.",
+      "publishedAt": "2025-04-04T17:00:06.123Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-invisible-ledger-2505f05b7201",
+      "sourcePath": "posts/2025-04-04_The-Invisible-Ledger-2505f05b7201.html",
+      "sourceSha256": "sha256:39fc0cb6002d9006ce8b5cc11f03bce034b223230b3727ab3be41f8146edcc6f",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*Q0vztVcQx9kQNAX3nEi5Dw@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:db09120dd63f26eca95dc54838a0db630e9220e56e9fc88887d229810af6e60d",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:d1a20828d75d01631cbaa1ad2b4728baaf96a135b415fa34f5e3fd8d047416ee",
+          "pixelSha256": "sha256:931433be57dee6b95a8480c093bfad5cfd8358afade9920be62894687281a7bf",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 2483576,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "the-remittance-paradox",
+      "exportTitle": "The Remittance Paradox",
+      "exportSummary": "Who Really Carries the Global Economy",
+      "title": "The Remittance Paradox",
+      "subtitle": "In a system that counts the money but not the migrant, distance becomes a currency.",
+      "seriesLine": "A Ledger Series article on hidden labor, data, and the systems that ignore both.",
+      "summary": "Who Really Carries the Global Economy",
+      "description": "Who Really Carries the Global Economy",
+      "publishedAt": "2025-04-06T05:06:18.331Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-remittance-paradox-dc6992732720",
+      "sourcePath": "posts/2025-04-06_The-Remittance-Paradox-dc6992732720.html",
+      "sourceSha256": "sha256:f223e21b3dfa3f173380a60a419aa01925c429ad944231c3ee6d5a79fea1b1ee",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*SzljAycO9iRbdMquByj5Pg@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:da005c8bb598310da530a723ddeb196312e6961cd0e7ea113dbe504090dba859",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:04f3bc4692b0139c4020739a321c838fede64dc6e9c968e198eb8125eae92eb5",
+          "pixelSha256": "sha256:ba3060c36f6551945a58cd3b51f4f6648aa7c0d2b15c11c7aae1562177007282",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 2556250,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "the-water-economy",
+      "exportTitle": "The Water Economy",
+      "exportSummary": "When access becomes a market, survival becomes a transaction.",
+      "title": "The Water Economy",
+      "subtitle": "In a system where scarcity is profitable, even survival comes with a price.",
+      "seriesLine": "A Ledger Series article on the global cost of water access and the systems that profit from scarcity.",
+      "summary": "When access becomes a market, survival becomes a transaction.",
+      "description": "When access becomes a market, survival becomes a transaction.",
+      "publishedAt": "2025-04-07T10:14:06.675Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-water-economy-2bb7ef210efd",
+      "sourcePath": "posts/2025-04-07_The-Water-Economy-2bb7ef210efd.html",
+      "sourceSha256": "sha256:db0ec3592d86f7bb8b550203a65458fe3837fed7c500aca2a847ada90dc64c38",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*qMh1GeTCLC4b_AaBpt2kUQ@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:cc36ae521f3823f0444ebc18ac6bd4f4396ddf461d9c3db62c9e16434aab89f9",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:752f074c19c46dd2d841e58950ba0495330b4bbb5b359127eab86d5e20054826",
+          "pixelSha256": "sha256:eb0065a7a87b49e8c4b97af60302d26fc8cadf3ee71aaee75431765c09bc83a9",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 3206976,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "the-education-illusion",
+      "exportTitle": "The Education Illusion",
+      "exportSummary": "In a system that rewards diplomas but not outcomes, learning becomes performance.",
+      "title": "The Education Illusion",
+      "subtitle": "In a system that rewards diplomas but not outcomes, learning becomes performance.",
+      "seriesLine": "A Ledger Series article on broken pipelines between education and opportunity.",
+      "summary": "In a system that rewards diplomas but not outcomes, learning becomes performance.",
+      "description": "In a system that rewards diplomas but not outcomes, learning becomes performance.",
+      "publishedAt": "2025-04-08T14:12:36.413Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-education-illusion-5ebad0c48b7e",
+      "sourcePath": "posts/2025-04-08_The-Education-Illusion-5ebad0c48b7e.html",
+      "sourceSha256": "sha256:d9ba303a5057b0626636a309b4feb0a642f881803bad4fa0b2d211d1d05076d7",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*Hr9IuLqWGh1DZSw0n4_MQQ@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:60f39098d00ba30e118c4523ed878487ce982bf0a47de6d69f759ace64a2ee2f",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:1010e7761e8bf0eb7d4fe367b702b5ddccc3025c8038631db305bcac3a7d11a6",
+          "pixelSha256": "sha256:e8d0f0f88318680f6350845823cc91c9feda93b14ba25b475d8075e6e9e3f15a",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 3017292,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "the-aspiration-economy",
+      "exportTitle": "The Aspiration Economy",
+      "exportSummary": "In a system that sells success but stalls mobility, youth grow up working for a future that isn’t arriving.",
+      "title": "The Aspiration Economy",
+      "subtitle": "In a system that sells success but stalls mobility, youth grow up working for a future that isn’t arriving.",
+      "seriesLine": "A Ledger Series article on the gap between ambition and access in the Global South.",
+      "summary": "In a system that sells success but stalls mobility, youth grow up working for a future that isn’t arriving.",
+      "description": "In a system that sells success but stalls mobility, youth grow up working for a future that isn’t arriving.",
+      "publishedAt": "2025-04-10T12:47:39.634Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-aspiration-economy-c79c4bd2c4ff",
+      "sourcePath": "posts/2025-04-10_The-Aspiration-Economy-c79c4bd2c4ff.html",
+      "sourceSha256": "sha256:e0720bf67a0bc71edac831bdd906ac44a44d10d113f1c198826db890ddf7ae2a",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*MZjMKeUUIJfdM5OVv1sBew@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:a34df5c5ef0f45071d20293344ea51144c0fc6f661e747c5863d40225b652264",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:7a5c5bc3cf2f5446d3fdfeb0fff83e1bbeb43b69f68ca1ba4364edb2b164a5f1",
+          "pixelSha256": "sha256:6040358ad1a8a75cb19a74d09faf612440eb8101d2fca2a168d837a758f99f30",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 2402452,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "what-we-call-freedom-isnt-really-freedom",
+      "exportTitle": "What We Call Freedom Isn’t Really Freedom",
+      "exportSummary": null,
+      "title": "What We Call Freedom Isn’t Really Freedom",
+      "subtitle": "In a system where structure keeps the peace but limits the self, true freedom remains both desired and impossible.",
+      "seriesLine": "A Ledger Series article on the paradox of autonomy in a world built on rules, compromise, and invisible contracts.",
+      "summary": "In a system where structure keeps the peace but limits the self, true freedom remains both desired and impossible.",
+      "description": "In a system where structure keeps the peace but limits the self, true freedom remains both desired and impossible.",
+      "publishedAt": "2025-04-11T20:51:30.710Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/what-we-call-freedom-isnt-really-freedom-26ecc317aa63",
+      "sourcePath": "posts/2025-04-11_What-We-Call-Freedom-Isn-t-Really-Freedom-26ecc317aa63.html",
+      "sourceSha256": "sha256:71153f592190d0d93bceade154e465a602f822dc29b4fd98e37b86059fbf0a7e",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*ojlAAB9Pq1JwgemWOJsYLQ@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:869c84bed45487ddb6239d9c4498c324490f74e0a8db4a51602ce20867842026",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:3f26906002bb21da390291fd29cecce1954e82275314b5ebdb70bd2f57cf740f",
+          "pixelSha256": "sha256:21ee48179728d13b4a386906c6aad31c43694a67c48b69dc54a6be5c68b6e88b",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 2655886,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "the-psychology-of-belief-why-humans-prefer-comfort-over-truth",
+      "exportTitle": "The Psychology of Belief: Why Humans Prefer Comfort Over Truth",
+      "exportSummary": "In a system built to reward comfort over clarity, belief becomes less about truth and more about emotional survival.",
+      "title": "The Psychology of Belief: Why Humans Prefer Comfort Over Truth",
+      "subtitle": "In a system built to reward comfort over clarity, belief becomes less about truth and more about emotional survival.",
+      "seriesLine": "A Ledger Series article on the hidden tradeoffs we make between psychological safety and intellectual honesty.",
+      "summary": "In a system built to reward comfort over clarity, belief becomes less about truth and more about emotional survival.",
+      "description": "In a system built to reward comfort over clarity, belief becomes less about truth and more about emotional survival.",
+      "publishedAt": "2025-04-13T02:31:38.792Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-psychology-of-belief-why-humans-prefer-comfort-over-truth-a9787ad7f605",
+      "sourcePath": "posts/2025-04-13_The-Psychology-of-Belief--Why-Humans-Prefer-Comfort-Over-Truth-a9787ad7f605.html",
+      "sourceSha256": "sha256:55b4d3e848f16c90b58bd2c56415886a57f1a79a281063d62ec2ea8cca6aa244",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*hKyYlDm3TUjxR_XvsYyh9Q@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:ba243cdd1d022b54b158e3911f1542177d77b318a6e06e31df73dbc57597eac2",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:04e83fbc4ddf8c8e4c99098d7bf811c84ae56cd481f989391540a2c36fe454e2",
+          "pixelSha256": "sha256:bb6f013a06440a62ac3ca86c61e795eec245651d93459f1545d00bf2c8fc3f97",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 2222070,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "why-family-is-not-sacred-by-default",
+      "exportTitle": "Why Family Is Not Sacred by Default",
+      "exportSummary": "In a system that glorifies inheritance and tradition, choosing your people becomes a radical act of self-respect.",
+      "title": "Why Family Is Not Sacred by Default",
+      "subtitle": "In a system that glorifies inheritance and tradition, choosing your people becomes a radical act of self-respect.",
+      "seriesLine": "A Ledger Series article on what we owe to those we never chose, and the quiet rebellion of redefining family on our own terms.",
+      "summary": "In a system that glorifies inheritance and tradition, choosing your people becomes a radical act of self-respect.",
+      "description": "In a system that glorifies inheritance and tradition, choosing your people becomes a radical act of self-respect.",
+      "publishedAt": "2025-04-14T07:22:47.197Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/why-family-is-not-sacred-by-default-62dc7ecda7cb",
+      "sourcePath": "posts/2025-04-14_Why-Family-Is-Not-Sacred-by-Default-62dc7ecda7cb.html",
+      "sourceSha256": "sha256:57efb98067c1fc5e15fa0fa78339fe4c367e91a387c165b69cf097e470816b76",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*g-Y7rnePvZiDcuoIne78Kw@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:4805a825f70c518512b43624ffda113b228dcd23628f0afa572687fe1b356f91",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:7b19b2c1f05f461410c747b1d542868aa575ae99768705f7d2f5b37f69ca2a29",
+          "pixelSha256": "sha256:e1c8f46142489b7c24b65a43508d273cc381de4895e9f6ea19eae2a62dafb706",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 2865800,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "the-shadow-subsidy",
+      "exportTitle": "The Shadow Subsidy",
+      "exportSummary": "In a system where wealth is preserved by policy, the poor pay for the price of protection.",
+      "title": "The Shadow Subsidy",
+      "subtitle": "In a system where wealth is preserved by policy, the poor pay for the price of protection.",
+      "seriesLine": "A Ledger Series article on how fiscal structures quietly redistribute upward.",
+      "summary": "In a system where wealth is preserved by policy, the poor pay for the price of protection.",
+      "description": "In a system where wealth is preserved by policy, the poor pay for the price of protection.",
+      "publishedAt": "2025-04-22T05:19:03.091Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-shadow-subsidy-90d432a7abea",
+      "sourcePath": "posts/2025-04-22_The-Shadow-Subsidy-90d432a7abea.html",
+      "sourceSha256": "sha256:1e943769e137c3a3a830bbc79712192fc5d0fccc45cfa4597f47f9f68e0c2454",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*AZSPqZgUJppV9llQe8aVfQ@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:d55db095becfbbec09940097d3ac46e1eef9bbb13dc5f56d59def3354880ef55",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:6cdc734c01dc7b5b355d1db61de9d74acf3027731c1e8cbfe6f4eab2ab124596",
+          "pixelSha256": "sha256:1ff9412fe032040323cdf6d25f2bb54edcf4fce110d1479e5586cb6d00e05e03",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 3164556,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "the-collateral-shift",
+      "exportTitle": "The Collateral Shift",
+      "exportSummary": "In a system where access determines power, even liquidity becomes a geopolitical tool.",
+      "title": "The Collateral Shift",
+      "subtitle": "In a system where access determines power, even liquidity becomes a geopolitical tool.",
+      "seriesLine": "A Ledger Series article on how the global energy trade is restructuring risk and rewriting financial norms.",
+      "summary": "In a system where access determines power, even liquidity becomes a geopolitical tool.",
+      "description": "In a system where access determines power, even liquidity becomes a geopolitical tool.",
+      "publishedAt": "2025-04-28T07:00:36.690Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-collateral-shift-2e24528b3eb4",
+      "sourcePath": "posts/2025-04-28_The-Collateral-Shift-2e24528b3eb4.html",
+      "sourceSha256": "sha256:26a4948705deb40f43038b83b29c684a6ad8efddd3597546adaedd8efe54a5d7",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*7lzyXkIoAMBse1Rm0jOAvw@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:d22cbcd9bf423ac3f3ec97798e13600eee8044bb66baf523051ee270a021b5cd",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:0f8f0ef19091e3dc6cecfb2c07c7afb8bccb82f0d2b811769012711845d8a2e0",
+          "pixelSha256": "sha256:2a1beadc9bae79203c14279855a7e179992bbe5d0922a60a3474383721fd6a15",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1200,
+          "byteSize": 2056368,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "slug": "origins-orders",
+      "exportTitle": "Origins & Orders",
+      "exportSummary": "In a system where meaning and measurement collide, how ancient narratives and modern science shape our view of creation.",
+      "title": "Origins & Orders",
+      "subtitle": "In a system where meaning and measurement collide, how ancient narratives and modern science shape our view of creation.",
+      "seriesLine": "A Ledger Series article on the crossroads of sacred origins, scientific discovery, and the economics of belief.",
+      "summary": "In a system where meaning and measurement collide, how ancient narratives and modern science shape our view of creation.",
+      "description": "In a system where meaning and measurement collide, how ancient narratives and modern science shape our view of creation.",
+      "publishedAt": "2025-05-05T09:23:15.304Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/origins-orders-d3f3f81fe11f",
+      "sourcePath": "posts/2025-05-05_Origins---Orders-d3f3f81fe11f.html",
+      "sourceSha256": "sha256:72655569dfb40d93bb75106d07aa17a477fd7c9c66f671d31a1afa519c87271a",
+      "category": "Nonfiction",
+      "tags": [],
+      "classification": {
+        "visibility": "public",
+        "authorship": "original",
+        "format": "standalone"
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*6kr-VV2kQH-eya-38VPzkw@2x.jpeg",
+          "rawFile": "hero-medium.webp",
+          "siteReadyFile": "hero-sanitized.webp",
+          "outputFile": "hero.webp",
+          "sha256": "sha256:eed7ac5909604705bb8fdda51efbd56e0dac05fcdf61090e98296a51fc692a29",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:11a33bdba027ce7baa031645220e062e5bbc4d9cbb0dc39978abbb00a8bae80f",
+          "pixelSha256": "sha256:4280aea1de8563088b83a8499fdccc3196d607ad6757e14f4fec09ab269e0472",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 3654690,
+          "alt": null,
+          "caption": ""
+        }
+      ]
+    }
+  ]
 }

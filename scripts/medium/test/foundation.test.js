@@ -11,6 +11,7 @@ import {
 } from "../lib/html.js";
 import {
 	mediumCandidateSetSha256,
+	mediumPresentationSetSha256,
 	validateMediumInventory,
 	validateMediumManifest,
 	validateMediumSnapshot,
@@ -19,7 +20,11 @@ import {
 	createUnreviewedInventoryCandidates,
 	verifyFirstPartyMarkdown,
 } from "../lib/pipeline.js";
-import { bodyTextSha256, renderMediumBodyHtml } from "../lib/render.js";
+import {
+	bodyTextSha256,
+	renderMediumBodyHtml,
+	renderMediumIndexMarkdown,
+} from "../lib/render.js";
 
 const AWAITING_INVENTORY = {
 	schemaVersion: 1,
@@ -69,6 +74,8 @@ function reviewedInventory(candidate) {
 		},
 		candidateCount: 1,
 		candidateSetSha256: mediumCandidateSetSha256([candidate]),
+		presentationSetVersion: 1,
+		presentationSetSha256: mediumPresentationSetSha256([candidate]),
 		candidates: [candidate],
 		expectedCount: 1,
 		articles: [
@@ -701,6 +708,10 @@ test("Medium body images preserve nullable alt and empty captions", () => {
 
 test("Medium snapshot validation binds body image URLs to its article slug", () => {
 	const digest = `sha256:${"a".repeat(64)}`;
+	const presentationBinding = {
+		presentationSetVersion: 1,
+		presentationSetSha256: digest,
+	};
 	const hero = {
 		id: "hero",
 		role: "hero",
@@ -761,6 +772,7 @@ test("Medium snapshot validation binds body image URLs to its article slug", () 
 			sourcePath: inventoryArticle.sourcePath,
 			sourceSha256: digest,
 			canonicalUrl: inventoryArticle.canonicalUrl,
+			...presentationBinding,
 		},
 		hero: {
 			id: hero.id,
@@ -785,7 +797,13 @@ test("Medium snapshot validation binds body image URLs to its article slug", () 
 		bodyBlockCount: 1,
 		license: { name: "All Rights Reserved" },
 	};
-	assert.doesNotThrow(() => validateMediumSnapshot(snapshot, inventoryArticle));
+	assert.doesNotThrow(() =>
+		validateMediumSnapshot(snapshot, inventoryArticle, presentationBinding),
+	);
+	const markdown = renderMediumIndexMarkdown(snapshot);
+	assert.match(markdown, /^exportTitle: "Exported Exact Story"$/mu);
+	assert.match(markdown, /^exportSummary: "Legacy exported summary\."$/mu);
+	assert.match(markdown, /^title: "Exact Story"$/mu);
 	assert.throws(
 		() =>
 			validateMediumSnapshot(
@@ -798,6 +816,7 @@ test("Medium snapshot validation binds body image URLs to its article slug", () 
 					),
 				},
 				inventoryArticle,
+				presentationBinding,
 			),
 		/snapshot body metadata is not deterministic/u,
 	);
@@ -935,6 +954,8 @@ test("Medium manifest rejects duplicate or non-image assets", () => {
 		},
 		inventoryPath: "provenance/medium/inventory.json",
 		inventorySha256: digest,
+		presentationSetVersion: 1,
+		presentationSetSha256: digest,
 		articles: [
 			{
 				slug: "essay",

@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import EditorialWorkCard from "@components/EditorialWorkCard.astro";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getPostHeadline } from "@utils/content-utils";
 import {
 	getAbsolutePostUrlBySlug,
 	getPostUrlBySlug,
@@ -66,7 +67,7 @@ const jsonLd = {
 		},
 		workExample: articles.map((entry) => ({
 			"@type": "CreativeWork",
-			name: entry.data.title,
+			name: getPostHeadline(entry),
 			url: getAbsolutePostUrlBySlug(entry.id, siteUrl).toString(),
 		})),
 	},
@@ -96,7 +97,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 				{featuredEntries.map((entry) => (
 					<li>
 						<a href={getPostUrlBySlug(entry.id)}>
-							<span>{entry.data.title}</span>
+							<span>{getPostHeadline(entry)}</span>
 							<span aria-hidden="true">→</span>
 						</a>
 					</li>

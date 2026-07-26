@@ -1,5 +1,18 @@
 import { type CollectionEntry, getCollection } from "astro:content";
 
+export function getPostHeadline(post: CollectionEntry<"posts">): string {
+	return post.data.exportTitle || post.data.title;
+}
+
+export function getPostDeck(post: CollectionEntry<"posts">): string {
+	return (
+		post.data.summary ||
+		post.data.description ||
+		post.data.subtitle ||
+		getPostHeadline(post)
+	);
+}
+
 async function getRawSortedPosts() {
 	const posts = await getCollection("posts");
 	return posts.toSorted((left, right) => {
@@ -26,7 +39,7 @@ export async function getSortedPostsList(): Promise<PostForList[]> {
 	return posts.map((post) => ({
 		slug: post.id,
 		data: {
-			title: post.data.title,
+			title: getPostHeadline(post),
 			tags: post.data.tags,
 			category: post.data.category,
 			published: post.data.published,
