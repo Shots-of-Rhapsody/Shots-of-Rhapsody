@@ -17,6 +17,7 @@ import {
 	parseArguments,
 	publicFacingCopyViolations,
 	validateNoProjectRobots,
+	verifyDraftSources,
 	verifyMediumRenderedBodies,
 	verifyNoPrivateBuildReferences,
 	verifyPodcastArtifacts,
@@ -24,6 +25,65 @@ import {
 
 function testSha256(bytes) {
 	return `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
+}
+
+function validMediumStagingManifest(slug, markdown) {
+	const hash = `sha256:${"1".repeat(64)}`;
+	return {
+		schemaVersion: 1,
+		state: "active",
+		authority: {
+			platform: "Medium",
+			captureFormat: "account-export-zip",
+		},
+		author: {
+			name: "Tai Song",
+			profileUrl: "https://medium.com/@ShotsOfRhapsody",
+		},
+		inventoryPath: "provenance/medium/inventory.json",
+		inventorySha256: hash,
+		presentationSetVersion: 1,
+		presentationSetSha256: hash,
+		articles: [
+			{
+				slug,
+				capturedAt: "2026-07-25T00:00:00.000Z",
+				canonicalUrl: `https://medium.com/@ShotsOfRhapsody/${slug}-0123456789ab`,
+				paths: {
+					snapshot: `provenance/medium/posts/${slug}.json`,
+					markdown,
+				},
+				hashes: {
+					rawExport: hash,
+					rawSource: hash,
+					snapshot: hash,
+					markdown: hash,
+					bodyText: hash,
+				},
+				content: {
+					title: "Staged Medium essay",
+					subtitle: "An exact authored subtitle.",
+					seriesLine: "A Ledger Series article on staging boundaries.",
+					bodyBlockCount: 1,
+				},
+				assets: [
+					{
+						id: "hero",
+						role: "hero",
+						path: `src/content/posts/${slug}/hero.webp`,
+						sha256: hash,
+						acquisitionManifestSha256: hash,
+						captureSha256: hash,
+						pixelSha256: hash,
+						mimeType: "image/webp",
+						width: 1,
+						height: 1,
+						byteSize: 1,
+					},
+				],
+			},
+		],
+	};
 }
 
 test("public-copy checks allow authored text and required self-canonical URLs", () => {
@@ -268,6 +328,94 @@ test("catalog publication mode preserves the sealed archive and exact contract",
 		classificationFailures,
 	);
 	assert.match(classificationFailures.join("\n"), /entry contract is invalid/u);
+});
+
+test("manifest-bound Medium staging stays private without requiring draft true", async (context) => {
+	const root = await mkdtemp(path.join(tmpdir(), "medium-staging-boundary-"));
+	context.after(() => rm(root, { recursive: true, force: true }));
+	const articles = [];
+	const entries = [];
+	for (let index = 1; index <= 11; index += 1) {
+		const slug = `archive-${index}`;
+		const markdown = `src/content/posts/${slug}/index.md`;
+		await mkdir(path.join(root, "src", "content", "posts", slug), {
+			recursive: true,
+		});
+		await writeFile(
+			path.join(root, ...markdown.split("/")),
+			`---\ntitle: ${JSON.stringify(`Archive ${index}`)}\npublished: ${JSON.stringify(`2026-07-${String(index).padStart(2, "0")}T00:00:00.000Z`)}\n---\n`,
+		);
+		articles.push({ slug, paths: { markdown } });
+		entries.push({ slug, source: "tai-song", markdown, section: "fiction" });
+	}
+
+	const stagedSlug = "staged-medium-essay";
+	const stagedMarkdown = `src/content/posts/${stagedSlug}/index.md`;
+	const unknownSlug = "unknown-essay";
+	const unknownMarkdown = `src/content/posts/${unknownSlug}/index.md`;
+	for (const [slug, markdown] of [
+		[stagedSlug, stagedMarkdown],
+		[unknownSlug, unknownMarkdown],
+	]) {
+		await mkdir(path.join(root, "src", "content", "posts", slug), {
+			recursive: true,
+		});
+		await writeFile(
+			path.join(root, ...markdown.split("/")),
+			`---\ntitle: ${JSON.stringify(slug)}\npublished: "2026-07-25T00:00:00.000Z"\ndraft: false\nsection: "nonfiction"\n---\n`,
+		);
+	}
+
+	await mkdir(path.join(root, "provenance", "medium"), { recursive: true });
+	await writeFile(
+		path.join(root, "provenance", "publication-catalog.json"),
+		JSON.stringify({ schemaVersion: 1, entries }),
+	);
+	await writeFile(
+		path.join(root, "provenance", "medium", "manifest.json"),
+		JSON.stringify(validMediumStagingManifest(stagedSlug, stagedMarkdown)),
+	);
+
+	const catalogFailures = [];
+	const publication = await loadPublicationManifest(
+		root,
+		{ articles },
+		"catalog",
+		catalogFailures,
+	);
+	assert.deepEqual(catalogFailures, []);
+	assert.equal(publication.articles.length, 11);
+	assert.equal(
+		publication.articles.some((article) => article.slug === stagedSlug),
+		false,
+		"staged Medium evidence must not enter the public route inventory",
+	);
+
+	const failures = [];
+	await verifyDraftSources(root, publication, failures);
+	assert.deepEqual(failures, [
+		`Uncataloged writing must remain an explicit draft: ${unknownMarkdown}`,
+	]);
+
+	await writeFile(
+		path.join(root, "provenance", "medium", "manifest.json"),
+		JSON.stringify({
+			state: "active",
+			articles: [{ slug: stagedSlug, paths: { markdown: stagedMarkdown } }],
+		}),
+	);
+	const malformedFailures = [];
+	await verifyDraftSources(root, publication, malformedFailures);
+	assert.match(
+		malformedFailures.join("\n"),
+		/Medium staging manifest is invalid/u,
+	);
+	assert.match(
+		malformedFailures.join("\n"),
+		new RegExp(
+			`Uncataloged writing must remain an explicit draft: ${stagedMarkdown}`,
+		),
+	);
 });
 
 test("Medium rendered-body verification binds exact snapshot bytes and HTML", async (context) => {

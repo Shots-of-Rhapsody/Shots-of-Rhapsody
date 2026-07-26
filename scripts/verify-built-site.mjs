@@ -12,6 +12,7 @@ import {
 	evaluateReviewSignoffs,
 	validateReviewSignoffCommitBinding,
 } from "./archive/lib/review-signoff.js";
+import { validateMediumManifest } from "./medium/lib/model.js";
 import { inspectBuiltImages } from "./verify-images.mjs";
 
 const DEFAULT_DIST = "dist";
@@ -1994,7 +1995,45 @@ async function verifyCustomNotFound(distRoot, site, failures) {
 	}
 }
 
-async function verifyDraftSources(repoRoot, manifest, failures) {
+async function stagedMediumMarkdownPaths(repoRoot, failures) {
+	const manifestPath = path.join(
+		repoRoot,
+		"provenance",
+		"medium",
+		"manifest.json",
+	);
+	let manifest;
+	try {
+		manifest = validateMediumManifest(
+			JSON.parse(await readFile(manifestPath, "utf8")),
+		);
+	} catch (error) {
+		failures.push(`Medium staging manifest is invalid (${error.message})`);
+		return new Set();
+	}
+	if (manifest.state === "awaiting-export") return new Set();
+
+	const stagedPaths = new Set();
+	for (const article of manifest.articles) {
+		const { slug } = article;
+		const { markdown } = article.paths;
+		const label = `Medium staging manifest ${slug}`;
+		if (markdown !== `src/content/posts/${slug}/index.md`) {
+			failures.push(`${label}: Markdown path is not bound to its slug`);
+			continue;
+		}
+		const resolved = resolveManifestPath(
+			repoRoot,
+			markdown,
+			`${label} Markdown`,
+			failures,
+		);
+		if (resolved) stagedPaths.add(normalizedPath(path.resolve(resolved)));
+	}
+	return stagedPaths;
+}
+
+export async function verifyDraftSources(repoRoot, manifest, failures) {
 	const postsRoot = path.join(repoRoot, "src", "content", "posts");
 	const markdownFiles = (await walk(postsRoot)).filter((file) =>
 		file.toLowerCase().endsWith(".md"),
@@ -2006,15 +2045,17 @@ async function verifyDraftSources(repoRoot, manifest, failures) {
 			),
 		),
 	);
+	const stagedMediumPaths = await stagedMediumMarkdownPaths(repoRoot, failures);
 	for (const file of markdownFiles) {
 		const draft = frontmatterDraftValue(await readFile(file, "utf8"));
 		const normalized = normalizedPath(path.resolve(file));
 		const cataloged = publishedPaths.has(normalized);
+		const stagedMedium = stagedMediumPaths.has(normalized);
 		if (cataloged && draft === true)
 			failures.push(
 				`Cataloged writing must not be a draft: ${normalizedPath(path.relative(repoRoot, file))}`,
 			);
-		if (!cataloged && draft !== true)
+		if (!cataloged && !stagedMedium && draft !== true)
 			failures.push(
 				`Uncataloged writing must remain an explicit draft: ${normalizedPath(path.relative(repoRoot, file))}`,
 			);
