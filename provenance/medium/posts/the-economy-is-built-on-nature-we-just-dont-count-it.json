@@ -1,0 +1,569 @@
+{
+  "schemaVersion": 1,
+  "slug": "the-economy-is-built-on-nature-we-just-dont-count-it",
+  "exportTitle": "The Economy Is Built on Nature, We Just Don’t Count It",
+  "exportSummary": "We measure profits, but not the ecosystems that make them possible. A new kind of accounting could change that.",
+  "title": "The Natural Economy",
+  "subtitle": "In a system that extracts but never replenishes, nature becomes invisible.",
+  "seriesLine": "A Ledger Series article on environmental value and the cost of exclusion.",
+  "summary": "We measure profits, but not the ecosystems that make them possible. A new kind of accounting could change that.",
+  "description": "We measure profits, but not the ecosystems that make them possible. A new kind of accounting could change that.",
+  "author": "Tai Song",
+  "published": "2025-03-27T07:37:27.425Z",
+  "category": "Nonfiction",
+  "tags": [],
+  "imageAlt": null,
+  "imageCaption": "",
+  "provenance": {
+    "authority": "Medium account export",
+    "captureFormat": "account-export-html",
+    "capturedAt": "2026-07-25T14:11:15.789Z",
+    "sourcePath": "posts/2025-03-27_The-Economy-Is-Built-on-Nature--We-Just-Don-t-Count-It-6c801f9d71cc.html",
+    "sourceSha256": "sha256:900cedf4b478d696bb41a656aaa9f12284cb7fc702916bc838c54d471704878c",
+    "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-economy-is-built-on-nature-we-just-dont-count-it-6c801f9d71cc",
+    "presentationSetVersion": 1,
+    "presentationSetSha256": "sha256:ef4258dc651853433de14371682bb3603c7e58852672587fc6f0a9ce8e1484a2"
+  },
+  "hero": {
+    "id": "hero",
+    "outputFile": "hero.webp",
+    "sha256": "sha256:1fdb3a0ddf2ce33a87ef1b41da563e9c2d285d8f6fbae90301ff2971e9101dcf",
+    "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+    "captureSha256": "sha256:45c0de0c7002008db6139295ced61a78c55f8abfbbb8b659fe56c9d8536a54cd",
+    "pixelSha256": "sha256:18945d661df915dc3022782ec49470e7d3cd940000eab83cec86a4348ea39c2e",
+    "mimeType": "image/webp",
+    "width": 1800,
+    "height": 1029,
+    "byteSize": 1859918
+  },
+  "assets": [
+    {
+      "id": "hero",
+      "role": "hero",
+      "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*6xNcXBkeMw7u0iYgghZ86Q@2x.jpeg",
+      "rawFile": "hero-medium.webp",
+      "siteReadyFile": "hero-sanitized.webp",
+      "outputFile": "hero.webp",
+      "sha256": "sha256:1fdb3a0ddf2ce33a87ef1b41da563e9c2d285d8f6fbae90301ff2971e9101dcf",
+      "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+      "captureSha256": "sha256:45c0de0c7002008db6139295ced61a78c55f8abfbbb8b659fe56c9d8536a54cd",
+      "pixelSha256": "sha256:18945d661df915dc3022782ec49470e7d3cd940000eab83cec86a4348ea39c2e",
+      "mimeType": "image/webp",
+      "width": 1800,
+      "height": 1029,
+      "byteSize": 1859918,
+      "alt": null,
+      "caption": ""
+    }
+  ],
+  "bodyDocument": {
+    "blocks": [
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Economy Tracks Everything, Except the Earth It Runs On",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Forests generate oxygen. They purify water, regulate climate, and store carbon. These services are essential, measurable, and continuous. Yet none of them appear in a country’s GDP. It’s like running a business and ignoring half your most valuable assets.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "We count the trees when they’re cut and sold, but not when they’re alive and stabilizing soil or filtering air. We count the fish when they’re caught, not when they’re keeping marine ecosystems healthy. We track oil revenue, but not the cost of polluted rivers, degraded farmland, or disappearing species.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Nature isn’t passive. It’s productive. But in our economic systems, it’s invisible until it’s exploited or gone.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "There’s a shift happening in economics and climate policy. A growing recognition that nature isn’t just scenery. It’s capital. If forests, wetlands, oceans, and clean air were accounted for like highways or factories, how would that change the way we measure progress?",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Maybe the future isn’t about producing more. Maybe it’s about protecting the only systems that make production possible.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "How We Got Here: GDP Ignores Ecosystems",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Gross Domestic Product was never meant to measure sustainability. It was developed during wartime to track industrial output, what a country produces and sells, not whether that growth harms the natural systems it relies on.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "If a forest is cut down and sold, GDP goes up. If a wetland is drained for a mall, GDP goes up. But if that same forest absorbs carbon or prevents floods, it doesn’t count. Its real, life-sustaining value never makes the books.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "This isn’t a flaw in the system. It is the system.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In most economies, nature is treated as a “free good,” something that costs nothing until it’s extracted or sold.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Economists call this an externality, a real cost that doesn’t show up in the price. But for the planet, it’s not a rounding error. It’s the heart of the problem.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "When nature is invisible in our models, it becomes expendable in our policies. Governments are rewarded for extraction, not preservation. Markets chase short-term returns and ignore long-term survival.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "We didn’t design this system to fail. We just never designed it to last.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "What Nature Is Actually Worth",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Ecosystems might not show up in our budgets, but that doesn’t mean they aren’t creating real value. In fact, the global economy leans heavily on the systems we tend to ignore.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "🌍 More than half of global economic output depends on nature, from clean water and pollination to climate stability and healthy soil. These are not side benefits. They’re the foundation.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "🌳 Mangroves prevent billions in storm damage every year, yet they’re cleared for short-term profit. Wetlands reduce floods and purify water more efficiently than most human-made systems, but still face constant development pressure.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "🐝 Pollinators add hundreds of billions to global agriculture. Their collapse would ripple through entire food systems.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Natural systems aren’t a bonus. They are infrastructure. They provide security, productivity, and resilience, often at no cost, until we lose them.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "That’s why some governments are starting to act. Dozens of countries are building natural capital into their economic models. New accounting frameworks are being developed to treat ecosystems not as extras, but as essential.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Because what we fail to measure, we fail to protect. And once it’s gone, there’s no refund.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Case for Nature as Capital",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Nature already supports the economy. The next step is to treat it like capital.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Capital isn’t just money. It’s anything that creates value over time, such as factories, infrastructure, or software. Nature does all of this too. Forests store carbon. Oceans regulate climate. Bees pollinate crops. These systems generate real value, but we still don’t account for them.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Natural capital accounting is a way to fix that. It puts ecosystems on the balance sheet, helping policymakers and businesses make better long-term decisions. A forest might bring more economic benefit standing than cut. A wetland might be worth more as a flood barrier than as real estate.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Some countries are already making the shift. Costa Rica tracks its forests and watersheds in national planning. New Zealand includes ecosystem health in its well-being framework. The European Union is building Green GDP models to reflect environmental gains and losses in economic reporting.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "This isn’t just a moral argument. It’s a strategic one.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "As climate pressure grows and food systems become more fragile, the places that protect their natural assets will be the ones that recover fastest. Investors are watching too. Markets are starting to reward sustainability, not just speed or scale.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "We’re long past the question of whether nature has value. The only question left is how long we’ll ignore it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Limits and Risks of Pricing Nature",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Putting a price on nature can be useful, but it comes with risks.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Not everything worth protecting can be measured. Cultural meaning, spiritual value, and emotional connection don’t show up in spreadsheets. A sacred river or ancestral forest can’t be captured in numbers without losing something essential.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "There’s also the danger of false permission. If a forest has a dollar value, does that make it fair game if someone pays the price? High valuations can sometimes enable destruction instead of preventing it, especially in markets built to trade and offset.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Then there’s the question of power. If ecosystems are treated as capital, who owns them? Without strong safeguards, the door opens for corporations or governments to claim control over what communities have depended on for generations.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "This isn’t about commodifying nature. It’s about recognizing its real value so our decisions reflect both the cost of destruction and the benefit of protection.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Nature doesn’t matter because it’s profitable. It matters because everything else depends on it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Choice Ahead",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "We’re standing at a crossroads.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "One path keeps doing what we’ve always done. It measures success by extraction and growth, even if it costs us the systems we rely on. In that world, forests are more valuable dead. Clean water is a byproduct. And nature is ignored until it disappears.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The other path is slower, but wiser. It sees nature not as background, but as the backbone of everything else. It redefines value. It invests in the systems we didn’t create, but absolutely need.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "That shift is already underway. Countries are starting to count nature. Companies are beginning to account for their impact. The tools are there. The models exist.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "What’s missing is the collective choice to act.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "🔹 Do you believe nature should be part of the economy, or protected from it?",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Leave a comment below. Let’s imagine a future where progress includes the planet.",
+            "marks": []
+          }
+        ]
+      }
+    ]
+  },
+  "bodyHtml": "<p>The Economy Tracks Everything, Except the Earth It Runs On</p>\n<p>Forests generate oxygen. They purify water, regulate climate, and store carbon. These services are essential, measurable, and continuous. Yet none of them appear in a country’s GDP. It’s like running a business and ignoring half your most valuable assets.</p>\n<p>We count the trees when they’re cut and sold, but not when they’re alive and stabilizing soil or filtering air. We count the fish when they’re caught, not when they’re keeping marine ecosystems healthy. We track oil revenue, but not the cost of polluted rivers, degraded farmland, or disappearing species.</p>\n<p>Nature isn’t passive. It’s productive. But in our economic systems, it’s invisible until it’s exploited or gone.</p>\n<p>There’s a shift happening in economics and climate policy. A growing recognition that nature isn’t just scenery. It’s capital. If forests, wetlands, oceans, and clean air were accounted for like highways or factories, how would that change the way we measure progress?</p>\n<p>Maybe the future isn’t about producing more. Maybe it’s about protecting the only systems that make production possible.</p>\n<p>⸻</p>\n<p>How We Got Here: GDP Ignores Ecosystems</p>\n<p>Gross Domestic Product was never meant to measure sustainability. It was developed during wartime to track industrial output, what a country produces and sells, not whether that growth harms the natural systems it relies on.</p>\n<p>If a forest is cut down and sold, GDP goes up. If a wetland is drained for a mall, GDP goes up. But if that same forest absorbs carbon or prevents floods, it doesn’t count. Its real, life-sustaining value never makes the books.</p>\n<p>This isn’t a flaw in the system. It is the system.</p>\n<p>In most economies, nature is treated as a “free good,” something that costs nothing until it’s extracted or sold.</p>\n<p>Economists call this an externality, a real cost that doesn’t show up in the price. But for the planet, it’s not a rounding error. It’s the heart of the problem.</p>\n<p>When nature is invisible in our models, it becomes expendable in our policies. Governments are rewarded for extraction, not preservation. Markets chase short-term returns and ignore long-term survival.</p>\n<p>We didn’t design this system to fail. We just never designed it to last.</p>\n<p>⸻</p>\n<p>What Nature Is Actually Worth</p>\n<p>Ecosystems might not show up in our budgets, but that doesn’t mean they aren’t creating real value. In fact, the global economy leans heavily on the systems we tend to ignore.</p>\n<p>🌍 More than half of global economic output depends on nature, from clean water and pollination to climate stability and healthy soil. These are not side benefits. They’re the foundation.</p>\n<p>🌳 Mangroves prevent billions in storm damage every year, yet they’re cleared for short-term profit. Wetlands reduce floods and purify water more efficiently than most human-made systems, but still face constant development pressure.</p>\n<p>🐝 Pollinators add hundreds of billions to global agriculture. Their collapse would ripple through entire food systems.</p>\n<p>Natural systems aren’t a bonus. They are infrastructure. They provide security, productivity, and resilience, often at no cost, until we lose them.</p>\n<p>That’s why some governments are starting to act. Dozens of countries are building natural capital into their economic models. New accounting frameworks are being developed to treat ecosystems not as extras, but as essential.</p>\n<p>Because what we fail to measure, we fail to protect. And once it’s gone, there’s no refund.</p>\n<p>⸻</p>\n<p>The Case for Nature as Capital</p>\n<p>Nature already supports the economy. The next step is to treat it like capital.</p>\n<p>Capital isn’t just money. It’s anything that creates value over time, such as factories, infrastructure, or software. Nature does all of this too. Forests store carbon. Oceans regulate climate. Bees pollinate crops. These systems generate real value, but we still don’t account for them.</p>\n<p>Natural capital accounting is a way to fix that. It puts ecosystems on the balance sheet, helping policymakers and businesses make better long-term decisions. A forest might bring more economic benefit standing than cut. A wetland might be worth more as a flood barrier than as real estate.</p>\n<p>Some countries are already making the shift. Costa Rica tracks its forests and watersheds in national planning. New Zealand includes ecosystem health in its well-being framework. The European Union is building Green GDP models to reflect environmental gains and losses in economic reporting.</p>\n<p>This isn’t just a moral argument. It’s a strategic one.</p>\n<p>As climate pressure grows and food systems become more fragile, the places that protect their natural assets will be the ones that recover fastest. Investors are watching too. Markets are starting to reward sustainability, not just speed or scale.</p>\n<p>We’re long past the question of whether nature has value. The only question left is how long we’ll ignore it.</p>\n<p>⸻</p>\n<p>The Limits and Risks of Pricing Nature</p>\n<p>Putting a price on nature can be useful, but it comes with risks.</p>\n<p>Not everything worth protecting can be measured. Cultural meaning, spiritual value, and emotional connection don’t show up in spreadsheets. A sacred river or ancestral forest can’t be captured in numbers without losing something essential.</p>\n<p>There’s also the danger of false permission. If a forest has a dollar value, does that make it fair game if someone pays the price? High valuations can sometimes enable destruction instead of preventing it, especially in markets built to trade and offset.</p>\n<p>Then there’s the question of power. If ecosystems are treated as capital, who owns them? Without strong safeguards, the door opens for corporations or governments to claim control over what communities have depended on for generations.</p>\n<p>This isn’t about commodifying nature. It’s about recognizing its real value so our decisions reflect both the cost of destruction and the benefit of protection.</p>\n<p>Nature doesn’t matter because it’s profitable. It matters because everything else depends on it.</p>\n<p>⸻</p>\n<p>The Choice Ahead</p>\n<p>We’re standing at a crossroads.</p>\n<p>One path keeps doing what we’ve always done. It measures success by extraction and growth, even if it costs us the systems we rely on. In that world, forests are more valuable dead. Clean water is a byproduct. And nature is ignored until it disappears.</p>\n<p>The other path is slower, but wiser. It sees nature not as background, but as the backbone of everything else. It redefines value. It invests in the systems we didn’t create, but absolutely need.</p>\n<p>That shift is already underway. Countries are starting to count nature. Companies are beginning to account for their impact. The tools are there. The models exist.</p>\n<p>What’s missing is the collective choice to act.</p>\n<p>🔹 Do you believe nature should be part of the economy, or protected from it?</p>\n<p>Leave a comment below. Let’s imagine a future where progress includes the planet.</p>",
+  "bodyTextSha256": "sha256:1680f8f09c8030cd4164ae22d61479436211fbb84cb7736e9548f9d9c1d7eab5",
+  "bodyBlockCount": 50,
+  "license": {
+    "name": "All Rights Reserved"
+  }
+}

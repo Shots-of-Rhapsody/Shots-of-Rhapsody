@@ -89,6 +89,43 @@
       ]
     },
     {
+      "slug": "the-economy-is-built-on-nature-we-just-dont-count-it",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-economy-is-built-on-nature-we-just-dont-count-it-6c801f9d71cc",
+      "paths": {
+        "snapshot": "provenance/medium/posts/the-economy-is-built-on-nature-we-just-dont-count-it.json",
+        "markdown": "src/content/posts/the-economy-is-built-on-nature-we-just-dont-count-it/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:900cedf4b478d696bb41a656aaa9f12284cb7fc702916bc838c54d471704878c",
+        "snapshot": "sha256:2248f51739fa4caa252ba0b87e0e6a9a83ed5c87ee79194c56b3bbbbc31fc8f0",
+        "markdown": "sha256:54a719a5b55df57915dc0651478a015e4b5de9d98b3f473afc05ebe3b47d1d46",
+        "bodyText": "sha256:1680f8f09c8030cd4164ae22d61479436211fbb84cb7736e9548f9d9c1d7eab5"
+      },
+      "content": {
+        "title": "The Natural Economy",
+        "subtitle": "In a system that extracts but never replenishes, nature becomes invisible.",
+        "seriesLine": "A Ledger Series article on environmental value and the cost of exclusion.",
+        "bodyBlockCount": 50
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/the-economy-is-built-on-nature-we-just-dont-count-it/hero.webp",
+          "sha256": "sha256:1fdb3a0ddf2ce33a87ef1b41da563e9c2d285d8f6fbae90301ff2971e9101dcf",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:45c0de0c7002008db6139295ced61a78c55f8abfbbb8b659fe56c9d8536a54cd",
+          "pixelSha256": "sha256:18945d661df915dc3022782ec49470e7d3cd940000eab83cec86a4348ea39c2e",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1029,
+          "byteSize": 1859918
+        }
+      ]
+    },
+    {
       "slug": "the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking",
       "capturedAt": "2026-07-25T14:11:15.789Z",
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking-b093d81a7c12",
