@@ -1455,47 +1455,47 @@ test.describe("Medium article presentation contract", () => {
 				await setTheme(page, theme);
 				await expectHealthyPage(page, `posts/${article.slug}/`);
 				await expectTheme(page, theme);
-				const exportTitle = page.locator('[data-medium-field="export-title"]');
+				const exportTitle = page.locator('[data-article-field="export-title"]');
 				await expect(exportTitle).toHaveCount(1);
 				await expect(exportTitle).toHaveJSProperty("tagName", "H1");
 				await expect(exportTitle).toHaveText(article.exportTitle);
-				const summary = page.locator('[data-medium-field="summary"]');
+				const summary = page.locator('[data-article-field="summary"]');
 				await expect(summary).toHaveCount(1);
 				await expect(summary).toHaveJSProperty("tagName", "P");
 				await expect(summary).toHaveText(article.summary);
-				const title = page.locator('[data-medium-field="title"]');
+				const title = page.locator('[data-article-field="title"]');
 				await expect(title).toHaveCount(1);
 				await expect(title).toHaveJSProperty("tagName", "H2");
 				await expect(title).toHaveText(article.title);
-				const subtitle = page.locator('[data-medium-field="subtitle"]');
+				const subtitle = page.locator('[data-article-field="subtitle"]');
 				await expect(subtitle).toHaveCount(1);
 				await expect(subtitle).toHaveJSProperty("tagName", "P");
 				await expect(subtitle).toHaveText(article.subtitle);
-				const seriesLine = page.locator('[data-medium-field="series-line"]');
+				const seriesLine = page.locator('[data-article-field="series-line"]');
 				await expect(seriesLine).toHaveCount(1);
 				await expect(seriesLine).toHaveJSProperty("tagName", "P");
 				await expect(seriesLine).toHaveText(article.seriesLine);
 				await expect(
-					page.locator('[data-medium-field="author"]'),
+					page.locator('[data-article-field="author"]'),
 				).toContainText(`By ${article.author}`);
 				await expect(
-					page.locator(".article-header [data-medium-field]"),
+					page.locator(".article-header [data-article-field]"),
 				).toHaveCount(3);
 				expect(
 					await page
-						.locator(".article-header [data-medium-field]")
+						.locator(".article-header [data-article-field]")
 						.evaluateAll((nodes) =>
-							nodes.map((node) => node.getAttribute("data-medium-field")),
+							nodes.map((node) => node.getAttribute("data-article-field")),
 						),
 				).toEqual(["export-title", "summary", "author"]);
-				const authoredLead = page.locator("[data-medium-lead]");
+				const authoredLead = page.locator("[data-article-lead]");
 				await expect(authoredLead).toHaveCount(1);
 				await expect(authoredLead).toHaveJSProperty("tagName", "SECTION");
 				expect(
 					await authoredLead
-						.locator(":scope > [data-medium-field]")
+						.locator(":scope > [data-article-field]")
 						.evaluateAll((nodes) =>
-							nodes.map((node) => node.getAttribute("data-medium-field")),
+							nodes.map((node) => node.getAttribute("data-article-field")),
 						),
 				).toEqual(["title", "subtitle"]);
 
@@ -1505,10 +1505,10 @@ test.describe("Medium article presentation contract", () => {
 						nodes
 							.map((node) => {
 								if (node.tagName === "HEADER") return "header";
-								if (node.hasAttribute("data-medium-lead")) return "lead";
-								if (node.hasAttribute("data-medium-hero")) return "hero";
+								if (node.hasAttribute("data-article-lead")) return "lead";
+								if (node.hasAttribute("data-article-hero")) return "hero";
 								if (node.hasAttribute("data-authored-content")) return "body";
-								return node.getAttribute("data-medium-field");
+								return node.getAttribute("data-article-field");
 							})
 							.filter(Boolean),
 					);
@@ -1521,16 +1521,16 @@ test.describe("Medium article presentation contract", () => {
 				]);
 				const presentationOrder = await page
 					.locator(
-						"[data-medium-field], [data-medium-hero], [data-authored-content].article-body",
+						"[data-article-field], [data-article-hero], [data-authored-content].article-body",
 					)
 					.evaluateAll((nodes) =>
 						nodes
 							.map((node) =>
-								node.hasAttribute("data-medium-hero")
+								node.hasAttribute("data-article-hero")
 									? "hero"
 									: node.matches("[data-authored-content].article-body")
 										? "body"
-										: node.getAttribute("data-medium-field"),
+										: node.getAttribute("data-article-field"),
 							)
 							.filter((field) => field !== "author"),
 					);
@@ -1544,7 +1544,7 @@ test.describe("Medium article presentation contract", () => {
 					"body",
 				]);
 
-				const heroFigure = page.locator("[data-medium-hero]");
+				const heroFigure = page.locator("[data-article-hero]");
 				await expect(heroFigure).toHaveCount(1);
 				await expect(heroFigure).toHaveJSProperty("tagName", "FIGURE");
 				await expect(heroFigure.locator("picture")).toHaveCount(1);
@@ -1559,7 +1559,7 @@ test.describe("Medium article presentation contract", () => {
 				);
 				await expect(hero).toHaveCSS("object-fit", "contain");
 				const sourceWrapper = page.locator(
-					'[data-medium-hero] [data-image-variant="hero"]',
+					'[data-article-hero] [data-image-variant="hero"]',
 				);
 				await expect(sourceWrapper).toHaveAttribute(
 					"data-source-width",

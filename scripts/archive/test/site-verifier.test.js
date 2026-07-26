@@ -232,6 +232,16 @@ test("public-copy checks reject platform branding and implementation language", 
 	]);
 });
 
+test("public-copy checks reject source-branded data attributes", () => {
+	const html = `<!doctype html><html><body>
+		<article data-medium-field="title">An authored title</article>
+		<figure data-vocal-hero></figure>
+	</body></html>`;
+	assert.deepEqual(publicFacingCopyViolations(html), [
+		"public HTML exposes source-branded data attributes",
+	]);
+});
+
 test("built-site CLI enables signoff enforcement only when requested", () => {
 	assert.equal(parseArguments([]).requireSignoff, false);
 	assert.equal(parseArguments([]).releaseTarget, "catalog");
@@ -465,8 +475,8 @@ test("Medium rendered-body verification binds exact snapshot bytes and HTML", as
 		bodyHtml,
 		{ heroFirst = false, titleTag = "h1", subtitleFirst = false } = {},
 	) => {
-		const series = `<p data-medium-field="series-line">${snapshot.seriesLine}</p>`;
-		const hero = `<figure data-medium-hero><div data-image-variant="hero" data-source-width="${snapshot.hero.width}" data-source-height="${snapshot.hero.height}"><picture><source type="image/avif" srcset="/hero.avif"><img src="/hero.webp" alt="" width="${snapshot.hero.width}" height="${snapshot.hero.height}"></picture></div></figure>`;
+		const series = `<p data-article-field="series-line">${snapshot.seriesLine}</p>`;
+		const hero = `<figure data-article-hero><div data-image-variant="hero" data-source-width="${snapshot.hero.width}" data-source-height="${snapshot.hero.height}"><picture><source type="image/avif" srcset="/hero.avif"><img src="/hero.webp" alt="" width="${snapshot.hero.width}" height="${snapshot.hero.height}"></picture></div></figure>`;
 		const jsonLd = JSON.stringify({
 			"@context": "https://schema.org",
 			"@type": "BlogPosting",
@@ -489,10 +499,10 @@ test("Medium rendered-body verification binds exact snapshot bytes and HTML", as
 				height: 1200,
 			},
 		});
-		const exportTitle = `<${titleTag} data-medium-field="export-title">${snapshot.exportTitle}</${titleTag}>`;
-		const summary = `<p data-medium-field="summary">${snapshot.summary}</p>`;
-		const lead = `<section data-medium-lead><h2 data-medium-field="title">${snapshot.title}</h2><p data-medium-field="subtitle">${snapshot.subtitle}</p></section>`;
-		return `<!doctype html><html><head><link rel="canonical" href="${pageUrl}"><meta name="author" content="${snapshot.author}"><meta name="description" content="${snapshot.description}"><meta property="og:title" content="${snapshot.exportTitle}"><meta property="og:description" content="${snapshot.description}"><meta property="og:image" content="${socialImageUrl}"><meta property="og:image:alt" content=""><meta property="og:image:type" content="image/jpeg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="1200"><meta property="article:published_time" content="${snapshot.published}"><meta property="article:section" content="${snapshot.category}">${snapshot.tags.map((tag) => `<meta property="article:tag" content="${tag}">`).join("")}<script type="application/ld+json">${jsonLd}</script></head><body><article id="post-container"><header>${subtitleFirst ? `${summary}${exportTitle}` : `${exportTitle}${summary}`}<span data-medium-field="author">By ${snapshot.author}</span><time data-post-published datetime="${snapshot.published}">${snapshot.published.slice(0, 10)}</time></header>${lead}${heroFirst ? `${hero}${series}` : `${series}${hero}`}<div class="article-body" data-authored-content>${bodyHtml}</div><aside data-license-name="All Rights Reserved"></aside></article></body></html>`;
+		const exportTitle = `<${titleTag} data-article-field="export-title">${snapshot.exportTitle}</${titleTag}>`;
+		const summary = `<p data-article-field="summary">${snapshot.summary}</p>`;
+		const lead = `<section data-article-lead><h2 data-article-field="title">${snapshot.title}</h2><p data-article-field="subtitle">${snapshot.subtitle}</p></section>`;
+		return `<!doctype html><html><head><link rel="canonical" href="${pageUrl}"><meta name="author" content="${snapshot.author}"><meta name="description" content="${snapshot.description}"><meta property="og:title" content="${snapshot.exportTitle}"><meta property="og:description" content="${snapshot.description}"><meta property="og:image" content="${socialImageUrl}"><meta property="og:image:alt" content=""><meta property="og:image:type" content="image/jpeg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="1200"><meta property="article:published_time" content="${snapshot.published}"><meta property="article:section" content="${snapshot.category}">${snapshot.tags.map((tag) => `<meta property="article:tag" content="${tag}">`).join("")}<script type="application/ld+json">${jsonLd}</script></head><body><article id="post-container"><header>${subtitleFirst ? `${summary}${exportTitle}` : `${exportTitle}${summary}`}<span data-article-field="author">By ${snapshot.author}</span><time data-post-published datetime="${snapshot.published}">${snapshot.published.slice(0, 10)}</time></header>${lead}${heroFirst ? `${hero}${series}` : `${series}${hero}`}<div class="article-body" data-authored-content>${bodyHtml}</div><aside data-license-name="All Rights Reserved"></aside></article></body></html>`;
 	};
 	const renderRss = ({
 		title = snapshot.exportTitle,

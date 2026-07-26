@@ -3,9 +3,11 @@
 Status: **Not yet approved for public release**
 
 This report is intentionally incomplete until the exact release-candidate
-commit has passed every automated gate and Tai Song has signed all 11 review
-records. Keeping this document in a pending state prevents a planning or tool
-run from being mistaken for release approval.
+commit has passed every automated gate and Tai Song has completed all 11
+`ReviewSignoffV1` records, all 24 nonfiction claim reviews, all 25
+`ContentSignoffV2` records, the podcast publication review, and the release-wide
+`PresentationSignoffV2` record. Keeping this document in a pending state
+prevents a planning or tool run from being mistaken for release approval.
 
 ## Required final evidence
 
@@ -47,10 +49,10 @@ The sanitized repository was recreated under the canonical owner and name, so
 the superseded provider-side pull-request refs are not part of the current
 repository. Public release remains blocked until an unauthenticated check
 confirms that deleted-repository and superseded commit URLs expose no old
-private material, and until all 11 structured article signoffs are complete
-against the final release-candidate commit. GitHub Support is a fallback only
-if an old URL still exposes deleted private data. Until the checks pass, the
-repository must remain private.
+private material, and until every writing, claim, podcast, rights, and
+presentation approval is complete against the final release candidate. GitHub
+Support is a fallback only if an old URL still exposes deleted private data.
+Until the checks pass, the repository must remain private.
 
 ## Accepted disclosures
 

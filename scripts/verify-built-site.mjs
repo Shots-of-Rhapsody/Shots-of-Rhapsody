@@ -260,6 +260,8 @@ const SITE_COPY_INTERNAL_PATTERN =
 	/\b(?:repository|manifest|upstream|deployment|backend|system-level)\b|\b(?:source|content)\s+(?:hash|path|import)\b/iu;
 const SITE_COPY_EDITORIAL_PROCESS_PATTERN =
 	/\b(?:author-approved sources?|(?:careful\s+)?source review|preserved author text|reviewed claim by claim|human-reviewed transcripts?)\b/iu;
+const SOURCE_BRANDED_DATA_ATTRIBUTE_PATTERN =
+	/^data-(?:github|medium|proton|vocal)-/iu;
 const BLOCKED_PUBLIC_LINK_HOSTS = new Set([
 	"github.com",
 	"medium.com",
@@ -273,8 +275,8 @@ const AUTHORED_CONTENT_MARKERS = new Set([
 	"data-archive-body",
 	"data-archive-field",
 	"data-archive-hero",
-	"data-medium-field",
-	"data-medium-hero",
+	"data-article-field",
+	"data-article-hero",
 	"data-archive-entry-slug",
 ]);
 const AUTHORED_CONTENT_CLASSES = new Set([
@@ -444,6 +446,13 @@ export function publicFacingCopyViolations(html) {
 		(value) => isPlainObject(value) && value["@type"] === "BlogPosting",
 	);
 	const visit = (node, { authored = false, visible = true } = {}) => {
+		if (
+			(node.attrs ?? []).some((attribute) =>
+				SOURCE_BRANDED_DATA_ATTRIBUTE_PATTERN.test(attribute.name),
+			)
+		) {
+			violations.push("public HTML exposes source-branded data attributes");
+		}
 		const attributesByName = Object.fromEntries(
 			(node.attrs ?? []).map((attribute) => [attribute.name, attribute.value]),
 		);
@@ -2402,10 +2411,10 @@ export async function verifyMediumRenderedBodies(
 		}
 		const html = await readFile(pagePath, "utf8");
 		const document = parse(html);
-		const mediumFields = elementsWithAttribute(document, "data-medium-field");
+		const mediumFields = elementsWithAttribute(document, "data-article-field");
 		const fieldByName = new Map();
 		for (const node of mediumFields) {
-			const field = attributeValue(node, "data-medium-field");
+			const field = attributeValue(node, "data-article-field");
 			if (fieldByName.has(field)) {
 				failures.push(`Medium ${slug}: rendered ${field} field is duplicated`);
 				continue;
@@ -2447,7 +2456,7 @@ export async function verifyMediumRenderedBodies(
 				`Medium ${slug}: headline, summary, authored title, subtitle, Ledger Series line, or author uses the wrong semantic element`,
 			);
 		}
-		const heroes = elementsWithAttribute(document, "data-medium-hero");
+		const heroes = elementsWithAttribute(document, "data-article-hero");
 		const bodies = elementsWithAttribute(
 			document,
 			"data-authored-content",
@@ -2603,7 +2612,7 @@ export async function verifyMediumRenderedBodies(
 			(node) => node.tagName === "header",
 		);
 		const seriesIndex = directElements.indexOf(fieldByName.get("series-line"));
-		const leads = elementsWithAttribute(document, "data-medium-lead");
+		const leads = elementsWithAttribute(document, "data-article-lead");
 		const leadIndex = directElements.indexOf(leads[0]);
 		const heroIndex = directElements.indexOf(heroes[0]);
 		const bodyIndex = directElements.indexOf(bodies[0]);
@@ -2676,7 +2685,7 @@ export async function verifyMediumRenderedBodies(
 					? "hero"
 					: node === bodies[0]
 						? "body"
-						: attributeValue(node, "data-medium-field"),
+						: attributeValue(node, "data-article-field"),
 			)
 			.filter((field) => field !== "author");
 		if (

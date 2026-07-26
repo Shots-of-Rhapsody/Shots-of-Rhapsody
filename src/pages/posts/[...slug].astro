@@ -175,14 +175,14 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 				data-pagefind-weight="10"
 				data-pagefind-meta="title"
 				data-archive-field={isSealedArchivePost ? "title" : undefined}
-				data-medium-field={isMediumPost ? "export-title" : undefined}
+				data-article-field={isMediumPost ? "export-title" : undefined}
 			>
 				{headline}
 			</h1>
 			{(isMediumPost ? deck : entry.data.subtitle) && (
 				<p
 					data-archive-field={isSealedArchivePost ? "subtitle" : undefined}
-					data-medium-field={isMediumPost ? "summary" : undefined}
+					data-article-field={isMediumPost ? "summary" : undefined}
 					class="article-subtitle"
 				>
 					{isMediumPost ? deck : entry.data.subtitle}
@@ -191,7 +191,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 			<div class="article-byline" data-pagefind-ignore>
 				<span
 					data-archive-field={isSealedArchivePost ? "author" : undefined}
-					data-medium-field={isMediumPost ? "author" : undefined}
+					data-article-field={isMediumPost ? "author" : undefined}
 				>
 					By {authorUrl ? <a href={url("/authors/tai-song/")}>{author}</a> : author}
 				</span>
@@ -207,16 +207,16 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 		</header>
 
 		{isMediumPost && (
-			<section class="article-medium-lead" data-medium-lead>
-				<h2 data-medium-field="title">{entry.data.title}</h2>
-				<p data-medium-field="subtitle">{entry.data.subtitle}</p>
+			<section class="article-medium-lead" data-article-lead>
+				<h2 data-article-field="title">{entry.data.title}</h2>
+				<p data-article-field="subtitle">{entry.data.subtitle}</p>
 			</section>
 		)}
 
 		{entry.data.seriesLine && (
 			<p
 				class="article-series-line"
-				data-medium-field={isMediumPost ? "series-line" : undefined}
+				data-article-field={isMediumPost ? "series-line" : undefined}
 			>
 				{entry.data.seriesLine}
 			</p>
@@ -225,7 +225,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 		{entry.data.image && (
 			<figure
 				data-archive-hero={isSealedArchivePost ? "" : undefined}
-				data-medium-hero={isMediumPost ? "" : undefined}
+				data-article-hero={isMediumPost ? "" : undefined}
 				class="article-hero"
 			>
 				<ImageWrapper
