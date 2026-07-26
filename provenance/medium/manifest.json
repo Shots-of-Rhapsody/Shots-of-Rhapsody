@@ -126,6 +126,43 @@
       ]
     },
     {
+      "slug": "origins-orders",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/origins-orders-d3f3f81fe11f",
+      "paths": {
+        "snapshot": "provenance/medium/posts/origins-orders.json",
+        "markdown": "src/content/posts/origins-orders/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:72655569dfb40d93bb75106d07aa17a477fd7c9c66f671d31a1afa519c87271a",
+        "snapshot": "sha256:dbe3889d99c274e5baa4e2e1f6696f7c6dfd2fe342c98cff42700aa30bd05edc",
+        "markdown": "sha256:90f437d91abe6225962d5ee3ffc3e6aafd68a48896a33463d03b884c7491ec1d",
+        "bodyText": "sha256:9e4a0b418240ba4f528a509a1a22fb4779ca11089f1a71da8cf728495dc3c83a"
+      },
+      "content": {
+        "title": "Origins & Orders",
+        "subtitle": "In a system where meaning and measurement collide, how ancient narratives and modern science shape our view of creation.",
+        "seriesLine": "A Ledger Series article on the crossroads of sacred origins, scientific discovery, and the economics of belief.",
+        "bodyBlockCount": 70
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/origins-orders/hero.webp",
+          "sha256": "sha256:eed7ac5909604705bb8fdda51efbd56e0dac05fcdf61090e98296a51fc692a29",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:11a33bdba027ce7baa031645220e062e5bbc4d9cbb0dc39978abbb00a8bae80f",
+          "pixelSha256": "sha256:4280aea1de8563088b83a8499fdccc3196d607ad6757e14f4fec09ab269e0472",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 3654690
+        }
+      ]
+    },
+    {
       "slug": "the-aspiration-economy",
       "capturedAt": "2026-07-25T14:11:15.789Z",
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-aspiration-economy-c79c4bd2c4ff",
