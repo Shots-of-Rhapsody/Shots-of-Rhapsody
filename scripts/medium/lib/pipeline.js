@@ -367,6 +367,12 @@ async function loadAssetCandidateLedger(
 		);
 	}
 	const sourcePaths = new Set();
+	const extractedByPath = new Map(
+		exportedCandidates(entries).map((candidate) => [
+			candidate.sourcePath,
+			candidate,
+		]),
+	);
 	for (const [index, candidateValue] of ledger.candidates.entries()) {
 		const candidate = validateUnresolvedMediumCandidate(
 			candidateValue,
@@ -382,7 +388,32 @@ async function loadAssetCandidateLedger(
 				"Medium inventory candidate ledger source evidence differs from the official export",
 			);
 		}
+		const extracted = extractedByPath.get(sourcePath);
+		for (const field of [
+			"suggestedSlug",
+			"title",
+			"descriptionCandidate",
+			"exportSummaryCandidate",
+			"displayTitleCandidate",
+			"displaySubtitleCandidate",
+			"seriesLineCandidate",
+			"publishedAtCandidate",
+			"canonicalUrlCandidate",
+			"sourcePath",
+			"sourceSha256",
+		]) {
+			if (!extracted || candidate[field] !== extracted[field]) {
+				throw new MediumContractError(
+					"Medium inventory candidate source-derived fields differ from the official export",
+				);
+			}
+		}
 		sourcePaths.add(sourcePath);
+	}
+	if (sourcePaths.size !== extractedByPath.size) {
+		throw new MediumContractError(
+			"Medium inventory candidate paths differ from the official export",
+		);
 	}
 	return {
 		candidates: ledger.candidates,
@@ -761,18 +792,26 @@ async function buildArticle(repoRoot, article, rawExport, capturedAt) {
 	}
 	const html = decodeUtf8(sourceBuffer, article.sourcePath);
 	const candidate = extractCandidateMetadata(html, article.sourcePath);
-	if (candidate.title !== article.title) {
+	if (candidate.title !== article.exportTitle) {
 		throw new MediumContractError(
-			`Exported candidate title differs for ${article.slug}`,
+			`Exported metadata title differs for ${article.slug}`,
 		);
 	}
-	if (
-		candidate.descriptionCandidate !== null &&
-		candidate.descriptionCandidate !== article.description
-	) {
+	if (candidate.exportSummaryCandidate !== article.exportSummary) {
 		throw new MediumContractError(
-			`Exported description differs for ${article.slug}`,
+			`Exported metadata summary differs for ${article.slug}`,
 		);
+	}
+	for (const [candidateField, articleField] of [
+		["displayTitleCandidate", "title"],
+		["displaySubtitleCandidate", "subtitle"],
+		["seriesLineCandidate", "seriesLine"],
+	]) {
+		if (candidate[candidateField] !== article[articleField]) {
+			throw new MediumContractError(
+				`Exported ${articleField} differs for ${article.slug}`,
+			);
+		}
 	}
 	if (
 		candidate.canonicalUrlCandidate !== null &&
@@ -800,8 +839,11 @@ async function buildArticle(repoRoot, article, rawExport, capturedAt) {
 	const snapshot = {
 		schemaVersion: SNAPSHOT_SCHEMA_VERSION,
 		slug: article.slug,
+		exportTitle: article.exportTitle,
+		exportSummary: article.exportSummary,
 		title: article.title,
 		subtitle: article.subtitle,
+		seriesLine: article.seriesLine,
 		summary: article.summary,
 		description: article.description,
 		author: AUTHOR_NAME,
@@ -887,6 +929,7 @@ function makeManifestEntry(repoRoot, built, rawExport, capturedAt) {
 		content: {
 			title: built.article.title,
 			subtitle: built.article.subtitle,
+			seriesLine: built.article.seriesLine,
 			bodyBlockCount: built.snapshot.bodyBlockCount,
 		},
 		assets: built.assets.map((asset) => ({
@@ -1208,6 +1251,9 @@ export async function verifyMediumArticles({
 		if (
 			entry.paths.snapshot !== paths.snapshot ||
 			entry.paths.markdown !== paths.markdown ||
+			entry.content.title !== article.title ||
+			entry.content.subtitle !== article.subtitle ||
+			entry.content.seriesLine !== article.seriesLine ||
 			entry.assets.length !== article.assets.length ||
 			entry.assets.some(
 				(asset) =>

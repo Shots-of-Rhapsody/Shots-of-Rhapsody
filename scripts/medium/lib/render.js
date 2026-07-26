@@ -286,6 +286,10 @@ export function renderMediumIndexMarkdown(snapshotValue) {
 	const snapshot = assertPlainObject(snapshotValue, "snapshot");
 	const title = assertNonEmptyString(snapshot.title, "snapshot.title");
 	const subtitle = assertString(snapshot.subtitle, "snapshot.subtitle");
+	const seriesLine = assertNonEmptyString(
+		snapshot.seriesLine,
+		"snapshot.seriesLine",
+	);
 	const summary = assertNonEmptyString(snapshot.summary, "snapshot.summary");
 	const description = assertNonEmptyString(
 		snapshot.description,
@@ -306,6 +310,7 @@ export function renderMediumIndexMarkdown(snapshotValue) {
 	const lines = ["---"];
 	appendString(lines, "title", title);
 	appendString(lines, "subtitle", subtitle);
+	appendString(lines, "seriesLine", seriesLine);
 	appendString(lines, "published", published);
 	appendString(lines, "description", description);
 	appendString(lines, "summary", summary);

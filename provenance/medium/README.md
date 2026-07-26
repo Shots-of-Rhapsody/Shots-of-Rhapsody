@@ -15,6 +15,15 @@ candidates, approve an image, or publish an essay. Its 33-candidate binding
 prevents a stale, incomplete, or expanded export from producing a release
 checklist silently.
 
+Its candidate-set hash is the immutable identity used when the hero evidence
+was acquired. It remains intentionally backward-compatible. Each candidate's
+included source SHA-256 already binds the complete HTML bytes; reviewed display
+fields are re-extracted from those bytes and compared exactly during raw-backed
+import, then carried by the separately hashed reviewed inventory, snapshot, and
+manifest. Presentation fields therefore cannot be edited independently without
+failing verification, while the historical image-acquisition identity remains
+truthful.
+
 [`hero-assets.v1.json`](hero-assets.v1.json) is the sanitized, non-rendered
 asset anchor for those exact 24 works. It records only public Medium identity,
 capture and site-ready hashes, dimensions, decoded-pixel hashes, and the exact
@@ -32,6 +41,15 @@ the Tai Song author credit in every official export footer. It is not the
 committed reviewed inventory: it has no article records, verified site-ready assets,
 reviewer, approval timestamp, or publication effect, and it refuses to
 overwrite an existing proposal.
+
+For each of the 24 included essays, the proposal also preserves five distinct
+source roles: the outer export metadata title and optional summary, the visible
+display title, the visible display subtitle, and the article-specific Ledger
+Series sentence. The importer then requires `display title → display subtitle →
+Ledger Series sentence → hero → authored body` in every source and rendered
+page. It never treats the export metadata title as the public heading, moves the
+Ledger sentence into the article body, or promotes the first post-hero paragraph
+into a heading.
 
 `pnpm medium:sanitize-image --all` derives the exact 24-slug selection from the
 validated durable anchor and ignored acquisition ledger; it does not discover

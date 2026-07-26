@@ -11,11 +11,24 @@ import {
 const EXPORT_DIGEST = `sha256:${"a".repeat(64)}`;
 const OTHER_DIGEST = `sha256:${"b".repeat(64)}`;
 
-function candidate({ title, slug, id, description = "Exact description." }) {
+function candidate({
+	title,
+	slug,
+	id,
+	description = "Exact export description.",
+	exportSummary = "Exact outer export summary.",
+	displayTitle = title,
+	displaySubtitle = "Exact public subtitle.",
+	seriesLine = "A Ledger Series article on exact evidence.",
+}) {
 	return {
 		suggestedSlug: slug,
 		title,
 		descriptionCandidate: description,
+		exportSummaryCandidate: exportSummary,
+		displayTitleCandidate: displayTitle,
+		displaySubtitleCandidate: displaySubtitle,
+		seriesLineCandidate: seriesLine,
 		publishedAtCandidate: "2025-04-01T12:00:00.000Z",
 		canonicalUrlCandidate: `https://medium.com/@ShotsOfRhapsody/${slug}-${id}`,
 		sourcePath: `posts/2025-04-01_${slug}-${id}.html`,
@@ -34,6 +47,10 @@ function fixture() {
 			slug: "exact-response-text",
 			id: "2",
 			description: null,
+			exportSummary: null,
+			displayTitle: null,
+			displaySubtitle: null,
+			seriesLine: null,
 		}),
 	];
 	const approvedAllowlist = {
@@ -76,6 +93,10 @@ test("review proposal preserves all candidate evidence and records exact disposi
 			"suggestedSlug",
 			"title",
 			"descriptionCandidate",
+			"exportSummaryCandidate",
+			"displayTitleCandidate",
+			"displaySubtitleCandidate",
+			"seriesLineCandidate",
 			"publishedAtCandidate",
 			"canonicalUrlCandidate",
 			"sourcePath",
@@ -99,6 +120,24 @@ test("review proposal preserves all candidate evidence and records exact disposi
 		proposal.candidates[1].exclusionReason,
 		MEDIUM_RESPONSE_EXCLUSION_REASON,
 	);
+});
+
+test("review proposal keeps export metadata separate from public presentation", () => {
+	const { proposal } = fixture();
+	const included = proposal.candidates[0];
+	assert.equal(included.title, "Approved Essay");
+	assert.equal(included.descriptionCandidate, "Exact export description.");
+	assert.equal(included.exportSummaryCandidate, "Exact outer export summary.");
+	assert.equal(included.displayTitleCandidate, "Approved Essay");
+	assert.equal(included.displaySubtitleCandidate, "Exact public subtitle.");
+	assert.equal(
+		included.seriesLineCandidate,
+		"A Ledger Series article on exact evidence.",
+	);
+	assert.equal(proposal.candidates[1].displayTitleCandidate, null);
+	assert.equal(proposal.candidates[1].exportSummaryCandidate, null);
+	assert.equal(proposal.candidates[1].displaySubtitleCandidate, null);
+	assert.equal(proposal.candidates[1].seriesLineCandidate, null);
 });
 
 test("review proposal rejects altered evidence, dispositions, and author counts", () => {
@@ -134,6 +173,37 @@ test("review proposal rejects altered evidence, dispositions, and author counts"
 				...options,
 			}),
 		/complete source author evidence/u,
+	);
+});
+
+test("included essays require the complete public presentation shell", () => {
+	const { approvedAllowlist, options, proposal } = fixture();
+	for (const field of [
+		"displayTitleCandidate",
+		"displaySubtitleCandidate",
+		"seriesLineCandidate",
+	]) {
+		const missing = structuredClone(proposal);
+		missing.candidates[0][field] = null;
+		assert.throws(
+			() =>
+				validateMediumInventoryReviewProposal(missing, {
+					approvedAllowlist,
+					...options,
+				}),
+			/public, original, and standalone/u,
+		);
+	}
+
+	const wrongSeries = structuredClone(proposal);
+	wrongSeries.candidates[0].seriesLineCandidate = "An unrelated introduction.";
+	assert.throws(
+		() =>
+			validateMediumInventoryReviewProposal(wrongSeries, {
+				approvedAllowlist,
+				...options,
+			}),
+		/must begin with "A Ledger Series article"/u,
 	);
 });
 

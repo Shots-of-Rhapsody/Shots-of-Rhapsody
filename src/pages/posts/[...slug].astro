@@ -65,6 +65,8 @@ const socialImage = getSocialImage(entry.id, siteUrl);
 const coverUrl = socialImage.url;
 const isSourceVerifiedPost = Boolean(entry.data.provenance);
 const isSealedArchivePost = entry.data.provenance?.authority === "Proton Docs";
+const isMediumPost =
+	entry.data.provenance?.authority === "Medium account export";
 const authorUrl =
 	author === "Tai Song"
 		? new URL(url("/authors/tai-song/"), siteUrl).toString()
@@ -169,19 +171,24 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 				data-pagefind-weight="10"
 				data-pagefind-meta="title"
 				data-archive-field={isSealedArchivePost ? "title" : undefined}
+				data-medium-field={isMediumPost ? "title" : undefined}
 			>
 				{entry.data.title}
 			</h1>
 			{entry.data.subtitle && (
 				<p
 					data-archive-field={isSealedArchivePost ? "subtitle" : undefined}
+					data-medium-field={isMediumPost ? "subtitle" : undefined}
 					class="article-subtitle"
 				>
 					{entry.data.subtitle}
 				</p>
 			)}
 			<div class="article-byline" data-pagefind-ignore>
-				<span data-archive-field={isSealedArchivePost ? "author" : undefined}>
+				<span
+					data-archive-field={isSealedArchivePost ? "author" : undefined}
+					data-medium-field={isMediumPost ? "author" : undefined}
+				>
 					By {authorUrl ? <a href={url("/authors/tai-song/")}>{author}</a> : author}
 				</span>
 			</div>
@@ -195,9 +202,19 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 			</div>
 		</header>
 
+		{entry.data.seriesLine && (
+			<p
+				class="article-series-line"
+				data-medium-field={isMediumPost ? "series-line" : undefined}
+			>
+				{entry.data.seriesLine}
+			</p>
+		)}
+
 		{entry.data.image && (
 			<figure
 				data-archive-hero={isSealedArchivePost ? "" : undefined}
+				data-medium-hero={isMediumPost ? "" : undefined}
 				class="article-hero"
 			>
 				<ImageWrapper
@@ -332,6 +349,17 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 
 	.article-metadata {
 		margin-top: 0.7rem;
+	}
+
+	.article-series-line {
+		max-width: 66ch;
+		margin: clamp(1.75rem, 4vw, 2.5rem) auto 0;
+		padding-inline-start: 1rem;
+		border-inline-start: 2px solid var(--primary);
+		color: var(--ink-soft);
+		font-size: clamp(1rem, 1.8vw, 1.12rem);
+		font-style: italic;
+		line-height: 1.65;
 	}
 
 	.article-hero {

@@ -41,6 +41,19 @@ interface PublicationCatalogEntry {
 	section: "fiction" | "poetry-reflection" | "nonfiction";
 }
 
+interface MediumArticle {
+	slug: string;
+	title: string;
+	subtitle: string;
+	seriesLine: string;
+	author: string;
+	imageAlt: string | null;
+	imageCaption: string;
+	hero: { width: number; height: number };
+	published: string;
+	bodyHtml: string;
+}
+
 const repositoryRoot = path.resolve(import.meta.dirname, "../..");
 const manifest = JSON.parse(
 	readFileSync(
@@ -82,6 +95,42 @@ if (publicationCatalog.schemaVersion !== 1) {
 	);
 }
 const catalogEntries = publicationCatalog.entries;
+const mediumManifest = JSON.parse(
+	readFileSync(
+		path.join(repositoryRoot, "provenance/medium/manifest.json"),
+		"utf8",
+	),
+) as {
+	state: string;
+	articles: Array<{ slug: string; paths: { snapshot: string } }>;
+};
+const mediumArticles: MediumArticle[] =
+	mediumManifest.state === "active"
+		? mediumManifest.articles.map((entry) => {
+				const snapshot = JSON.parse(
+					readFileSync(path.join(repositoryRoot, entry.paths.snapshot), "utf8"),
+				) as MediumArticle;
+				if (snapshot.slug !== entry.slug) {
+					throw new Error(`${entry.slug}: Medium snapshot slug differs`);
+				}
+				return snapshot;
+			})
+		: [];
+const catalogMediumSlugs = catalogEntries
+	.filter(({ source }) => source === "medium")
+	.map(({ slug }) => slug)
+	.toSorted();
+if (
+	catalogMediumSlugs.length !== mediumArticles.length ||
+	mediumArticles
+		.map(({ slug }) => slug)
+		.toSorted()
+		.some((slug, index) => slug !== catalogMediumSlugs[index])
+) {
+	throw new Error(
+		"Publication catalog and active Medium manifest must expose the same essays",
+	);
+}
 const sealedArchiveSlugSet = new Set(articles.map(({ slug }) => slug));
 const expectedWritingSlugs = catalogEntries.map(({ slug }) => slug).toSorted();
 if (
@@ -1287,6 +1336,133 @@ test.describe("article release contract", () => {
 					testInfo,
 					`${article.slug}-ending-license-rights`,
 				);
+			}
+		});
+	}
+});
+
+test.describe("Medium article presentation contract", () => {
+	for (const article of mediumArticles) {
+		test(article.title, async ({ page }, testInfo) => {
+			for (const theme of ["light", "dark"] as const) {
+				await setTheme(page, theme);
+				await expectHealthyPage(page, `posts/${article.slug}/`);
+				await expectTheme(page, theme);
+				const title = page.locator('[data-medium-field="title"]');
+				await expect(title).toHaveCount(1);
+				await expect(title).toHaveJSProperty("tagName", "H1");
+				await expect(title).toHaveText(article.title);
+				const subtitle = page.locator('[data-medium-field="subtitle"]');
+				await expect(subtitle).toHaveCount(1);
+				await expect(subtitle).toHaveJSProperty("tagName", "P");
+				await expect(subtitle).toHaveText(article.subtitle);
+				await expect(
+					page.locator('[data-medium-field="series-line"]'),
+				).toHaveText(article.seriesLine);
+				await expect(
+					page.locator('[data-medium-field="author"]'),
+				).toContainText(`By ${article.author}`);
+				await expect(
+					page.locator(".article-header [data-medium-field]"),
+				).toHaveCount(3);
+				expect(
+					await page
+						.locator(".article-header [data-medium-field]")
+						.evaluateAll((nodes) =>
+							nodes.map((node) => node.getAttribute("data-medium-field")),
+						),
+				).toEqual(["title", "subtitle", "author"]);
+
+				const shellOrder = await page
+					.locator("#post-container > *")
+					.evaluateAll((nodes) =>
+						nodes
+							.map((node) => {
+								if (node.tagName === "HEADER") return "header";
+								if (node.hasAttribute("data-medium-hero")) return "hero";
+								if (node.hasAttribute("data-authored-content")) return "body";
+								return node.getAttribute("data-medium-field");
+							})
+							.filter(Boolean),
+					);
+				expect(shellOrder.slice(0, 4)).toEqual([
+					"header",
+					"series-line",
+					"hero",
+					"body",
+				]);
+
+				const hero = page.locator("[data-medium-hero] img");
+				await expect(hero).toHaveCount(1);
+				await expect(hero).toHaveAttribute("alt", article.imageAlt ?? "");
+				await expect(hero).toHaveCSS("object-fit", "contain");
+				const sourceWrapper = page.locator(
+					'[data-medium-hero] [data-image-variant="hero"]',
+				);
+				await expect(sourceWrapper).toHaveAttribute(
+					"data-source-width",
+					String(article.hero.width),
+				);
+				await expect(sourceWrapper).toHaveAttribute(
+					"data-source-height",
+					String(article.hero.height),
+				);
+				const caption = page.locator("[data-medium-hero] figcaption");
+				if (article.imageCaption === "") await expect(caption).toHaveCount(0);
+				else await expect(caption).toHaveText(article.imageCaption);
+
+				const exactBody = await page
+					.locator("[data-authored-content].article-body")
+					.evaluate((body, expectedHtml) => {
+						const template = document.createElement("template");
+						template.innerHTML = expectedHtml;
+						const normalized = (node: Node): unknown => {
+							if (node.nodeType === Node.TEXT_NODE)
+								return ["text", node.nodeValue];
+							if (node.nodeType === Node.COMMENT_NODE)
+								return ["comment", node.nodeValue];
+							const element = node as Element;
+							return [
+								"element",
+								element.tagName.toLowerCase(),
+								[...element.attributes]
+									.map(({ name, value }) => [name, value])
+									.sort(([left], [right]) => left.localeCompare(right)),
+								[...node.childNodes].map(normalized),
+							];
+						};
+						const significant = (nodes: NodeListOf<ChildNode> | NodeList) =>
+							[...nodes]
+								.filter(
+									(node) =>
+										node.nodeType !== Node.TEXT_NODE ||
+										/\S/u.test(node.nodeValue ?? ""),
+								)
+								.map(normalized);
+						return (
+							JSON.stringify(significant(body.childNodes)) ===
+							JSON.stringify(significant(template.content.childNodes))
+						);
+					}, article.bodyHtml);
+				expect(exactBody).toBe(true);
+
+				const jsonLd = JSON.parse(
+					(await page
+						.locator('script[type="application/ld+json"]')
+						.textContent()) ?? "",
+				);
+				expect(jsonLd.headline).toBe(article.title);
+				expect(jsonLd.alternativeHeadline).toBe(article.subtitle);
+				expect(jsonLd.datePublished).toBe(article.published);
+				await expectNoSeriousAxeViolations(page);
+				if (testInfo.project.name === "mobile-chromium") {
+					const overflow = await page.evaluate(
+						() =>
+							document.documentElement.scrollWidth -
+							document.documentElement.clientWidth,
+					);
+					expect(overflow).toBeLessThanOrEqual(1);
+				}
 			}
 		});
 	}

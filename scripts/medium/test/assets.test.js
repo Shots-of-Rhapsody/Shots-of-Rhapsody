@@ -22,6 +22,10 @@ const OTHER_DIGEST = `sha256:${"b".repeat(64)}`;
 
 function officialStory({
 	title = "Approved Essay",
+	description = "Exact export summary.",
+	displayTitle = title,
+	displaySubtitle = "Exact public subtitle.",
+	seriesLine = "A Ledger Series article on exact evidence.",
 	id = "0123456789ab",
 	heroId = `1*${id}@2x.jpeg`,
 	heroUrl = `https://cdn-images-1.medium.com/max/800/${heroId}`,
@@ -44,7 +48,7 @@ function officialStory({
 		return `<figure name="abcd" id="abcd" class="graf graf--figure graf-after--p"><img class="graf-image" data-image-id="${heroId}" data-width="${width}" data-height="${height}"${featuredAttribute} src="${heroUrl}"${altAttribute}>${captionElement}</figure>`;
 	}).join("");
 	const canonical = `https://medium.com/@ShotsOfRhapsody/${slug}-${id}`;
-	return `<!doctype html><html><head><title>${title}</title><style>p { color: black; }</style></head><body><article class="h-entry"><header><h1 class="p-name">${title}</h1></header><section data-field="subtitle" class="p-summary">Exact subtitle.</section><section data-field="body" class="e-content"><section name="c0de" class="section section--body section--first section--last"><div class="section-divider"><hr class="section-divider"></div><div class="section-content"><div class="section-inner sectionLayout--insetColumn">${figures}<p name="beef" id="beef" class="graf graf--p graf-after--figure">Exact body.</p></div></div></section></section><footer><p>By <a href="https://medium.com/@ShotsOfRhapsody" class="p-author h-card">Tai Song</a> on <a href="https://medium.com/p/${id}"><time class="dt-published" datetime="2025-04-01T12:00:00.000Z">April 1, 2025</time></a>.</p><p><a href="${canonical}" class="p-canonical">Canonical link</a></p><p><a href="https://medium.com">Exported from Medium</a></p></footer></article></body></html>`;
+	return `<!doctype html><html><head><title>${title}</title><style>p { color: black; }</style></head><body><article class="h-entry"><header><h1 class="p-name">${title}</h1></header><section data-field="subtitle" class="p-summary">${description}</section><section data-field="body" class="e-content"><section name="c0de" class="section section--body section--first section--last"><div class="section-divider"><hr class="section-divider"></div><div class="section-content"><div class="section-inner sectionLayout--insetColumn"><h3 name="cafe" id="cafe" class="graf graf--h3 graf--leading graf--title">${displayTitle}</h3><h4 name="feed" id="feed" class="graf graf--h4 graf-after--h3 graf--subtitle">${displaySubtitle}</h4><p name="face" id="face" class="graf graf--p graf-after--h4">${seriesLine}</p>${figures}<p name="beef" id="beef" class="graf graf--p graf-after--figure">Exact body.</p></div></div></section></section><footer><p>By <a href="https://medium.com/@ShotsOfRhapsody" class="p-author h-card">Tai Song</a> on <a href="https://medium.com/p/${id}"><time class="dt-published" datetime="2025-04-01T12:00:00.000Z">April 1, 2025</time></a>.</p><p><a href="${canonical}" class="p-canonical">Canonical link</a></p><p><a href="https://medium.com">Exported from Medium</a></p></footer></article></body></html>`;
 }
 
 function fixture(entries) {
@@ -118,6 +122,24 @@ test("hero checklist preserves exact evidence and leaves other candidates unreso
 		metadataStrippingRequired: true,
 	});
 	assert.equal(result.items.length, 1);
+	assert.deepEqual(
+		{
+			title: result.items[0].title,
+			descriptionCandidate: result.items[0].descriptionCandidate,
+			exportSummaryCandidate: result.items[0].exportSummaryCandidate,
+			displayTitleCandidate: result.items[0].displayTitleCandidate,
+			displaySubtitleCandidate: result.items[0].displaySubtitleCandidate,
+			seriesLineCandidate: result.items[0].seriesLineCandidate,
+		},
+		{
+			title: "Approved Essay",
+			descriptionCandidate: "Exact export summary.",
+			exportSummaryCandidate: "Exact export summary.",
+			displayTitleCandidate: "Approved Essay",
+			displaySubtitleCandidate: "Exact public subtitle.",
+			seriesLineCandidate: "A Ledger Series article on exact evidence.",
+		},
+	);
 	assert.deepEqual(result.items[0].exportedHero, {
 		identificationEvidence: "exported-featured-flag",
 		sourceUrl: "https://cdn-images-1.medium.com/max/800/1*0123456789ab@2x.jpeg",
@@ -291,7 +313,7 @@ test("checklist rejects title mismatches and missing, multiple, or unsafe heroes
 				new Map([[sourcePath, Buffer.from(officialStory({ heroes: 0 }))]]),
 				["Approved Essay"],
 			),
-		/exactly one exported figure image/u,
+		/followed immediately by its hero figure/u,
 	);
 	assert.throws(
 		() =>
@@ -526,32 +548,29 @@ test("write mode refuses to overwrite an existing ignored checklist", async (con
 		candidateSetSha256: mediumCandidateSetSha256(candidates),
 		titles: ["Approved Essay"],
 	};
+	const candidateLedger = {
+		schemaVersion: 1,
+		state: "needs-review",
+		authority: {
+			platform: "Medium",
+			captureFormat: "account-export-zip",
+		},
+		author: {
+			name: "Tai Song",
+			profileUrl: "https://medium.com/@ShotsOfRhapsody",
+		},
+		export: {
+			fileName: "medium-export.zip",
+			sha256: sha256(exportBuffer),
+			capturedAt: "2026-07-25T12:00:00.000Z",
+		},
+		candidateCount: 1,
+		candidateSetSha256: mediumCandidateSetSha256(candidates),
+		candidates,
+	};
 	await writeFile(
 		path.join(repoRoot, ".medium-import", "inventory-candidate.json"),
-		`${JSON.stringify(
-			{
-				schemaVersion: 1,
-				state: "needs-review",
-				authority: {
-					platform: "Medium",
-					captureFormat: "account-export-zip",
-				},
-				author: {
-					name: "Tai Song",
-					profileUrl: "https://medium.com/@ShotsOfRhapsody",
-				},
-				export: {
-					fileName: "medium-export.zip",
-					sha256: sha256(exportBuffer),
-					capturedAt: "2026-07-25T12:00:00.000Z",
-				},
-				candidateCount: 1,
-				candidateSetSha256: mediumCandidateSetSha256(candidates),
-				candidates,
-			},
-			null,
-			2,
-		)}\n`,
+		`${JSON.stringify(candidateLedger, null, 2)}\n`,
 	);
 	await createMediumHeroChecklist({
 		repoRoot,
@@ -567,6 +586,26 @@ test("write mode refuses to overwrite an existing ignored checklist", async (con
 		"hero-acquisition-checklist.json",
 	);
 	const before = await readFile(checklistPath);
+	const alteredPresentation = structuredClone(candidateLedger);
+	alteredPresentation.candidates[0].displayTitleCandidate = "Altered display";
+	await writeFile(
+		path.join(repoRoot, ".medium-import", "inventory-candidate.json"),
+		`${JSON.stringify(alteredPresentation, null, 2)}\n`,
+	);
+	await assert.rejects(
+		createMediumHeroChecklist({
+			repoRoot,
+			exportPath,
+			approvedAllowlist,
+			expectedCount: 1,
+			expectedCandidateCount: 1,
+		}),
+		/source-derived fields differ/u,
+	);
+	await writeFile(
+		path.join(repoRoot, ".medium-import", "inventory-candidate.json"),
+		`${JSON.stringify(candidateLedger, null, 2)}\n`,
+	);
 	await assert.rejects(
 		createMediumHeroChecklist({
 			repoRoot,

@@ -148,6 +148,10 @@ function validateCandidate(value, label) {
 			"suggestedSlug",
 			"title",
 			"descriptionCandidate",
+			"exportSummaryCandidate",
+			"displayTitleCandidate",
+			"displaySubtitleCandidate",
+			"seriesLineCandidate",
 			"publishedAtCandidate",
 			"canonicalUrlCandidate",
 			"sourcePath",
@@ -192,6 +196,31 @@ function validateCandidate(value, label) {
 		throw new MediumContractError(`${label} inclusion cannot have a reason`);
 	if (!candidate.include && exclusionReason.trim().length === 0)
 		throw new MediumContractError(`${label} exclusion requires a reason`);
+	const displayTitleCandidate = assertNullableString(
+		candidate.displayTitleCandidate,
+		`${label}.displayTitleCandidate`,
+	);
+	const displaySubtitleCandidate = assertNullableString(
+		candidate.displaySubtitleCandidate,
+		`${label}.displaySubtitleCandidate`,
+	);
+	const seriesLineCandidate = assertNullableString(
+		candidate.seriesLineCandidate,
+		`${label}.seriesLineCandidate`,
+	);
+	if (
+		candidate.include &&
+		(typeof displayTitleCandidate !== "string" ||
+			displayTitleCandidate.length === 0 ||
+			typeof displaySubtitleCandidate !== "string" ||
+			displaySubtitleCandidate.length === 0 ||
+			typeof seriesLineCandidate !== "string" ||
+			!seriesLineCandidate.startsWith("A Ledger Series article "))
+	) {
+		throw new MediumContractError(
+			`${label} inclusion requires the exact Medium title, subtitle, and Ledger Series presentation fields`,
+		);
+	}
 	return {
 		suggestedSlug: assertSlug(
 			candidate.suggestedSlug,
@@ -202,6 +231,13 @@ function validateCandidate(value, label) {
 			candidate.descriptionCandidate,
 			`${label}.descriptionCandidate`,
 		),
+		exportSummaryCandidate: assertNullableString(
+			candidate.exportSummaryCandidate,
+			`${label}.exportSummaryCandidate`,
+		),
+		displayTitleCandidate,
+		displaySubtitleCandidate,
+		seriesLineCandidate,
 		publishedAtCandidate:
 			candidate.publishedAtCandidate === null
 				? null
@@ -226,6 +262,10 @@ function validateCandidate(value, label) {
 }
 
 function candidateEvidence(candidate) {
+	// This legacy digest is an immutable acquisition identity bound into the
+	// approved hero ledger. The sourceSha256 already commits every source-derived
+	// presentation field; the reviewed inventory and raw-backed import re-extract
+	// and compare those fields rather than rewriting the acquisition identity.
 	return {
 		suggestedSlug: candidate.suggestedSlug,
 		title: candidate.title,
@@ -374,8 +414,11 @@ function validateArticle(value, label) {
 		article,
 		new Set([
 			"slug",
+			"exportTitle",
+			"exportSummary",
 			"title",
 			"subtitle",
+			"seriesLine",
 			"summary",
 			"description",
 			"publishedAt",
@@ -390,13 +433,40 @@ function validateArticle(value, label) {
 		label,
 	);
 	const slug = assertSlug(article.slug, `${label}.slug`);
+	const exportTitle = assertNonEmptyString(
+		article.exportTitle,
+		`${label}.exportTitle`,
+	);
+	const exportSummary = assertNullableString(
+		article.exportSummary,
+		`${label}.exportSummary`,
+	);
 	const title = assertNonEmptyString(article.title, `${label}.title`);
-	const subtitle = assertString(article.subtitle, `${label}.subtitle`);
+	const subtitle = assertNonEmptyString(article.subtitle, `${label}.subtitle`);
+	const seriesLine = assertNonEmptyString(
+		article.seriesLine,
+		`${label}.seriesLine`,
+	);
+	if (!seriesLine.startsWith("A Ledger Series article ")) {
+		throw new MediumContractError(
+			`${label}.seriesLine must preserve the reviewed Ledger Series sentence`,
+		);
+	}
 	const summary = assertNonEmptyString(article.summary, `${label}.summary`);
 	const description = assertNonEmptyString(
 		article.description,
 		`${label}.description`,
 	);
+	if (summary !== description) {
+		throw new MediumContractError(
+			`${label} summary and description must use one reviewed card and metadata summary`,
+		);
+	}
+	if (exportSummary !== null && summary !== exportSummary) {
+		throw new MediumContractError(
+			`${label} summary and description must preserve the exported summary when present`,
+		);
+	}
 	const publishedAt = assertCanonicalUtc(
 		article.publishedAt,
 		`${label}.publishedAt`,
@@ -453,8 +523,11 @@ function validateArticle(value, label) {
 	}
 	return {
 		slug,
+		exportTitle,
+		exportSummary,
 		title,
 		subtitle,
+		seriesLine,
 		summary,
 		description,
 		publishedAt,
@@ -595,6 +668,25 @@ export function validateMediumInventory(value) {
 			"Reviewed articles must exactly match the included candidate dispositions",
 		);
 	}
+	for (const article of articles) {
+		const candidate = includedCandidates.find(
+			(item) =>
+				item.sourcePath === article.sourcePath &&
+				item.sourceSha256 === article.sourceSha256,
+		);
+		if (
+			!candidate ||
+			candidate.title !== article.exportTitle ||
+			candidate.exportSummaryCandidate !== article.exportSummary ||
+			candidate.displayTitleCandidate !== article.title ||
+			candidate.displaySubtitleCandidate !== article.subtitle ||
+			candidate.seriesLineCandidate !== article.seriesLine
+		) {
+			throw new MediumContractError(
+				`Reviewed article ${article.slug} differs from its extracted export and presentation fields`,
+			);
+		}
+	}
 	for (const field of ["sourcePath", "sourceSha256"]) {
 		const values = candidates.map((candidate) => candidate[field]);
 		if (new Set(values).size !== values.length)
@@ -602,6 +694,7 @@ export function validateMediumInventory(value) {
 	}
 	const uniqueFields = [
 		"slug",
+		"exportTitle",
 		"title",
 		"canonicalUrl",
 		"sourcePath",
@@ -740,7 +833,7 @@ function validateManifestArticle(value, label) {
 	const content = assertPlainObject(article.content, `${label}.content`);
 	assertOnlyKeys(
 		content,
-		new Set(["title", "subtitle", "bodyBlockCount"]),
+		new Set(["title", "subtitle", "seriesLine", "bodyBlockCount"]),
 		`${label}.content`,
 	);
 	if (!Array.isArray(article.assets) || article.assets.length === 0) {
@@ -792,7 +885,14 @@ function validateManifestArticle(value, label) {
 		},
 		content: {
 			title: assertNonEmptyString(content.title, `${label}.content.title`),
-			subtitle: assertString(content.subtitle, `${label}.content.subtitle`),
+			subtitle: assertNonEmptyString(
+				content.subtitle,
+				`${label}.content.subtitle`,
+			),
+			seriesLine: assertNonEmptyString(
+				content.seriesLine,
+				`${label}.content.seriesLine`,
+			),
 			bodyBlockCount: assertInteger(
 				content.bodyBlockCount,
 				`${label}.content.bodyBlockCount`,
@@ -887,8 +987,11 @@ export function validateMediumSnapshot(value, inventoryArticle) {
 		new Set([
 			"schemaVersion",
 			"slug",
+			"exportTitle",
+			"exportSummary",
 			"title",
 			"subtitle",
+			"seriesLine",
 			"summary",
 			"description",
 			"author",
@@ -915,8 +1018,11 @@ export function validateMediumSnapshot(value, inventoryArticle) {
 	}
 	for (const field of [
 		"slug",
+		"exportTitle",
+		"exportSummary",
 		"title",
 		"subtitle",
+		"seriesLine",
 		"summary",
 		"description",
 		"published",

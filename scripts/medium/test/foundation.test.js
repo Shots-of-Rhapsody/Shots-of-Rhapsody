@@ -74,10 +74,13 @@ function reviewedInventory(candidate) {
 		articles: [
 			{
 				slug: "essay",
+				exportTitle: candidate.title,
+				exportSummary: candidate.exportSummaryCandidate,
 				title: "Essay",
-				subtitle: "",
-				summary: "A reviewed summary.",
-				description: "A reviewed description.",
+				subtitle: "A display subtitle.",
+				seriesLine: "A Ledger Series article on exact fixtures.",
+				summary: candidate.exportSummaryCandidate ?? "A reviewed fallback.",
+				description: candidate.exportSummaryCandidate ?? "A reviewed fallback.",
 				publishedAt: "2026-07-25T12:00:00.000Z",
 				canonicalUrl: "https://medium.com/@ShotsOfRhapsody/essay-123",
 				sourcePath: "posts/essay.html",
@@ -118,6 +121,10 @@ test("reviewed inventory resolves every classification and includes every eligib
 	const candidate = {
 		suggestedSlug: "essay",
 		title: "Essay",
+		displayTitleCandidate: "Essay",
+		displaySubtitleCandidate: "A display subtitle.",
+		seriesLineCandidate: "A Ledger Series article on exact fixtures.",
+		exportSummaryCandidate: "A reviewed description.",
 		descriptionCandidate: "A reviewed description.",
 		publishedAtCandidate: "2026-07-25T12:00:00.000Z",
 		canonicalUrlCandidate: "https://medium.com/@ShotsOfRhapsody/essay-123",
@@ -177,6 +184,22 @@ test("reviewed inventory resolves every classification and includes every eligib
 			),
 		/canonical UTC/u,
 	);
+	const alteredSummary = reviewedInventory(candidate);
+	alteredSummary.articles[0].summary = "An unbound summary.";
+	alteredSummary.articles[0].description = "An unbound summary.";
+	assert.throws(
+		() => validateMediumInventory(alteredSummary),
+		/preserve the exported summary/u,
+	);
+	const noExportSummary = {
+		...candidate,
+		descriptionCandidate: null,
+		exportSummaryCandidate: null,
+	};
+	const reviewedFallback = reviewedInventory(noExportSummary);
+	reviewedFallback.articles[0].summary = "A reviewer-approved fallback.";
+	reviewedFallback.articles[0].description = "A reviewer-approved fallback.";
+	assert.doesNotThrow(() => validateMediumInventory(reviewedFallback));
 });
 
 test("candidate metadata rejects conflicting title sources", () => {
@@ -187,6 +210,19 @@ test("candidate metadata rejects conflicting title sources", () => {
 				"posts/story.html",
 			),
 		/title metadata conflicts/u,
+	);
+});
+
+test("candidate metadata rejects conflicting description sources", () => {
+	const conflicting = officialStoryExport({
+		exportSummary: "Exact exported summary.",
+	}).replace(
+		"<style>",
+		'<meta name="description" content="Different metadata summary."><style>',
+	);
+	assert.throws(
+		() => extractCandidateMetadata(conflicting, "posts/conflict.html"),
+		/description metadata conflicts/u,
 	);
 });
 
@@ -214,168 +250,240 @@ test("story converter preserves safe structure and rejects active markup", () =>
 });
 
 function officialStoryExport({
-	title = "Exported Page Title",
-	subtitle = "Exported subtitle",
-	body = '<p name="1a2b" id="1a2b" class="graf graf--p graf-after--p">Exact body.</p>',
+	exportTitle = "Exported Page Title",
+	exportSummary = "Exported summary",
+	displayTitle = "Display Page Title",
+	displaySubtitle = "Display subtitle",
+	seriesLine = "A Ledger Series article on exact source structure.",
+	postHeroBody = '<p name="100e" id="100e" class="graf graf--p graf-after--figure">Exact body.</p>',
+	presentationBody,
 	canonical = "https://medium.com/@ShotsOfRhapsody/exported-page-title-123",
 } = {}) {
-	const subtitleSection =
-		subtitle === null
+	const summarySection =
+		exportSummary === null
 			? ""
-			: `<section data-field="subtitle" class="p-summary">${subtitle}</section>`;
-	return `<!doctype html><html><head><title>${title}</title><style>p { color: black; }</style></head><body><article class="h-entry"><header><h1 class="p-name">${title}</h1></header>${subtitleSection}<section data-field="body" class="e-content"><section name="c0de" class="section section--body section--first section--last"><div class="section-divider"><hr class="section-divider"></div><div class="section-content"><div class="section-inner sectionLayout--insetColumn">${body}</div></div></section></section><footer><p>By <a href="https://medium.com/@ShotsOfRhapsody" class="p-author h-card">Tai Song</a> on <a href="https://medium.com/p/123"><time class="dt-published" datetime="2025-04-01T12:00:00.000Z">April 1, 2025</time></a>.</p><p><a href="${canonical}" class="p-canonical">Canonical link</a></p><p><a href="https://medium.com">Exported from Medium</a></p></footer></article></body></html>`;
+			: `<section data-field="subtitle" class="p-summary">${exportSummary}</section>`;
+	const storyBody =
+		presentationBody ??
+		[
+			`<h2 name="100a" id="100a" class="graf graf--h2 graf--leading graf--title">${displayTitle}</h2>`,
+			`<h4 name="100b" id="100b" class="graf graf--h4 graf-after--h2 graf--subtitle">${displaySubtitle}</h4>`,
+			`<p name="100c" id="100c" class="graf graf--p graf-after--h4">${seriesLine}</p>`,
+			'<figure name="100d" id="100d" class="graf graf--figure graf-after--p"><img class="graf-image" data-image-id="1*hero@2x.jpeg" data-width="1536" data-height="1024" data-is-featured="true" src="https://cdn.example/hero.jpeg"></figure>',
+			postHeroBody,
+		].join("");
+	return `<!doctype html><html><head><title>${exportTitle}</title><style>p { color: black; }</style></head><body><article class="h-entry"><header><h1 class="p-name">${exportTitle}</h1></header>${summarySection}<section data-field="body" class="e-content"><section name="c0de" class="section section--body section--first section--last"><div class="section-divider"><hr class="section-divider"></div><div class="section-content"><div class="section-inner sectionLayout--insetColumn">${storyBody}</div></div></section></section><footer><p>By <a href="https://medium.com/@ShotsOfRhapsody" class="p-author h-card">Tai Song</a> on <a href="https://medium.com/p/123"><time class="dt-published" datetime="2025-04-01T12:00:00.000Z">April 1, 2025</time></a>.</p><p><a href="${canonical}" class="p-canonical">Canonical link</a></p><p><a href="https://medium.com">Exported from Medium</a></p></footer></article></body></html>`;
 }
 
-test("official export preserves page title, body headings, structure, links, and Unicode", () => {
+function officialExpected(overrides = {}) {
+	return {
+		slug: "exported-page-title",
+		exportTitle: "Exported Page Title",
+		exportSummary: "Exported summary",
+		title: "Display Page Title",
+		subtitle: "Display subtitle",
+		seriesLine: "A Ledger Series article on exact source structure.",
+		...overrides,
+	};
+}
+
+test("official export separates export metadata from its exact display layout", () => {
 	const href =
 		"https://example.com/research?utm_source=source.example&section=one";
 	const html = officialStoryExport({
-		body: [
-			'<h2 name="100a" id="100a" class="graf graf--h2 graf--leading graf--title">A Distinct Body Heading</h2>',
-			'<h4 name="100b" id="100b" class="graf graf--h4 graf-after--h2 graf--subtitle">A body subheading</h4>',
-			`<p name="100c" id="100c" class="graf graf--p graf-after--h4">Plain&nbsp;<strong class="markup--strong markup--p-strong">bold</strong> and <em class="markup--em markup--p-em">italic</em> — text.<br>Next <a href="${href.replace("&", "&amp;")}" data-href="${href.replace("&", "&amp;")}" class="markup--anchor markup--p-anchor" rel="noopener ugc nofollow noopener" target="_blank">linked</a>.</p>`,
-			'<figure name="100d" id="100d" class="graf graf--figure graf-after--p"><img class="graf-image" data-image-id="1*hero@2x.jpeg" data-width="1536" data-height="1024" data-is-featured="true" src="https://cdn.example/hero.jpeg"></figure>',
+		exportTitle:
+			"The Future of Money: Will Cryptocurrency and AI Kill Traditional Banking?",
+		exportSummary: "Your Bank is Dying, Here’s What’s Replacing It",
+		displayTitle: "The Future of&nbsp;Money",
+		displaySubtitle:
+			"In a system where currency shapes control, what counts as value shifts beneath&nbsp;us.",
+		seriesLine:
+			"A Ledger Series article on currency, control, and financial power in transition.",
+		postHeroBody: [
 			'<h3 name="100e" id="100e" class="graf graf--h3 graf-after--figure">Later heading</h3>',
+			`<p name="100f" id="100f" class="graf graf--p graf-after--h3">Plain&nbsp;<strong class="markup--strong markup--p-strong">bold</strong> and <em class="markup--em markup--p-em">italic</em> — text.<br>Next <a href="${href.replace("&", "&amp;")}" data-href="${href.replace("&", "&amp;")}" class="markup--anchor markup--p-anchor" rel="noopener ugc nofollow noopener" target="_blank">linked</a>.</p>`,
 			'<ul class="postList"><li name="100f" id="100f" class="graf graf--li graf-after--p"><strong class="markup--strong markup--li-strong">Bullet</strong></li></ul>',
 			'<ol class="postList"><li name="101a" id="101a" class="graf graf--li graf-after--li">Numbered</li></ol>',
 		].join(""),
 	});
 	const metadata = extractCandidateMetadata(html, "posts/official.html");
-	assert.equal(metadata.title, "Exported Page Title");
-	assert.equal(metadata.descriptionCandidate, "Exported subtitle");
+	assert.equal(
+		metadata.title,
+		"The Future of Money: Will Cryptocurrency and AI Kill Traditional Banking?",
+	);
+	assert.equal(
+		metadata.descriptionCandidate,
+		"Your Bank is Dying, Here’s What’s Replacing It",
+	);
+	assert.equal(
+		metadata.exportSummaryCandidate,
+		"Your Bank is Dying, Here’s What’s Replacing It",
+	);
+	assert.equal(metadata.displayTitleCandidate, "The Future of\u00a0Money");
+	assert.equal(
+		metadata.displaySubtitleCandidate,
+		"In a system where currency shapes control, what counts as value shifts beneath\u00a0us.",
+	);
+	assert.equal(
+		metadata.seriesLineCandidate,
+		"A Ledger Series article on currency, control, and financial power in transition.",
+	);
 	assert.equal(
 		metadata.canonicalUrlCandidate,
 		"https://medium.com/@ShotsOfRhapsody/exported-page-title-123",
 	);
-	const document = extractMediumStoryHtml(html, {
-		slug: "exported-page-title",
-		title: "Exported Page Title",
-		subtitle: "Exported subtitle",
-	});
+	const document = extractMediumStoryHtml(
+		html,
+		officialExpected({
+			exportTitle:
+				"The Future of Money: Will Cryptocurrency and AI Kill Traditional Banking?",
+			exportSummary: "Your Bank is Dying, Here’s What’s Replacing It",
+			title: "The Future of\u00a0Money",
+			subtitle:
+				"In a system where currency shapes control, what counts as value shifts beneath\u00a0us.",
+			seriesLine:
+				"A Ledger Series article on currency, control, and financial power in transition.",
+		}),
+	);
+	assert.equal(document.blocks[0].type, "figure");
+	assert.equal(document.blocks[0].sourceUrl, "https://cdn.example/hero.jpeg");
 	assert.deepEqual(
 		document.blocks
 			.filter((block) => block.type === "heading")
 			.map((block) => [block.level, block.children[0].text]),
-		[
-			[2, "A Distinct Body Heading"],
-			[4, "A body subheading"],
-			[3, "Later heading"],
-		],
+		[[3, "Later heading"]],
 	);
 	assert.equal(document.blocks[2].children[0].text, "Plain\u00a0");
 	assert.equal(document.blocks[2].children[1].marks[0], "bold");
 	assert.equal(document.blocks[2].children[3].marks[0], "italic");
 	assert.equal(document.blocks[2].children[5].type, "break");
 	assert.equal(document.blocks[2].children[7].href, href);
-	assert.equal(document.blocks[3].sourceUrl, "https://cdn.example/hero.jpeg");
-	assert.equal(document.blocks[5].ordered, false);
-	assert.equal(document.blocks[6].ordered, true);
+	assert.equal(document.blocks[3].ordered, false);
+	assert.equal(document.blocks[4].ordered, true);
 });
 
-test("official export removes only a metadata-matching presentation shell", () => {
-	const body = [
-		'<h2 name="100a" id="100a" class="graf graf--h2 graf--leading graf--title">Exported Page&nbsp;Title</h2>',
-		'<h4 name="100b" id="100b" class="graf graf--h4 graf-after--h2 graf--subtitle">Exported subtitle</h4>',
-		'<p name="100c" id="100c" class="graf graf--p graf-after--h4">First authored paragraph.</p>',
-	].join("");
-	const document = extractMediumStoryHtml(officialStoryExport({ body }), {
-		slug: "exported-page-title",
-		title: "Exported Page Title",
-		subtitle: "Exported subtitle",
-	});
-	assert.deepEqual(document.blocks, [
+test("official export requires the exact display prefix order", () => {
+	const title =
+		'<h2 name="100a" id="100a" class="graf graf--h2 graf--leading graf--title">Display Page Title</h2>';
+	const subtitle =
+		'<h4 name="100b" id="100b" class="graf graf--h4 graf-after--h2 graf--subtitle">Display subtitle</h4>';
+	const series =
+		'<p name="100c" id="100c" class="graf graf--p graf-after--h4">A Ledger Series article on exact source structure.</p>';
+	const hero =
+		'<figure name="100d" id="100d" class="graf graf--figure graf-after--p"><img class="graf-image" data-image-id="1*hero@2x.jpeg" data-width="1536" data-height="1024" src="https://cdn.example/hero.jpeg"></figure>';
+	const body =
+		'<p name="100e" id="100e" class="graf graf--p graf-after--figure">Exact body.</p>';
+	for (const presentationBody of [
+		`${title}${subtitle}${hero}${body}`,
+		`${title}${subtitle}${hero}${series}${body}`,
+		`${title}${subtitle}${series}${series}${hero}${body}`,
+		`${title}${subtitle}${series}${body}`,
+		`${title}${subtitle}${series.replace("A Ledger Series article ", "An essay ")}${hero}${body}`,
+	]) {
+		assert.throws(
+			() =>
+				extractMediumStoryHtml(
+					officialStoryExport({ presentationBody }),
+					officialExpected(),
+				),
+			/Ledger Series line|hero figure/u,
+		);
+	}
+});
+
+test("official export validates export and display roles independently", () => {
+	const html = officialStoryExport();
+	assert.doesNotThrow(() => extractMediumStoryHtml(html, officialExpected()));
+	for (const expected of [
+		officialExpected({ exportTitle: "Wrong export title" }),
+		officialExpected({ exportSummary: "Wrong export summary" }),
+		officialExpected({ title: "Wrong display title" }),
+		officialExpected({ subtitle: "Wrong display subtitle" }),
+		officialExpected({
+			seriesLine: "A Ledger Series article on another topic.",
+		}),
+	]) {
+		assert.throws(
+			() => extractMediumStoryHtml(html, expected),
+			/export title|export summary|display title|display subtitle|Ledger Series line/u,
+		);
+	}
+
+	const noExportSummary = officialStoryExport({ exportSummary: null });
+	const metadata = extractCandidateMetadata(
+		noExportSummary,
+		"posts/no-export-summary.html",
+	);
+	assert.equal(metadata.exportSummaryCandidate, null);
+	assert.equal(metadata.descriptionCandidate, null);
+	assert.doesNotThrow(() =>
+		extractMediumStoryHtml(
+			noExportSummary,
+			officialExpected({ exportSummary: null }),
+		),
+	);
+	assert.doesNotThrow(() =>
+		extractMediumStoryHtml(
+			officialStoryExport({
+				exportTitle: "Display Page Title",
+				exportSummary: "Display subtitle",
+			}),
+			{
+				slug: "exported-page-title",
+				title: "Display Page Title",
+				subtitle: "Display subtitle",
+				seriesLine: "A Ledger Series article on exact source structure.",
+			},
+		),
+	);
+});
+
+test("official export preserves a bold post-hero paragraph without promotion", () => {
+	const document = extractMediumStoryHtml(
+		officialStoryExport({
+			postHeroBody: [
+				'<p name="100e" id="100e" class="graf graf--p graf-after--figure"><strong class="markup--strong markup--p-strong">Meaning vs. Measurement</strong></p>',
+				'<p name="100f" id="100f" class="graf graf--p graf-after--p">Exact body.</p>',
+			].join(""),
+		}),
+		officialExpected(),
+	);
+	assert.equal(document.blocks[0].type, "figure");
+	assert.equal(document.blocks[1].type, "paragraph");
+	assert.deepEqual(document.blocks[1].children, [
 		{
-			type: "paragraph",
-			children: [
-				{ type: "text", text: "First authored paragraph.", marks: [] },
-			],
+			type: "text",
+			text: "Meaning vs. Measurement",
+			marks: ["bold"],
 		},
 	]);
 });
 
-test("official export keeps a distinct authored subtitle after a duplicate title", () => {
-	const body = [
-		'<h2 name="100a" id="100a" class="graf graf--h2 graf--leading graf--title">Exported Page Title</h2>',
-		'<h4 name="100b" id="100b" class="graf graf--h4 graf-after--h2 graf--subtitle">A distinct authored body subtitle</h4>',
-		'<p name="100c" id="100c" class="graf graf--p graf-after--h4">First authored paragraph.</p>',
-	].join("");
-	const document = extractMediumStoryHtml(officialStoryExport({ body }), {
-		slug: "exported-page-title",
-		title: "Exported Page Title",
-		subtitle: "Exported subtitle",
-	});
-	assert.equal(document.blocks[0].type, "heading");
-	assert.equal(document.blocks[0].level, 4);
-	assert.equal(
-		document.blocks[0].children[0].text,
-		"A distinct authored body subtitle",
-	);
-});
-
-test("official export supports an explicitly absent subtitle", () => {
-	const html = officialStoryExport({ subtitle: null });
-	const metadata = extractCandidateMetadata(html, "posts/no-subtitle.html");
-	assert.equal(metadata.descriptionCandidate, null);
-	assert.doesNotThrow(() =>
-		extractMediumStoryHtml(html, {
-			slug: "exported-page-title",
-			title: "Exported Page Title",
-			subtitle: "",
-		}),
-	);
-});
-
-test("official export recovers its leading h4 subtitle when p-summary is absent", () => {
-	const body = [
-		'<h2 name="100a" id="100a" class="graf graf--h2 graf--leading graf--title">Exported Page&nbsp;Title</h2>',
-		'<h4 name="100b" id="100b" class="graf graf--h4 graf-after--h2 graf--subtitle">Recovered subtitle</h4>',
-		'<p name="100c" id="100c" class="graf graf--p graf-after--h4">First authored paragraph.</p>',
-	].join("");
-	const html = officialStoryExport({ subtitle: null, body });
-	const metadata = extractCandidateMetadata(
-		html,
-		"posts/recovered-subtitle.html",
-	);
-	assert.equal(metadata.descriptionCandidate, "Recovered subtitle");
-	const document = extractMediumStoryHtml(html, {
-		slug: "exported-page-title",
-		title: "Exported Page Title",
-		subtitle: "Recovered subtitle",
-	});
-	assert.equal(document.blocks.length, 1);
-	assert.equal(
-		document.blocks[0].children[0].text,
-		"First authored paragraph.",
-	);
-	assert.throws(
-		() =>
-			extractMediumStoryHtml(html, {
-				slug: "exported-page-title",
-				title: "Exported Page Title",
-				subtitle: "Different subtitle",
-			}),
-		/missing its reviewed subtitle/u,
-	);
-});
-
 test("official export envelope and generated attributes fail closed", () => {
-	const expected = {
-		slug: "exported-page-title",
-		title: "Exported Page Title",
-		subtitle: "Exported subtitle",
-	};
-	for (const body of [
+	const expected = officialExpected();
+	for (const postHeroBody of [
 		'<div class="unknown"><p>Wrapped.</p></div>',
 		"<script>alert(1)</script>",
-		'<h2 name="1a2b" id="1a2b" class="graf graf--h2 graf--leading graf--title" onclick="alert(1)">Exported Page Title</h2>',
 		'<p name="1a2b" id="1a2b" class="graf graf--p graf-after--p" onclick="alert(1)">Active.</p>',
 		'<p name="1a2b" id="1a2b" class="graf graf--p graf-after--p"><a href="javascript:alert(1)" data-href="javascript:alert(1)" class="markup--anchor markup--p-anchor" rel="noopener" target="_blank">Unsafe</a></p>',
 	]) {
 		assert.throws(
-			() => extractMediumStoryHtml(officialStoryExport({ body }), expected),
+			() =>
+				extractMediumStoryHtml(officialStoryExport({ postHeroBody }), expected),
 			/unsupported|keys|HTTPS/u,
 		);
 	}
+	assert.throws(
+		() =>
+			extractMediumStoryHtml(
+				officialStoryExport().replace(
+					'class="graf graf--h2 graf--leading graf--title"',
+					'class="graf graf--h2 graf--leading graf--title" onclick="alert(1)"',
+				),
+				expected,
+			),
+		/unsupported key/u,
+	);
 	assert.throws(
 		() =>
 			extractMediumStoryHtml(
@@ -385,7 +493,7 @@ test("official export envelope and generated attributes fail closed", () => {
 				),
 				expected,
 			),
-		/missing its reviewed subtitle|missing its body section/u,
+		/missing its reviewed export summary|missing its body section/u,
 	);
 });
 
@@ -397,13 +505,25 @@ test("response-like exports remain unresolved inventory candidates", () => {
 	const entries = new Map(
 		responseLikeTitles.map((title, index) => [
 			`posts/response-${index + 1}.html`,
-			Buffer.from(officialStoryExport({ title, subtitle: null }), "utf8"),
+			Buffer.from(
+				officialStoryExport({
+					exportTitle: title,
+					exportSummary: null,
+					presentationBody:
+						'<p name="100a" id="100a" class="graf graf--p graf--leading graf--trailing">Exact response text.</p>',
+				}),
+				"utf8",
+			),
 		]),
 	);
 	const candidates = createUnreviewedInventoryCandidates(entries);
 	assert.equal(candidates.length, 9);
 	for (const [index, candidate] of candidates.entries()) {
 		assert.equal(candidate.title, responseLikeTitles[index]);
+		assert.equal(candidate.displayTitleCandidate, null);
+		assert.equal(candidate.displaySubtitleCandidate, null);
+		assert.equal(candidate.seriesLineCandidate, null);
+		assert.equal(candidate.exportSummaryCandidate, null);
 		assert.equal(candidate.include, null);
 		assert.equal(candidate.exclusionReason, "");
 		assert.deepEqual(candidate.classification, {
@@ -602,10 +722,13 @@ test("Medium snapshot validation binds body image URLs to its article slug", () 
 	const bodyAsset = bodyImageAsset();
 	const inventoryArticle = {
 		slug: "exact-story",
+		exportTitle: "Exported Exact Story",
+		exportSummary: "Legacy exported summary.",
 		title: "Exact Story",
-		subtitle: "",
-		summary: "A reviewed summary.",
-		description: "A reviewed description.",
+		subtitle: "A display subtitle.",
+		seriesLine: "A Ledger Series article on exact snapshot structure.",
+		summary: "Legacy exported summary.",
+		description: "Legacy exported summary.",
 		publishedAt: "2026-07-25T12:00:00.000Z",
 		canonicalUrl: "https://medium.com/@ShotsOfRhapsody/exact-story-123",
 		sourcePath: "posts/exact-story.html",
@@ -618,8 +741,11 @@ test("Medium snapshot validation binds body image URLs to its article slug", () 
 	const snapshot = {
 		schemaVersion: 1,
 		slug: inventoryArticle.slug,
+		exportTitle: inventoryArticle.exportTitle,
+		exportSummary: inventoryArticle.exportSummary,
 		title: inventoryArticle.title,
 		subtitle: inventoryArticle.subtitle,
+		seriesLine: inventoryArticle.seriesLine,
 		summary: inventoryArticle.summary,
 		description: inventoryArticle.description,
 		author: "Tai Song",
@@ -825,7 +951,12 @@ test("Medium manifest rejects duplicate or non-image assets", () => {
 					markdown: digest,
 					bodyText: digest,
 				},
-				content: { title: "Essay", subtitle: "", bodyBlockCount: 1 },
+				content: {
+					title: "Essay",
+					subtitle: "A display subtitle.",
+					seriesLine: "A Ledger Series article on exact fixtures.",
+					bodyBlockCount: 1,
+				},
 				assets: [hero],
 			},
 		],

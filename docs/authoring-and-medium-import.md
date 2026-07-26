@@ -47,10 +47,13 @@ Use Medium's logged-in **Settings → Security and apps → Download your inform
 
 4. Compare every candidate with the public author profile. Include only public, original, standalone stories. Exclude drafts, unlisted stories, reposts, and responses.
 5. Retain a disposition for every exported HTML file—include, or exclude with
-   a reason—and preserve the candidate-set count and hash. Review exact titles,
-   subtitles, descriptions, summaries, publication timestamps, URLs, tags,
-   image alt text, captions, image identity, and republication rights before
-   promoting data into `provenance/medium/inventory.json`.
+   a reason—and preserve the candidate-set count and hash. For every included
+   essay, review the export metadata title and summary separately from the
+   visible display title, display subtitle, article-specific Ledger Series
+   sentence, hero, and post-hero authored body. Also review publication
+   timestamps, URLs, tags, image alt text, captions, image identity, and
+   republication rights before promoting data into
+   `provenance/medium/inventory.json`.
 6. In the logged-in browser, open each approved story and inspect its loaded
    responsive image candidates. Expand the viewport through 4800 CSS pixels,
    confirm that no larger Medium candidate appears, and save the exact response
@@ -162,16 +165,23 @@ pnpm medium:verify --slug <slug> --with-raw
 pnpm content:verify --require-complete
 ```
 
-The converter recognizes Medium's official export envelope explicitly. It
-validates and removes only the known header, subtitle, body-layout, and footer
-wrappers. It also reconciles Medium's leading renderer title/subtitle shell:
-those nodes are omitted only when their text matches the reviewed metadata
-exactly, allowing only Medium's observed non-breaking-space presentation
-substitution. Distinct `h2`, `h3`, and `h4` text remains authored body content.
-When the export has no `p-summary`, its observed leading renderer `h4` becomes
-the subtitle candidate and is subject to the same exact reconciliation.
-Medium's export-only head stylesheet is ignored and never deployed, while any
-style or active markup in the authored body fails closed.
+The converter recognizes Medium's official export envelope explicitly. For an
+included essay it requires the exact significant-element order observed in all
+24 approved exports: renderer `h2`/`h3` display title, renderer `h4` display
+subtitle, one article-specific `A Ledger Series article ...` paragraph, hero
+figure, then authored body. These presentation fields are compared code point
+for code point with the reviewed inventory and rendered in the same order. The
+outer export `h1` title and optional `p-summary` remain separate provenance
+fields because they are not interchangeable with the public display title and
+subtitle. After the hero, real source headings remain headings, bold paragraphs
+remain bold paragraphs, and ordinary paragraphs are never promoted. Medium's
+export-only head stylesheet is ignored and never deployed, while any style or
+active markup in the authored body fails closed.
+
+Cards and page metadata use the exact exported summary when one exists. The one
+approved essay without an export summary requires an explicit Tai Song-reviewed
+fallback in the final inventory; the tooling never silently substitutes the
+display subtitle or generates new copy.
 
 The converter preserves text, headings, paragraphs, lists, quotations, links,
 emphasis, inline breaks, Unicode—including non-breaking spaces—code, and

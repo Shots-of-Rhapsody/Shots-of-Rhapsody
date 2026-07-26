@@ -31,6 +31,10 @@ const CANDIDATE_KEYS = new Set([
 	"suggestedSlug",
 	"title",
 	"descriptionCandidate",
+	"exportSummaryCandidate",
+	"displayTitleCandidate",
+	"displaySubtitleCandidate",
+	"seriesLineCandidate",
 	"publishedAtCandidate",
 	"canonicalUrlCandidate",
 	"sourcePath",
@@ -60,6 +64,35 @@ function validateCandidateEvidence(value, label) {
 					`${label}.canonicalUrlCandidate`,
 					{ hostname: "medium.com" },
 				).toString();
+	const displayTitleCandidate =
+		candidate.displayTitleCandidate === null
+			? null
+			: assertNonEmptyString(
+					candidate.displayTitleCandidate,
+					`${label}.displayTitleCandidate`,
+				);
+	const displaySubtitleCandidate =
+		candidate.displaySubtitleCandidate === null
+			? null
+			: assertNonEmptyString(
+					candidate.displaySubtitleCandidate,
+					`${label}.displaySubtitleCandidate`,
+				);
+	const seriesLineCandidate =
+		candidate.seriesLineCandidate === null
+			? null
+			: assertNonEmptyString(
+					candidate.seriesLineCandidate,
+					`${label}.seriesLineCandidate`,
+				);
+	if (
+		seriesLineCandidate !== null &&
+		!seriesLineCandidate.startsWith("A Ledger Series article ")
+	) {
+		throw new MediumContractError(
+			`${label}.seriesLineCandidate must begin with "A Ledger Series article"`,
+		);
+	}
 	return {
 		suggestedSlug: assertSlug(
 			candidate.suggestedSlug,
@@ -70,6 +103,13 @@ function validateCandidateEvidence(value, label) {
 			candidate.descriptionCandidate,
 			`${label}.descriptionCandidate`,
 		),
+		exportSummaryCandidate: assertNullableString(
+			candidate.exportSummaryCandidate,
+			`${label}.exportSummaryCandidate`,
+		),
+		displayTitleCandidate,
+		displaySubtitleCandidate,
+		seriesLineCandidate,
 		publishedAtCandidate:
 			candidate.publishedAtCandidate === null
 				? null
@@ -133,6 +173,9 @@ function validateProposedCandidate(value, label) {
 	}
 	if (candidate.include) {
 		if (
+			evidence.displayTitleCandidate === null ||
+			evidence.displaySubtitleCandidate === null ||
+			evidence.seriesLineCandidate === null ||
 			exclusionReason !== "" ||
 			classification.visibility !== "public" ||
 			classification.authorship !== "original" ||

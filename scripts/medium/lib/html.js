@@ -226,11 +226,14 @@ function suggestedSlug(title) {
 
 export function extractCandidateMetadata(html, sourcePath) {
 	const document = parseDocument(html, sourcePath);
+	const presentation = extractOfficialPresentationCandidate(
+		document,
+		sourcePath,
+	);
 	const titles = [];
 	const headings = [];
 	const descriptions = [];
 	const exportedSubtitles = [];
-	const renderedSubtitles = [];
 	const canonicalUrls = [];
 	const publishedDates = [];
 	walkElements(document, (node) => {
@@ -252,12 +255,6 @@ export function extractCandidateMetadata(html, sourcePath) {
 			const classes = attributeValue(node, "class")?.split(/\s+/u) ?? [];
 			if (dataField === "subtitle" && classes.includes("p-summary")) {
 				exportedSubtitles.push(textContent(node));
-			}
-		}
-		if (node.tagName === "h4") {
-			const classes = attributeValue(node, "class")?.split(/\s+/u) ?? [];
-			if (classes.includes("graf--subtitle")) {
-				renderedSubtitles.push(textContent(node));
 			}
 		}
 		if (node.tagName === "link") {
@@ -318,15 +315,23 @@ export function extractCandidateMetadata(html, sourcePath) {
 		exportedSubtitles,
 		`${sourcePath} exported subtitle`,
 	);
-	const renderedSubtitle = uniqueNonEmpty(
-		renderedSubtitles,
-		`${sourcePath} rendered subtitle`,
-	);
+	if (
+		metaDescription !== null &&
+		exportedSubtitle !== null &&
+		metaDescription !== exportedSubtitle
+	) {
+		throw new MediumContractError(
+			`${sourcePath} description metadata conflicts with its exported summary`,
+		);
+	}
 	return {
 		suggestedSlug: suggestedSlug(title),
 		title,
-		descriptionCandidate:
-			metaDescription ?? exportedSubtitle ?? renderedSubtitle,
+		displayTitleCandidate: presentation?.displayTitle ?? null,
+		displaySubtitleCandidate: presentation?.displaySubtitle ?? null,
+		seriesLineCandidate: presentation?.seriesLine ?? null,
+		exportSummaryCandidate: metaDescription ?? exportedSubtitle,
+		descriptionCandidate: metaDescription ?? exportedSubtitle,
 		publishedAtCandidate: publishedAt,
 		canonicalUrlCandidate: canonicalUrl,
 	};
@@ -674,49 +679,107 @@ function validateOfficialFooter(footer, label) {
 	}
 }
 
-function shellTextMatches(sourceText, reviewedText) {
-	return (
-		sourceText === reviewedText ||
-		sourceText.replaceAll("\u00a0", " ") === reviewedText
-	);
+function officialPresentationPrefix(
+	nodes,
+	label,
+	{ allowAbsent = false } = {},
+) {
+	const titleNode = nodes[0];
+	const titleClass = titleNode ? attributeValue(titleNode, "class") : undefined;
+	const isPresentationTitle =
+		(titleNode?.tagName === "h2" || titleNode?.tagName === "h3") &&
+		titleClass === `graf graf--${titleNode.tagName} graf--leading graf--title`;
+	if (!isPresentationTitle) {
+		if (allowAbsent) return null;
+		throw new MediumContractError(
+			`${label} must begin with its exact display title, subtitle, Ledger Series line, and hero`,
+		);
+	}
+
+	const subtitleNode = nodes[1];
+	const expectedSubtitleClass = `graf graf--h4 graf-after--${titleNode.tagName} graf--subtitle`;
+	if (
+		subtitleNode?.tagName !== "h4" ||
+		attributeValue(subtitleNode, "class") !== expectedSubtitleClass
+	) {
+		throw new MediumContractError(
+			`${label} display title must be followed by its exact display subtitle`,
+		);
+	}
+
+	const seriesLineNode = nodes[2];
+	if (
+		seriesLineNode?.tagName !== "p" ||
+		attributeValue(seriesLineNode, "class") !== "graf graf--p graf-after--h4"
+	) {
+		throw new MediumContractError(
+			`${label} display subtitle must be followed by its exact Ledger Series line`,
+		);
+	}
+	const seriesLine = textContent(seriesLineNode).trim();
+	if (!seriesLine.startsWith("A Ledger Series article ")) {
+		throw new MediumContractError(
+			`${label} Ledger Series line must begin with "A Ledger Series article "`,
+		);
+	}
+
+	const heroNode = nodes[3];
+	if (
+		heroNode?.tagName !== "figure" ||
+		attributeValue(heroNode, "class") !== "graf graf--figure graf-after--p"
+	) {
+		throw new MediumContractError(
+			`${label} Ledger Series line must be followed immediately by its hero figure`,
+		);
+	}
+
+	return {
+		titleNode,
+		subtitleNode,
+		seriesLineNode,
+		heroNode,
+		displayTitle: textContent(titleNode).trim(),
+		displaySubtitle: textContent(subtitleNode).trim(),
+		seriesLine,
+	};
 }
 
-function reconcileOfficialPresentationShell(nodes, expected) {
-	const leadingTitle = nodes[0];
-	const leadingTitleClass = leadingTitle
-		? attributeValue(leadingTitle, "class")
-		: undefined;
-	const isRendererTitle =
-		(leadingTitle?.tagName === "h2" || leadingTitle?.tagName === "h3") &&
-		leadingTitleClass ===
-			`graf graf--${leadingTitle.tagName} graf--leading graf--title`;
-	if (!isRendererTitle) return nodes;
-	const titleText = textContent(leadingTitle).trim();
-	if (!shellTextMatches(titleText, expected.title)) return nodes;
-	normalizeOfficialContentAttributes(
-		leadingTitle,
-		"story.body.presentationTitle",
-	);
-
-	const remaining = nodes.slice(1);
-	const leadingSubtitle = remaining[0];
-	const isRendererSubtitle =
-		leadingSubtitle?.tagName === "h4" &&
-		OFFICIAL_GRAF_CLASSES.get("h4")?.has(
-			attributeValue(leadingSubtitle, "class"),
+function extractOfficialPresentationCandidate(document, sourcePath) {
+	const officialArticles = [];
+	walkElements(document, (node) => {
+		if (
+			node.tagName === "article" &&
+			attributeValue(node, "class") === "h-entry"
+		) {
+			officialArticles.push(node);
+		}
+	});
+	if (officialArticles.length === 0) return null;
+	if (officialArticles.length !== 1) {
+		throw new MediumContractError(
+			`${sourcePath} must contain exactly one official Medium article.h-entry`,
 		);
-	if (
-		isRendererSubtitle &&
-		expected.subtitle.length > 0 &&
-		shellTextMatches(textContent(leadingSubtitle).trim(), expected.subtitle)
-	) {
-		normalizeOfficialContentAttributes(
-			leadingSubtitle,
-			"story.body.presentationSubtitle",
-		);
-		return remaining.slice(1);
 	}
-	return remaining;
+	const innerNodes = [];
+	walkElements(officialArticles[0], (node) => {
+		if (
+			node.tagName === "div" &&
+			attributeValue(node, "class") ===
+				"section-inner sectionLayout--insetColumn"
+		) {
+			innerNodes.push(node);
+		}
+	});
+	if (innerNodes.length !== 1) {
+		throw new MediumContractError(
+			`${sourcePath} official Medium article must contain exactly one story-content wrapper`,
+		);
+	}
+	return officialPresentationPrefix(
+		significantChildren(innerNodes[0], `${sourcePath} story content`),
+		`${sourcePath} story content`,
+		{ allowAbsent: true },
+	);
 }
 
 function extractOfficialMediumStory(body, expected) {
@@ -736,9 +799,10 @@ function extractOfficialMediumStory(body, expected) {
 	exactAttributes(parts[0], {}, "story.header");
 	const titleNode = requireSingleChild(parts[0], "h1", "story.header");
 	exactAttributes(titleNode, { class: "p-name" }, "story.header.title");
-	if (textContent(titleNode).trim() !== expected.title) {
+	const expectedExportTitle = expected.exportTitle ?? expected.title;
+	if (textContent(titleNode).trim() !== expectedExportTitle) {
 		throw new MediumContractError(
-			`Exported title does not exactly match reviewed inventory title for ${expected.slug}`,
+			`Exported title does not exactly match reviewed inventory export title for ${expected.slug}`,
 		);
 	}
 
@@ -754,17 +818,27 @@ function extractOfficialMediumStory(body, expected) {
 			{ "data-field": "subtitle", class: "p-summary" },
 			"story.subtitle",
 		);
-		if (expected.subtitle.length === 0) {
+		const expectedExportSummary = Object.hasOwn(expected, "exportSummary")
+			? expected.exportSummary
+			: expected.subtitle;
+		if (expectedExportSummary === null || expectedExportSummary.length === 0) {
 			throw new MediumContractError(
-				`Exported story ${expected.slug} has an unexpected subtitle`,
+				`Exported story ${expected.slug} has an unexpected export summary`,
 			);
 		}
-		if (textContent(subtitleNode).trim() !== expected.subtitle) {
+		if (textContent(subtitleNode).trim() !== expectedExportSummary) {
 			throw new MediumContractError(
-				`Exported subtitle does not exactly match reviewed inventory subtitle for ${expected.slug}`,
+				`Exported summary does not exactly match reviewed inventory export summary for ${expected.slug}`,
 			);
 		}
 		cursor += 1;
+	} else if (
+		Object.hasOwn(expected, "exportSummary") &&
+		expected.exportSummary !== null
+	) {
+		throw new MediumContractError(
+			`Exported story ${expected.slug} is missing its reviewed export summary`,
+		);
 	}
 
 	const bodySection = parts[cursor];
@@ -837,24 +911,33 @@ function extractOfficialMediumStory(body, expected) {
 		"story.body.content.inner",
 	);
 	const rawStoryNodes = significantChildren(inner, "story.body.content.inner");
-	if (!subtitleNode && expected.subtitle.length > 0) {
-		const renderedSubtitle = rawStoryNodes[1];
-		if (
-			renderedSubtitle?.tagName !== "h4" ||
-			!OFFICIAL_GRAF_CLASSES.get("h4")?.has(
-				attributeValue(renderedSubtitle, "class"),
-			) ||
-			!shellTextMatches(textContent(renderedSubtitle).trim(), expected.subtitle)
-		) {
-			throw new MediumContractError(
-				`Exported story ${expected.slug} is missing its reviewed subtitle`,
-			);
-		}
-	}
-	const storyNodes = reconcileOfficialPresentationShell(
+	const presentation = officialPresentationPrefix(
 		rawStoryNodes,
-		expected,
+		"story.body.content.inner",
 	);
+	if (presentation.displayTitle !== expected.title) {
+		throw new MediumContractError(
+			`Exported display title does not exactly match reviewed inventory title for ${expected.slug}`,
+		);
+	}
+	if (presentation.displaySubtitle !== expected.subtitle) {
+		throw new MediumContractError(
+			`Exported display subtitle does not exactly match reviewed inventory subtitle for ${expected.slug}`,
+		);
+	}
+	if (presentation.seriesLine !== expected.seriesLine) {
+		throw new MediumContractError(
+			`Exported Ledger Series line does not exactly match reviewed inventory for ${expected.slug}`,
+		);
+	}
+	for (const [node, label] of [
+		[presentation.titleNode, "story.body.presentationTitle"],
+		[presentation.subtitleNode, "story.body.presentationSubtitle"],
+		[presentation.seriesLineNode, "story.body.seriesLine"],
+	]) {
+		normalizeOfficialContentAttributes(node, label);
+	}
+	const storyNodes = rawStoryNodes.slice(3);
 	for (const [index, node] of storyNodes.entries()) {
 		normalizeOfficialContentAttributes(
 			node,

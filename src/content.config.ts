@@ -185,6 +185,7 @@ const createPostSchema = (image: ImageFunction) =>
 		.object({
 			title: z.string(),
 			subtitle: z.string().optional().default(""),
+			seriesLine: z.string().optional().default(""),
 			summary: z.string().optional().default(""),
 			author: z.string().optional().default(""),
 			published: z.coerce.date(),
@@ -256,6 +257,7 @@ const createPostSchema = (image: ImageFunction) =>
 				field:
 					| "title"
 					| "subtitle"
+					| "seriesLine"
 					| "summary"
 					| "description"
 					| "author"
@@ -279,9 +281,27 @@ const createPostSchema = (image: ImageFunction) =>
 							"author",
 							"imageCaption",
 						] as const)
-					: (["title", "summary", "description", "author"] as const);
+					: ([
+							"title",
+							"subtitle",
+							"seriesLine",
+							"summary",
+							"description",
+							"author",
+						] as const);
 			for (const field of requiredFields) {
 				requireValue(field);
+			}
+			if (
+				post.provenance.authority === "Medium account export" &&
+				!post.seriesLine.startsWith("A Ledger Series article ")
+			) {
+				context.addIssue({
+					code: "custom",
+					message:
+						"Medium archive posts must preserve their reviewed Ledger Series sentence",
+					path: ["seriesLine"],
+				});
 			}
 
 			if (post.author !== "Tai Song") {

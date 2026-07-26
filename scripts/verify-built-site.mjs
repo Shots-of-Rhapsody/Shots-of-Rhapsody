@@ -272,6 +272,8 @@ const AUTHORED_CONTENT_MARKERS = new Set([
 	"data-archive-body",
 	"data-archive-field",
 	"data-archive-hero",
+	"data-medium-field",
+	"data-medium-hero",
 	"data-archive-entry-slug",
 ]);
 const AUTHORED_CONTENT_CLASSES = new Set([
@@ -2244,6 +2246,7 @@ export async function verifyMediumRenderedBodies(
 	distRoot,
 	publicationManifest,
 	failures,
+	site = DEFAULT_SITE,
 ) {
 	const expectedSlugs = publicationManifest.articles
 		.filter((article) => article.source === "medium")
@@ -2283,6 +2286,16 @@ export async function verifyMediumRenderedBodies(
 	const bySlug = new Map(
 		mediumManifest.articles.map((article) => [article?.slug, article]),
 	);
+	const rssPath = path.join(distRoot, "rss.xml");
+	let rssItems = [];
+	if (!(await isFile(rssPath))) {
+		failures.push("Medium rendered verification requires rss.xml");
+	} else {
+		const rssXml = await readFile(rssPath, "utf8");
+		rssItems = [...rssXml.matchAll(/<item>([\s\S]*?)<\/item>/gu)].map(
+			(match) => match[1],
+		);
+	}
 	for (const slug of expectedSlugs) {
 		const article = bySlug.get(slug);
 		const snapshotPath = article
@@ -2312,6 +2325,18 @@ export async function verifyMediumRenderedBodies(
 		}
 		if (
 			snapshot?.slug !== slug ||
+			typeof snapshot.title !== "string" ||
+			typeof snapshot.subtitle !== "string" ||
+			typeof snapshot.seriesLine !== "string" ||
+			typeof snapshot.summary !== "string" ||
+			typeof snapshot.description !== "string" ||
+			snapshot.author !== "Tai Song" ||
+			!isoString(snapshot.published) ||
+			typeof snapshot.category !== "string" ||
+			!Array.isArray(snapshot.tags) ||
+			(snapshot.imageAlt !== null && typeof snapshot.imageAlt !== "string") ||
+			typeof snapshot.imageCaption !== "string" ||
+			snapshot.license?.name !== "All Rights Reserved" ||
 			typeof snapshot.bodyHtml !== "string" ||
 			snapshot.bodyHtml.length === 0
 		) {
@@ -2323,7 +2348,50 @@ export async function verifyMediumRenderedBodies(
 			failures.push(`Medium ${slug}: built page is missing`);
 			continue;
 		}
-		const document = parse(await readFile(pagePath, "utf8"));
+		const html = await readFile(pagePath, "utf8");
+		const document = parse(html);
+		const mediumFields = elementsWithAttribute(document, "data-medium-field");
+		const fieldByName = new Map();
+		for (const node of mediumFields) {
+			const field = attributeValue(node, "data-medium-field");
+			if (fieldByName.has(field)) {
+				failures.push(`Medium ${slug}: rendered ${field} field is duplicated`);
+				continue;
+			}
+			fieldByName.set(field, node);
+		}
+		for (const [field, expected] of [
+			["title", snapshot.title],
+			["subtitle", snapshot.subtitle],
+			["series-line", snapshot.seriesLine],
+			["author", `By ${snapshot.author}`],
+		]) {
+			const node = fieldByName.get(field);
+			if (
+				!node ||
+				trimSerializationBoundaryWhitespace(nodeText(node)) !== expected
+			) {
+				failures.push(
+					`Medium ${slug}: rendered ${field} differs from its snapshot`,
+				);
+			}
+		}
+		if (fieldByName.size !== 4) {
+			failures.push(
+				`Medium ${slug}: rendered presentation must contain exactly title, subtitle, series-line, and author fields`,
+			);
+		}
+		if (
+			fieldByName.get("title")?.tagName !== "h1" ||
+			fieldByName.get("subtitle")?.tagName !== "p" ||
+			fieldByName.get("series-line")?.tagName !== "p" ||
+			fieldByName.get("author")?.tagName !== "span"
+		) {
+			failures.push(
+				`Medium ${slug}: title, subtitle, Ledger Series line, or author uses the wrong semantic element`,
+			);
+		}
+		const heroes = elementsWithAttribute(document, "data-medium-hero");
 		const bodies = elementsWithAttribute(
 			document,
 			"data-authored-content",
@@ -2332,9 +2400,269 @@ export async function verifyMediumRenderedBodies(
 				.split(/\s+/u)
 				.includes("article-body"),
 		);
+		if (heroes.length !== 1 || heroes[0].tagName !== "figure") {
+			failures.push(`Medium ${slug}: rendered hero is ambiguous`);
+			continue;
+		}
+		const heroWrappers = elementsWithAttribute(
+			heroes[0],
+			"data-image-variant",
+		).filter((node) => attributeValue(node, "data-image-variant") === "hero");
+		const heroDescendants = [];
+		const visitHero = (node) => {
+			if (node.tagName) heroDescendants.push(node);
+			for (const child of node.childNodes ?? []) visitHero(child);
+		};
+		visitHero(heroes[0]);
+		const heroImages = heroDescendants.filter((node) => node.tagName === "img");
+		const heroCaptions = heroDescendants.filter(
+			(node) => node.tagName === "figcaption",
+		);
+		const expectedAlt = snapshot.imageAlt ?? "";
+		if (
+			heroWrappers.length !== 1 ||
+			attributeValue(heroWrappers[0], "data-source-width") !==
+				String(snapshot.hero?.width) ||
+			attributeValue(heroWrappers[0], "data-source-height") !==
+				String(snapshot.hero?.height) ||
+			heroImages.length !== 1 ||
+			attributeValue(heroImages[0], "alt") !== expectedAlt
+		) {
+			failures.push(
+				`Medium ${slug}: rendered hero dimensions or alt text differ from its snapshot`,
+			);
+		}
+		if (
+			(snapshot.imageCaption === "" && heroCaptions.length !== 0) ||
+			(snapshot.imageCaption !== "" &&
+				(heroCaptions.length !== 1 ||
+					!(attributeValue(heroCaptions[0], "class") ?? "")
+						.split(/\s+/u)
+						.includes("article-caption") ||
+					trimSerializationBoundaryWhitespace(nodeText(heroCaptions[0])) !==
+						snapshot.imageCaption))
+		) {
+			failures.push(
+				`Medium ${slug}: rendered hero caption differs from its snapshot`,
+			);
+		}
 		if (bodies.length !== 1) {
 			failures.push(`Medium ${slug}: rendered authored body is ambiguous`);
 			continue;
+		}
+		const articleShells = elementsWithAttribute(document, "id").filter(
+			(node) => attributeValue(node, "id") === "post-container",
+		);
+		const directElements = (articleShells[0]?.childNodes ?? []).filter((node) =>
+			Boolean(node.tagName),
+		);
+		const headerIndex = directElements.findIndex(
+			(node) => node.tagName === "header",
+		);
+		const seriesIndex = directElements.indexOf(fieldByName.get("series-line"));
+		const heroIndex = directElements.indexOf(heroes[0]);
+		const bodyIndex = directElements.indexOf(bodies[0]);
+		if (
+			articleShells.length !== 1 ||
+			headerIndex !== 0 ||
+			seriesIndex !== headerIndex + 1 ||
+			heroIndex !== seriesIndex + 1 ||
+			bodyIndex !== heroIndex + 1
+		) {
+			failures.push(
+				`Medium ${slug}: rendered order must be series line, hero, then authored body`,
+			);
+		}
+		const header = directElements[headerIndex];
+		const headerElements = [];
+		const visitHeader = (node) => {
+			if (node.tagName) headerElements.push(node);
+			for (const child of node.childNodes ?? []) visitHeader(child);
+		};
+		if (header) visitHeader(header);
+		if (
+			headerElements.indexOf(fieldByName.get("title")) < 0 ||
+			headerElements.indexOf(fieldByName.get("subtitle")) <=
+				headerElements.indexOf(fieldByName.get("title")) ||
+			headerElements.indexOf(fieldByName.get("author")) <=
+				headerElements.indexOf(fieldByName.get("subtitle"))
+		) {
+			failures.push(
+				`Medium ${slug}: rendered header must preserve title, subtitle, then author order`,
+			);
+		}
+		const expectedUrl = new URL(`posts/${slug}/`, site).toString();
+		if (getCanonical(html, `Medium ${slug}`, failures) !== expectedUrl) {
+			failures.push(`Medium ${slug}: canonical URL is not its local route`);
+		}
+		verifyPublicationTime(
+			document,
+			"data-post-published",
+			snapshot.published,
+			snapshot.published.slice(0, 10),
+			`Medium ${slug} metadata`,
+			failures,
+		);
+		for (const [selector, expected] of [
+			["author", snapshot.author],
+			["description", snapshot.description],
+			["og:title", snapshot.title],
+			["og:description", snapshot.description],
+			["article:published_time", snapshot.published],
+			["article:section", snapshot.category],
+		]) {
+			const values = metaContent(html, selector);
+			if (values.length !== 1 || values[0] !== expected) {
+				failures.push(
+					`Medium ${slug}: ${selector} metadata differs from its snapshot`,
+				);
+			}
+		}
+		if (!sameStringArray(metaContent(html, "article:tag"), snapshot.tags)) {
+			failures.push(
+				`Medium ${slug}: article tag metadata differs from its snapshot`,
+			);
+		}
+		const licenseBlocks = elementsWithAttribute(document, "data-license-name");
+		if (
+			licenseBlocks.length !== 1 ||
+			attributeValue(licenseBlocks[0], "data-license-name") !==
+				"All Rights Reserved"
+		) {
+			failures.push(
+				`Medium ${slug}: visible license is not All Rights Reserved`,
+			);
+		}
+		const jsonLd = extractJsonLd(html, `Medium ${slug}`, failures);
+		if (jsonLd) {
+			for (const [field, actual, expected] of [
+				["headline", jsonLd.headline, snapshot.title],
+				["alternativeHeadline", jsonLd.alternativeHeadline, snapshot.subtitle],
+				["description", jsonLd.description, snapshot.description],
+				["author", jsonLd.author?.name, snapshot.author],
+				["datePublished", jsonLd.datePublished, snapshot.published],
+				["url", jsonLd.url, expectedUrl],
+				["category", jsonLd.articleSection, snapshot.category],
+				["license", jsonLd.copyrightNotice, "All Rights Reserved"],
+				["caption", jsonLd.image?.caption, snapshot.imageCaption || undefined],
+				[
+					"image alt",
+					jsonLd.image?.description,
+					snapshot.imageAlt ?? undefined,
+				],
+			]) {
+				if (actual !== expected) {
+					failures.push(
+						`Medium ${slug}: JSON-LD ${field} differs from its snapshot`,
+					);
+				}
+			}
+			if (!sameStringArray(jsonLd.keywords, snapshot.tags)) {
+				failures.push(`Medium ${slug}: JSON-LD tags differ from its snapshot`);
+			}
+		}
+		const matchingRssItems = rssItems.filter(
+			(item) => xmlElementText(item, "link") === expectedUrl,
+		);
+		if (matchingRssItems.length !== 1) {
+			failures.push(`Medium ${slug}: RSS must contain exactly one local item`);
+		} else {
+			const item = matchingRssItems[0];
+			for (const [field, actual, expected] of [
+				["title", xmlElementText(item, "title"), snapshot.title],
+				["GUID", xmlElementText(item, "guid"), expectedUrl],
+				["summary", xmlElementText(item, "description"), snapshot.summary],
+				["author", xmlElementText(item, "dc:creator"), snapshot.author],
+				[
+					"publication date",
+					xmlElementText(item, "pubDate"),
+					new Date(snapshot.published).toUTCString(),
+				],
+			]) {
+				if (actual !== expected) {
+					failures.push(
+						`Medium ${slug}: RSS ${field} differs from its snapshot`,
+					);
+				}
+			}
+			for (const field of ["dc:source", "dc:relation", "dcterms:modified"]) {
+				if (xmlElementText(item, field) !== undefined) {
+					failures.push(
+						`Medium ${slug}: RSS must not expose ${field} provenance or an inferred update`,
+					);
+				}
+			}
+			const mediaImages = tags(item, "media:content");
+			if (
+				mediaImages.length !== 1 ||
+				mediaImages[0].attributes.url !== jsonLd?.image?.url ||
+				mediaImages[0].attributes.type !== "image/jpeg" ||
+				mediaImages[0].attributes.width !== "1200" ||
+				mediaImages[0].attributes.height !== "1200"
+			) {
+				failures.push(
+					`Medium ${slug}: RSS social image differs from the local page`,
+				);
+			}
+			const mediaDescription = xmlElementText(item, "media:description");
+			if (
+				(snapshot.imageCaption === "" && mediaDescription !== undefined) ||
+				(snapshot.imageCaption !== "" &&
+					mediaDescription !== snapshot.imageCaption)
+			) {
+				failures.push(
+					`Medium ${slug}: RSS image caption differs from its snapshot`,
+				);
+			}
+			const encodedContent = xmlElementText(item, "content:encoded") ?? "";
+			const encodedFragment = parseFragment(encodedContent);
+			const encodedNodes = (encodedFragment.childNodes ?? []).filter(
+				(node) => node.nodeName !== "#text" || /\S/u.test(node.value ?? ""),
+			);
+			if (encodedNodes[0]?.tagName !== "figure") {
+				failures.push(`Medium ${slug}: RSS content must begin with its hero`);
+			}
+			const encodedHeroImages = tags(encodedContent, "img").filter(
+				(tag) => tag.attributes.src === jsonLd?.image?.url,
+			);
+			if (
+				encodedHeroImages.length !== 1 ||
+				encodedHeroImages[0].attributes.alt !== expectedAlt
+			) {
+				failures.push(
+					`Medium ${slug}: RSS content hero alt differs from its snapshot`,
+				);
+			}
+			const encodedCaption = encodedContent.match(
+				/<figcaption\b[^>]*>([\s\S]*?)<\/figcaption>/iu,
+			);
+			if (
+				(snapshot.imageCaption === "" && encodedCaption) ||
+				(snapshot.imageCaption !== "" &&
+					(!encodedCaption ||
+						visibleText(encodedCaption[1]) !== snapshot.imageCaption))
+			) {
+				failures.push(
+					`Medium ${slug}: RSS content caption differs from its snapshot`,
+				);
+			}
+			const categories = [
+				...item.matchAll(
+					/<category>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/category>/gu,
+				),
+			].map((match) => decodeHtml(match[1]));
+			if (!sameStringArray(categories, [...snapshot.tags, snapshot.category])) {
+				failures.push(
+					`Medium ${slug}: RSS category order differs from its snapshot`,
+				);
+			}
+			const rssBody = archiveBodyStructureFromNodes(encodedNodes.slice(1));
+			const snapshotBody = archiveBodyStructure(snapshot.bodyHtml);
+			if (JSON.stringify(rssBody) !== JSON.stringify(snapshotBody)) {
+				failures.push(
+					`Medium ${slug}: RSS content body differs from its snapshot`,
+				);
+			}
 		}
 		const actual = archiveBodyStructureFromNodes(bodies[0].childNodes ?? []);
 		const expected = archiveBodyStructure(snapshot.bodyHtml);
@@ -2816,6 +3144,7 @@ export async function verifyBuiltSite({
 			distRoot,
 			publicationManifest,
 			failures,
+			site,
 		);
 		authorWorks = await verifyAuthorPage(
 			repoRoot,

@@ -235,6 +235,23 @@ export function buildMediumHeroChecklist({
 	const items = titles.map((title) => {
 		const candidate = candidatesByTitle.get(title)[0];
 		const slug = assertSlug(candidate.suggestedSlug, `${title} suggestedSlug`);
+		const displayTitleCandidate = assertNonEmptyString(
+			candidate.displayTitleCandidate,
+			`${title} displayTitleCandidate`,
+		);
+		const displaySubtitleCandidate = assertNonEmptyString(
+			candidate.displaySubtitleCandidate,
+			`${title} displaySubtitleCandidate`,
+		);
+		const seriesLineCandidate = assertNonEmptyString(
+			candidate.seriesLineCandidate,
+			`${title} seriesLineCandidate`,
+		);
+		if (!seriesLineCandidate.startsWith("A Ledger Series article ")) {
+			throw new MediumContractError(
+				`${title} seriesLineCandidate must begin with "A Ledger Series article"`,
+			);
+		}
 		const sourcePath = assertNonEmptyString(
 			candidate.sourcePath,
 			`${title} sourcePath`,
@@ -252,14 +269,22 @@ export function buildMediumHeroChecklist({
 		);
 		const hero = extractMediumHeroEvidence(decodeUtf8(source, sourcePath), {
 			slug,
-			title,
-			subtitle: candidate.descriptionCandidate ?? "",
+			exportTitle: title,
+			exportSummary: candidate.exportSummaryCandidate,
+			title: displayTitleCandidate,
+			subtitle: displaySubtitleCandidate,
+			seriesLine: seriesLineCandidate,
 		});
 		return {
 			storyId: story.id,
 			heroImageId: hero.imageId,
 			slug,
 			title,
+			descriptionCandidate: candidate.descriptionCandidate,
+			exportSummaryCandidate: candidate.exportSummaryCandidate,
+			displayTitleCandidate,
+			displaySubtitleCandidate,
+			seriesLineCandidate,
 			canonicalUrl: story.canonicalUrl,
 			sourcePath,
 			exportedHero: {

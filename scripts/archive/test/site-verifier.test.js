@@ -277,8 +277,60 @@ test("Medium rendered-body verification binds exact snapshot bytes and HTML", as
 	const snapshotRelative = `provenance/medium/posts/${slug}.json`;
 	const snapshot = {
 		slug,
+		title: "The Display Title",
+		subtitle: "The exact display subtitle.",
+		seriesLine: "A Ledger Series article on exact presentation roles.",
+		summary: "The exported summary.",
+		description: "The exported summary.",
+		author: "Tai Song",
+		published: "2026-07-25T12:00:00.000Z",
+		category: "Nonfiction",
+		tags: ["Economics", "Society"],
+		imageAlt: null,
+		imageCaption: "",
+		hero: { width: 1200, height: 800 },
+		license: { name: "All Rights Reserved" },
 		bodyHtml: "<p>Exact <em>authored</em> text.</p><p></p>",
 	};
+	const pageUrl =
+		"https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/posts/verified-essay/";
+	const socialImageUrl =
+		"https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/social/verified-essay.jpg";
+	const renderPage = (
+		bodyHtml,
+		{ heroFirst = false, titleTag = "h1", subtitleFirst = false } = {},
+	) => {
+		const series = `<p data-medium-field="series-line">${snapshot.seriesLine}</p>`;
+		const hero = `<figure data-medium-hero><div data-image-variant="hero" data-source-width="${snapshot.hero.width}" data-source-height="${snapshot.hero.height}"><picture><img src="/hero.webp" alt=""></picture></div></figure>`;
+		const jsonLd = JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "BlogPosting",
+			headline: snapshot.title,
+			alternativeHeadline: snapshot.subtitle,
+			description: snapshot.description,
+			author: { "@type": "Person", name: snapshot.author },
+			datePublished: snapshot.published,
+			url: pageUrl,
+			articleSection: snapshot.category,
+			keywords: snapshot.tags,
+			copyrightNotice: "All Rights Reserved",
+			image: {
+				url: socialImageUrl,
+				contentUrl: socialImageUrl,
+				encodingFormat: "image/jpeg",
+				width: 1200,
+				height: 1200,
+			},
+		});
+		const title = `<${titleTag} data-medium-field="title">${snapshot.title}</${titleTag}>`;
+		const subtitle = `<p data-medium-field="subtitle">${snapshot.subtitle}</p>`;
+		return `<!doctype html><html><head><link rel="canonical" href="${pageUrl}"><meta name="author" content="${snapshot.author}"><meta name="description" content="${snapshot.description}"><meta property="og:title" content="${snapshot.title}"><meta property="og:description" content="${snapshot.description}"><meta property="article:published_time" content="${snapshot.published}"><meta property="article:section" content="${snapshot.category}">${snapshot.tags.map((tag) => `<meta property="article:tag" content="${tag}">`).join("")}<script type="application/ld+json">${jsonLd}</script></head><body><article id="post-container"><header>${subtitleFirst ? `${subtitle}${title}` : `${title}${subtitle}`}<span data-medium-field="author">By ${snapshot.author}</span><time data-post-published datetime="${snapshot.published}">${snapshot.published.slice(0, 10)}</time></header>${heroFirst ? `${hero}${series}` : `${series}${hero}`}<div class="article-body" data-authored-content>${bodyHtml}</div><aside data-license-name="All Rights Reserved"></aside></article></body></html>`;
+	};
+	const renderRss = ({
+		title = snapshot.title,
+		body = snapshot.bodyHtml,
+	} = {}) =>
+		`<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:media="http://search.yahoo.com/mrss/" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><item><title>${title}</title><link>${pageUrl}</link><guid>${pageUrl}</guid><description>${snapshot.summary}</description><pubDate>${new Date(snapshot.published).toUTCString()}</pubDate><dc:creator>${snapshot.author}</dc:creator>${snapshot.tags.map((tag) => `<category>${tag}</category>`).join("")}<category>${snapshot.category}</category><media:content url="${socialImageUrl}" medium="image" type="image/jpeg" width="1200" height="1200" /><content:encoded><![CDATA[<figure><img src="${socialImageUrl}" alt="" width="1200" height="1200"></figure>${body}]]></content:encoded></item></channel></rss>`;
 	const snapshotBytes = Buffer.from(JSON.stringify(snapshot), "utf8");
 	await mkdir(path.join(root, "provenance", "medium", "posts"), {
 		recursive: true,
@@ -303,10 +355,8 @@ test("Medium rendered-body verification binds exact snapshot bytes and HTML", as
 		JSON.stringify(mediumManifest),
 	);
 	const pagePath = path.join(root, "dist", "posts", slug, "index.html");
-	await writeFile(
-		pagePath,
-		`<div class="article-body" data-authored-content>${snapshot.bodyHtml}</div>`,
-	);
+	await writeFile(pagePath, renderPage(snapshot.bodyHtml));
+	await writeFile(path.join(root, "dist", "rss.xml"), renderRss());
 	const publicationManifest = { articles: [{ slug, source: "medium" }] };
 	const failures = [];
 	await verifyMediumRenderedBodies(
@@ -317,10 +367,7 @@ test("Medium rendered-body verification binds exact snapshot bytes and HTML", as
 	);
 	assert.deepEqual(failures, []);
 
-	await writeFile(
-		pagePath,
-		'<div class="article-body" data-authored-content><p>Edited text.</p><p></p></div>',
-	);
+	await writeFile(pagePath, renderPage("<p>Edited text.</p><p></p>"));
 	const editedFailures = [];
 	await verifyMediumRenderedBodies(
 		root,
@@ -329,6 +376,68 @@ test("Medium rendered-body verification binds exact snapshot bytes and HTML", as
 		editedFailures,
 	);
 	assert.match(editedFailures.join("\n"), /rendered body differs/u);
+
+	await writeFile(pagePath, renderPage(snapshot.bodyHtml, { heroFirst: true }));
+	const orderFailures = [];
+	await verifyMediumRenderedBodies(
+		root,
+		path.join(root, "dist"),
+		publicationManifest,
+		orderFailures,
+	);
+	assert.match(orderFailures.join("\n"), /rendered order/u);
+
+	await writeFile(pagePath, renderPage(snapshot.bodyHtml, { titleTag: "h2" }));
+	const semanticFailures = [];
+	await verifyMediumRenderedBodies(
+		root,
+		path.join(root, "dist"),
+		publicationManifest,
+		semanticFailures,
+	);
+	assert.match(semanticFailures.join("\n"), /wrong semantic element/u);
+
+	await writeFile(
+		pagePath,
+		renderPage(snapshot.bodyHtml, { subtitleFirst: true }),
+	);
+	const headerOrderFailures = [];
+	await verifyMediumRenderedBodies(
+		root,
+		path.join(root, "dist"),
+		publicationManifest,
+		headerOrderFailures,
+	);
+	assert.match(headerOrderFailures.join("\n"), /header must preserve/u);
+
+	await writeFile(pagePath, renderPage(snapshot.bodyHtml));
+	await writeFile(
+		path.join(root, "dist", "rss.xml"),
+		renderRss({ title: "Edited title" }),
+	);
+	const rssFailures = [];
+	await verifyMediumRenderedBodies(
+		root,
+		path.join(root, "dist"),
+		publicationManifest,
+		rssFailures,
+	);
+	assert.match(rssFailures.join("\n"), /RSS title differs/u);
+	await writeFile(path.join(root, "dist", "rss.xml"), renderRss());
+
+	await writeFile(
+		path.join(root, "dist", "rss.xml"),
+		renderRss({ body: "<p>Edited RSS body.</p><p></p>" }),
+	);
+	const rssBodyFailures = [];
+	await verifyMediumRenderedBodies(
+		root,
+		path.join(root, "dist"),
+		publicationManifest,
+		rssBodyFailures,
+	);
+	assert.match(rssBodyFailures.join("\n"), /RSS content body differs/u);
+	await writeFile(path.join(root, "dist", "rss.xml"), renderRss());
 
 	mediumManifest.articles[0].hashes.snapshot = `sha256:${"0".repeat(64)}`;
 	await writeFile(
