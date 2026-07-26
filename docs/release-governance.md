@@ -15,15 +15,18 @@ passed the archive, browser, dependency, human-signoff, and disclosure gates.
    git fetch --prune --prune-tags origin '+refs/heads/*:refs/remotes/origin/*' '+refs/tags/*:refs/tags/*'
    git fetch --prune --no-tags origin '+refs/pull/*/head:refs/remotes/audit-pull-head/*' '+refs/pull/*/merge:refs/remotes/audit-pull-merge/*'
    git fetch --prune --no-tags origin '+refs/notes/*:refs/remotes/audit-notes/*'
-   node scripts/release/run-gitleaks.mjs --report <temporary-redacted-report.json>
-   node scripts/release/audit-repository.mjs --gitleaks-report <temporary-redacted-report.json> --output <temporary-audit.json>
+   pnpm audit:gitleaks
+   node scripts/release/audit-repository.mjs --gitleaks-report gitleaks-report.json --output <temporary-audit.json>
    ```
 
    The Gitleaks wrapper checksum-verifies the pinned binary, passes an explicit
    checksum-verified configuration that selects that binary's compiled default
    rules, and uses an explicit empty ignore file. It removes Gitleaks config
    environment variables and does not load repository `.gitleaks.toml` or
-   `.gitleaksignore` overrides.
+   `.gitleaksignore` overrides. With no arguments it writes only a sanitized,
+   redacted report to the ignored repository-root `gitleaks-report.json`.
+   Automation may continue to select another redacted destination with
+   `--report <path>`.
 
 3. Complete the provider-surface review in `docs/public-release-audit.md`:
    open/closed pull requests, issue and review comments, Actions logs and

@@ -7,6 +7,7 @@ import { pathToFileURL } from "node:url";
 
 const VERSION = "8.30.1";
 const RELEASE = `https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}`;
+export const DEFAULT_GITLEAKS_REPORT = "gitleaks-report.json";
 export const GITLEAKS_CONFIG = [
 	'title = "Shots of Rhapsody pinned Gitleaks defaults"',
 	"",
@@ -103,19 +104,20 @@ export async function sanitizeGitleaksReport(source, destination) {
 	return sanitized;
 }
 
-function parseArguments(argv) {
-	const options = { cwd: process.cwd(), report: null };
+export function parseArguments(argv, invocationCwd = process.cwd()) {
+	const options = { cwd: path.resolve(invocationCwd), report: null };
 	for (let index = 0; index < argv.length; index += 1) {
-		if (argv[index] === "--cwd") options.cwd = path.resolve(argv[++index]);
-		else if (argv[index] === "--report")
-			options.report = path.resolve(argv[++index]);
-		else throw new Error(`Unknown argument: ${argv[index]}`);
+		if (argv[index] === "--cwd") {
+			const value = argv[++index];
+			if (!value) throw new Error("--cwd requires a repository path");
+			options.cwd = path.resolve(invocationCwd, value);
+		} else if (argv[index] === "--report") {
+			const value = argv[++index];
+			if (!value) throw new Error("--report requires a destination path");
+			options.report = path.resolve(invocationCwd, value);
+		} else throw new Error(`Unknown argument: ${argv[index]}`);
 	}
-	if (!options.report) {
-		throw new Error(
-			"Usage: node run-gitleaks.mjs --report <redacted-report.json> [--cwd <repository>]",
-		);
-	}
+	options.report ??= path.join(options.cwd, DEFAULT_GITLEAKS_REPORT);
 	return options;
 }
 

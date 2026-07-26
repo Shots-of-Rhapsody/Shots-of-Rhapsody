@@ -6,11 +6,46 @@ import path from "node:path";
 import test from "node:test";
 import {
 	createScanArguments,
+	DEFAULT_GITLEAKS_REPORT,
 	GITLEAKS_CONFIG,
 	GITLEAKS_CONFIG_SHA256,
 	isolatedGitleaksEnvironment,
+	parseArguments,
 	sanitizeGitleaksReport,
 } from "./run-gitleaks.mjs";
+
+test("Gitleaks needs no arguments and defaults to a repository-local report", () => {
+	const invocationCwd = path.join(os.tmpdir(), "shots-gitleaks-invocation");
+	assert.deepEqual(parseArguments([], invocationCwd), {
+		cwd: invocationCwd,
+		report: path.join(invocationCwd, DEFAULT_GITLEAKS_REPORT),
+	});
+
+	const repository = path.join(invocationCwd, "repository");
+	assert.deepEqual(parseArguments(["--cwd", "repository"], invocationCwd), {
+		cwd: repository,
+		report: path.join(repository, DEFAULT_GITLEAKS_REPORT),
+	});
+});
+
+test("Gitleaks preserves an explicit report destination", () => {
+	const invocationCwd = path.join(os.tmpdir(), "shots-gitleaks-invocation");
+	assert.deepEqual(
+		parseArguments(
+			["--cwd", "repository", "--report", "evidence/redacted.json"],
+			invocationCwd,
+		),
+		{
+			cwd: path.join(invocationCwd, "repository"),
+			report: path.join(invocationCwd, "evidence", "redacted.json"),
+		},
+	);
+});
+
+test("Gitleaks rejects options without values", () => {
+	assert.throws(() => parseArguments(["--cwd"]), /repository path/);
+	assert.throws(() => parseArguments(["--report"]), /destination path/);
+});
 
 test("Gitleaks scan pins compiled defaults and disables ambient overrides", () => {
 	assert.equal(
