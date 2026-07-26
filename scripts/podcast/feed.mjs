@@ -2,6 +2,7 @@ import {
 	assertPodcastManifest,
 	isPodcastEpisodePublishable,
 } from "../../src/data/podcast.ts";
+import { PODCAST_AUDIO_DECISIONS } from "../../src/data/podcast-audio-decisions.ts";
 
 function escapeXml(value) {
 	return String(value)
@@ -34,14 +35,23 @@ function assertPermanentFeedOrigin(baseUrl) {
 	return parsed;
 }
 
-export function generatePodcastFeed({ baseUrl, show, episodes }) {
+export function generatePodcastFeed({
+	baseUrl,
+	show,
+	episodes,
+	audioDecisions = PODCAST_AUDIO_DECISIONS,
+}) {
 	const origin = assertPermanentFeedOrigin(baseUrl);
-	assertPodcastManifest(episodes, show);
+	assertPodcastManifest(episodes, show, audioDecisions);
 	if (show.status !== "published")
 		throw new Error("Podcast feed requires a published show");
 	if (episodes.length === 0)
 		throw new Error("Podcast feed requires at least one episode");
-	if (episodes.some((episode) => !isPodcastEpisodePublishable(episode, show)))
+	if (
+		episodes.some(
+			(episode) => !isPodcastEpisodePublishable(episode, show, audioDecisions),
+		)
+	)
 		throw new Error("Podcast feed refuses incomplete or unreviewed episodes");
 	if (show.description === null || show.explicit === null)
 		throw new Error("Podcast feed show metadata is incomplete");

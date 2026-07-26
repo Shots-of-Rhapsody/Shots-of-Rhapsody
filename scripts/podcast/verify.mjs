@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { access, readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { parse, parseFragment, serializeOuter } from "parse5";
+import { parse, serializeOuter } from "parse5";
 import sharp from "sharp";
 import {
 	assertPodcastManifest,
@@ -12,6 +12,7 @@ import {
 	PODCAST_SHOW,
 } from "../../src/data/podcast.ts";
 import { assertPodcastContentSignoff } from "../../src/data/podcast-approval.ts";
+import { canonicalTranscriptHtml } from "../../src/utils/podcast-transcript.mjs";
 import { verifyPresentationSignoffV2 } from "../content/presentation.js";
 import { validateContentSignoffsV2 } from "../content/signoffs.js";
 
@@ -86,48 +87,6 @@ function findElement(node, attributeName) {
 		if (match) return match;
 	}
 	return null;
-}
-
-const TRANSCRIPT_ELEMENTS = new Set([
-	"blockquote",
-	"br",
-	"em",
-	"h2",
-	"h3",
-	"li",
-	"ol",
-	"p",
-	"strong",
-	"ul",
-]);
-
-function canonicalTranscriptHtml(bytes, label) {
-	const source = bytes.toString("utf8");
-	const fragment = parseFragment(source);
-	let text = "";
-	function inspect(node) {
-		if (node.nodeName === "#comment")
-			throw new Error(`${label} contains an HTML comment`);
-		if (node.nodeName === "#text") {
-			text += node.value;
-			return;
-		}
-		if (node.tagName) {
-			if (!TRANSCRIPT_ELEMENTS.has(node.tagName))
-				throw new Error(
-					`${label} contains unsupported element <${node.tagName}>`,
-				);
-			if ((node.attrs ?? []).length > 0)
-				throw new Error(
-					`${label} contains unsupported attributes on <${node.tagName}>`,
-				);
-		}
-		for (const child of node.childNodes ?? []) inspect(child);
-	}
-	for (const node of fragment.childNodes) inspect(node);
-	if (text.trim().length === 0)
-		throw new Error(`${label} does not contain readable text`);
-	return fragment.childNodes.map((node) => serializeOuter(node)).join("");
 }
 
 function publicFilePath(publicPath) {
@@ -318,7 +277,7 @@ export async function verifyPodcastRelease({
 		if (sha256(transcript) !== episode.transcript.sha256)
 			throw new Error(`Published transcript differs for ${episode.slug}`);
 		const canonicalTranscript = canonicalTranscriptHtml(
-			transcript,
+			transcript.toString("utf8"),
 			`Podcast transcript ${episode.slug}`,
 		);
 		assertPodcastContentSignoff(episode, contentSignoffs);

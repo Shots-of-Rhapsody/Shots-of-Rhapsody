@@ -14,6 +14,7 @@ import {
 	getApprovedPodcastEpisodes,
 	getPodcastReviewOutputSha256,
 } from "../../src/data/podcast-approval.ts";
+import { validatePodcastAudioDecisionLedgerV1 } from "../../src/data/podcast-audio-decisions.ts";
 import { verifyPodcastDraft, verifyPodcastRelease } from "./verify.mjs";
 
 test("approved identity, route, media path, and measurements are exact", () => {
@@ -38,6 +39,7 @@ test("approved identity, route, media path, and measurements are exact", () => {
 		],
 		[1445.784, 48_000, 2, 320_000, -27, -6.9],
 	);
+	assert.equal(episode.audio.distributionDecision, "pending");
 });
 
 function completeShow() {
@@ -63,19 +65,14 @@ function completeEpisode() {
 		rightsCleared: true,
 		audio: {
 			...episode.audio,
-			durationSeconds: 1800,
-			sampleRateHz: 44_100,
-			channels: 2,
-			bitrateBps: 256_000,
-			loudnessLkfs: -16,
-			truePeakDbfs: -1,
+			distributionDecision: "retain-current-audio",
 			qualityApproved: true,
 		},
 		transcript: {
 			sourcePath: "src/content/podcast/modular-ethics/transcript.html",
 			publicPath: "/podcast/modular-ethics/transcript/",
 			vttPath: "/podcast/transcripts/modular-ethics.vtt",
-			language: "en-US",
+			language: "en",
 			sha256:
 				"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
 			reviewed: true,
@@ -83,10 +80,26 @@ function completeEpisode() {
 	};
 }
 
+function approvedAudioDecision(episode = completeEpisode()) {
+	return {
+		version: 1,
+		entries: [
+			{
+				slug: episode.slug,
+				decision: "retain-current-audio",
+				audioSha256: episode.audio.sha256,
+				reviewer: "Tai Song",
+				reviewedAt: "2026-07-25T12:00:00.000Z",
+				approval: "passed",
+			},
+		],
+	};
+}
+
 test("the recorded episode remains fail-closed without a transcript", () => {
 	const blockers = getPodcastPublicationBlockers(PODCAST_EPISODES[0]);
 	assert.ok(blockers.includes("episode-draft"));
-	assert.ok(blockers.includes("audio-remaster-required"));
+	assert.ok(blockers.includes("audio-decision-pending"));
 	assert.ok(blockers.includes("audio-quality-unapproved"));
 	assert.ok(blockers.includes("transcript-missing"));
 	assert.equal(isPodcastEpisodePublishable(PODCAST_EPISODES[0]), false);
@@ -108,9 +121,125 @@ test("changing only the episode status cannot bypass publication gates", () => {
 test("a complete reviewed fixture is eligible for publication", () => {
 	const show = completeShow();
 	const episode = completeEpisode();
-	assert.deepEqual(getPodcastPublicationBlockers(episode, show), []);
-	assert.equal(isPodcastEpisodePublishable(episode, show), true);
-	assert.doesNotThrow(() => assertPodcastManifest([episode], show));
+	const audioDecisions = approvedAudioDecision(episode);
+	assert.deepEqual(
+		getPodcastPublicationBlockers(episode, show, audioDecisions),
+		[],
+	);
+	assert.equal(
+		isPodcastEpisodePublishable(episode, show, audioDecisions),
+		true,
+	);
+	assert.doesNotThrow(() =>
+		assertPodcastManifest([episode], show, audioDecisions),
+	);
+});
+
+test("retaining the exact current audio requires a separate hash-bound author approval", () => {
+	const show = completeShow();
+	const episode = completeEpisode();
+	assert.ok(
+		getPodcastPublicationBlockers(episode, show).includes(
+			"audio-retain-approval-missing",
+		),
+	);
+	const stale = approvedAudioDecision(episode);
+	stale.entries[0].audioSha256 = `sha256:${"f".repeat(64)}`;
+	assert.ok(
+		getPodcastPublicationBlockers(episode, show, stale).includes(
+			"audio-retain-approval-missing",
+		),
+	);
+	assert.deepEqual(
+		getPodcastPublicationBlockers(
+			episode,
+			show,
+			approvedAudioDecision(episode),
+		),
+		[],
+	);
+	assert.ok(
+		getPodcastPublicationBlockers(
+			PODCAST_EPISODES[0],
+			PODCAST_SHOW,
+			approvedAudioDecision(episode),
+		).includes("audio-decision-pending"),
+	);
+});
+
+test("a replacement request is non-publishable and imported bytes restart pending", () => {
+	const show = completeShow();
+	const current = completeEpisode();
+	const replacementRequested = {
+		...current,
+		audio: {
+			...current.audio,
+			distributionDecision: "replace-from-matching-lossless-master",
+			qualityApproved: false,
+		},
+	};
+	assert.ok(
+		getPodcastPublicationBlockers(
+			replacementRequested,
+			show,
+			approvedAudioDecision(current),
+		).includes("audio-remaster-required"),
+	);
+
+	const imported = {
+		...current,
+		audio: {
+			...current.audio,
+			sha256: `sha256:${"b".repeat(64)}`,
+			byteLength: current.audio.byteLength + 1,
+			distributionDecision: "pending",
+			qualityApproved: false,
+		},
+	};
+	assert.ok(
+		getPodcastPublicationBlockers(
+			imported,
+			show,
+			approvedAudioDecision(current),
+		).includes("audio-decision-pending"),
+	);
+
+	const retainedReplacement = {
+		...imported,
+		audio: {
+			...imported.audio,
+			distributionDecision: "retain-current-audio",
+			qualityApproved: true,
+		},
+	};
+	assert.ok(
+		getPodcastPublicationBlockers(
+			retainedReplacement,
+			show,
+			approvedAudioDecision(current),
+		).includes("audio-retain-approval-missing"),
+	);
+	assert.deepEqual(
+		getPodcastPublicationBlockers(
+			retainedReplacement,
+			show,
+			approvedAudioDecision(retainedReplacement),
+		),
+		[],
+	);
+});
+
+test("audio decision records reject inferred or malformed approval", () => {
+	assert.deepEqual(
+		validatePodcastAudioDecisionLedgerV1({ version: 1, entries: [] }),
+		{ version: 1, entries: [] },
+	);
+	const malformed = approvedAudioDecision();
+	malformed.entries[0].reviewedAt = "2026-07-25T12:00:00Z";
+	assert.throws(
+		() => validatePodcastAudioDecisionLedgerV1(malformed),
+		/incomplete/u,
+	);
 });
 
 test("podcast approval binds audio, transcript, artwork, and metadata", () => {

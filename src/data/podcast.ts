@@ -1,6 +1,12 @@
 import podcastManifestJson from "../content/podcast/manifest.json" with {
 	type: "json",
 };
+import {
+	hasApprovedCurrentAudioDecision,
+	PODCAST_AUDIO_DECISIONS,
+	type PodcastAudioDecisionLedgerV1,
+	type PodcastAudioDistributionDecision,
+} from "./podcast-audio-decisions.ts";
 
 export type PodcastPublicationStatus = "draft" | "published";
 
@@ -50,6 +56,7 @@ export interface PodcastAudio {
 	readonly bitrateBps: number | null;
 	readonly loudnessLkfs: number | null;
 	readonly truePeakDbfs: number | null;
+	readonly distributionDecision: PodcastAudioDistributionDecision;
 	readonly qualityApproved: boolean;
 }
 
@@ -84,6 +91,8 @@ export type PodcastPublicationBlocker =
 	| "episode-guid-missing"
 	| "episode-rights-unconfirmed"
 	| "audio-metadata-missing"
+	| "audio-decision-pending"
+	| "audio-retain-approval-missing"
 	| "audio-remaster-required"
 	| "audio-quality-unapproved"
 	| "transcript-missing"
@@ -147,6 +156,7 @@ function artworkMatches(left: PodcastArtwork, right: PodcastArtwork): boolean {
 export function getPodcastPublicationBlockers(
 	episode: PodcastEpisode,
 	show: PodcastShow = PODCAST_SHOW,
+	audioDecisions: PodcastAudioDecisionLedgerV1 = PODCAST_AUDIO_DECISIONS,
 ): PodcastPublicationBlocker[] {
 	const blockers: PodcastPublicationBlocker[] = [];
 
@@ -167,12 +177,19 @@ export function getPodcastPublicationBlockers(
 	if (!hasText(episode.guid)) blockers.push("episode-guid-missing");
 	if (!episode.rightsCleared) blockers.push("episode-rights-unconfirmed");
 	if (!hasMeasuredAudio(episode.audio)) blockers.push("audio-metadata-missing");
-	else if (
-		episode.audio.loudnessLkfs < -17 ||
-		episode.audio.loudnessLkfs > -15 ||
-		episode.audio.truePeakDbfs > -1
-	) {
-		blockers.push("audio-remaster-required");
+	switch (episode.audio.distributionDecision) {
+		case "pending":
+			blockers.push("audio-decision-pending");
+			break;
+		case "retain-current-audio":
+			if (!hasApprovedCurrentAudioDecision(episode, audioDecisions))
+				blockers.push("audio-retain-approval-missing");
+			break;
+		case "replace-from-matching-lossless-master":
+			blockers.push("audio-remaster-required");
+			break;
+		default:
+			blockers.push("audio-decision-pending");
 	}
 	if (!episode.audio.qualityApproved) blockers.push("audio-quality-unapproved");
 	if (episode.transcript === null) blockers.push("transcript-missing");
@@ -184,8 +201,11 @@ export function getPodcastPublicationBlockers(
 export function isPodcastEpisodePublishable(
 	episode: PodcastEpisode,
 	show: PodcastShow = PODCAST_SHOW,
+	audioDecisions: PodcastAudioDecisionLedgerV1 = PODCAST_AUDIO_DECISIONS,
 ): boolean {
-	return getPodcastPublicationBlockers(episode, show).length === 0;
+	return (
+		getPodcastPublicationBlockers(episode, show, audioDecisions).length === 0
+	);
 }
 
 export function getPublishablePodcastEpisodes(): PodcastEpisode[] {
@@ -197,6 +217,7 @@ export function getPublishablePodcastEpisodes(): PodcastEpisode[] {
 export function assertPodcastManifest(
 	episodes: readonly PodcastEpisode[] = PODCAST_EPISODES,
 	show: PodcastShow = PODCAST_SHOW,
+	audioDecisions: PodcastAudioDecisionLedgerV1 = PODCAST_AUDIO_DECISIONS,
 ): void {
 	if (episodes.length === 0) throw new Error("Podcast manifest is empty");
 	if (show.title !== "Shots of Rhapsody Podcast" || show.author !== "Tai Song")
@@ -291,7 +312,7 @@ export function assertPodcastManifest(
 
 		if (
 			episode.status === "published" &&
-			getPodcastPublicationBlockers(episode, show).length > 0
+			getPodcastPublicationBlockers(episode, show, audioDecisions).length > 0
 		) {
 			throw new Error(
 				`Published podcast episode is incomplete: ${episode.slug}`,

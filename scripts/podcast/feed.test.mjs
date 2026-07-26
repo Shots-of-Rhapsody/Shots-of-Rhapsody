@@ -19,8 +19,7 @@ function approvedFixture() {
 		explicit: false,
 		audio: {
 			...PODCAST_EPISODES[0].audio,
-			loudnessLkfs: -16,
-			truePeakDbfs: -1,
+			distributionDecision: "retain-current-audio",
 			qualityApproved: true,
 		},
 		transcript: {
@@ -32,15 +31,29 @@ function approvedFixture() {
 			reviewed: true,
 		},
 	};
-	return { show, episode };
+	const audioDecisions = {
+		version: 1,
+		entries: [
+			{
+				slug: episode.slug,
+				decision: "retain-current-audio",
+				audioSha256: episode.audio.sha256,
+				reviewer: "Tai Song",
+				reviewedAt: "2026-07-25T12:00:00.000Z",
+				approval: "passed",
+			},
+		],
+	};
+	return { show, episode, audioDecisions };
 }
 
 test("private feed generator emits immutable enclosure and transcript metadata", () => {
-	const { show, episode } = approvedFixture();
+	const { show, episode, audioDecisions } = approvedFixture();
 	const feed = generatePodcastFeed({
 		baseUrl: "https://shots-of-rhapsody.example/",
 		show,
 		episodes: [episode],
+		audioDecisions,
 	});
 	assert.match(feed, /<rss version="2\.0"/u);
 	assert.match(
@@ -57,13 +70,14 @@ test("private feed generator emits immutable enclosure and transcript metadata",
 });
 
 test("feed generator refuses temporary hosting and draft episodes", () => {
-	const { show, episode } = approvedFixture();
+	const { show, episode, audioDecisions } = approvedFixture();
 	assert.throws(
 		() =>
 			generatePodcastFeed({
 				baseUrl: "https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/",
 				show,
 				episodes: [episode],
+				audioDecisions,
 			}),
 		/permanent custom domain/u,
 	);
@@ -73,6 +87,7 @@ test("feed generator refuses temporary hosting and draft episodes", () => {
 				baseUrl: "https://shots-of-rhapsody.example/",
 				show,
 				episodes: [{ ...episode, status: "draft" }],
+				audioDecisions,
 			}),
 		/incomplete or unreviewed/u,
 	);

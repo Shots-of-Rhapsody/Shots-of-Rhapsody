@@ -47,6 +47,7 @@
 				"bitrateBps": 320000,
 				"loudnessLkfs": -27,
 				"truePeakDbfs": -6.9,
+				"distributionDecision": "pending",
 				"qualityApproved": false
 			},
 			"artwork": {

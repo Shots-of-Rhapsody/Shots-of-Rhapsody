@@ -2,6 +2,7 @@
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { canonicalTranscriptHtml } from "@utils/podcast-transcript.mjs";
 import { url } from "@utils/url-utils";
 import { PODCAST_SHOW, type PodcastEpisode } from "@/data/podcast";
 import { getApprovedPodcastEpisodes } from "@/data/podcast-approval";
@@ -34,9 +35,12 @@ export async function getStaticPaths() {
 				props: {
 					kind: "transcript" as const,
 					episode,
-					transcriptHtml: await readFile(
-						`${repositoryRoot}/${episode.transcript.sourcePath}`,
-						"utf8",
+					transcriptHtml: canonicalTranscriptHtml(
+						await readFile(
+							`${repositoryRoot}/${episode.transcript.sourcePath}`,
+							"utf8",
+						),
+						`Podcast transcript ${episode.slug}`,
 					),
 				},
 			};

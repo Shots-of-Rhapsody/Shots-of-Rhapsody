@@ -419,6 +419,11 @@ const podcastCollection = defineCollection({
 					bitrateBps: z.number().int().positive().nullable(),
 					loudnessLkfs: z.number().nullable(),
 					truePeakDbfs: z.number().nullable(),
+					distributionDecision: z.enum([
+						"pending",
+						"retain-current-audio",
+						"replace-from-matching-lossless-master",
+					]),
 					qualityApproved: z.boolean(),
 				})
 				.strict(),

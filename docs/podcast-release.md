@@ -6,6 +6,21 @@ the show and episode are drafts, the transcript is not human-reviewed, the
 audio requires a lossless-master quality decision, the cover awaits visual
 approval, and no audio file or podcast feed is emitted in the built site.
 
+The audio decision is separate from general content signoff. The manifest is
+currently `pending`, and the versioned decision ledger is empty. Retaining the
+existing MP3 requires a genuine Tai Song record in
+`provenance/reviews/podcast-audio-decisions-v1.json` bound to that exact audio
+SHA-256; tooling must never create that record automatically.
+
+`retain-current-audio` means only the bytes currently named in the manifest;
+it is not a permanent waiver for Episode 1. The
+`replace-from-matching-lossless-master` value is an explicit, non-publishable
+request. After replacement bytes and their measured metadata are imported,
+the importer must reset the decision to `pending` and `qualityApproved` to
+`false`. Tai Song may then approve those new exact bytes by adding a separate
+`retain-current-audio` ledger record. The prior hash-bound approval cannot
+authorize a replacement.
+
 Episode 1 belongs to the combined v1.0.0 launch alongside the 11 existing
 works and 24 approved Medium essays. There is no earlier writing-only release
 or separate later podcast rollout: the combined release remains blocked until
@@ -59,6 +74,10 @@ reports any publication blocker.
 3. Produce and human-review an equivalent transcript with speaker labels and
    meaningful non-speech audio. Publish accessible HTML; add a reviewed WebVTT
    file when timed text is available.
+   `pnpm podcast:review` verifies the exact local machine drafts without
+   writing. `pnpm podcast:review --write` creates one ignored, time-linked
+   worksheet and refuses to overwrite it. Neither command changes publication
+   state, review status, or signoff data.
 4. Approve the show description, episode description, explicit-content values,
    publication date, immutable GUID, and cover artwork. The publication date
    is the UTC calendar date intended for the combined v1.0.0 production
@@ -121,6 +140,7 @@ signoff exist.
 
 ```powershell
 pnpm test:future-content
+pnpm podcast:review
 pnpm podcast:verify
 pnpm podcast:verify --require-complete
 pnpm exec astro check
