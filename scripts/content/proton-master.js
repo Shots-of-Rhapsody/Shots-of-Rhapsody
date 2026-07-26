@@ -376,6 +376,9 @@ function extractInline(nodes, label, marks = new Set(), href = null) {
 function renderInlineToken(token) {
 	if (token.type === "break") return "<br />";
 	let result = escapeHtml(token.text);
+	if (token.text.includes("\t")) {
+		result = `<span style="white-space: pre-wrap;">${result}</span>`;
+	}
 	if (token.marks.includes("code")) result = `<code>${result}</code>`;
 	if (token.marks.includes("italic")) result = `<em>${result}</em>`;
 	if (token.marks.includes("bold")) result = `<strong>${result}</strong>`;

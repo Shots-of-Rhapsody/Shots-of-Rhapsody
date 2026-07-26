@@ -46,7 +46,7 @@ const BODY_DOCUMENT = {
 		{
 			type: "paragraph",
 			children: [
-				textToken("Unicode and "),
+				textToken("Unicode and\t"),
 				textToken("bold", ["bold"]),
 				textToken(", "),
 				textToken("italic", ["italic"]),
@@ -434,6 +434,10 @@ test("Proton master package is deterministic, ignored, and no-overwrite", async 
 	);
 	assert.equal(sha256(output), dryRun.sha256);
 	assert.match(output.toString("utf8"), /Exported Headline — Exact/u);
+	assert.match(
+		output.toString("utf8"),
+		/<span style="white-space: pre-wrap;">Unicode and\t<\/span>/u,
+	);
 	assert.match(output.toString("utf8"), /data:image\/webp;base64,/u);
 	assert.match(output.toString("utf8"), /data:image\/png;base64,/u);
 	assert.doesNotMatch(output.toString("utf8"), /proton(?:\.me|usercontent)/iu);
