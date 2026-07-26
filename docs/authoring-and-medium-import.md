@@ -42,6 +42,41 @@ Use Medium's logged-in **Settings → Security and apps → Download your inform
    into `provenance/medium/inventory.json`.
 6. Save each author-controlled original PNG, JPEG, or WebP under `.medium-import/raw/assets/<slug>/`. Do not use screenshots, thumbnails, transformed delivery URLs, or images whose reuse rights are unclear.
 
+Generate the acquisition checklist from the explicit, versioned release
+allowlist. This command performs no network requests and writes no image bytes:
+
+```sh
+pnpm medium:assets .medium-import/raw/medium-export.zip --titles-file provenance/medium/approved-titles.v1.json
+```
+
+Review the JSON on standard output first. Add `--write` only when you want to
+create the ignored `.medium-import/hero-acquisition-checklist.json`. The command
+refuses to overwrite an existing checklist, requires all 24 approved titles to
+occur exactly once within the exact 33-candidate export, requires exactly nine
+candidates outside the allowlist, and rejects missing or multiple featured
+heroes, unsafe URLs, conflicting story/image identities, and duplicate slugs or
+URLs. It also
+verifies the allowlist's exact ZIP and candidate-set SHA-256 bindings
+before inspecting any hero evidence. Each exported `data-image-id` must equal
+the final decoded path component of its source URL; mismatched or swapped URLs
+stop the checklist. The output preserves the export's exact hero URL, declared
+dimensions, and the distinction
+between absent and empty alt/caption evidence. When the official export omits
+its featured flag, the checklist records `sole-exported-figure` only if exactly
+one exported figure image exists; it never hides that weaker identification
+evidence. The destination remains a
+pattern—`.medium-import/raw/assets/<slug>/hero-original.<ext>`—until the real
+original file determines its extension and MIME type.
+The JSON also marks every exported hero URL `comparison-reference-only`, states
+that an original asset is still required, and forbids automated download.
+
+The approved-title file is a non-rendered release allowlist, not a substitute
+for candidate reconciliation. `medium:inventory` must continue to retain all
+33 exported candidates; the nine titles outside the allowlist stay unresolved
+until their explicit excluded-response dispositions are recorded in the
+reviewed inventory. Never use title shape, length, filename, or hero presence to
+classify a response.
+
 The candidate is deliberately not a publishable inventory: classification fields remain unset, and the importer rejects it.
 
 ## Import and verification

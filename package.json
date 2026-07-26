@@ -24,6 +24,7 @@
 		"content:verify": "node scripts/content/verify.js",
 		"content:presentation-evidence": "node scripts/content/presentation-evidence.js",
 		"medium:inventory": "node scripts/medium/inventory.js",
+		"medium:assets": "node scripts/medium/assets.js",
 		"medium:import": "node scripts/medium/import.js",
 		"medium:verify": "node scripts/medium/verify.js",
 		"podcast:verify": "node scripts/podcast/verify.mjs",

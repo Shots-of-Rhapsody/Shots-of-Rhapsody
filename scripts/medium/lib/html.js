@@ -994,6 +994,147 @@ export function extractMediumStoryHtml(html, expected) {
 	return validateMediumDocument(documentModel);
 }
 
+function collectFigureBlocks(blocks, figures = []) {
+	for (const block of blocks) {
+		if (block.type === "figure") figures.push(block);
+		if (block.type === "blockquote") {
+			collectFigureBlocks(block.blocks, figures);
+		}
+		if (block.type === "list") {
+			for (const item of block.items) collectFigureBlocks(item, figures);
+		}
+	}
+	return figures;
+}
+
+export function extractMediumHeroEvidence(html, expected) {
+	const story = extractMediumStoryHtml(html, expected);
+	const document = parseDocument(html, "Medium story export");
+	const body = getSingleElement(document, "body", "Medium story export");
+	const exportedFigureImages = [];
+	walkElements(body, (node) => {
+		if (
+			node.tagName === "img" &&
+			node.parentNode?.tagName === "figure" &&
+			attributeValue(node, "data-image-id") !== undefined
+		) {
+			exportedFigureImages.push(node);
+		}
+	});
+	const explicitlyFeatured = exportedFigureImages.filter(
+		(image) => attributeValue(image, "data-is-featured") === "true",
+	);
+	if (explicitlyFeatured.length > 1) {
+		throw new MediumContractError(
+			`Exported story ${expected.slug} contains multiple explicitly featured hero images`,
+		);
+	}
+	if (explicitlyFeatured.length === 0 && exportedFigureImages.length !== 1) {
+		throw new MediumContractError(
+			`Exported story ${expected.slug} has no explicit hero and must contain exactly one exported figure image; found ${exportedFigureImages.length}`,
+		);
+	}
+
+	const image = explicitlyFeatured[0] ?? exportedFigureImages[0];
+	const imageAttributes = rawAttributes(image, "story.hero.img");
+	if (
+		imageAttributes["data-is-featured"] !== undefined &&
+		imageAttributes["data-is-featured"] !== "true"
+	) {
+		throw new MediumContractError(
+			`Exported story ${expected.slug} hero data-is-featured must equal "true" when present`,
+		);
+	}
+	if (!/^\S+$/u.test(imageAttributes["data-image-id"] ?? "")) {
+		throw new MediumContractError(
+			`Exported story ${expected.slug} hero has no unambiguous image id`,
+		);
+	}
+	for (const dimension of ["data-width", "data-height"]) {
+		if (!/^[1-9][0-9]*$/u.test(imageAttributes[dimension] ?? "")) {
+			throw new MediumContractError(
+				`Exported story ${expected.slug} hero ${dimension} must be a positive integer`,
+			);
+		}
+	}
+	assertHttpsUrl(
+		imageAttributes.src,
+		`Exported story ${expected.slug} hero URL`,
+	);
+	const sourceUrl = imageAttributes.src;
+	const encodedPathComponent = new URL(sourceUrl).pathname.split("/").at(-1);
+	let decodedPathComponent;
+	try {
+		decodedPathComponent = decodeURIComponent(encodedPathComponent ?? "");
+	} catch (error) {
+		throw new MediumContractError(
+			`Exported story ${expected.slug} hero URL has an invalid encoded path component`,
+			{ cause: error },
+		);
+	}
+	if (decodedPathComponent !== imageAttributes["data-image-id"]) {
+		throw new MediumContractError(
+			`Exported story ${expected.slug} hero data-image-id does not match its decoded URL path component`,
+		);
+	}
+	const figure = image.parentNode;
+	if (figure?.tagName !== "figure") {
+		throw new MediumContractError(
+			`Exported story ${expected.slug} featured hero must be contained by a figure`,
+		);
+	}
+	const captions = significantChildren(figure, "story.hero.figure").filter(
+		(child) => child.tagName === "figcaption",
+	);
+	if (captions.length > 1) {
+		throw new MediumContractError(
+			`Exported story ${expected.slug} hero has multiple captions`,
+		);
+	}
+
+	const matchingFigures = collectFigureBlocks(story.blocks).filter(
+		(block) => new URL(block.sourceUrl).toString() === sourceUrl,
+	);
+	if (matchingFigures.length !== 1) {
+		throw new MediumContractError(
+			`Exported story ${expected.slug} hero URL must identify exactly one converted figure`,
+		);
+	}
+	const altPresent = Object.hasOwn(imageAttributes, "alt");
+	const captionPresent = captions.length === 1;
+	const captionValue = captionPresent ? textContent(captions[0]) : null;
+	const convertedCaption = matchingFigures[0].caption
+		.map((token) => (token.type === "text" ? token.text : ""))
+		.join("");
+	if (
+		matchingFigures[0].alt !== (altPresent ? imageAttributes.alt : "") ||
+		convertedCaption !== (captionValue ?? "")
+	) {
+		throw new MediumContractError(
+			`Exported story ${expected.slug} hero evidence differs from the converted figure`,
+		);
+	}
+
+	return {
+		imageId: imageAttributes["data-image-id"],
+		identificationEvidence:
+			imageAttributes["data-is-featured"] === "true"
+				? "exported-featured-flag"
+				: "sole-exported-figure",
+		sourceUrl,
+		declaredWidth: Number(imageAttributes["data-width"]),
+		declaredHeight: Number(imageAttributes["data-height"]),
+		alt: {
+			present: altPresent,
+			value: altPresent ? imageAttributes.alt : null,
+		},
+		caption: {
+			present: captionPresent,
+			value: captionValue,
+		},
+	};
+}
+
 function validateInline(value, label) {
 	if (!Array.isArray(value)) {
 		throw new MediumContractError(`${label} must be an array`);

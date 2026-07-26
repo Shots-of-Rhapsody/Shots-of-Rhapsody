@@ -16,6 +16,7 @@ import {
 	validateContentSignoffsV2,
 	validatePresentationSignoffsV2,
 } from "../../content/signoffs.js";
+import { buildMediumHeroChecklist } from "./assets.js";
 import {
 	ALL_RIGHTS_RESERVED,
 	AUTHOR_NAME,
@@ -94,6 +95,20 @@ async function writeAtomic(filePath, contents) {
 		await rename(temporaryPath, filePath);
 	} catch (error) {
 		await unlink(temporaryPath).catch(() => {});
+		throw error;
+	}
+}
+
+async function writeNewFile(filePath, contents, label) {
+	await mkdir(path.dirname(filePath), { recursive: true });
+	try {
+		await writeFile(filePath, contents, { flag: "wx" });
+	} catch (error) {
+		if (error?.code === "EEXIST") {
+			throw new MediumContractError(
+				`${label} already exists; remove it explicitly before generating a replacement`,
+			);
+		}
 		throw error;
 	}
 }
@@ -246,12 +261,7 @@ export function createUnreviewedInventoryCandidates(entries) {
 	}));
 }
 
-export async function createInventoryCandidate({
-	repoRoot,
-	exportPath,
-	capturedAt,
-	write = false,
-} = {}) {
+async function loadOfficialExport(repoRoot, exportPath) {
 	assertRawEvidenceUntracked(repoRoot);
 	const absoluteExport = assertInsideRawRoot(repoRoot, exportPath);
 	const exportBuffer = await readRawFileInside(
@@ -259,7 +269,134 @@ export async function createInventoryCandidate({
 		absoluteExport,
 		"Official Medium export ZIP",
 	);
-	const entries = readZipEntries(exportBuffer);
+	return {
+		absoluteExport,
+		exportBuffer,
+		entries: readZipEntries(exportBuffer),
+	};
+}
+
+async function loadAssetCandidateLedger(
+	repoRoot,
+	{ absoluteExport, exportBuffer, entries },
+) {
+	const ledger = assertPlainObject(
+		parseJson(
+			await readRequired(
+				getMediumPaths(repoRoot).candidatePath,
+				"Medium inventory candidate ledger",
+			),
+			"Medium inventory candidate ledger",
+		),
+		"Medium inventory candidate ledger",
+	);
+	assertOnlyKeys(
+		ledger,
+		new Set([
+			"schemaVersion",
+			"state",
+			"authority",
+			"author",
+			"export",
+			"candidateCount",
+			"candidateSetSha256",
+			"candidates",
+		]),
+		"Medium inventory candidate ledger",
+	);
+	if (
+		ledger.schemaVersion !== INVENTORY_SCHEMA_VERSION ||
+		ledger.state !== "needs-review"
+	) {
+		throw new MediumContractError(
+			"Medium inventory candidate ledger must be the version 1 unresolved review candidate",
+		);
+	}
+	if (
+		ledger.authority?.platform !== AUTHORITY_PLATFORM ||
+		ledger.authority?.captureFormat !== CAPTURE_FORMAT ||
+		ledger.author?.name !== AUTHOR_NAME ||
+		ledger.author?.profileUrl !== AUTHOR_PROFILE_URL
+	) {
+		throw new MediumContractError(
+			"Medium inventory candidate ledger authority or author is invalid",
+		);
+	}
+	const exportRecord = assertPlainObject(
+		ledger.export,
+		"Medium inventory candidate ledger export",
+	);
+	if (
+		exportRecord.fileName !== path.basename(absoluteExport) ||
+		exportRecord.sha256 !== sha256(exportBuffer)
+	) {
+		throw new MediumContractError(
+			"Medium inventory candidate ledger does not bind the supplied official export",
+		);
+	}
+	if (
+		!Array.isArray(ledger.candidates) ||
+		!Number.isSafeInteger(ledger.candidateCount) ||
+		ledger.candidateCount !== ledger.candidates.length
+	) {
+		throw new MediumContractError(
+			"Medium inventory candidate ledger has an inconsistent candidate count",
+		);
+	}
+	const candidateSetSha256 = assertSha256(
+		ledger.candidateSetSha256,
+		"Medium inventory candidate ledger candidateSetSha256",
+	);
+	if (candidateSetSha256 !== mediumCandidateSetSha256(ledger.candidates)) {
+		throw new MediumContractError(
+			"Medium inventory candidate ledger candidate-set SHA-256 is invalid",
+		);
+	}
+	const sourcePaths = new Set();
+	for (const [index, candidateValue] of ledger.candidates.entries()) {
+		const candidate = assertPlainObject(
+			candidateValue,
+			`Medium inventory candidate ledger candidates[${index}]`,
+		);
+		const sourcePath = assertSafeRepositoryPath(
+			candidate.sourcePath,
+			`Medium inventory candidate ledger candidates[${index}].sourcePath`,
+		);
+		if (
+			sourcePaths.has(sourcePath) ||
+			!entries.has(sourcePath) ||
+			candidate.sourceSha256 !== sha256(entries.get(sourcePath))
+		) {
+			throw new MediumContractError(
+				"Medium inventory candidate ledger source evidence differs from the official export",
+			);
+		}
+		sourcePaths.add(sourcePath);
+		if (
+			candidate.include !== null ||
+			candidate.exclusionReason !== "" ||
+			candidate.classification?.visibility !== null ||
+			candidate.classification?.authorship !== null ||
+			candidate.classification?.format !== null
+		) {
+			throw new MediumContractError(
+				"Medium inventory candidate ledger must retain every candidate as unresolved",
+			);
+		}
+	}
+	return { candidates: ledger.candidates, candidateSetSha256 };
+}
+
+export async function createInventoryCandidate({
+	repoRoot,
+	exportPath,
+	capturedAt,
+	write = false,
+} = {}) {
+	const { absoluteExport, exportBuffer, entries } = await loadOfficialExport(
+		repoRoot,
+		exportPath,
+	);
 	const candidates = createUnreviewedInventoryCandidates(entries);
 	if (candidates.length === 0) {
 		throw new MediumContractError(
@@ -312,6 +449,52 @@ export async function createInventoryCandidate({
 			getMediumPaths(repoRoot).candidatePath,
 		),
 		candidate,
+	};
+}
+
+export async function createMediumHeroChecklist({
+	repoRoot,
+	exportPath,
+	approvedAllowlist,
+	expectedCount,
+	expectedCandidateCount,
+	write = false,
+} = {}) {
+	const { absoluteExport, exportBuffer, entries } = await loadOfficialExport(
+		repoRoot,
+		exportPath,
+	);
+	const { candidates, candidateSetSha256 } = await loadAssetCandidateLedger(
+		repoRoot,
+		{ absoluteExport, exportBuffer, entries },
+	);
+	if (candidates.length === 0) {
+		throw new MediumContractError(
+			"The export contains no posts/*.html candidates; verify this is the official account export",
+		);
+	}
+	const checklist = buildMediumHeroChecklist({
+		entries,
+		candidates,
+		approvedAllowlist,
+		exportFileName: path.basename(absoluteExport),
+		exportSha256: sha256(exportBuffer),
+		candidateSetSha256,
+		...(expectedCount === undefined ? {} : { expectedCount }),
+		...(expectedCandidateCount === undefined ? {} : { expectedCandidateCount }),
+	});
+	const checklistPath = getMediumPaths(repoRoot).assetChecklistPath;
+	if (write) {
+		await writeNewFile(
+			checklistPath,
+			Buffer.from(serializeJson(checklist), "utf8"),
+			"Medium hero acquisition checklist",
+		);
+	}
+	return {
+		mode: write ? "write" : "dry-run",
+		checklistPath: toRepositoryPath(repoRoot, checklistPath),
+		checklist,
 	};
 }
 

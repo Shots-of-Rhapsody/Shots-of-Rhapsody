@@ -185,6 +185,11 @@ export function getMediumPaths(repoRoot = DEFAULT_REPO_ROOT) {
 			".medium-import",
 			"inventory-candidate.json",
 		),
+		assetChecklistPath: path.join(
+			root,
+			".medium-import",
+			"hero-acquisition-checklist.json",
+		),
 		inventoryPath: path.join(root, "provenance", "medium", "inventory.json"),
 		manifestPath: path.join(root, "provenance", "medium", "manifest.json"),
 		snapshotRoot: path.join(root, "provenance", "medium", "posts"),
