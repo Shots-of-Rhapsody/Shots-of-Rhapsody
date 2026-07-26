@@ -89,6 +89,43 @@
       ]
     },
     {
+      "slug": "debt-as-destiny-how-the-credit-system-controls-lives",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/debt-as-destiny-how-the-credit-system-controls-lives-5f67cd4ff1c5",
+      "paths": {
+        "snapshot": "provenance/medium/posts/debt-as-destiny-how-the-credit-system-controls-lives.json",
+        "markdown": "src/content/posts/debt-as-destiny-how-the-credit-system-controls-lives/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:60ddbec0be7e6a0bf36891c78f7f395e81725258279a12c84f1d0179aef346f5",
+        "snapshot": "sha256:9b0e973e757919b71bd40b048974441db6422d08ca6bda867058d2020faca9ce",
+        "markdown": "sha256:81e9b6f94404f2c8b499037c75b39eb763692bf5a51dc6e96f18a09b8b803c5c",
+        "bodyText": "sha256:7f44e65658f42279de3dcd97b128d9bbc1026787807b9a23e32c325f597772a5"
+      },
+      "content": {
+        "title": "The Debt Economy",
+        "subtitle": "In a system that defines future access through credit, survival becomes collateral.",
+        "seriesLine": "A Ledger Series article on how credit defines power, limits, and dependency.",
+        "bodyBlockCount": 52
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/debt-as-destiny-how-the-credit-system-controls-lives/hero.webp",
+          "sha256": "sha256:e6f310b0231c8960e9ef1e6b14b66e0e22f674d31382e7476a49d83ebd1fcc3c",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:1ae7c898181cd94ec2eb607d9b228e4cd0762af2fedc18095208a31b7b723275",
+          "pixelSha256": "sha256:1205b26a3544c39c09103b7d2c9ff7ac8f9b9e9fc68e2c0c1ed424a79bfc8fb9",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1029,
+          "byteSize": 2268348
+        }
+      ]
+    },
+    {
       "slug": "the-economics-of-loneliness-how-disconnection-became-a-market-failure",
       "capturedAt": "2026-07-25T14:11:15.789Z",
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-economics-of-loneliness-how-disconnection-became-a-market-failure-e9a8dfdba5f3",

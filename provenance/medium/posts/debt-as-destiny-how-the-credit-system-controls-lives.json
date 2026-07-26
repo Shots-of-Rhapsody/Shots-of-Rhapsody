@@ -1,0 +1,589 @@
+{
+  "schemaVersion": 1,
+  "slug": "debt-as-destiny-how-the-credit-system-controls-lives",
+  "exportTitle": "Debt as Destiny: How the Credit System Controls Lives",
+  "exportSummary": "More Than Just a Number",
+  "title": "The Debt Economy",
+  "subtitle": "In a system that defines future access through credit, survival becomes collateral.",
+  "seriesLine": "A Ledger Series article on how credit defines power, limits, and dependency.",
+  "summary": "More Than Just a Number",
+  "description": "More Than Just a Number",
+  "author": "Tai Song",
+  "published": "2025-03-31T01:50:18.320Z",
+  "category": "Nonfiction",
+  "tags": [],
+  "imageAlt": null,
+  "imageCaption": "",
+  "provenance": {
+    "authority": "Medium account export",
+    "captureFormat": "account-export-html",
+    "capturedAt": "2026-07-25T14:11:15.789Z",
+    "sourcePath": "posts/2025-03-31_Debt-as-Destiny--How-the-Credit-System-Controls-Lives-5f67cd4ff1c5.html",
+    "sourceSha256": "sha256:60ddbec0be7e6a0bf36891c78f7f395e81725258279a12c84f1d0179aef346f5",
+    "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/debt-as-destiny-how-the-credit-system-controls-lives-5f67cd4ff1c5",
+    "presentationSetVersion": 1,
+    "presentationSetSha256": "sha256:ef4258dc651853433de14371682bb3603c7e58852672587fc6f0a9ce8e1484a2"
+  },
+  "hero": {
+    "id": "hero",
+    "outputFile": "hero.webp",
+    "sha256": "sha256:e6f310b0231c8960e9ef1e6b14b66e0e22f674d31382e7476a49d83ebd1fcc3c",
+    "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+    "captureSha256": "sha256:1ae7c898181cd94ec2eb607d9b228e4cd0762af2fedc18095208a31b7b723275",
+    "pixelSha256": "sha256:1205b26a3544c39c09103b7d2c9ff7ac8f9b9e9fc68e2c0c1ed424a79bfc8fb9",
+    "mimeType": "image/webp",
+    "width": 1800,
+    "height": 1029,
+    "byteSize": 2268348
+  },
+  "assets": [
+    {
+      "id": "hero",
+      "role": "hero",
+      "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*k7pKgyBBrM9Usuteb0r7Zg@2x.jpeg",
+      "rawFile": "hero-medium.webp",
+      "siteReadyFile": "hero-sanitized.webp",
+      "outputFile": "hero.webp",
+      "sha256": "sha256:e6f310b0231c8960e9ef1e6b14b66e0e22f674d31382e7476a49d83ebd1fcc3c",
+      "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+      "captureSha256": "sha256:1ae7c898181cd94ec2eb607d9b228e4cd0762af2fedc18095208a31b7b723275",
+      "pixelSha256": "sha256:1205b26a3544c39c09103b7d2c9ff7ac8f9b9e9fc68e2c0c1ed424a79bfc8fb9",
+      "mimeType": "image/webp",
+      "width": 1800,
+      "height": 1029,
+      "byteSize": 2268348,
+      "alt": null,
+      "caption": ""
+    }
+  ],
+  "bodyDocument": {
+    "blocks": [
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "You don’t need a criminal record to be denied housing.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "You don’t need to be poor to feel stuck.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "You just need a low credit score.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In today’s economy, credit is not just about money. It is a gatekeeper.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Landlords use it to screen tenants. Some employers check it before hiring. Car loans, insurance premiums, even cellphone plans often depend on a number between 300 and 850, a number that quietly decides who gets access to stability and opportunity.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "But that number does not reflect character, effort, or potential. It reflects how well someone has navigated a system built around debt, one that favors those with inherited wealth, steady income, and support networks.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "According to the Urban Institute, more than 40 percent of Americans have credit scores below 700, the point where many lenders start raising interest rates or denying credit entirely. Communities of color are hit hardest, shaped by decades of discriminatory lending and income inequality.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "This is not just about budgeting or personal choices. It is about a system that punishes people for trying to survive, whether through student loans, medical emergencies, or job gaps, and then makes it harder to recover.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "These are not rare problems. They shape daily life for millions.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "How Debt Became the Gatekeeper",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Credit did not always control so much of our lives.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Before large banks and national lending systems, credit was local. People borrowed based on trust, through neighborhood stores or personal relationships. But as finance expanded and scaled in the 20th century, lenders needed a way to standardize risk. That led to the credit score.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The FICO score, introduced in 1989, quickly became the industry norm. It was marketed as neutral and mathematical. But what it measures, and what it ignores, tells a more complicated story.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "FICO scores are built on how you manage debt: credit cards, loan history, payment timeliness, and account age. They do not include your income, employment record, or rent payments unless those payments are reported to credit bureaus. Most landlords and utility providers do not report them. That leaves millions of responsible renters and low-wage earners without any credit for consistent payments.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "More than 40 percent of Americans have a credit score below 700, according to the Urban Institute. That is the line many lenders use to justify higher interest rates or outright denials. Black and Latino borrowers are overrepresented in this range. It is the outcome of current income disparities layered on top of a long history of redlining, wage suppression, and biased lending.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "When your score drops, the consequences ripple. You might still get a loan or lease, but with worse terms. That means every setback, a job loss, a medical bill, a missed payment, ends up costing more.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Meanwhile, people with access to wealth can pay off debt quickly, avoid borrowing, or have someone co-sign. The system rewards financial cushioning more than financial responsibility.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "What began as a tool to assess borrowing risk has become something much larger. It shapes who gets to rebuild, who stays locked out, and who moves ahead.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Real People, Real Consequences",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Janelle, a single mom in Atlanta, applied for a new apartment after getting a better-paying job. She had steady income, no eviction history, and always paid her rent on time. But her credit score was 620, weighed down by a medical bill that went to collections after her son was hospitalized. The landlord rejected her application. According to RentPrep, most landlords require scores between 600 and 700, and few include rent history unless it is formally reported. Janelle stayed in a rundown unit, even though she could afford better.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Malik, a recent college graduate with $65,000 in student loans, deferred payments while job hunting. Even though deferment was allowed, his score still dropped below 640. When he tried to finance a used car, the only loan he qualified for came with a 19 percent interest rate. With no co-signer and no other way to commute to interviews, he took it. High debt-to-income ratios, especially from student loans, often trigger steep interest hikes.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Luis and Carmen, a couple in Los Angeles, had no credit score at all. They never used credit cards, never carried debt, and paid every bill in cash. But when they applied for a small business loan to launch a food truck, the bank denied them. They were “credit invisible.” Lenders often treat a lack of history the same way they treat bad credit. Some claim to consider other factors like income or plans, but in most cases, the credit report makes the decision.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "These stories are not rare. They are routine.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Rent, utilities, and other major expenses often do not count toward your score unless you actively enroll in third-party programs. According to Experian, more than 90 percent of landlords still rely on traditional credit reports to screen tenants. That means good habits can go unrecognized, while one crisis can leave a lasting mark.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And the impact goes beyond numbers. It affects where people live, whether they can switch jobs, leave toxic relationships, or start something new. A low or missing score becomes more than a setback. It becomes a barrier, one that effort alone cannot fix.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Why This System Persists",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Credit scores are often described as neutral, just numbers, just data. But the system behind them is not neutral. It is designed, maintained, and monetized by institutions that benefit from keeping it complicated.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "There are three main credit bureaus in the United States: Equifax, Experian, and TransUnion. These are private corporations, not public agencies. In 2023, Experian alone reported over $7 billion in revenue. A large portion of that came from selling credit data to lenders, landlords, insurance companies, and employers. The credit report is not just a risk assessment tool. It is a product.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Lenders benefit too. Low credit scores allow them to charge higher interest rates and fees. This fuels the subprime lending market, which generates billions each year. These loans carry more risk, but they often bring in more profit. For many financial institutions, that tradeoff is intentional.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The system is also opaque by design. Credit scoring formulas are proprietary and protected. Most people do not know how their scores are calculated. Errors are common, but fixing them is slow, confusing, and often unsuccessful. While consumers try to dispute inaccurate data, the bureaus continue to profit from selling it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "For businesses, credit scores provide efficiency. A landlord can sort through applications with one number. A bank can pre-approve loans without reviewing a full financial picture. This reduces risk for institutions and pushes it onto individuals.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Some defenders say credit scores create access to credit that would not exist otherwise. That may be partly true. But in practice, the system rewards those who start with financial stability. People who pay rent or utilities on time, avoid credit cards, or rely on cash often have little or no credit history, and are treated the same as risky borrowers.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "There are reform efforts. Some fintech platforms use alternative data to offer more inclusive credit assessments. Rent and utility payments are slowly being added to some models. But these tools are usually optional, fragmented, and not widely adopted. Traditional credit scoring still drives most decisions.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The credit system persists because it works for the people and institutions who control it. The costs fall on individuals. The profits do not.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "What We Can Do",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The credit scoring system may seem fixed, but it is not permanent. It was built by people, and it can be changed.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Some progress is already happening. Tools like Experian Boost let users opt in to count rent, utility, and streaming service payments toward their score. Experian reports that users who see a change gain an average of 13 points. It is proof that the system can evolve to reflect how people actually manage money. But tools like Boost are optional, and they only apply to one credit bureau. Most lenders still rely on the traditional model.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "This is where policy matters. Lawmakers could require credit scoring systems to include rent, utility, and phone payments, if consumers choose to share them. Congress could also hold credit bureaus accountable for fixing errors quickly, cap interest rates on subprime loans, and make scoring formulas more transparent. These are not radical reforms. They are basic updates to reflect fairness and accuracy.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Change is also happening at the community level. Community Development Financial Institutions (CDFIs) supported more than 109,000 small businesses and over 45,000 affordable housing units in 2024 alone. They offer fair loans, credit-building products, and support for people shut out of mainstream banking.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Nonprofits and local governments are also creating ways to report rent payments to credit bureaus. For many renters, this is one of their largest monthly expenses, and one of the least likely to count.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Even individuals can make a difference. Co-signing a loan, helping someone establish a credit history, or sharing trustworthy financial advice can shift outcomes. What seems small to one person can be a turning point for someone else.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Most importantly, we need to stop treating credit scores like reflections of personal worth. A low score often means someone has faced systems that were never designed for them. If we want a more equitable economy, we need to stop grading people for surviving, and start fixing the rules they are forced to play by.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "⸻",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Conclusion: Rewriting the Rules",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Credit scores were designed to measure financial risk. Over time, they became something much larger. They shape where people live, what jobs they can take, whether they can start a business, and how much it costs to recover from a setback. While marketed as objective, these scores reflect a long history of unequal access, to wealth, to safety nets, and to trust.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "They do not account for rent paid on time, for jobs lost to illness, or for lives built outside traditional credit lines. Instead, they reward those already protected from volatility, while punishing those forced to navigate it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "A fair economy cannot run on a scoring system that ignores how people actually live. If we want credit to be a tool for access, not exclusion, then we need to rethink what we measure and who gets to decide what matters.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The rules we live by are not natural laws. They were written. We can write better ones.",
+            "marks": []
+          }
+        ]
+      }
+    ]
+  },
+  "bodyHtml": "<p>You don’t need a criminal record to be denied housing.</p>\n<p>You don’t need to be poor to feel stuck.</p>\n<p>You just need a low credit score.</p>\n<p>In today’s economy, credit is not just about money. It is a gatekeeper.</p>\n<p>Landlords use it to screen tenants. Some employers check it before hiring. Car loans, insurance premiums, even cellphone plans often depend on a number between 300 and 850, a number that quietly decides who gets access to stability and opportunity.</p>\n<p>But that number does not reflect character, effort, or potential. It reflects how well someone has navigated a system built around debt, one that favors those with inherited wealth, steady income, and support networks.</p>\n<p>According to the Urban Institute, more than 40 percent of Americans have credit scores below 700, the point where many lenders start raising interest rates or denying credit entirely. Communities of color are hit hardest, shaped by decades of discriminatory lending and income inequality.</p>\n<p>This is not just about budgeting or personal choices. It is about a system that punishes people for trying to survive, whether through student loans, medical emergencies, or job gaps, and then makes it harder to recover.</p>\n<p>These are not rare problems. They shape daily life for millions.</p>\n<p>⸻</p>\n<p>How Debt Became the Gatekeeper</p>\n<p>Credit did not always control so much of our lives.</p>\n<p>Before large banks and national lending systems, credit was local. People borrowed based on trust, through neighborhood stores or personal relationships. But as finance expanded and scaled in the 20th century, lenders needed a way to standardize risk. That led to the credit score.</p>\n<p>The FICO score, introduced in 1989, quickly became the industry norm. It was marketed as neutral and mathematical. But what it measures, and what it ignores, tells a more complicated story.</p>\n<p>FICO scores are built on how you manage debt: credit cards, loan history, payment timeliness, and account age. They do not include your income, employment record, or rent payments unless those payments are reported to credit bureaus. Most landlords and utility providers do not report them. That leaves millions of responsible renters and low-wage earners without any credit for consistent payments.</p>\n<p>More than 40 percent of Americans have a credit score below 700, according to the Urban Institute. That is the line many lenders use to justify higher interest rates or outright denials. Black and Latino borrowers are overrepresented in this range. It is the outcome of current income disparities layered on top of a long history of redlining, wage suppression, and biased lending.</p>\n<p>When your score drops, the consequences ripple. You might still get a loan or lease, but with worse terms. That means every setback, a job loss, a medical bill, a missed payment, ends up costing more.</p>\n<p>Meanwhile, people with access to wealth can pay off debt quickly, avoid borrowing, or have someone co-sign. The system rewards financial cushioning more than financial responsibility.</p>\n<p>What began as a tool to assess borrowing risk has become something much larger. It shapes who gets to rebuild, who stays locked out, and who moves ahead.</p>\n<p>⸻</p>\n<p>Real People, Real Consequences</p>\n<p>Janelle, a single mom in Atlanta, applied for a new apartment after getting a better-paying job. She had steady income, no eviction history, and always paid her rent on time. But her credit score was 620, weighed down by a medical bill that went to collections after her son was hospitalized. The landlord rejected her application. According to RentPrep, most landlords require scores between 600 and 700, and few include rent history unless it is formally reported. Janelle stayed in a rundown unit, even though she could afford better.</p>\n<p>Malik, a recent college graduate with $65,000 in student loans, deferred payments while job hunting. Even though deferment was allowed, his score still dropped below 640. When he tried to finance a used car, the only loan he qualified for came with a 19 percent interest rate. With no co-signer and no other way to commute to interviews, he took it. High debt-to-income ratios, especially from student loans, often trigger steep interest hikes.</p>\n<p>Luis and Carmen, a couple in Los Angeles, had no credit score at all. They never used credit cards, never carried debt, and paid every bill in cash. But when they applied for a small business loan to launch a food truck, the bank denied them. They were “credit invisible.” Lenders often treat a lack of history the same way they treat bad credit. Some claim to consider other factors like income or plans, but in most cases, the credit report makes the decision.</p>\n<p>These stories are not rare. They are routine.</p>\n<p>Rent, utilities, and other major expenses often do not count toward your score unless you actively enroll in third-party programs. According to Experian, more than 90 percent of landlords still rely on traditional credit reports to screen tenants. That means good habits can go unrecognized, while one crisis can leave a lasting mark.</p>\n<p>And the impact goes beyond numbers. It affects where people live, whether they can switch jobs, leave toxic relationships, or start something new. A low or missing score becomes more than a setback. It becomes a barrier, one that effort alone cannot fix.</p>\n<p>⸻</p>\n<p>Why This System Persists</p>\n<p>Credit scores are often described as neutral, just numbers, just data. But the system behind them is not neutral. It is designed, maintained, and monetized by institutions that benefit from keeping it complicated.</p>\n<p>There are three main credit bureaus in the United States: Equifax, Experian, and TransUnion. These are private corporations, not public agencies. In 2023, Experian alone reported over $7 billion in revenue. A large portion of that came from selling credit data to lenders, landlords, insurance companies, and employers. The credit report is not just a risk assessment tool. It is a product.</p>\n<p>Lenders benefit too. Low credit scores allow them to charge higher interest rates and fees. This fuels the subprime lending market, which generates billions each year. These loans carry more risk, but they often bring in more profit. For many financial institutions, that tradeoff is intentional.</p>\n<p>The system is also opaque by design. Credit scoring formulas are proprietary and protected. Most people do not know how their scores are calculated. Errors are common, but fixing them is slow, confusing, and often unsuccessful. While consumers try to dispute inaccurate data, the bureaus continue to profit from selling it.</p>\n<p>For businesses, credit scores provide efficiency. A landlord can sort through applications with one number. A bank can pre-approve loans without reviewing a full financial picture. This reduces risk for institutions and pushes it onto individuals.</p>\n<p>Some defenders say credit scores create access to credit that would not exist otherwise. That may be partly true. But in practice, the system rewards those who start with financial stability. People who pay rent or utilities on time, avoid credit cards, or rely on cash often have little or no credit history, and are treated the same as risky borrowers.</p>\n<p>There are reform efforts. Some fintech platforms use alternative data to offer more inclusive credit assessments. Rent and utility payments are slowly being added to some models. But these tools are usually optional, fragmented, and not widely adopted. Traditional credit scoring still drives most decisions.</p>\n<p>The credit system persists because it works for the people and institutions who control it. The costs fall on individuals. The profits do not.</p>\n<p>⸻</p>\n<p>What We Can Do</p>\n<p>The credit scoring system may seem fixed, but it is not permanent. It was built by people, and it can be changed.</p>\n<p>Some progress is already happening. Tools like Experian Boost let users opt in to count rent, utility, and streaming service payments toward their score. Experian reports that users who see a change gain an average of 13 points. It is proof that the system can evolve to reflect how people actually manage money. But tools like Boost are optional, and they only apply to one credit bureau. Most lenders still rely on the traditional model.</p>\n<p>This is where policy matters. Lawmakers could require credit scoring systems to include rent, utility, and phone payments, if consumers choose to share them. Congress could also hold credit bureaus accountable for fixing errors quickly, cap interest rates on subprime loans, and make scoring formulas more transparent. These are not radical reforms. They are basic updates to reflect fairness and accuracy.</p>\n<p>Change is also happening at the community level. Community Development Financial Institutions (CDFIs) supported more than 109,000 small businesses and over 45,000 affordable housing units in 2024 alone. They offer fair loans, credit-building products, and support for people shut out of mainstream banking.</p>\n<p>Nonprofits and local governments are also creating ways to report rent payments to credit bureaus. For many renters, this is one of their largest monthly expenses, and one of the least likely to count.</p>\n<p>Even individuals can make a difference. Co-signing a loan, helping someone establish a credit history, or sharing trustworthy financial advice can shift outcomes. What seems small to one person can be a turning point for someone else.</p>\n<p>Most importantly, we need to stop treating credit scores like reflections of personal worth. A low score often means someone has faced systems that were never designed for them. If we want a more equitable economy, we need to stop grading people for surviving, and start fixing the rules they are forced to play by.</p>\n<p>⸻</p>\n<p>Conclusion: Rewriting the Rules</p>\n<p>Credit scores were designed to measure financial risk. Over time, they became something much larger. They shape where people live, what jobs they can take, whether they can start a business, and how much it costs to recover from a setback. While marketed as objective, these scores reflect a long history of unequal access, to wealth, to safety nets, and to trust.</p>\n<p>They do not account for rent paid on time, for jobs lost to illness, or for lives built outside traditional credit lines. Instead, they reward those already protected from volatility, while punishing those forced to navigate it.</p>\n<p>A fair economy cannot run on a scoring system that ignores how people actually live. If we want credit to be a tool for access, not exclusion, then we need to rethink what we measure and who gets to decide what matters.</p>\n<p>The rules we live by are not natural laws. They were written. We can write better ones.</p>",
+  "bodyTextSha256": "sha256:7f44e65658f42279de3dcd97b128d9bbc1026787807b9a23e32c325f597772a5",
+  "bodyBlockCount": 52,
+  "license": {
+    "name": "All Rights Reserved"
+  }
+}
