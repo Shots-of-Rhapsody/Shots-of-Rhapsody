@@ -460,6 +460,11 @@ function publicPath(value: string) {
 	return sitePath(value.replace(/^\/+/, ""));
 }
 
+function expectServedMp3ContentType(value: string | undefined, label: string) {
+	const mediaType = value?.split(";", 1)[0]?.trim().toLowerCase();
+	expect(mediaType, label).toMatch(/^audio\/(?:mpeg|mp3)$/u);
+}
+
 async function expectAudioRange(
 	request: APIRequestContext,
 	assetPath: string,
@@ -472,7 +477,10 @@ async function expectAudioRange(
 		headers: { Range: range },
 	});
 	expect(response.status(), `${range}: HTTP status`).toBe(206);
-	expect(response.headers()["content-type"]).toContain("audio/mpeg");
+	expectServedMp3ContentType(
+		response.headers()["content-type"],
+		`${range}: content type`,
+	);
 	expect(response.headers()["accept-ranges"]).toBe("bytes");
 	expect(response.headers()["content-range"]).toBe(
 		`bytes ${expectedStart}-${expectedEnd}/${totalBytes}`,
@@ -995,7 +1003,10 @@ test.describe("public release inventory", () => {
 
 			const head = await request.head(audioPath);
 			expect(head.status(), `${episode.slug}: audio HEAD`).toBe(200);
-			expect(head.headers()["content-type"]).toContain("audio/mpeg");
+			expectServedMp3ContentType(
+				head.headers()["content-type"],
+				`${episode.slug}: audio HEAD content type`,
+			);
 			expect(head.headers()["accept-ranges"]).toBe("bytes");
 			expect(Number(head.headers()["content-length"])).toBe(
 				episode.audio.byteLength,
@@ -1050,7 +1061,10 @@ test.describe("public release inventory", () => {
 			const audioPath = publicPath(episode.audio.publicPath);
 			const response = await request.get(audioPath);
 			expect(response.status(), `${episode.slug}: full audio status`).toBe(200);
-			expect(response.headers()["content-type"]).toContain("audio/mpeg");
+			expectServedMp3ContentType(
+				response.headers()["content-type"],
+				`${episode.slug}: full audio content type`,
+			);
 			expect(Number(response.headers()["content-length"])).toBe(
 				episode.audio.byteLength,
 			);
@@ -1784,14 +1798,13 @@ test("theme, search, navigation history, keyboard focus, and release screenshots
 	await page
 		.locator('input[placeholder="Search"]:visible')
 		.fill("Poetic Biography");
-	await expect(
-		page.getByRole("link", { name: /Poetic Biography/ }).first(),
-	).toBeVisible();
-	await expectNoSeriousAxeViolations(page);
-	await page
+	const searchResult = page
+		.locator("#search-panel")
 		.getByRole("link", { name: /Poetic Biography/ })
-		.first()
-		.click();
+		.first();
+	await expect(searchResult).toBeVisible();
+	await expectNoSeriousAxeViolations(page);
+	await searchResult.click();
 	await page.waitForLoadState("networkidle");
 	await expectPrivacySafeState(page, "Search-result navigation");
 	await expect(page.locator("h1")).toHaveText("Poetic Biography");
