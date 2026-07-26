@@ -200,6 +200,43 @@
       ]
     },
     {
+      "slug": "the-education-illusion",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-education-illusion-5ebad0c48b7e",
+      "paths": {
+        "snapshot": "provenance/medium/posts/the-education-illusion.json",
+        "markdown": "src/content/posts/the-education-illusion/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:d9ba303a5057b0626636a309b4feb0a642f881803bad4fa0b2d211d1d05076d7",
+        "snapshot": "sha256:718590507dc3fedcbd70fa76fc9a5816b2914197ae74a713b5873897905e7e10",
+        "markdown": "sha256:f81dbce9f8890219b4cd9cbd4cdaab2ee2ac918fa58e0d6a306a7632cb8b7436",
+        "bodyText": "sha256:1e0754509bcacc13b442bf43ed75f516d53446935617886fe5d517f5c8c3e00d"
+      },
+      "content": {
+        "title": "The Education Illusion",
+        "subtitle": "In a system that rewards diplomas but not outcomes, learning becomes performance.",
+        "seriesLine": "A Ledger Series article on broken pipelines between education and opportunity.",
+        "bodyBlockCount": 46
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/the-education-illusion/hero.webp",
+          "sha256": "sha256:60f39098d00ba30e118c4523ed878487ce982bf0a47de6d69f759ace64a2ee2f",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:1010e7761e8bf0eb7d4fe367b702b5ddccc3025c8038631db305bcac3a7d11a6",
+          "pixelSha256": "sha256:e8d0f0f88318680f6350845823cc91c9feda93b14ba25b475d8075e6e9e3f15a",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 3017292
+        }
+      ]
+    },
+    {
       "slug": "the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking",
       "capturedAt": "2026-07-25T14:11:15.789Z",
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking-b093d81a7c12",

@@ -1,0 +1,541 @@
+{
+  "schemaVersion": 1,
+  "slug": "the-education-illusion",
+  "exportTitle": "The Education Illusion",
+  "exportSummary": "In a system that rewards diplomas but not outcomes, learning becomes performance.",
+  "title": "The Education Illusion",
+  "subtitle": "In a system that rewards diplomas but not outcomes, learning becomes performance.",
+  "seriesLine": "A Ledger Series article on broken pipelines between education and opportunity.",
+  "summary": "In a system that rewards diplomas but not outcomes, learning becomes performance.",
+  "description": "In a system that rewards diplomas but not outcomes, learning becomes performance.",
+  "author": "Tai Song",
+  "published": "2025-04-08T14:12:36.413Z",
+  "category": "Nonfiction",
+  "tags": [],
+  "imageAlt": null,
+  "imageCaption": "",
+  "provenance": {
+    "authority": "Medium account export",
+    "captureFormat": "account-export-html",
+    "capturedAt": "2026-07-25T14:11:15.789Z",
+    "sourcePath": "posts/2025-04-08_The-Education-Illusion-5ebad0c48b7e.html",
+    "sourceSha256": "sha256:d9ba303a5057b0626636a309b4feb0a642f881803bad4fa0b2d211d1d05076d7",
+    "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-education-illusion-5ebad0c48b7e",
+    "presentationSetVersion": 1,
+    "presentationSetSha256": "sha256:ef4258dc651853433de14371682bb3603c7e58852672587fc6f0a9ce8e1484a2"
+  },
+  "hero": {
+    "id": "hero",
+    "outputFile": "hero.webp",
+    "sha256": "sha256:60f39098d00ba30e118c4523ed878487ce982bf0a47de6d69f759ace64a2ee2f",
+    "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+    "captureSha256": "sha256:1010e7761e8bf0eb7d4fe367b702b5ddccc3025c8038631db305bcac3a7d11a6",
+    "pixelSha256": "sha256:e8d0f0f88318680f6350845823cc91c9feda93b14ba25b475d8075e6e9e3f15a",
+    "mimeType": "image/webp",
+    "width": 1800,
+    "height": 1800,
+    "byteSize": 3017292
+  },
+  "assets": [
+    {
+      "id": "hero",
+      "role": "hero",
+      "sourceUrl": "https://cdn-images-1.medium.com/max/800/1*Hr9IuLqWGh1DZSw0n4_MQQ@2x.jpeg",
+      "rawFile": "hero-medium.webp",
+      "siteReadyFile": "hero-sanitized.webp",
+      "outputFile": "hero.webp",
+      "sha256": "sha256:60f39098d00ba30e118c4523ed878487ce982bf0a47de6d69f759ace64a2ee2f",
+      "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+      "captureSha256": "sha256:1010e7761e8bf0eb7d4fe367b702b5ddccc3025c8038631db305bcac3a7d11a6",
+      "pixelSha256": "sha256:e8d0f0f88318680f6350845823cc91c9feda93b14ba25b475d8075e6e9e3f15a",
+      "mimeType": "image/webp",
+      "width": 1800,
+      "height": 1800,
+      "byteSize": 3017292,
+      "alt": null,
+      "caption": ""
+    }
+  ],
+  "bodyDocument": {
+    "blocks": [
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Across the Global South, graduation day is filled with ceremony and expectation. Caps fly. Cameras flash. Families exhale. But for millions of young people, the moment is not a beginning. It is the start of a long wait.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Degrees are multiplying. Jobs are not.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Governments promote higher education as a path to social mobility. Families invest their savings or take on debt to put children through school. Universities expand. Enrollment rises. But the systems students graduate into are already saturated.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In many countries, a degree no longer opens a door. It becomes a placeholder, a credential used to justify unpaid internships, gig work, or years of waiting for a job that never comes.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "This is not a talent shortage. It is a system preparing people for futures that no longer exist.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Diploma Flood",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The world is not suffering from a shortage of graduates. It is struggling to absorb them.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In Nigeria, more than 600,000 students complete their degrees each year. But the formal economy cannot absorb even a fraction. Many end up underemployed, working informally, or waiting years for stable employment. In 2023, a Nigerian senator acknowledged the country is producing far more graduates than it can meaningfully support.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In India, overqualified candidates apply for low-level government jobs. In one case, more than 90,000 people, including engineers and postgraduates, applied for 62 clerical positions with the Uttar Pradesh police.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "This is not a crisis of ambition. It is a crisis of scale.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Education builds expectation. But the system cannot deliver what it promises. The result is quiet disappointment. A generation prepared for the future now waits for one.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Promise That Doesn’t Pay",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Higher education is still sold as a path to stability. But in many countries, the financial return no longer matches the investment.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In Kenya, students and their families often go into debt to cover tuition, books, housing, and fees. Government support is limited. When jobs do not follow graduation, the burden shifts to parents or siblings who helped fund the dream.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In Bangladesh, a growing number of university students enter programs that are disconnected from the labor market. The degree is earned, but the income it was meant to unlock never arrives.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "This mismatch is not rare. Around the world, a diploma no longer guarantees a foothold. It guarantees pressure: to prove your worth, to justify the cost, to wait.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Education becomes a transaction. You pay up front. But the outcome is uncertain.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Performance over Purpose",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In many countries, education is less about learning and more about proving you belong.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Test scores become currency. Degrees become branding. The focus shifts from building skills to checking boxes, from depth to speed, from curiosity to memorization.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In India, coaching centers generate billions each year by preparing students for competitive exams. In Egypt, families spend a large share of their income on private tutoring to compensate for under-resourced schools. In parts of Southeast Asia, students face national exams that determine their futures before they turn sixteen.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "This pressure fuels an entire industry of cram schools, consultants, and private credentials. But little of it prepares students for what comes next.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Education becomes about passing, not understanding. The system teaches students how to survive it, not how to shape anything beyond it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And for many, that performance ends in silence. The exam is passed. The degree is earned. The job never comes.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The Informal Plan B",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "When the formal economy fails to absorb graduates, many are left with few options but to adapt.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In the Philippines, thousands of college graduates work in call centers or shift to gig platforms. Some do it by choice. Most do it out of necessity. The job rarely matches their degree, but it pays.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In Tunisia, graduate unemployment is among the highest in the region. Protests have erupted for over a decade. Many young Tunisians expect to wait years for stable work. Some take what they can find. Others leave the country.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "This is not a rejection of education. It is a rejection of systems that ask for qualifications, then offer no return.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Degrees are not useless. But without supportive economies, they become paper shields. They protect nothing. They open few doors. And the fallback becomes survival, not progress.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Who Gets to Learn for Free?",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Not all education is created equal. And not every student is paying the same price for the same promise.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In many countries, elite families send their children to private universities or abroad for degrees that come with prestige and access. These students graduate with strong networks, global credentials, and smoother transitions into work. They often leave with options, and without debt.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Meanwhile, students from rural or low-income backgrounds rely on underfunded public institutions. Classrooms are crowded. Facilities are outdated. Career services are limited. Even when these students earn degrees, their qualifications are often undervalued or unrecognized by the labor market.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "In countries like India, Nigeria, and Indonesia, the rapid growth of private education has widened the gap. Those with money get mobility. Those without it stay locked in a cycle of borrowing, graduating, and waiting.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The global education economy mirrors every other market. Those who start with more get more. Those who need it most, pay the highest cost.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Education is not just about who gets in. It is about who gets out with choices.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "When the Degree Is Not Enough",
+            "marks": [
+              "bold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "The problem is not education itself. It is what the system promises, and what it actually delivers.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Millions of students are doing everything right. They study hard. They pass exams. They graduate. But the world they step into has changed. Jobs are fewer. Pathways are narrower. The gap between qualification and opportunity is growing.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "This is not just an employment crisis. It is an expectation crisis. A system built on merit has become one of signaling. Learning is no longer the key. It is the badge. And for too many, that badge leads nowhere.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "“The mismatch between education and employment is not a failure of youth. It is a failure of systems.”",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "-International Labour Organization, 2023",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "So what happens when the degree no longer opens a door?",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "What are we preparing students for if the future they’re promised does not exist?",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "And if effort is no longer enough, what exactly is education rewarding?",
+            "marks": []
+          }
+        ]
+      }
+    ]
+  },
+  "bodyHtml": "<p>Across the Global South, graduation day is filled with ceremony and expectation. Caps fly. Cameras flash. Families exhale. But for millions of young people, the moment is not a beginning. It is the start of a long wait.</p>\n<p>Degrees are multiplying. Jobs are not.</p>\n<p>Governments promote higher education as a path to social mobility. Families invest their savings or take on debt to put children through school. Universities expand. Enrollment rises. But the systems students graduate into are already saturated.</p>\n<p>In many countries, a degree no longer opens a door. It becomes a placeholder, a credential used to justify unpaid internships, gig work, or years of waiting for a job that never comes.</p>\n<p>This is not a talent shortage. It is a system preparing people for futures that no longer exist.</p>\n<p><strong>The Diploma Flood</strong></p>\n<p>The world is not suffering from a shortage of graduates. It is struggling to absorb them.</p>\n<p>In Nigeria, more than 600,000 students complete their degrees each year. But the formal economy cannot absorb even a fraction. Many end up underemployed, working informally, or waiting years for stable employment. In 2023, a Nigerian senator acknowledged the country is producing far more graduates than it can meaningfully support.</p>\n<p>In India, overqualified candidates apply for low-level government jobs. In one case, more than 90,000 people, including engineers and postgraduates, applied for 62 clerical positions with the Uttar Pradesh police.</p>\n<p>This is not a crisis of ambition. It is a crisis of scale.</p>\n<p>Education builds expectation. But the system cannot deliver what it promises. The result is quiet disappointment. A generation prepared for the future now waits for one.</p>\n<p><strong>The Promise That Doesn’t Pay</strong></p>\n<p>Higher education is still sold as a path to stability. But in many countries, the financial return no longer matches the investment.</p>\n<p>In Kenya, students and their families often go into debt to cover tuition, books, housing, and fees. Government support is limited. When jobs do not follow graduation, the burden shifts to parents or siblings who helped fund the dream.</p>\n<p>In Bangladesh, a growing number of university students enter programs that are disconnected from the labor market. The degree is earned, but the income it was meant to unlock never arrives.</p>\n<p>This mismatch is not rare. Around the world, a diploma no longer guarantees a foothold. It guarantees pressure: to prove your worth, to justify the cost, to wait.</p>\n<p>Education becomes a transaction. You pay up front. But the outcome is uncertain.</p>\n<p><strong>Performance over Purpose</strong></p>\n<p>In many countries, education is less about learning and more about proving you belong.</p>\n<p>Test scores become currency. Degrees become branding. The focus shifts from building skills to checking boxes, from depth to speed, from curiosity to memorization.</p>\n<p>In India, coaching centers generate billions each year by preparing students for competitive exams. In Egypt, families spend a large share of their income on private tutoring to compensate for under-resourced schools. In parts of Southeast Asia, students face national exams that determine their futures before they turn sixteen.</p>\n<p>This pressure fuels an entire industry of cram schools, consultants, and private credentials. But little of it prepares students for what comes next.</p>\n<p>Education becomes about passing, not understanding. The system teaches students how to survive it, not how to shape anything beyond it.</p>\n<p>And for many, that performance ends in silence. The exam is passed. The degree is earned. The job never comes.</p>\n<p><strong>The Informal Plan B</strong></p>\n<p>When the formal economy fails to absorb graduates, many are left with few options but to adapt.</p>\n<p>In the Philippines, thousands of college graduates work in call centers or shift to gig platforms. Some do it by choice. Most do it out of necessity. The job rarely matches their degree, but it pays.</p>\n<p>In Tunisia, graduate unemployment is among the highest in the region. Protests have erupted for over a decade. Many young Tunisians expect to wait years for stable work. Some take what they can find. Others leave the country.</p>\n<p>This is not a rejection of education. It is a rejection of systems that ask for qualifications, then offer no return.</p>\n<p>Degrees are not useless. But without supportive economies, they become paper shields. They protect nothing. They open few doors. And the fallback becomes survival, not progress.</p>\n<p><strong>Who Gets to Learn for Free?</strong></p>\n<p>Not all education is created equal. And not every student is paying the same price for the same promise.</p>\n<p>In many countries, elite families send their children to private universities or abroad for degrees that come with prestige and access. These students graduate with strong networks, global credentials, and smoother transitions into work. They often leave with options, and without debt.</p>\n<p>Meanwhile, students from rural or low-income backgrounds rely on underfunded public institutions. Classrooms are crowded. Facilities are outdated. Career services are limited. Even when these students earn degrees, their qualifications are often undervalued or unrecognized by the labor market.</p>\n<p>In countries like India, Nigeria, and Indonesia, the rapid growth of private education has widened the gap. Those with money get mobility. Those without it stay locked in a cycle of borrowing, graduating, and waiting.</p>\n<p>The global education economy mirrors every other market. Those who start with more get more. Those who need it most, pay the highest cost.</p>\n<p>Education is not just about who gets in. It is about who gets out with choices.</p>\n<p><strong>When the Degree Is Not Enough</strong></p>\n<p>The problem is not education itself. It is what the system promises, and what it actually delivers.</p>\n<p>Millions of students are doing everything right. They study hard. They pass exams. They graduate. But the world they step into has changed. Jobs are fewer. Pathways are narrower. The gap between qualification and opportunity is growing.</p>\n<p>This is not just an employment crisis. It is an expectation crisis. A system built on merit has become one of signaling. Learning is no longer the key. It is the badge. And for too many, that badge leads nowhere.</p>\n<p>“The mismatch between education and employment is not a failure of youth. It is a failure of systems.”</p>\n<p>-International Labour Organization, 2023</p>\n<p>So what happens when the degree no longer opens a door?</p>\n<p>What are we preparing students for if the future they’re promised does not exist?</p>\n<p>And if effort is no longer enough, what exactly is education rewarding?</p>",
+  "bodyTextSha256": "sha256:1e0754509bcacc13b442bf43ed75f516d53446935617886fe5d517f5c8c3e00d",
+  "bodyBlockCount": 46,
+  "license": {
+    "name": "All Rights Reserved"
+  }
+}
