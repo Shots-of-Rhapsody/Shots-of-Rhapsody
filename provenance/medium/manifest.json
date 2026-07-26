@@ -237,6 +237,43 @@
       ]
     },
     {
+      "slug": "the-trillion-dollar-economy-no-one-talks-about",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-trillion-dollar-economy-no-one-talks-about-b1810889d3b6",
+      "paths": {
+        "snapshot": "provenance/medium/posts/the-trillion-dollar-economy-no-one-talks-about.json",
+        "markdown": "src/content/posts/the-trillion-dollar-economy-no-one-talks-about/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:18b3605b79eaae7e5d5b6e2cc79254173a376aca60fe421cfff04b38a5f27355",
+        "snapshot": "sha256:e33a2665aa041ac91fe608d0a6741593768ab7ec7d36962211e6bf4d5f093c6c",
+        "markdown": "sha256:92022120d9753c484129dcc9fa27e652a5b1c14822832a6d8c24aadf184ef335",
+        "bodyText": "sha256:216ccd78db50d6c86fd1e8041978c624e7d2fa2553f41f2501ccc8f86a51e3df"
+      },
+      "content": {
+        "title": "The Care Economy",
+        "subtitle": "In a system that runs on unpaid labor, what’s essential is what’s ignored.",
+        "seriesLine": "A Ledger Series article on the unpaid labor that props up everything.",
+        "bodyBlockCount": 57
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/the-trillion-dollar-economy-no-one-talks-about/hero.webp",
+          "sha256": "sha256:93b38a1e92f4254279dca447fcfc1744d4cf7e0b2b882687db8e356ca60336fc",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:5037dd253edeb04a01af226f63299b2136fb549e6faa6424ea4856720a739fe5",
+          "pixelSha256": "sha256:0c773cc09baa0a5415d9c9266d5ed58566b275f3e5c4e0a6022bc6348572744f",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 1723306
+        }
+      ]
+    },
+    {
       "slug": "what-comes-after-work-designing-a-purpose-driven-life",
       "capturedAt": "2026-07-25T14:11:15.789Z",
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/what-comes-after-work-designing-a-purpose-driven-life-06fcd3447f09",
