@@ -237,6 +237,43 @@
       ]
     },
     {
+      "slug": "the-identity-economy",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-identity-economy-8db3aed3582c",
+      "paths": {
+        "snapshot": "provenance/medium/posts/the-identity-economy.json",
+        "markdown": "src/content/posts/the-identity-economy/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:271d094e4b8e251324fff50505f5c89bbba2161c9d5cd7e025c5af153a1e255f",
+        "snapshot": "sha256:4ab4848c8f167d3fa910542f99d4990a98082ac437b2f5c46d0ddf71b39c8823",
+        "markdown": "sha256:fa3d85c33796c986627f03c66b2cb1bf1d973ca1b2e714f90dca32070d8915af",
+        "bodyText": "sha256:637ba8d5aa35c88fba2a9d0b649f4e330531c3d8eb172f108f092789733fa9fb"
+      },
+      "content": {
+        "title": "The Identity Economy",
+        "subtitle": "In a system that requires proof to exist, whole lives remain undocumented.",
+        "seriesLine": "A Ledger Series article on who gets counted, documented, and erased.",
+        "bodyBlockCount": 52
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/the-identity-economy/hero.webp",
+          "sha256": "sha256:48c6dd24904bd63fbb100e8b8ff0f6756b98314749aa7dac3416b97e5f3d6360",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:a52ec1e3496ec4514bc1e78ca604f09abad3e334ef3b7f2f3c735a8bb997c3d8",
+          "pixelSha256": "sha256:3b91ec49ce40ffcfae8ef0c8bb4216e0a8ccdd6ecfe3e182be86d103bc1e5379",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 2813638
+        }
+      ]
+    },
+    {
       "slug": "the-next-leap-from-global-competition-to-human-cooperation",
       "capturedAt": "2026-07-25T14:11:15.789Z",
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-next-leap-from-global-competition-to-human-cooperation-b0f2805608c5",
