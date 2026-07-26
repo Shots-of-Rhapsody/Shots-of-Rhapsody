@@ -3,14 +3,16 @@
 The repository contains one verified recording, but no podcast episode is
 approved for publication. The podcast manifest is intentionally fail-closed:
 the show and episode are drafts, the transcript is not human-reviewed, the
-audio requires a lossless-master quality decision, the cover awaits visual
-approval, and no audio file or podcast feed is emitted in the built site.
+cover awaits visual approval, and no audio file or podcast feed is emitted in
+the built site.
 
-The audio decision is separate from general content signoff. The manifest is
-currently `pending`, and the versioned decision ledger is empty. Retaining the
-existing MP3 requires a genuine Tai Song record in
-`provenance/reviews/podcast-audio-decisions-v1.json` bound to that exact audio
-SHA-256; tooling must never create that record automatically.
+The audio decision is separate from general content signoff. Tai Song has
+explicitly accepted the exact tracked MP3 as the low-loudness pilot source.
+The manifest records `retain-current-audio`, and the versioned decision ledger
+binds that decision to SHA-256
+`b4ec04aa9f99b0c52c3bd77123962cd7d7a49b316147bd293ad011698d232dc3`
+at `2026-07-26T07:55:35.215Z`. This does not approve the transcript, artwork,
+metadata, content signoff, presentation, or publication.
 
 `retain-current-audio` means only the bytes currently named in the manifest;
 it is not a permanent waiver for Episode 1. The
@@ -135,7 +137,7 @@ Primary references:
 
 Podcast boundary tests and the draft verifier run in normal CI. Complete
 publication verification remains intentionally fail-closed until the reviewed
-transcript, final audio quality decision, approved metadata, and content
+transcript, approved metadata and artwork, content signoff, and presentation
 signoff exist.
 
 ```powershell

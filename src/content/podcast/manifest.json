@@ -47,8 +47,8 @@
 				"bitrateBps": 320000,
 				"loudnessLkfs": -27,
 				"truePeakDbfs": -6.9,
-				"distributionDecision": "pending",
-				"qualityApproved": false
+				"distributionDecision": "retain-current-audio",
+				"qualityApproved": true
 			},
 			"artwork": {
 				"sourcePath": "src/assets/podcast/shots-of-rhapsody-podcast-cover.svg",

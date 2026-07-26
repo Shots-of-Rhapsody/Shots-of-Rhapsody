@@ -14,7 +14,10 @@ import {
 	getApprovedPodcastEpisodes,
 	getPodcastReviewOutputSha256,
 } from "../../src/data/podcast-approval.ts";
-import { validatePodcastAudioDecisionLedgerV1 } from "../../src/data/podcast-audio-decisions.ts";
+import {
+	PODCAST_AUDIO_DECISIONS,
+	validatePodcastAudioDecisionLedgerV1,
+} from "../../src/data/podcast-audio-decisions.ts";
 import { verifyPodcastDraft, verifyPodcastRelease } from "./verify.mjs";
 
 test("approved identity, route, media path, and measurements are exact", () => {
@@ -39,7 +42,19 @@ test("approved identity, route, media path, and measurements are exact", () => {
 		],
 		[1445.784, 48_000, 2, 320_000, -27, -6.9],
 	);
-	assert.equal(episode.audio.distributionDecision, "pending");
+	assert.equal(episode.audio.distributionDecision, "retain-current-audio");
+	assert.equal(episode.audio.qualityApproved, true);
+	assert.deepEqual(PODCAST_AUDIO_DECISIONS.entries, [
+		{
+			slug: "modular-ethics",
+			decision: "retain-current-audio",
+			audioSha256:
+				"sha256:b4ec04aa9f99b0c52c3bd77123962cd7d7a49b316147bd293ad011698d232dc3",
+			reviewer: "Tai Song",
+			reviewedAt: "2026-07-26T07:55:35.215Z",
+			approval: "passed",
+		},
+	]);
 });
 
 function completeShow() {
@@ -99,9 +114,8 @@ function approvedAudioDecision(episode = completeEpisode()) {
 test("the recorded episode remains fail-closed without a transcript", () => {
 	const blockers = getPodcastPublicationBlockers(PODCAST_EPISODES[0]);
 	assert.ok(blockers.includes("episode-draft"));
-	assert.ok(blockers.includes("audio-decision-pending"));
-	assert.ok(blockers.includes("audio-quality-unapproved"));
 	assert.ok(blockers.includes("transcript-missing"));
+	assert.ok(!blockers.some((blocker) => blocker.startsWith("audio-")));
 	assert.equal(isPodcastEpisodePublishable(PODCAST_EPISODES[0]), false);
 	assert.deepEqual(getPublishablePodcastEpisodes(), []);
 	assert.deepEqual(getApprovedPodcastEpisodes(), []);
@@ -139,9 +153,10 @@ test("retaining the exact current audio requires a separate hash-bound author ap
 	const show = completeShow();
 	const episode = completeEpisode();
 	assert.ok(
-		getPodcastPublicationBlockers(episode, show).includes(
-			"audio-retain-approval-missing",
-		),
+		getPodcastPublicationBlockers(episode, show, {
+			version: 1,
+			entries: [],
+		}).includes("audio-retain-approval-missing"),
 	);
 	const stale = approvedAudioDecision(episode);
 	stale.entries[0].audioSha256 = `sha256:${"f".repeat(64)}`;
@@ -160,7 +175,13 @@ test("retaining the exact current audio requires a separate hash-bound author ap
 	);
 	assert.ok(
 		getPodcastPublicationBlockers(
-			PODCAST_EPISODES[0],
+			{
+				...PODCAST_EPISODES[0],
+				audio: {
+					...PODCAST_EPISODES[0].audio,
+					distributionDecision: "pending",
+				},
+			},
 			PODCAST_SHOW,
 			approvedAudioDecision(episode),
 		).includes("audio-decision-pending"),
