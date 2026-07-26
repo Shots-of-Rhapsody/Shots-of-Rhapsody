@@ -89,6 +89,43 @@
       ]
     },
     {
+      "slug": "the-next-leap-from-global-competition-to-human-cooperation",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-next-leap-from-global-competition-to-human-cooperation-b0f2805608c5",
+      "paths": {
+        "snapshot": "provenance/medium/posts/the-next-leap-from-global-competition-to-human-cooperation.json",
+        "markdown": "src/content/posts/the-next-leap-from-global-competition-to-human-cooperation/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:415633c3e2b8060d3346f316745b95883c4e9e0c66e9fcd64b65897dba68b696",
+        "snapshot": "sha256:72eec9192e4c7720d9747cea111d82f938130a0bda4e291ee8b29d3bae67d595",
+        "markdown": "sha256:e2b5a79fbfe4627f127fe13c402fb17cb9e0d0afefa65c8c78dd3c04e89fdb21",
+        "bodyText": "sha256:cfa068efe212b1f72870ec81c99b62d550899259fc439cefd0d30a6cf0db2b9b"
+      },
+      "content": {
+        "title": "The Next Leap",
+        "subtitle": "In a system that rewards competition, cooperation is treated as risk.",
+        "seriesLine": "A Ledger Series article on moving from global competition to systems cooperation.",
+        "bodyBlockCount": 32
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/the-next-leap-from-global-competition-to-human-cooperation/hero.webp",
+          "sha256": "sha256:5743628e2f2949fcf9faafb533e4c39ee028564d3a4c4fb2d8f85887319113ad",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:9174f7fb0505465c9f26679cda18a29a0f856d480f3f639341b50feb4a2af683",
+          "pixelSha256": "sha256:c427aa59f27e848be904a7b70a78a885aed611c05971668b05ebd34a574d8e1f",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 2703162
+        }
+      ]
+    },
+    {
       "slug": "the-rise-of-zero-cost-economies-what-happens-when-prices-disappear",
       "capturedAt": "2026-07-25T14:11:15.789Z",
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-rise-of-zero-cost-economies-what-happens-when-prices-disappear-6757f5dd592e",
