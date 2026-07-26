@@ -52,6 +52,43 @@
       ]
     },
     {
+      "slug": "closing-the-gap-how-a-fairer-global-economy-could-lift-billions",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/closing-the-gap-how-a-fairer-global-economy-could-lift-billions-24c9923e2f19",
+      "paths": {
+        "snapshot": "provenance/medium/posts/closing-the-gap-how-a-fairer-global-economy-could-lift-billions.json",
+        "markdown": "src/content/posts/closing-the-gap-how-a-fairer-global-economy-could-lift-billions/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:65ebdf9da501df0a45049777a9de7267bfd5283f10d4d9feddbc99e1a0bb2052",
+        "snapshot": "sha256:c9441e9eb2f3dfdae7cd8b98c587f8c0f8c19d4d11528772885935f2635fa9e4",
+        "markdown": "sha256:b76be20461111e375ca54629c80edc45fa8c9097a1bba12b5fadce4bf756a3e4",
+        "bodyText": "sha256:640f2ca4ed9a1be7c0218bc37de0aba33247d94582363cb875e3649c4979f445"
+      },
+      "content": {
+        "title": "The Distribution Myth",
+        "subtitle": "In a system flooded with wealth, fairness remains an accounting illusion.",
+        "seriesLine": "A Ledger Series article on fairness, inequality, and the illusion of equal access.",
+        "bodyBlockCount": 44
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/closing-the-gap-how-a-fairer-global-economy-could-lift-billions/hero.webp",
+          "sha256": "sha256:f4c8327008607706341cfd26800fb9e2a87d106d693ec6c56a7d2a85afc6cde1",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:2efc8cbe4206f58151de6b3cd0a0f606a1039426f93a00fb099f86af7f8c555d",
+          "pixelSha256": "sha256:14238f17a001032286063d8bea39efd7d9c654d5e8d94a3de5f5d86fc77b81f4",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 3274756
+        }
+      ]
+    },
+    {
       "slug": "the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking",
       "capturedAt": "2026-07-25T14:11:15.789Z",
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking-b093d81a7c12",
