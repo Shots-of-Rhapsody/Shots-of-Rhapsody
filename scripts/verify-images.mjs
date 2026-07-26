@@ -21,6 +21,18 @@ const PODCAST_COVER_PATH = "media/podcast/shots-of-rhapsody-podcast-cover.png";
 const PODCAST_COVER_SHA256 =
 	"293125a3959b91fd3f263905c3f67e360fdb0f62d784653d10311486b0008c70";
 
+function isApprovedPodcastCoverContainerMetadata(relative, fileHash, values) {
+	return (
+		relative === PODCAST_COVER_PATH &&
+		fileHash === PODCAST_COVER_SHA256 &&
+		values.length === 2 &&
+		values.includes("PNG chunk pHYs") &&
+		values.some((value) =>
+			/^unexpected PNG chunk layout \(IHDR,pHYs,(?:IDAT,)+IEND\)$/u.test(value),
+		)
+	);
+}
+
 const SVG_METADATA_PATTERNS = [
 	["XML comments", /<!--/u],
 	["SVG metadata", /<metadata(?:\s|>)/iu],
@@ -807,6 +819,7 @@ export async function inspectBuiltImages({
 	repoRoot: repoRootValue = process.cwd(),
 	files: providedFiles,
 	limits: limitOverrides = {},
+	publicationCatalog,
 } = {}) {
 	const distRoot = path.resolve(dist);
 	const repoRoot = path.resolve(repoRootValue);
@@ -815,13 +828,18 @@ export async function inspectBuiltImages({
 	const files = providedFiles ?? (await walk(distRoot));
 	const readJson = async (...segments) =>
 		JSON.parse(await readFile(path.join(repoRoot, ...segments), "utf8"));
-	const [archiveManifest, mediumManifest, firstPartyManifest, catalog] =
-		await Promise.all([
-			readJson("provenance", "tai-song", "manifest.json"),
-			readJson("provenance", "medium", "manifest.json"),
-			readJson("provenance", "first-party", "manifest.json"),
-			readJson("provenance", "publication-catalog.json"),
-		]);
+	const [
+		archiveManifest,
+		mediumManifest,
+		firstPartyManifest,
+		committedCatalog,
+	] = await Promise.all([
+		readJson("provenance", "tai-song", "manifest.json"),
+		readJson("provenance", "medium", "manifest.json"),
+		readJson("provenance", "first-party", "manifest.json"),
+		readJson("provenance", "publication-catalog.json"),
+	]);
+	const catalog = publicationCatalog ?? committedCatalog;
 	const archiveBySlug = new Map(
 		(archiveManifest.articles ?? []).map((article) => [article.slug, article]),
 	);
@@ -963,7 +981,11 @@ export async function inspectBuiltImages({
 				: undefined,
 		]),
 	);
+	const sourceWidths = new Map(
+		articles.map((article) => [article.slug, article.image?.width]),
+	);
 	sourceAspectRatios.set("podcast-cover", 1);
+	sourceWidths.set("podcast-cover", 3000);
 	const bindResponsiveImage = (assetPath, slug) => {
 		manifestResponsiveImages.add(assetPath);
 		const owners = responsiveImageOwners.get(assetPath) ?? new Set();
@@ -1185,7 +1207,14 @@ export async function inspectBuiltImages({
 				bytes,
 				metadata,
 			);
-			if (containerMetadata.length > 0) {
+			if (
+				containerMetadata.length > 0 &&
+				!isApprovedPodcastCoverContainerMetadata(
+					relative,
+					fileHash,
+					containerMetadata,
+				)
+			) {
 				failures.push(
 					`built raster container contains unexpected payload: ${relative} (${containerMetadata.join(", ")})`,
 				);
@@ -1278,17 +1307,19 @@ export async function inspectBuiltImages({
 		const formatMatchesExtension = relative.endsWith(".avif")
 			? metadata.format === "heif"
 			: metadata.format === "webp";
-		if (
-			!formatMatchesExtension ||
-			!RESPONSIVE_WIDTHS.has(metadata.width) ||
-			!metadata.height
-		) {
+		const owners = [...(responsiveImageOwners.get(relative) ?? [])];
+		const widthMatchesPolicy = owners.every(
+			(owner) =>
+				[...RESPONSIVE_WIDTHS].some(
+					(width) => Math.abs(width - metadata.width) <= 1,
+				) || metadata.width === sourceWidths.get(owner),
+		);
+		if (!formatMatchesExtension || !widthMatchesPolicy || !metadata.height) {
 			failures.push(
 				`responsive image has an unexpected format or dimensions: ${relative}`,
 			);
 		}
 		const actualRatio = metadata.width / metadata.height;
-		const owners = [...(responsiveImageOwners.get(relative) ?? [])];
 		const ownerRatios = owners.map((slug) => sourceAspectRatios.get(slug));
 		if (
 			owners.length === 0 ||

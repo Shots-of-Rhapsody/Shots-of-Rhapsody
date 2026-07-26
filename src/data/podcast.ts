@@ -214,6 +214,25 @@ export function getPublishablePodcastEpisodes(): PodcastEpisode[] {
 	);
 }
 
+export function getReviewablePodcastEpisodes(): PodcastEpisode[] {
+	const episodes = PODCAST_EPISODES.filter(
+		(episode) =>
+			episode.slug === "modular-ethics" &&
+			episode.title === "Episode 1: Modular Ethics" &&
+			episode.author === "Tai Song" &&
+			episode.rightsCleared &&
+			episode.audio.distributionDecision === "retain-current-audio" &&
+			episode.audio.qualityApproved &&
+			hasApprovedCurrentAudioDecision(episode, PODCAST_AUDIO_DECISIONS),
+	);
+	if (episodes.length !== 1) {
+		throw new Error(
+			"Public review requires exactly the rights-cleared Modular Ethics audio",
+		);
+	}
+	return episodes;
+}
+
 export function assertPodcastManifest(
 	episodes: readonly PodcastEpisode[] = PODCAST_EPISODES,
 	show: PodcastShow = PODCAST_SHOW,

@@ -4,8 +4,9 @@ import { fileURLToPath } from "node:url";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { canonicalTranscriptHtml } from "@utils/podcast-transcript.mjs";
 import { url } from "@utils/url-utils";
+import { IS_PUBLIC_REVIEW } from "@/data/build-mode";
 import { PODCAST_SHOW, type PodcastEpisode } from "@/data/podcast";
-import { getApprovedPodcastEpisodes } from "@/data/podcast-approval";
+import { getVisiblePodcastEpisodes } from "@/data/podcast-approval";
 
 interface IndexProps {
 	kind: "index";
@@ -21,31 +22,27 @@ interface TranscriptProps {
 type Props = IndexProps | TranscriptProps;
 
 export async function getStaticPaths() {
-	const episodes = getApprovedPodcastEpisodes();
+	const episodes = getVisiblePodcastEpisodes();
 	if (episodes.length === 0) return [];
 	const repositoryRoot = fileURLToPath(new URL("../../../", import.meta.url));
-	const transcriptPaths = await Promise.all(
-		episodes.map(async (episode) => {
-			if (episode.transcript === null)
-				throw new Error(
-					`Published episode lacks a transcript: ${episode.slug}`,
-				);
-			return {
-				params: { index: `${episode.slug}/transcript` },
-				props: {
-					kind: "transcript" as const,
-					episode,
-					transcriptHtml: canonicalTranscriptHtml(
-						await readFile(
-							`${repositoryRoot}/${episode.transcript.sourcePath}`,
-							"utf8",
-						),
-						`Podcast transcript ${episode.slug}`,
+	const transcriptPaths = [];
+	for (const episode of episodes) {
+		if (episode.transcript === null) continue;
+		transcriptPaths.push({
+			params: { index: `${episode.slug}/transcript` },
+			props: {
+				kind: "transcript" as const,
+				episode,
+				transcriptHtml: canonicalTranscriptHtml(
+					await readFile(
+						`${repositoryRoot}/${episode.transcript.sourcePath}`,
+						"utf8",
 					),
-				},
-			};
-		}),
-	);
+					`Podcast transcript ${episode.slug}`,
+				),
+			},
+		});
+	}
 	return [
 		{
 			params: { index: undefined },
@@ -61,7 +58,8 @@ const title = isIndex
 	? PODCAST_SHOW.title
 	: `${props.episode.title} — Transcript`;
 const description = isIndex
-	? PODCAST_SHOW.description
+	? (PODCAST_SHOW.description ??
+		(IS_PUBLIC_REVIEW ? "Audio stories and reflections by Tai Song." : null))
 	: `A complete transcript of ${props.episode.title}.`;
 if (description === null)
 	throw new Error("Published podcast pages require a show description");
@@ -69,17 +67,18 @@ const canonicalUrl = new URL(
 	isIndex ? url("/podcast/") : url(props.episode.transcript?.publicPath ?? "/"),
 	Astro.site ?? Astro.url,
 ).toString();
-const jsonLd = isIndex
-	? {
-			"@context": "https://schema.org",
-			"@type": "PodcastSeries",
-			"@id": `${canonicalUrl}#series`,
-			name: PODCAST_SHOW.title,
-			description,
-			url: canonicalUrl,
-			author: { "@type": "Person", name: PODCAST_SHOW.author },
-		}
-	: null;
+const jsonLd =
+	isIndex && !IS_PUBLIC_REVIEW
+		? {
+				"@context": "https://schema.org",
+				"@type": "PodcastSeries",
+				"@id": `${canonicalUrl}#series`,
+				name: PODCAST_SHOW.title,
+				description,
+				url: canonicalUrl,
+				author: { "@type": "Person", name: PODCAST_SHOW.author },
+			}
+		: null;
 const jsonLdString = jsonLd
 	? JSON.stringify(jsonLd).replace(/</g, "\\u003c")
 	: null;

@@ -1,6 +1,7 @@
 ---
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { url } from "@utils/url-utils";
+import { IS_PUBLIC_REVIEW } from "@/data/build-mode";
 
 const siteUrl = Astro.site ?? Astro.url;
 const canonicalUrl = new URL(url("/404.html"), siteUrl).toString();
@@ -11,7 +12,7 @@ const canonicalUrl = new URL(url("/404.html"), siteUrl).toString();
 	description="This page is not part of the Shots of Rhapsody archive."
 	canonicalUrl={canonicalUrl}
 >
-	<meta slot="head" name="robots" content="noindex" />
+	{!IS_PUBLIC_REVIEW && <meta slot="head" name="robots" content="noindex" />}
 	<section class="not-found manuscript-panel" data-custom-404>
 		<div class="not-found__mark" aria-hidden="true">SR</div>
 		<p class="not-found__kicker">A missing folio</p>

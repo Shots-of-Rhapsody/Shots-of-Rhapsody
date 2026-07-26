@@ -16,8 +16,10 @@ import {
 	bodyImageOutputPath,
 	responsiveBodyImageWidths,
 } from "../../scripts/medium/lib/render.js";
+import { IS_PUBLIC_REVIEW } from "../data/build-mode.ts";
 import { PODCAST_SHOW } from "../data/podcast.ts";
-import { getApprovedPodcastEpisodes } from "../data/podcast-approval.ts";
+import { getVisiblePodcastEpisodes } from "../data/podcast-approval.ts";
+import { PUBLICATION_CATALOG } from "../data/publication-catalog.ts";
 import { DISPLAY_IMAGE_QUALITY } from "../utils/image-policy.ts";
 
 const IMAGE_EXTENSION = /\.(?:avif|gif|jpe?g|png|svg|webp)$/iu;
@@ -36,7 +38,6 @@ const MANIFEST_PATHS = {
 		"first-party",
 		"manifest.json",
 	),
-	catalog: path.join(REPOSITORY_ROOT, "provenance", "publication-catalog.json"),
 };
 
 async function walk(directory) {
@@ -332,7 +333,7 @@ async function readRegularFileInside(root, relativePath, label) {
 }
 
 async function preparePodcastAssets(outputRoot) {
-	const approvedEpisodes = getApprovedPodcastEpisodes();
+	const approvedEpisodes = getVisiblePodcastEpisodes();
 	await rm(path.join(outputRoot, "media", "podcast"), {
 		recursive: true,
 		force: true,
@@ -399,17 +400,16 @@ export default function publicationAssets() {
 		hooks: {
 			"astro:build:done": async ({ dir }) => {
 				const outputRoot = fileURLToPath(dir);
-				const [archive, medium, firstParty, catalog] = await Promise.all([
+				const [archive, medium, firstParty] = await Promise.all([
 					readJson(MANIFEST_PATHS.archive),
 					readJson(MANIFEST_PATHS.medium),
 					readJson(MANIFEST_PATHS.firstParty),
-					readJson(MANIFEST_PATHS.catalog),
 				]);
 				const entries = publicationEntries({
 					archive,
 					medium,
 					firstParty,
-					catalog,
+					catalog: PUBLICATION_CATALOG,
 				});
 				for (const entry of entries) {
 					for (const asset of entry.assets) {
@@ -511,6 +511,9 @@ export default function publicationAssets() {
 							.filter(Boolean)
 							.join("; "),
 					);
+				}
+				if (IS_PUBLIC_REVIEW) {
+					await rm(path.join(outputRoot, "rss.xml"), { force: true });
 				}
 			},
 		},

@@ -1,5 +1,6 @@
 ---
 import { url } from "@utils/url-utils";
+import { IS_PUBLIC_REVIEW } from "@/data/build-mode";
 
 const currentYear = new Date().getUTCFullYear();
 ---
@@ -8,6 +9,6 @@ const currentYear = new Date().getUTCFullYear();
 	<p>© {currentYear} Shots of Rhapsody.</p>
 	<nav aria-label="Footer navigation">
 		<a href={url("/rights/")}>Rights</a>
-		<a href={url("/rss.xml")}>Subscribe</a>
+		{!IS_PUBLIC_REVIEW && <a href={url("/rss.xml")}>Subscribe</a>}
 	</nav>
 </footer>

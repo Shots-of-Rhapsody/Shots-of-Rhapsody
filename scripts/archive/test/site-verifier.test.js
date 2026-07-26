@@ -16,6 +16,8 @@ import {
 	markedField,
 	parseArguments,
 	publicFacingCopyViolations,
+	publicReviewRobotsFailures,
+	publicReviewSyndicationFailures,
 	validateNoProjectRobots,
 	verifyDraftSources,
 	verifyMediumRenderedBodies,
@@ -245,7 +247,9 @@ test("public-copy checks reject source-branded data attributes", () => {
 test("built-site CLI enables signoff enforcement only when requested", () => {
 	assert.equal(parseArguments([]).requireSignoff, false);
 	assert.equal(parseArguments([]).releaseTarget, "catalog");
+	assert.equal(parseArguments([]).reviewBuild, false);
 	assert.equal(parseArguments(["--require-signoff"]).requireSignoff, true);
+	assert.equal(parseArguments(["--review-build"]).reviewBuild, true);
 	assert.equal(
 		parseArguments(["--release-target", "archive"]).releaseTarget,
 		"archive",
@@ -684,6 +688,30 @@ test("podcast artifact allowlist accepts only approved routes, audio, cover, and
 	assert.match(failures.join("\n"), /unexpectedly includes/u);
 });
 
+test("public-review podcast allowlist omits an unapproved transcript route", () => {
+	const distRoot = path.resolve("synthetic-dist");
+	const episode = {
+		slug: "episode-one",
+		audio: { publicPath: "/media/podcast/episode-one.mp3" },
+		transcript: null,
+	};
+	const expected = [
+		"podcast/index.html",
+		"podcast/episode-one/index.html",
+		"media/podcast/episode-one.mp3",
+		"media/podcast/shots-of-rhapsody-podcast-cover.png",
+	].map((relative) => path.join(distRoot, ...relative.split("/")));
+	const reviewFailures = [];
+	verifyPodcastArtifacts(expected, distRoot, [episode], reviewFailures, {
+		allowMissingTranscript: true,
+	});
+	assert.deepEqual(reviewFailures, []);
+
+	const releaseFailures = [];
+	verifyPodcastArtifacts(expected, distRoot, [episode], releaseFailures);
+	assert.match(releaseFailures.join("\n"), /lacks a transcript/u);
+});
+
 test("built-site body comparison normalizes HTML serialization only", () => {
 	const source =
 		"<p>Exact &#39;text&#39; &amp; marks</p>\n<p><strong>Bold</strong><br /><em>Italic</em></p>";
@@ -736,6 +764,30 @@ test("project artifact omits non-authoritative robots files", () => {
 	assert.match(
 		validateNoProjectRobots(["nested\\robots.txt"]).join("\n"),
 		/host-root file can control crawling/u,
+	);
+});
+
+test("public-review pages require exact noindex directives and omit feeds", () => {
+	const html = `<html><head><meta name="robots" content="noindex, nofollow, noarchive, nosnippet"></head></html>`;
+	assert.deepEqual(publicReviewRobotsFailures(html, "index.html"), []);
+	assert.match(
+		publicReviewRobotsFailures(
+			'<meta name="robots" content="noindex, nofollow">',
+			"index.html",
+		).join("\n"),
+		/noarchive/u,
+	);
+	assert.deepEqual(
+		publicReviewSyndicationFailures(["index.html", "pagefind/pagefind.js"]),
+		[],
+	);
+	assert.match(
+		publicReviewSyndicationFailures([
+			"rss.xml",
+			"sitemap-index.xml",
+			"sitemap-0.xml",
+		]).join("\n"),
+		/rss\.xml.*sitemap-index\.xml.*sitemap-0\.xml/u,
 	);
 });
 

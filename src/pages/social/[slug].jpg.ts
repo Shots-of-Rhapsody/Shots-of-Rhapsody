@@ -3,9 +3,9 @@ import { lstat, readFile, realpath } from "node:fs/promises";
 import path from "node:path";
 import type { APIRoute, GetStaticPaths } from "astro";
 import sharp from "sharp";
+import { PUBLICATION_CATALOG as publicationCatalog } from "@/data/publication-catalog";
 import firstPartyManifest from "../../../provenance/first-party/manifest.json";
 import mediumManifest from "../../../provenance/medium/manifest.json";
-import publicationCatalog from "../../../provenance/publication-catalog.json";
 import archiveManifest from "../../../provenance/tai-song/manifest.json";
 import {
 	SOCIAL_IMAGE_MAX_WIDTH,

@@ -39,6 +39,10 @@ const {
 } = Astro.props;
 const className = Astro.props.class;
 const imageMetadata = typeof src === "string" ? undefined : src;
+const widths = responsiveImageWidths(variant);
+const fallbackWidth = imageMetadata
+	? Math.min(imageMetadata.width, widths.at(-1) ?? imageMetadata.width)
+	: undefined;
 
 if (
 	typeof src === "string" &&
@@ -72,7 +76,8 @@ const imageUrl =
 			src={imageMetadata}
 			formats={["avif"]}
 			fallbackFormat="webp"
-			widths={responsiveImageWidths(variant)}
+			width={fallbackWidth}
+			widths={widths}
 			sizes={responsiveImageSizes(variant)}
 			quality={DISPLAY_IMAGE_QUALITY}
 			alt={altText}

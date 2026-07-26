@@ -4,8 +4,14 @@ import process from "node:process";
 import { pathToFileURL } from "node:url";
 import { gunzipSync } from "node:zlib";
 import { parse, parseFragment } from "parse5";
+import { IS_PUBLIC_REVIEW } from "../src/data/build-mode.ts";
 import { PODCAST_SHOW } from "../src/data/podcast.ts";
-import { getApprovedPodcastEpisodes } from "../src/data/podcast-approval.ts";
+import {
+	getApprovedPodcastEpisodes,
+	getVisiblePodcastEpisodes,
+} from "../src/data/podcast-approval.ts";
+import { PUBLICATION_CATALOG } from "../src/data/publication-catalog.ts";
+import { HERO_IMAGE_WIDTHS } from "../src/utils/image-policy.ts";
 import { inspectPng, sha256 } from "./archive/lib/integrity.js";
 import { bodyTextSha256, renderBodyHtml } from "./archive/lib/render.js";
 import {
@@ -18,6 +24,17 @@ import { inspectBuiltImages } from "./verify-images.mjs";
 const DEFAULT_DIST = "dist";
 const DEFAULT_SITE = "https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/";
 const EXPECTED_ARCHIVE_COUNT = 11;
+const EXPECTED_PUBLIC_REVIEW_WRITING_COUNT = 35;
+const EXPECTED_PUBLIC_REVIEW_NONFICTION_COUNT = 24;
+const EXPECTED_PUBLIC_REVIEW_PODCAST_COUNT = 1;
+const EXPECTED_PUBLIC_REVIEW_HTML_COUNT = 44;
+const EXPECTED_PUBLIC_REVIEW_PAGEFIND_COUNT = 36;
+const PUBLIC_REVIEW_ROBOTS_DIRECTIVES = Object.freeze([
+	"noindex",
+	"nofollow",
+	"noarchive",
+	"nosnippet",
+]);
 const RELEASE_TARGETS = new Set(["archive", "catalog"]);
 const REQUIRED_NON_POST_ROUTES = [
 	"",
@@ -39,11 +56,16 @@ export function parseArguments(argv) {
 		site: DEFAULT_SITE,
 		requireSignoff: false,
 		releaseTarget: "catalog",
+		reviewBuild: false,
 	};
 	for (let index = 0; index < argv.length; index += 1) {
 		const argument = argv[index];
 		if (argument === "--require-signoff") {
 			options.requireSignoff = true;
+			continue;
+		}
+		if (argument === "--review-build") {
+			options.reviewBuild = true;
 			continue;
 		}
 		if (
@@ -663,19 +685,22 @@ export async function loadPublicationManifest(
 	archiveManifest,
 	releaseTarget,
 	failures,
+	catalogOverride,
 ) {
 	if (releaseTarget === "archive") return archiveManifest;
-	const catalogPath = path.join(
-		repoRoot,
-		"provenance",
-		"publication-catalog.json",
-	);
-	let catalog;
-	try {
-		catalog = JSON.parse(await readFile(catalogPath, "utf8"));
-	} catch (error) {
-		failures.push(`Publication catalog is invalid (${error.message})`);
-		return archiveManifest;
+	let catalog = catalogOverride;
+	if (catalog === undefined) {
+		const catalogPath = path.join(
+			repoRoot,
+			"provenance",
+			"publication-catalog.json",
+		);
+		try {
+			catalog = JSON.parse(await readFile(catalogPath, "utf8"));
+		} catch (error) {
+			failures.push(`Publication catalog is invalid (${error.message})`);
+			return archiveManifest;
+		}
 	}
 	if (
 		!hasExactKeys(catalog, new Set(["schemaVersion", "entries"])) ||
@@ -737,7 +762,8 @@ export async function loadPublicationManifest(
 					: `${label}: new cataloged writing must declare draft: false`,
 			);
 		}
-		const title = frontmatterJsonValue(markdown, "title", label, failures);
+		const titleField = entry.source === "medium" ? "exportTitle" : "title";
+		const title = frontmatterJsonValue(markdown, titleField, label, failures);
 		const published = frontmatterJsonValue(
 			markdown,
 			"published",
@@ -801,6 +827,85 @@ export function validateNoProjectRobots(relativePaths) {
 		: [
 				"the project artifact must not emit robots.txt because only the GitHub Pages host-root file can control crawling",
 			];
+}
+
+function normalizedRobotsDirectives(value) {
+	return String(value ?? "")
+		.split(",")
+		.map((directive) => directive.trim().toLowerCase())
+		.filter(Boolean);
+}
+
+export function publicReviewRobotsFailures(html, label = "HTML page") {
+	const values = metaContent(html, "robots");
+	if (values.length !== 1) {
+		return [`${label}: public review requires exactly one robots directive`];
+	}
+	const directives = normalizedRobotsDirectives(values[0]);
+	if (
+		directives.length !== PUBLIC_REVIEW_ROBOTS_DIRECTIVES.length ||
+		directives.some(
+			(directive, index) =>
+				directive !== PUBLIC_REVIEW_ROBOTS_DIRECTIVES[index],
+		)
+	) {
+		return [
+			`${label}: public review robots directive must be ${PUBLIC_REVIEW_ROBOTS_DIRECTIVES.join(", ")}`,
+		];
+	}
+	return [];
+}
+
+export function publicReviewSyndicationFailures(relativePaths) {
+	const forbidden = relativePaths.filter((relativePath) => {
+		const normalized = normalizedPath(relativePath);
+		return (
+			normalized === "rss.xml" ||
+			normalized === "sitemap-index.xml" ||
+			/^sitemap-\d+\.xml$/u.test(normalized)
+		);
+	});
+	return forbidden.length === 0
+		? []
+		: [
+				`public review must not emit RSS or sitemap artifacts: ${forbidden.join(", ")}`,
+			];
+}
+
+function verifyPublicReviewContract(manifest, podcastEpisodes, failures) {
+	const archiveCount = manifest.articles.filter(
+		(article) => article.source === "tai-song",
+	).length;
+	const nonfiction = manifest.articles.filter(
+		(article) =>
+			article.source === "medium" && article.section === "nonfiction",
+	);
+	if (
+		manifest.articles.length !== EXPECTED_PUBLIC_REVIEW_WRITING_COUNT ||
+		archiveCount !== EXPECTED_ARCHIVE_COUNT ||
+		nonfiction.length !== EXPECTED_PUBLIC_REVIEW_NONFICTION_COUNT ||
+		manifest.articles.some(
+			(article) =>
+				article.source === "first-party" ||
+				(article.source === "medium" && article.section !== "nonfiction"),
+		)
+	) {
+		failures.push(
+			"public review must contain exactly 11 sealed works and 24 Medium nonfiction essays",
+		);
+	}
+	if (podcastEpisodes.length !== EXPECTED_PUBLIC_REVIEW_PODCAST_COUNT) {
+		failures.push("public review must contain exactly one podcast episode");
+	}
+}
+
+async function verifyPublicReviewRobots(htmlFiles, distRoot, failures) {
+	for (const file of htmlFiles) {
+		const relative = normalizedPath(path.relative(distRoot, file));
+		if (relative.startsWith("pagefind/")) continue;
+		const html = await readFile(file, "utf8");
+		failures.push(...publicReviewRobotsFailures(html, relative));
+	}
 }
 
 function expectedPageUrl(filePath, distRoot, site) {
@@ -1190,12 +1295,27 @@ function sameStringArray(left, right) {
 	);
 }
 
+function renderedHeroDimensions(width, height, reviewBuild) {
+	const maximumWidth = Math.max(...HERO_IMAGE_WIDTHS);
+	const renderedWidth = reviewBuild ? Math.min(width, maximumWidth) : width;
+	return {
+		width: renderedWidth,
+		height: Math.round((height * renderedWidth) / width),
+	};
+}
+
 async function verifyArchiveManifest(
 	repoRoot,
 	distRoot,
 	site,
 	failures,
-	{ requireSignoff, notices, validateReviewCommitBinding = true },
+	{
+		requireSignoff,
+		notices,
+		validateReviewCommitBinding = true,
+		verifyRssOutput = true,
+		reviewBuild = false,
+	},
 ) {
 	const manifestPath = path.join(
 		repoRoot,
@@ -1295,7 +1415,10 @@ async function verifyArchiveManifest(
 	}
 
 	const rssPath = path.join(distRoot, "rss.xml");
-	const rssXml = (await isFile(rssPath)) ? await readFile(rssPath, "utf8") : "";
+	const rssXml =
+		verifyRssOutput && (await isFile(rssPath))
+			? await readFile(rssPath, "utf8")
+			: "";
 	const rssItems = [...rssXml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map(
 		(match) => match[1],
 	);
@@ -1747,11 +1870,16 @@ async function verifyArchiveManifest(
 		} else {
 			const hero = heroImages[0];
 			const heroSources = heroMatch ? tags(heroMatch[1], "source") : [];
-			const expectedHeroWidths = [640, 960, 1280, 1600, 2048].filter(
+			const expectedHeroWidths = HERO_IMAGE_WIDTHS.filter(
 				(width) => width <= entry.image?.width,
 			);
-			if (!expectedHeroWidths.includes(entry.image?.width)) {
-				expectedHeroWidths.push(entry.image?.width);
+			const renderedDimensions = renderedHeroDimensions(
+				entry.image.width,
+				entry.image.height,
+				reviewBuild,
+			);
+			if (!expectedHeroWidths.includes(renderedDimensions.width)) {
+				expectedHeroWidths.push(renderedDimensions.width);
 			}
 			const srcsetWidths = (value = "") =>
 				value
@@ -1806,8 +1934,8 @@ async function verifyArchiveManifest(
 			if (
 				!imageClasses.has("object-contain") ||
 				imageClasses.has("object-cover") ||
-				hero.attributes.width !== String(entry.image?.width) ||
-				hero.attributes.height !== String(entry.image?.height)
+				hero.attributes.width !== String(renderedDimensions.width) ||
+				hero.attributes.height !== String(renderedDimensions.height)
 			) {
 				failures.push(
 					`${label}: visible hero does not preserve contain fit and source dimensions`,
@@ -1815,75 +1943,77 @@ async function verifyArchiveManifest(
 			}
 		}
 
-		const matchingRssItems = rssItems.filter(
-			(item) => xmlElementText(item, "link") === expectedUrl,
-		);
-		if (matchingRssItems.length !== 1) {
-			failures.push(`${label}: RSS must contain exactly one local item`);
-		} else {
-			const item = matchingRssItems[0];
-			if (xmlElementText(item, "title") !== post.title)
-				failures.push(`${label}: RSS title differs from snapshot`);
-			if (xmlElementText(item, "guid") !== expectedUrl)
-				failures.push(`${label}: RSS GUID differs from local URL`);
-			if (xmlElementText(item, "description") !== post.summary)
-				failures.push(`${label}: RSS summary differs from snapshot`);
-			if (xmlElementText(item, "dc:creator") !== post.author)
-				failures.push(`${label}: RSS author differs from snapshot`);
-			if (
-				xmlElementText(item, "pubDate") !==
-				new Date(post.published).toUTCString()
-			)
-				failures.push(`${label}: RSS publication date differs from snapshot`);
-			if (xmlElementText(item, "dc:relation") !== undefined)
-				failures.push(`${label}: RSS must not publish source provenance`);
-			if (xmlElementText(item, "dc:source") !== undefined)
-				failures.push(`${label}: RSS must not publish dc:source provenance`);
-			if (xmlElementText(item, "dcterms:modified") !== undefined)
-				failures.push(`${label}: RSS must not infer an updated timestamp`);
-			const mediaImages = tags(item, "media:content");
-			if (
-				mediaImages.length !== 1 ||
-				mediaImages[0].attributes.url !== jsonLd?.image?.url
-			) {
-				failures.push(`${label}: RSS hero URL differs from the local page`);
-			} else if (
-				mediaImages[0].attributes.type !== "image/jpeg" ||
-				mediaImages[0].attributes.width !== "1200" ||
-				mediaImages[0].attributes.height !== "1200"
-			) {
-				failures.push(`${label}: RSS social image metadata is invalid`);
-			}
-			if (xmlElementText(item, "media:description") !== post.imageCaption) {
-				failures.push(`${label}: RSS image caption differs from snapshot`);
-			}
-			const encodedContent = xmlElementText(item, "content:encoded") ?? "";
-			const encodedHeroImages = tags(encodedContent, "img").filter(
-				(tag) => tag.attributes.src === jsonLd?.image?.url,
+		if (verifyRssOutput) {
+			const matchingRssItems = rssItems.filter(
+				(item) => xmlElementText(item, "link") === expectedUrl,
 			);
-			if (
-				encodedHeroImages.length !== 1 ||
-				encodedHeroImages[0].attributes.alt !== expectedAlt
-			) {
-				failures.push(`${label}: RSS content hero alt differs from snapshot`);
+			if (matchingRssItems.length !== 1) {
+				failures.push(`${label}: RSS must contain exactly one local item`);
+			} else {
+				const item = matchingRssItems[0];
+				if (xmlElementText(item, "title") !== post.title)
+					failures.push(`${label}: RSS title differs from snapshot`);
+				if (xmlElementText(item, "guid") !== expectedUrl)
+					failures.push(`${label}: RSS GUID differs from local URL`);
+				if (xmlElementText(item, "description") !== post.summary)
+					failures.push(`${label}: RSS summary differs from snapshot`);
+				if (xmlElementText(item, "dc:creator") !== post.author)
+					failures.push(`${label}: RSS author differs from snapshot`);
+				if (
+					xmlElementText(item, "pubDate") !==
+					new Date(post.published).toUTCString()
+				)
+					failures.push(`${label}: RSS publication date differs from snapshot`);
+				if (xmlElementText(item, "dc:relation") !== undefined)
+					failures.push(`${label}: RSS must not publish source provenance`);
+				if (xmlElementText(item, "dc:source") !== undefined)
+					failures.push(`${label}: RSS must not publish dc:source provenance`);
+				if (xmlElementText(item, "dcterms:modified") !== undefined)
+					failures.push(`${label}: RSS must not infer an updated timestamp`);
+				const mediaImages = tags(item, "media:content");
+				if (
+					mediaImages.length !== 1 ||
+					mediaImages[0].attributes.url !== jsonLd?.image?.url
+				) {
+					failures.push(`${label}: RSS hero URL differs from the local page`);
+				} else if (
+					mediaImages[0].attributes.type !== "image/jpeg" ||
+					mediaImages[0].attributes.width !== "1200" ||
+					mediaImages[0].attributes.height !== "1200"
+				) {
+					failures.push(`${label}: RSS social image metadata is invalid`);
+				}
+				if (xmlElementText(item, "media:description") !== post.imageCaption) {
+					failures.push(`${label}: RSS image caption differs from snapshot`);
+				}
+				const encodedContent = xmlElementText(item, "content:encoded") ?? "";
+				const encodedHeroImages = tags(encodedContent, "img").filter(
+					(tag) => tag.attributes.src === jsonLd?.image?.url,
+				);
+				if (
+					encodedHeroImages.length !== 1 ||
+					encodedHeroImages[0].attributes.alt !== expectedAlt
+				) {
+					failures.push(`${label}: RSS content hero alt differs from snapshot`);
+				}
+				const encodedCaption = encodedContent.match(
+					/<figcaption\b[^>]*>([\s\S]*?)<\/figcaption>/i,
+				);
+				if (
+					!encodedCaption ||
+					visibleText(encodedCaption[1]) !== post.imageCaption
+				) {
+					failures.push(`${label}: RSS content caption differs from snapshot`);
+				}
+				const categories = [
+					...item.matchAll(
+						/<category>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/category>/g,
+					),
+				].map((match) => decodeHtml(match[1]));
+				const expectedCategories = [...expectedTags, post.category];
+				if (!sameStringArray(categories, expectedCategories))
+					failures.push(`${label}: RSS category order differs from snapshot`);
 			}
-			const encodedCaption = encodedContent.match(
-				/<figcaption\b[^>]*>([\s\S]*?)<\/figcaption>/i,
-			);
-			if (
-				!encodedCaption ||
-				visibleText(encodedCaption[1]) !== post.imageCaption
-			) {
-				failures.push(`${label}: RSS content caption differs from snapshot`);
-			}
-			const categories = [
-				...item.matchAll(
-					/<category>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/category>/g,
-				),
-			].map((match) => decodeHtml(match[1]));
-			const expectedCategories = [...expectedTags, post.category];
-			if (!sameStringArray(categories, expectedCategories))
-				failures.push(`${label}: RSS category order differs from snapshot`);
 		}
 	}
 
@@ -1970,7 +2100,12 @@ async function verifyHomepageMetadata(distRoot, site, manifest, failures) {
 	}
 }
 
-async function verifyCustomNotFound(distRoot, site, failures) {
+async function verifyCustomNotFound(
+	distRoot,
+	site,
+	failures,
+	expectedRobots = "noindex",
+) {
 	const notFoundPath = path.join(distRoot, "404.html");
 	if (!(await isFile(notFoundPath))) {
 		failures.push("custom 404 route is missing");
@@ -1983,8 +2118,8 @@ async function verifyCustomNotFound(distRoot, site, failures) {
 		failures.push("custom 404 must contain one branded error-page marker");
 	}
 	const robots = metaContent(html, "robots");
-	if (robots.length !== 1 || robots[0] !== "noindex") {
-		failures.push("custom 404 must have one noindex directive");
+	if (robots.length !== 1 || robots[0] !== expectedRobots) {
+		failures.push(`custom 404 must have one ${expectedRobots} directive`);
 	}
 	for (const [attribute, expectedUrl] of [
 		["data-404-home", site.toString()],
@@ -2297,6 +2432,8 @@ export async function verifyMediumRenderedBodies(
 	publicationManifest,
 	failures,
 	site = DEFAULT_SITE,
+	verifyRssOutput = true,
+	reviewBuild = false,
 ) {
 	const expectedSlugs = publicationManifest.articles
 		.filter((article) => article.source === "medium")
@@ -2338,13 +2475,15 @@ export async function verifyMediumRenderedBodies(
 	);
 	const rssPath = path.join(distRoot, "rss.xml");
 	let rssItems = [];
-	if (!(await isFile(rssPath))) {
-		failures.push("Medium rendered verification requires rss.xml");
-	} else {
-		const rssXml = await readFile(rssPath, "utf8");
-		rssItems = [...rssXml.matchAll(/<item>([\s\S]*?)<\/item>/gu)].map(
-			(match) => match[1],
-		);
+	if (verifyRssOutput) {
+		if (!(await isFile(rssPath))) {
+			failures.push("Medium rendered verification requires rss.xml");
+		} else {
+			const rssXml = await readFile(rssPath, "utf8");
+			rssItems = [...rssXml.matchAll(/<item>([\s\S]*?)<\/item>/gu)].map(
+				(match) => match[1],
+			);
+		}
 	}
 	for (const slug of expectedSlugs) {
 		const article = bySlug.get(slug);
@@ -2373,6 +2512,11 @@ export async function verifyMediumRenderedBodies(
 			failures.push(`Medium ${slug}: snapshot is invalid (${error.message})`);
 			continue;
 		}
+		const renderedHero = renderedHeroDimensions(
+			snapshot.hero.width,
+			snapshot.hero.height,
+			reviewBuild,
+		);
 		if (
 			snapshot?.slug !== slug ||
 			typeof snapshot.exportTitle !== "string" ||
@@ -2561,8 +2705,8 @@ export async function verifyMediumRenderedBodies(
 			attributeValue(heroSources[0], "type") !== "image/avif" ||
 			heroImages.length !== 1 ||
 			attributeValue(heroImages[0], "alt") !== expectedAlt ||
-			attributeValue(heroImages[0], "width") !== String(snapshot.hero?.width) ||
-			attributeValue(heroImages[0], "height") !== String(snapshot.hero?.height)
+			attributeValue(heroImages[0], "width") !== String(renderedHero.width) ||
+			attributeValue(heroImages[0], "height") !== String(renderedHero.height)
 		) {
 			failures.push(
 				`Medium ${slug}: rendered hero dimensions or alt text differ from its snapshot`,
@@ -2816,134 +2960,140 @@ export async function verifyMediumRenderedBodies(
 				}
 			}
 		}
-		const matchingRssItems = rssItems.filter(
-			(item) => xmlElementText(item, "link") === expectedUrl,
-		);
-		if (matchingRssItems.length !== 1) {
-			failures.push(`Medium ${slug}: RSS must contain exactly one local item`);
-		} else {
-			const item = matchingRssItems[0];
-			for (const [field, actual, expected] of [
-				["title", xmlElementText(item, "title"), snapshot.exportTitle],
-				["GUID", xmlElementText(item, "guid"), expectedUrl],
-				["summary", xmlElementText(item, "description"), snapshot.summary],
-				["author", xmlElementText(item, "dc:creator"), snapshot.author],
-				[
-					"publication date",
-					xmlElementText(item, "pubDate"),
-					new Date(snapshot.published).toUTCString(),
-				],
-			]) {
-				if (actual !== expected) {
+		if (verifyRssOutput) {
+			const matchingRssItems = rssItems.filter(
+				(item) => xmlElementText(item, "link") === expectedUrl,
+			);
+			if (matchingRssItems.length !== 1) {
+				failures.push(
+					`Medium ${slug}: RSS must contain exactly one local item`,
+				);
+			} else {
+				const item = matchingRssItems[0];
+				for (const [field, actual, expected] of [
+					["title", xmlElementText(item, "title"), snapshot.exportTitle],
+					["GUID", xmlElementText(item, "guid"), expectedUrl],
+					["summary", xmlElementText(item, "description"), snapshot.summary],
+					["author", xmlElementText(item, "dc:creator"), snapshot.author],
+					[
+						"publication date",
+						xmlElementText(item, "pubDate"),
+						new Date(snapshot.published).toUTCString(),
+					],
+				]) {
+					if (actual !== expected) {
+						failures.push(
+							`Medium ${slug}: RSS ${field} differs from its snapshot`,
+						);
+					}
+				}
+				for (const field of ["dc:source", "dc:relation", "dcterms:modified"]) {
+					if (xmlElementText(item, field) !== undefined) {
+						failures.push(
+							`Medium ${slug}: RSS must not expose ${field} provenance or an inferred update`,
+						);
+					}
+				}
+				const mediaImages = tags(item, "media:content");
+				if (
+					mediaImages.length !== 1 ||
+					mediaImages[0].attributes.url !== jsonLd?.image?.url ||
+					mediaImages[0].attributes.medium !== "image" ||
+					mediaImages[0].attributes.type !== "image/jpeg" ||
+					mediaImages[0].attributes.width !== "1200" ||
+					mediaImages[0].attributes.height !== "1200"
+				) {
 					failures.push(
-						`Medium ${slug}: RSS ${field} differs from its snapshot`,
+						`Medium ${slug}: RSS social image differs from the local page`,
 					);
 				}
-			}
-			for (const field of ["dc:source", "dc:relation", "dcterms:modified"]) {
-				if (xmlElementText(item, field) !== undefined) {
+				const mediaDescription = xmlElementText(item, "media:description");
+				if (
+					(snapshot.imageCaption === "" && mediaDescription !== undefined) ||
+					(snapshot.imageCaption !== "" &&
+						mediaDescription !== snapshot.imageCaption)
+				) {
 					failures.push(
-						`Medium ${slug}: RSS must not expose ${field} provenance or an inferred update`,
+						`Medium ${slug}: RSS image caption differs from its snapshot`,
 					);
 				}
-			}
-			const mediaImages = tags(item, "media:content");
-			if (
-				mediaImages.length !== 1 ||
-				mediaImages[0].attributes.url !== jsonLd?.image?.url ||
-				mediaImages[0].attributes.medium !== "image" ||
-				mediaImages[0].attributes.type !== "image/jpeg" ||
-				mediaImages[0].attributes.width !== "1200" ||
-				mediaImages[0].attributes.height !== "1200"
-			) {
-				failures.push(
-					`Medium ${slug}: RSS social image differs from the local page`,
+				const encodedContent = xmlElementText(item, "content:encoded") ?? "";
+				const encodedFragment = parseFragment(encodedContent);
+				const encodedNodes = (encodedFragment.childNodes ?? []).filter(
+					(node) => node.nodeName !== "#text" || /\S/u.test(node.value ?? ""),
 				);
-			}
-			const mediaDescription = xmlElementText(item, "media:description");
-			if (
-				(snapshot.imageCaption === "" && mediaDescription !== undefined) ||
-				(snapshot.imageCaption !== "" &&
-					mediaDescription !== snapshot.imageCaption)
-			) {
-				failures.push(
-					`Medium ${slug}: RSS image caption differs from its snapshot`,
+				const encodedLead = encodedNodes[0];
+				const encodedLeadElements = (encodedLead?.childNodes ?? []).filter(
+					(node) => Boolean(node.tagName),
 				);
-			}
-			const encodedContent = xmlElementText(item, "content:encoded") ?? "";
-			const encodedFragment = parseFragment(encodedContent);
-			const encodedNodes = (encodedFragment.childNodes ?? []).filter(
-				(node) => node.nodeName !== "#text" || /\S/u.test(node.value ?? ""),
-			);
-			const encodedLead = encodedNodes[0];
-			const encodedLeadElements = (encodedLead?.childNodes ?? []).filter(
-				(node) => Boolean(node.tagName),
-			);
-			if (
-				encodedLead?.tagName !== "section" ||
-				encodedLeadElements.length !== 3 ||
-				encodedLeadElements[0].tagName !== "h2" ||
-				nodeText(encodedLeadElements[0]) !== snapshot.title ||
-				encodedLeadElements[1].tagName !== "p" ||
-				nodeText(encodedLeadElements[1]) !== snapshot.subtitle ||
-				encodedLeadElements[2].tagName !== "p" ||
-				nodeText(encodedLeadElements[2]) !== snapshot.seriesLine
-			) {
-				failures.push(
-					`Medium ${slug}: RSS content lead differs from its approved title, subtitle, and Ledger Series sentence`,
+				if (
+					encodedLead?.tagName !== "section" ||
+					encodedLeadElements.length !== 3 ||
+					encodedLeadElements[0].tagName !== "h2" ||
+					nodeText(encodedLeadElements[0]) !== snapshot.title ||
+					encodedLeadElements[1].tagName !== "p" ||
+					nodeText(encodedLeadElements[1]) !== snapshot.subtitle ||
+					encodedLeadElements[2].tagName !== "p" ||
+					nodeText(encodedLeadElements[2]) !== snapshot.seriesLine
+				) {
+					failures.push(
+						`Medium ${slug}: RSS content lead differs from its approved title, subtitle, and Ledger Series sentence`,
+					);
+				}
+				const encodedHero = encodedNodes[1];
+				const encodedHeroDescendants = [];
+				const visitEncodedHero = (node) => {
+					if (node.tagName) encodedHeroDescendants.push(node);
+					for (const child of node.childNodes ?? []) visitEncodedHero(child);
+				};
+				if (encodedHero) visitEncodedHero(encodedHero);
+				const encodedHeroImages = encodedHeroDescendants.filter(
+					(node) => node.tagName === "img",
 				);
-			}
-			const encodedHero = encodedNodes[1];
-			const encodedHeroDescendants = [];
-			const visitEncodedHero = (node) => {
-				if (node.tagName) encodedHeroDescendants.push(node);
-				for (const child of node.childNodes ?? []) visitEncodedHero(child);
-			};
-			if (encodedHero) visitEncodedHero(encodedHero);
-			const encodedHeroImages = encodedHeroDescendants.filter(
-				(node) => node.tagName === "img",
-			);
-			const encodedHeroCaptions = encodedHeroDescendants.filter(
-				(node) => node.tagName === "figcaption",
-			);
-			if (
-				encodedHero?.tagName !== "figure" ||
-				encodedHeroImages.length !== 1 ||
-				attributeValue(encodedHeroImages[0], "src") !== jsonLd?.image?.url ||
-				attributeValue(encodedHeroImages[0], "alt") !== expectedAlt ||
-				attributeValue(encodedHeroImages[0], "width") !== "1200" ||
-				attributeValue(encodedHeroImages[0], "height") !== "1200"
-			) {
-				failures.push(
-					`Medium ${slug}: RSS content hero alt differs from its snapshot`,
+				const encodedHeroCaptions = encodedHeroDescendants.filter(
+					(node) => node.tagName === "figcaption",
 				);
-			}
-			if (
-				(snapshot.imageCaption === "" && encodedHeroCaptions.length !== 0) ||
-				(snapshot.imageCaption !== "" &&
-					(encodedHeroCaptions.length !== 1 ||
-						nodeText(encodedHeroCaptions[0]) !== snapshot.imageCaption))
-			) {
-				failures.push(
-					`Medium ${slug}: RSS content caption differs from its snapshot`,
-				);
-			}
-			const categories = [
-				...item.matchAll(
-					/<category>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/category>/gu,
-				),
-			].map((match) => decodeHtml(match[1]));
-			if (!sameStringArray(categories, [...snapshot.tags, snapshot.category])) {
-				failures.push(
-					`Medium ${slug}: RSS category order differs from its snapshot`,
-				);
-			}
-			const rssBody = archiveBodyStructureFromNodes(encodedNodes.slice(2));
-			const snapshotBody = archiveBodyStructure(snapshot.bodyHtml);
-			if (JSON.stringify(rssBody) !== JSON.stringify(snapshotBody)) {
-				failures.push(
-					`Medium ${slug}: RSS content body differs from its snapshot`,
-				);
+				if (
+					encodedHero?.tagName !== "figure" ||
+					encodedHeroImages.length !== 1 ||
+					attributeValue(encodedHeroImages[0], "src") !== jsonLd?.image?.url ||
+					attributeValue(encodedHeroImages[0], "alt") !== expectedAlt ||
+					attributeValue(encodedHeroImages[0], "width") !== "1200" ||
+					attributeValue(encodedHeroImages[0], "height") !== "1200"
+				) {
+					failures.push(
+						`Medium ${slug}: RSS content hero alt differs from its snapshot`,
+					);
+				}
+				if (
+					(snapshot.imageCaption === "" && encodedHeroCaptions.length !== 0) ||
+					(snapshot.imageCaption !== "" &&
+						(encodedHeroCaptions.length !== 1 ||
+							nodeText(encodedHeroCaptions[0]) !== snapshot.imageCaption))
+				) {
+					failures.push(
+						`Medium ${slug}: RSS content caption differs from its snapshot`,
+					);
+				}
+				const categories = [
+					...item.matchAll(
+						/<category>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/category>/gu,
+					),
+				].map((match) => decodeHtml(match[1]));
+				if (
+					!sameStringArray(categories, [...snapshot.tags, snapshot.category])
+				) {
+					failures.push(
+						`Medium ${slug}: RSS category order differs from its snapshot`,
+					);
+				}
+				const rssBody = archiveBodyStructureFromNodes(encodedNodes.slice(2));
+				const snapshotBody = archiveBodyStructure(snapshot.bodyHtml);
+				if (JSON.stringify(rssBody) !== JSON.stringify(snapshotBody)) {
+					failures.push(
+						`Medium ${slug}: RSS content body differs from its snapshot`,
+					);
+				}
 			}
 		}
 		const actual = archiveBodyStructureFromNodes(bodies[0].childNodes ?? []);
@@ -3184,8 +3334,11 @@ async function verifyPagefind(
 		);
 	}
 	const languages = Object.keys(entry.languages ?? {});
-	const expectedPageCount =
-		manifest.articles.length + podcastEpisodes.length * 2;
+	const expectedPodcastPageCount = podcastEpisodes.reduce(
+		(count, episode) => count + 1 + (episode.transcript === null ? 0 : 1),
+		0,
+	);
+	const expectedPageCount = manifest.articles.length + expectedPodcastPageCount;
 	if (
 		languages.length !== 1 ||
 		languages[0] !== "en" ||
@@ -3227,7 +3380,11 @@ async function verifyPagefind(
 		),
 		...podcastEpisodes.flatMap((episode) => [
 			`${new URL(`podcast/${episode.slug}/`, site)}\n${episode.title}`,
-			`${new URL(`podcast/${episode.slug}/transcript/`, site)}\n${episode.title} — Transcript`,
+			...(episode.transcript === null
+				? []
+				: [
+						`${new URL(`podcast/${episode.slug}/transcript/`, site)}\n${episode.title} — Transcript`,
+					]),
 		]),
 	];
 	compareExactValues(
@@ -3274,6 +3431,7 @@ export function verifyPodcastArtifacts(
 	distRoot,
 	podcastEpisodes,
 	failures,
+	{ allowMissingTranscript = false } = {},
 ) {
 	const expected = new Set();
 	if (podcastEpisodes.length > 0) {
@@ -3281,14 +3439,16 @@ export function verifyPodcastArtifacts(
 		expected.add(PODCAST_SHOW.artwork.publicPath.replace(/^\//u, ""));
 		for (const episode of podcastEpisodes) {
 			expected.add(`podcast/${episode.slug}/index.html`);
-			expected.add(`podcast/${episode.slug}/transcript/index.html`);
 			expected.add(episode.audio.publicPath.replace(/^\//u, ""));
 			if (episode.transcript === null) {
-				failures.push(
-					`Approved podcast episode lacks a transcript: ${episode.slug}`,
-				);
+				if (!allowMissingTranscript) {
+					failures.push(
+						`Approved podcast episode lacks a transcript: ${episode.slug}`,
+					);
+				}
 				continue;
 			}
+			expected.add(`podcast/${episode.slug}/transcript/index.html`);
 			if (
 				episode.transcript.publicPath !== `/podcast/${episode.slug}/transcript/`
 			) {
@@ -3330,12 +3490,23 @@ export async function verifyBuiltSite({
 	repoRoot: repoRootValue = process.cwd(),
 	requireSignoff = false,
 	releaseTarget = "catalog",
+	reviewBuild = false,
 } = {}) {
 	const distRoot = path.resolve(dist);
 	const repoRoot = path.resolve(repoRootValue);
 	const site = new URL(siteValue);
 	if (!RELEASE_TARGETS.has(releaseTarget))
 		throw new Error(`Unsupported release target: ${releaseTarget}`);
+	if (reviewBuild !== IS_PUBLIC_REVIEW) {
+		throw new Error(
+			"--review-build and SHOTS_BUILD_MODE=public-review must be used together",
+		);
+	}
+	if (reviewBuild && (releaseTarget !== "catalog" || requireSignoff)) {
+		throw new Error(
+			"public review requires the catalog target and cannot claim completed signoff",
+		);
+	}
 	if (!site.pathname.endsWith("/")) site.pathname += "/";
 	const files = await walk(distRoot);
 	const htmlFiles = files.filter((file) => file.endsWith(".html"));
@@ -3347,7 +3518,7 @@ export async function verifyBuiltSite({
 	const postPages = [];
 	for (const file of htmlFiles)
 		await verifyHtml(file, distRoot, site, failures, postPages);
-	await verifyRss(distRoot, site, failures, postPages);
+	if (!reviewBuild) await verifyRss(distRoot, site, failures, postPages);
 	const archiveManifest = await verifyArchiveManifest(
 		repoRoot,
 		distRoot,
@@ -3357,6 +3528,8 @@ export async function verifyBuiltSite({
 			requireSignoff,
 			notices,
 			validateReviewCommitBinding: true,
+			verifyRssOutput: !reviewBuild,
+			reviewBuild,
 		},
 	);
 	let expectedPageUrls = [];
@@ -3367,14 +3540,26 @@ export async function verifyBuiltSite({
 	let nonfictionEntries = 0;
 	let publicationManifest = archiveManifest;
 	const podcastEpisodes =
-		releaseTarget === "catalog" ? getApprovedPodcastEpisodes() : [];
+		releaseTarget === "catalog"
+			? reviewBuild
+				? getVisiblePodcastEpisodes()
+				: getApprovedPodcastEpisodes()
+			: [];
 	if (archiveManifest) {
 		publicationManifest = await loadPublicationManifest(
 			repoRoot,
 			archiveManifest,
 			releaseTarget,
 			failures,
+			reviewBuild ? PUBLICATION_CATALOG : undefined,
 		);
+		if (reviewBuild) {
+			verifyPublicReviewContract(
+				publicationManifest,
+				podcastEpisodes,
+				failures,
+			);
+		}
 		const additionalRoutes = [];
 		if (
 			publicationManifest.articles.some(
@@ -3386,7 +3571,9 @@ export async function verifyBuiltSite({
 			additionalRoutes.push("podcast/");
 			for (const episode of podcastEpisodes) {
 				additionalRoutes.push(`podcast/${episode.slug}/`);
-				additionalRoutes.push(`podcast/${episode.slug}/transcript/`);
+				if (episode.transcript !== null) {
+					additionalRoutes.push(`podcast/${episode.slug}/transcript/`);
+				}
 			}
 		}
 		expectedPageUrls = await verifyLaunchRoutes(
@@ -3398,12 +3585,14 @@ export async function verifyBuiltSite({
 			failures,
 			additionalRoutes,
 		);
-		rssItems = await verifyLaunchRss(
-			distRoot,
-			publicationManifest,
-			site,
-			failures,
-		);
+		if (!reviewBuild) {
+			rssItems = await verifyLaunchRss(
+				distRoot,
+				publicationManifest,
+				site,
+				failures,
+			);
+		}
 		await verifyHomePublicationDates(
 			repoRoot,
 			distRoot,
@@ -3427,6 +3616,8 @@ export async function verifyBuiltSite({
 			publicationManifest,
 			failures,
 			site,
+			!reviewBuild,
+			reviewBuild,
 		);
 		authorWorks = await verifyAuthorPage(
 			repoRoot,
@@ -3451,21 +3642,64 @@ export async function verifyBuiltSite({
 		publicationManifest ?? { articles: [] },
 		failures,
 	);
-	await verifyCustomNotFound(distRoot, site, failures);
-	await verifySitemap(distRoot, site, expectedPageUrls, failures);
+	await verifyCustomNotFound(
+		distRoot,
+		site,
+		failures,
+		reviewBuild ? PUBLIC_REVIEW_ROBOTS_DIRECTIVES.join(", ") : "noindex",
+	);
+	if (reviewBuild) {
+		await verifyPublicReviewRobots(htmlFiles, distRoot, failures);
+		failures.push(
+			...publicReviewSyndicationFailures(
+				files.map((file) => normalizedPath(path.relative(distRoot, file))),
+			),
+		);
+	} else {
+		await verifySitemap(distRoot, site, expectedPageUrls, failures);
+	}
 	for (const failure of validateNoProjectRobots(
 		files.map((file) => normalizedPath(path.relative(distRoot, file))),
 	)) {
 		failures.push(failure);
 	}
 	await verifyNoPrivateBuildReferences(files, failures);
-	verifyPodcastArtifacts(files, distRoot, podcastEpisodes, failures);
+	verifyPodcastArtifacts(files, distRoot, podcastEpisodes, failures, {
+		allowMissingTranscript: reviewBuild,
+	});
 	const imageVerification = await inspectBuiltImages({
 		dist: distRoot,
 		repoRoot,
 		files,
+		publicationCatalog: reviewBuild ? PUBLICATION_CATALOG : undefined,
 	});
 	failures.push(...imageVerification.failures);
+	if (reviewBuild) {
+		const publicHtmlCount = htmlFiles.filter(
+			(file) =>
+				!normalizedPath(path.relative(distRoot, file)).startsWith("pagefind/"),
+		).length;
+		if (publicHtmlCount !== EXPECTED_PUBLIC_REVIEW_HTML_COUNT) {
+			failures.push(
+				`public review must emit exactly ${EXPECTED_PUBLIC_REVIEW_HTML_COUNT} HTML pages`,
+			);
+		}
+		if (postPages.length !== EXPECTED_PUBLIC_REVIEW_WRITING_COUNT) {
+			failures.push(
+				`public review must emit exactly ${EXPECTED_PUBLIC_REVIEW_WRITING_COUNT} writing routes`,
+			);
+		}
+		if (nonfictionEntries !== EXPECTED_PUBLIC_REVIEW_NONFICTION_COUNT) {
+			failures.push(
+				`public review must expose exactly ${EXPECTED_PUBLIC_REVIEW_NONFICTION_COUNT} nonfiction entries`,
+			);
+		}
+		if (pagefindRecords !== EXPECTED_PUBLIC_REVIEW_PAGEFIND_COUNT) {
+			failures.push(
+				`public review must emit exactly ${EXPECTED_PUBLIC_REVIEW_PAGEFIND_COUNT} Pagefind records`,
+			);
+		}
+	}
 
 	if (failures.length > 0) {
 		throw new Error(

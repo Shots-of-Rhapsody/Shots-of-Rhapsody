@@ -11,11 +11,15 @@ import {
 	type TestInfo,
 	test,
 } from "@playwright/test";
+import { IS_PUBLIC_REVIEW } from "../../src/data/build-mode";
 import { PODCAST_EPISODES, PODCAST_SHOW } from "../../src/data/podcast";
-import { getApprovedPodcastEpisodes } from "../../src/data/podcast-approval";
+import { getVisiblePodcastEpisodes } from "../../src/data/podcast-approval";
+import { PUBLICATION_CATALOG } from "../../src/data/publication-catalog";
 import {
+	CARD_IMAGE_WIDTHS,
 	FEATURED_IMAGE_SIZES,
 	HERO_IMAGE_SIZES,
+	HERO_IMAGE_WIDTHS,
 } from "../../src/utils/image-policy";
 import {
 	hasExternalPlaywrightBaseURL,
@@ -89,18 +93,16 @@ const articles: ArchiveArticle[] = manifest.articles.map((entry) => {
 		ending,
 	};
 });
-const publicationCatalog = JSON.parse(
-	readFileSync(
-		path.join(repositoryRoot, "provenance/publication-catalog.json"),
-		"utf8",
-	),
-) as { schemaVersion: number; entries: PublicationCatalogEntry[] };
+const publicationCatalog = PUBLICATION_CATALOG as {
+	readonly schemaVersion: number;
+	readonly entries: readonly PublicationCatalogEntry[];
+};
 if (publicationCatalog.schemaVersion !== 1) {
 	throw new Error(
 		"Publication catalog schema is not supported by browser tests",
 	);
 }
-const catalogEntries = publicationCatalog.entries;
+const catalogEntries = [...publicationCatalog.entries];
 const mediumManifest = JSON.parse(
 	readFileSync(
 		path.join(repositoryRoot, "provenance/medium/manifest.json"),
@@ -110,6 +112,32 @@ const mediumManifest = JSON.parse(
 	state: string;
 	articles: Array<{ slug: string; paths: { snapshot: string } }>;
 };
+const mediumInventory = JSON.parse(
+	readFileSync(
+		path.join(repositoryRoot, "provenance/medium/inventory.json"),
+		"utf8",
+	),
+) as {
+	candidates: Array<{
+		suggestedSlug: string;
+		include: boolean;
+		classification: { authorship: string; format: string };
+	}>;
+};
+const excludedResponseSlugs = mediumInventory.candidates
+	.filter(
+		(candidate) =>
+			!candidate.include &&
+			candidate.classification.authorship === "response" &&
+			candidate.classification.format === "response",
+	)
+	.map(({ suggestedSlug }) => suggestedSlug)
+	.toSorted();
+if (excludedResponseSlugs.length !== 9) {
+	throw new Error(
+		"Browser tests require exactly nine excluded Medium responses",
+	);
+}
 const catalogMediumSlugs = catalogEntries
 	.filter(({ source }) => source === "medium")
 	.map(({ slug }) => slug)
@@ -156,7 +184,7 @@ const nonfictionEntries = catalogEntries.filter(
 	({ section }) => section === "nonfiction",
 );
 const nonfictionSlugs = nonfictionEntries.map(({ slug }) => slug).toSorted();
-const approvedPodcastEpisodes = getApprovedPodcastEpisodes();
+const approvedPodcastEpisodes = getVisiblePodcastEpisodes();
 const approvedPodcastSlugs = approvedPodcastEpisodes
 	.map(({ slug }) => slug)
 	.toSorted();
@@ -346,6 +374,12 @@ async function expectHealthyPage(page: Page, relativePath: string) {
 	expect(response, `No navigation response for ${relativePath}`).not.toBeNull();
 	expect(response?.status(), relativePath).toBe(200);
 	expect(await page.locator("body").innerText()).not.toHaveLength(0);
+	if (IS_PUBLIC_REVIEW) {
+		await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+			"content",
+			"noindex, nofollow, noarchive, nosnippet",
+		);
+	}
 	await expectPrivacySafeState(page, `Page ${relativePath || "/"}`);
 	expect(await page.locator(".vite-error-overlay").count()).toBe(0);
 
@@ -471,7 +505,9 @@ test.describe("public release inventory", () => {
 			if (match) discovered.add(decodeURIComponent(match[1]));
 		}
 		expect([...discovered].toSorted()).toEqual(creativeWritingSlugs);
-		expect(await page.locator("[data-featured-card-slug]").count()).toBe(3);
+		expect(
+			await page.locator("#start-here [data-featured-card-slug]").count(),
+		).toBe(3);
 		const recentNonfictionSlugs = await page
 			.locator("#nonfiction [data-editorial-slug]")
 			.evaluateAll((items) =>
@@ -555,7 +591,7 @@ test.describe("public release inventory", () => {
 		).toEqual([1200, 630]);
 	});
 
-	test("archive, author, RSS, sitemap, and reader pages match the aggregate catalog", async ({
+	test("archive, author, feeds, and reader pages match the aggregate catalog", async ({
 		page,
 		request,
 	}) => {
@@ -585,16 +621,25 @@ test.describe("public release inventory", () => {
 		);
 
 		const rss = await request.get(sitePath("rss.xml"));
-		expect(rss.status()).toBe(200);
-		const rssBody = await rss.text();
-		expectNoPrivateReference(rssBody, "RSS response");
-		expect(rssBody.match(/<item>/g) ?? []).toHaveLength(
-			expectedWritingSlugs.length,
-		);
-		for (const slug of expectedWritingSlugs) {
-			expect(rssBody).toContain(
-				`https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/posts/${slug}/`,
+		if (IS_PUBLIC_REVIEW) {
+			expect(rss.status()).toBe(404);
+			expect((await request.get(sitePath("sitemap-index.xml"))).status()).toBe(
+				404,
 			);
+		} else {
+			expect(rss.status()).toBe(200);
+			const rssBody = await rss.text();
+			expectNoPrivateReference(rssBody, "RSS response");
+			expect(rssBody.match(/<item>/g) ?? []).toHaveLength(
+				expectedWritingSlugs.length,
+			);
+			for (const slug of expectedWritingSlugs) {
+				expect(rssBody).toContain(
+					`https://shots-of-rhapsody.github.io/Shots-of-Rhapsody/posts/${slug}/`,
+				);
+			}
+		}
+		for (const slug of expectedWritingSlugs) {
 			const response = await request.get(sitePath(`posts/${slug}/`));
 			expect(response.status(), `posts/${slug}/`).toBe(200);
 			expectNoPrivateReference(
@@ -603,7 +648,11 @@ test.describe("public release inventory", () => {
 			);
 		}
 
-		for (const route of ["sitemap-index.xml", "about/", "rights/"]) {
+		for (const route of [
+			...(!IS_PUBLIC_REVIEW ? ["sitemap-index.xml"] : []),
+			"about/",
+			"rights/",
+		]) {
 			const response = await request.get(sitePath(route));
 			expect(response.status(), route).toBe(200);
 			expectNoPrivateReference(await response.text(), `${route} response`);
@@ -630,7 +679,9 @@ test.describe("public release inventory", () => {
 						"podcast/",
 						...approvedPodcastEpisodes.flatMap((episode) => [
 							`podcast/${episode.slug}/`,
-							`podcast/${episode.slug}/transcript/`,
+							...(episode.transcript
+								? [`podcast/${episode.slug}/transcript/`]
+								: []),
 						]),
 					]
 				: []),
@@ -679,10 +730,9 @@ test.describe("public release inventory", () => {
 		await expect(page.locator(".nav-links a")).toHaveText(
 			expectedPrimaryNavigation,
 		);
-		await expect(page.locator(".site-footer nav a")).toHaveText([
-			"Rights",
-			"Subscribe",
-		]);
+		await expect(page.locator(".site-footer nav a")).toHaveText(
+			IS_PUBLIC_REVIEW ? ["Rights"] : ["Rights", "Subscribe"],
+		);
 
 		await expectHealthyPage(page, "about/");
 		await expect(page.getByText(authorBio, { exact: true })).toBeVisible();
@@ -826,13 +876,10 @@ test.describe("public release inventory", () => {
 		).toBe(200);
 
 		for (const episode of approvedPodcastEpisodes) {
-			if (episode.transcript === null) {
-				throw new Error(
-					`${episode.slug}: approved podcast episode lacks a transcript`,
-				);
-			}
 			const audioPath = publicPath(episode.audio.publicPath);
-			const transcriptPath = publicPath(episode.transcript.publicPath);
+			const transcriptPath = episode.transcript
+				? publicPath(episode.transcript.publicPath)
+				: undefined;
 			const audioPathname = new URL(audioPath, playwrightOrigin).pathname;
 			const prematureAudioRequests: string[] = [];
 			const recordAudioRequest = (browserRequest: Request) => {
@@ -861,10 +908,21 @@ test.describe("public release inventory", () => {
 				"type",
 				episode.audio.mimeType,
 			);
-			await expect(page.locator(`a[href="${transcriptPath}"]`)).toHaveText([
-				"Read transcript",
-				"Read transcript",
-			]);
+			if (transcriptPath) {
+				await expect(page.locator(`a[href="${transcriptPath}"]`)).toHaveText([
+					"Read transcript",
+					"Read transcript",
+				]);
+			} else {
+				await expect(
+					page.getByRole("link", { name: "Read transcript" }),
+				).toHaveCount(0);
+				expect(
+					(
+						await request.get(sitePath(`podcast/${episode.slug}/transcript/`))
+					).status(),
+				).toBe(404);
+			}
 			const download = page.locator(`a[href="${audioPath}"][download]`);
 			await expect(download).toBeVisible();
 			await expect(download).toContainText("Download audio");
@@ -928,9 +986,12 @@ test.describe("public release inventory", () => {
 				expect(playback.currentTime).toBeCloseTo(playback.target, 0);
 			}
 
-			await expectHealthyPage(page, `podcast/${episode.slug}/transcript/`);
-			await expect(page.locator("[data-podcast-transcript]")).not.toBeEmpty();
-			await expectNoSeriousAxeViolations(page);
+			if (transcriptPath) {
+				await expectHealthyPage(page, `podcast/${episode.slug}/transcript/`);
+				await expect(page.locator("[data-podcast-transcript]")).not.toBeEmpty();
+				await expectNoSeriousAxeViolations(page);
+			}
+			if (!hasExternalPlaywrightBaseURL) continue;
 
 			const head = await request.head(audioPath);
 			expect(head.status(), `${episode.slug}: audio HEAD`).toBe(200);
@@ -1036,10 +1097,14 @@ test.describe("public release inventory", () => {
 						name: "podcast episode",
 						route: `podcast/${approvedPodcastEpisodes[0].slug}/`,
 					},
-					{
-						name: "podcast transcript",
-						route: `podcast/${approvedPodcastEpisodes[0].slug}/transcript/`,
-					},
+					...(approvedPodcastEpisodes[0].transcript
+						? [
+								{
+									name: "podcast transcript",
+									route: `podcast/${approvedPodcastEpisodes[0].slug}/transcript/`,
+								},
+							]
+						: []),
 				]
 			: []),
 	]) {
@@ -1062,6 +1127,17 @@ test.describe("public release inventory", () => {
 		});
 	}
 
+	for (const responseSlug of excludedResponseSlugs) {
+		test(`excluded response route is absent: ${responseSlug}`, async ({
+			request,
+		}) => {
+			const response = await request.get(
+				sitePath(`posts/${encodeURIComponent(responseSlug)}/`),
+			);
+			expect(response.status()).toBe(404);
+		});
+	}
+
 	test("unknown routes use the branded, non-indexable 404 page", async ({
 		page,
 		request,
@@ -1074,7 +1150,7 @@ test.describe("public release inventory", () => {
 		await expect(page.locator("[data-custom-404]")).toHaveCount(1);
 		await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
 			"content",
-			"noindex",
+			IS_PUBLIC_REVIEW ? "noindex, nofollow, noarchive, nosnippet" : "noindex",
 		);
 		await expect(page.locator("[data-404-home]")).toHaveAttribute(
 			"href",
@@ -1182,10 +1258,13 @@ test("responsive manuscript layout and initial images meet the release matrix", 
 						"sizes",
 						FEATURED_IMAGE_SIZES,
 					);
-					await expect(picture.locator("img")).toHaveAttribute(
-						"srcset",
-						/320w.+480w.+640w/u,
-					);
+					const cardSrcset = await picture
+						.locator("img")
+						.getAttribute("srcset");
+					expect(cardSrcset).not.toBeNull();
+					for (const imageWidth of CARD_IMAGE_WIDTHS) {
+						expect(cardSrcset).toContain(`${imageWidth}w`);
+					}
 				}
 				if (width === 320) {
 					await expect(page.locator("#works")).toBeVisible();
@@ -1552,10 +1631,17 @@ test.describe("Medium article presentation contract", () => {
 				const hero = heroFigure.locator("img");
 				await expect(hero).toHaveCount(1);
 				await expect(hero).toHaveAttribute("alt", article.imageAlt ?? "");
-				await expect(hero).toHaveAttribute("width", String(article.hero.width));
+				const renderedHeroWidth = Math.min(
+					article.hero.width,
+					HERO_IMAGE_WIDTHS.at(-1) ?? article.hero.width,
+				);
+				const renderedHeroHeight = Math.round(
+					(article.hero.height * renderedHeroWidth) / article.hero.width,
+				);
+				await expect(hero).toHaveAttribute("width", String(renderedHeroWidth));
 				await expect(hero).toHaveAttribute(
 					"height",
-					String(article.hero.height),
+					String(renderedHeroHeight),
 				);
 				await expect(hero).toHaveCSS("object-fit", "contain");
 				const sourceWrapper = page.locator(

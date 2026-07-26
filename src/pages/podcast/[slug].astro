@@ -2,15 +2,16 @@
 import PodcastPlayer from "@components/podcast/PodcastPlayer.astro";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getSiteRootUrl, url } from "@utils/url-utils";
+import { IS_PUBLIC_REVIEW } from "@/data/build-mode";
 import {
 	getPodcastPublicationBlockers,
 	PODCAST_SHOW,
 	type PodcastEpisode,
 } from "@/data/podcast";
-import { getApprovedPodcastEpisodes } from "@/data/podcast-approval";
+import { getVisiblePodcastEpisodes } from "@/data/podcast-approval";
 
 export function getStaticPaths() {
-	return getApprovedPodcastEpisodes().map((episode) => ({
+	return getVisiblePodcastEpisodes().map((episode) => ({
 		params: { slug: episode.slug },
 		props: { episode },
 	}));
@@ -22,24 +23,31 @@ interface Props {
 
 const { episode } = Astro.props;
 const blockers = getPodcastPublicationBlockers(episode);
-if (blockers.length > 0) {
+if (!IS_PUBLIC_REVIEW && blockers.length > 0) {
 	throw new Error(
 		`Podcast route refused an incomplete episode: ${episode.slug} (${blockers.join(", ")})`,
 	);
 }
 if (
-	episode.description === null ||
-	episode.author === null ||
-	episode.publishedAt === null ||
-	episode.guid === null ||
-	episode.transcript === null ||
-	episode.audio.durationSeconds === null
+	!IS_PUBLIC_REVIEW &&
+	(episode.description === null ||
+		episode.author === null ||
+		episode.publishedAt === null ||
+		episode.guid === null ||
+		episode.transcript === null ||
+		episode.audio.durationSeconds === null)
 ) {
 	throw new Error(
 		`Podcast episode unexpectedly failed type narrowing: ${episode.slug}`,
 	);
 }
 
+const description =
+	episode.description ?? "Episode 1: Modular Ethics, by Tai Song.";
+const author = episode.author ?? PODCAST_SHOW.author;
+const published = episode.publishedAt
+	? new Date(episode.publishedAt)
+	: undefined;
 const siteUrl = Astro.site ?? Astro.url;
 const siteRoot = getSiteRootUrl(siteUrl);
 const episodePath = url(`/podcast/${episode.slug}/`);
@@ -49,91 +57,100 @@ const artworkUrl = new URL(
 	url(PODCAST_SHOW.artwork.publicPath),
 	siteUrl,
 ).toString();
-const duration = `PT${episode.audio.durationSeconds}S`;
-const published = new Date(episode.publishedAt);
-const jsonLd = {
-	"@context": "https://schema.org",
-	"@type": "PodcastEpisode",
-	"@id": `${canonicalUrl}#episode`,
-	name: episode.title,
-	description: episode.description,
-	url: canonicalUrl,
-	datePublished: published.toISOString(),
-	episodeNumber: episode.episodeNumber ?? undefined,
-	identifier: episode.guid,
-	author: {
-		"@type": "Person",
-		name: episode.author,
-	},
-	partOfSeries: {
-		"@type": "PodcastSeries",
-		"@id": `${new URL(url("/podcast/"), siteUrl)}#series`,
-		name: PODCAST_SHOW.title,
-		url: new URL(url("/podcast/"), siteUrl).toString(),
-	},
-	associatedMedia: {
-		"@type": "AudioObject",
-		contentUrl: audioUrl,
-		encodingFormat: episode.audio.mimeType,
-		contentSize: String(episode.audio.byteLength),
-		duration,
-	},
-	image: artworkUrl,
-	publisher: {
-		"@type": "Organization",
-		"@id": `${siteRoot}#organization`,
-		name: "Shots of Rhapsody",
-		url: siteRoot.toString(),
-	},
-};
-const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c");
+const duration =
+	episode.audio.durationSeconds === null
+		? undefined
+		: `PT${episode.audio.durationSeconds}S`;
+const jsonLd = IS_PUBLIC_REVIEW
+	? null
+	: {
+			"@context": "https://schema.org",
+			"@type": "PodcastEpisode",
+			"@id": `${canonicalUrl}#episode`,
+			name: episode.title,
+			description,
+			url: canonicalUrl,
+			datePublished: published?.toISOString(),
+			episodeNumber: episode.episodeNumber ?? undefined,
+			identifier: episode.guid ?? undefined,
+			author: {
+				"@type": "Person",
+				name: author,
+			},
+			partOfSeries: {
+				"@type": "PodcastSeries",
+				"@id": `${new URL(url("/podcast/"), siteUrl)}#series`,
+				name: PODCAST_SHOW.title,
+				url: new URL(url("/podcast/"), siteUrl).toString(),
+			},
+			associatedMedia: {
+				"@type": "AudioObject",
+				contentUrl: audioUrl,
+				encodingFormat: episode.audio.mimeType,
+				contentSize: String(episode.audio.byteLength),
+				duration,
+			},
+			image: artworkUrl,
+			publisher: {
+				"@type": "Organization",
+				"@id": `${siteRoot}#organization`,
+				name: "Shots of Rhapsody",
+				url: siteRoot.toString(),
+			},
+		};
+const jsonLdString =
+	jsonLd === null ? null : JSON.stringify(jsonLd).replace(/</g, "\\u003c");
 ---
 
 <MainGridLayout
 	title={episode.title}
-	description={episode.description}
+	description={description}
 	canonicalUrl={canonicalUrl}
 	socialImage={artworkUrl}
 	socialImageAlt={`Cover artwork for ${PODCAST_SHOW.title}`}
 	socialImageWidth={PODCAST_SHOW.artwork.width}
 	socialImageHeight={PODCAST_SHOW.artwork.height}
 	socialImageType={PODCAST_SHOW.artwork.mimeType}
-	author={episode.author}
+	author={author}
 	published={published}
 	setOGTypeArticle={true}
 >
 	<meta slot="head" property="og:audio" content={audioUrl} />
 	<meta slot="head" property="og:audio:secure_url" content={audioUrl} />
 	<meta slot="head" property="og:audio:type" content={episode.audio.mimeType} />
-	<script is:inline slot="head" type="application/ld+json" set:html={jsonLdString}></script>
+	{jsonLdString && <script is:inline slot="head" type="application/ld+json" set:html={jsonLdString}></script>}
 
 	<article class="podcast-episode" data-podcast-episode={episode.slug}>
 		<header class="podcast-episode__header">
 			<p class="podcast-episode__kicker" data-pagefind-meta="type">Podcast</p>
 			<h1 data-pagefind-body data-pagefind-meta="title">{episode.title}</h1>
-			<p data-pagefind-body>{episode.description}</p>
+			<p data-pagefind-body>{description}</p>
 			<div class="podcast-episode__meta">
-				<span>By {episode.author}</span>
-				<span aria-hidden="true">·</span>
-				<time datetime={published.toISOString()}>
-					{new Intl.DateTimeFormat("en-US", {
-						year: "numeric",
-						month: "long",
-						day: "numeric",
-						timeZone: "UTC",
-					}).format(published)}
-				</time>
+				<span>By {author}</span>
+				{published && <span aria-hidden="true">·</span>}
+				{published && (
+					<time datetime={published.toISOString()}>
+						{new Intl.DateTimeFormat("en-US", {
+							year: "numeric",
+							month: "long",
+							day: "numeric",
+							timeZone: "UTC",
+						}).format(published)}
+					</time>
+				)}
 			</div>
 		</header>
 
 		<PodcastPlayer episode={episode} show={PODCAST_SHOW} />
 
-		<section class="podcast-episode__transcript" aria-labelledby="transcript-title">
-			<p class="podcast-episode__kicker">Accessible text</p>
-			<h2 id="transcript-title">Transcript</h2>
-			<p>Follow the episode in text.</p>
-			<a href={url(episode.transcript.publicPath)}>Read transcript</a>
-		</section>
+		{episode.transcript && (
+			<section class="podcast-episode__transcript" aria-labelledby="transcript-title">
+				<p class="podcast-episode__kicker">Accessible text</p>
+				<h2 id="transcript-title">Transcript</h2>
+				<p>Follow the episode in text.</p>
+				<a href={url(episode.transcript.publicPath)}>Read transcript</a>
+			</section>
+		)}
 	</article>
 </MainGridLayout>
 

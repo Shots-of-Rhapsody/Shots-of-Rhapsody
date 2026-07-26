@@ -2,6 +2,19 @@ name: Deploy Astro to GitHub Pages
 
 on:
   workflow_dispatch:
+    inputs:
+      deployment_mode:
+        description: Deploy the approved release or the isolated public review build
+        required: true
+        type: choice
+        default: review
+        options:
+          - review
+          - release
+      expected_sha:
+        description: Full 40-character commit SHA required for a public review deployment
+        required: false
+        type: string
 
 concurrency:
   group: pages
@@ -12,22 +25,44 @@ permissions:
 
 jobs:
   build:
-    name: Build and verify release artifact
-    if: github.ref == 'refs/heads/main'
+    name: Build and verify selected Pages artifact
+    if: >-
+      (inputs.deployment_mode == 'release' && github.ref == 'refs/heads/main') ||
+      (inputs.deployment_mode == 'review' && github.ref == 'refs/heads/codex/v1.0-integration')
     runs-on: ubuntu-latest
     env:
       TZ: UTC
+      SHOTS_BUILD_MODE: ${{ inputs.deployment_mode == 'review' && 'public-review' || 'release' }}
     steps:
-      - name: Checkout approved main commit
+      - name: Checkout the selected commit
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
       - name: Confirm the release commit is the current main tip
+        if: inputs.deployment_mode == 'release'
         shell: bash
         run: |
           git fetch --no-tags origin main
           test "$(git rev-parse HEAD)" = "$(git rev-parse refs/remotes/origin/main)"
+
+      - name: Confirm the review commit and branch tip
+        if: inputs.deployment_mode == 'review'
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ inputs.expected_sha }}
+        run: |
+          if [[ ! "${EXPECTED_SHA}" =~ ^[0-9a-fA-F]{40}$ ]]; then
+            echo "expected_sha must be a full 40-character commit SHA" >&2
+            exit 1
+          fi
+          expected_sha_normalized="${EXPECTED_SHA,,}"
+          test "${GITHUB_REF}" = "refs/heads/codex/v1.0-integration"
+          test "${GITHUB_SHA}" = "${expected_sha_normalized}"
+          test "$(git rev-parse HEAD)" = "${expected_sha_normalized}"
+          git fetch --no-tags origin \
+            '+refs/heads/codex/v1.0-integration:refs/remotes/origin/codex/v1.0-integration'
+          test "$(git rev-parse refs/remotes/origin/codex/v1.0-integration)" = "${expected_sha_normalized}"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
@@ -60,10 +95,17 @@ jobs:
         run: pnpm archive:verify --require-complete
 
       - name: Verify complete approved writing and podcast evidence
+        if: inputs.deployment_mode == 'release'
         run: |
           pnpm content:verify --require-complete
           pnpm medium:verify --require-complete
           pnpm podcast:verify --require-complete
+
+      - name: Verify public-review writing and podcast sources
+        if: inputs.deployment_mode == 'review'
+        run: |
+          pnpm medium:verify --require-complete
+          pnpm podcast:verify
 
       - name: Run non-writing lint
         run: pnpm lint:ci
@@ -75,9 +117,15 @@ jobs:
         run: pnpm build
 
       - name: Verify routes, feeds, metadata, and human signoff
+        if: inputs.deployment_mode == 'release'
         run: pnpm verify:release
 
+      - name: Verify the isolated public-review artifact
+        if: inputs.deployment_mode == 'review'
+        run: pnpm verify:review
+
       - name: Verify complete built podcast publication boundary
+        if: inputs.deployment_mode == 'release'
         run: pnpm podcast:verify --require-complete --with-built
 
       - name: Install the pinned Chromium browser
@@ -90,7 +138,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: playwright-release-evidence
+          name: ${{ inputs.deployment_mode == 'release' && 'playwright-release-evidence' || 'playwright-public-review-evidence' }}
           path: test-results/**/*.png
           if-no-files-found: error
           retention-days: 14
@@ -134,7 +182,7 @@ jobs:
         continue-on-error: true
         run: node scripts/release/run-gitleaks.mjs --report "${{ runner.temp }}/gitleaks-report.json"
 
-      - name: Run independent release-candidate disclosure audit
+      - name: Run independent publication disclosure audit
         run: >-
           node scripts/release/audit-repository.mjs
           --gitleaks-report "${{ runner.temp }}/gitleaks-report.json"
@@ -158,7 +206,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: public-disclosure-release-evidence
+          name: ${{ inputs.deployment_mode == 'release' && 'public-disclosure-release-evidence' || 'public-disclosure-review-evidence' }}
           path: |
             ${{ runner.temp }}/gitleaks-report.json
             ${{ runner.temp }}/public-release-audit.json
@@ -169,10 +217,23 @@ jobs:
         run: git diff --check HEAD^
 
       - name: Reconfirm the verified commit is still the main tip
+        if: inputs.deployment_mode == 'release'
         shell: bash
         run: |
           git fetch --no-tags origin main
           test "$(git rev-parse HEAD)" = "$(git rev-parse refs/remotes/origin/main)"
+
+      - name: Reconfirm the verified review commit is still the branch tip
+        if: inputs.deployment_mode == 'review'
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ inputs.expected_sha }}
+        run: |
+          expected_sha_normalized="${EXPECTED_SHA,,}"
+          git fetch --no-tags origin \
+            '+refs/heads/codex/v1.0-integration:refs/remotes/origin/codex/v1.0-integration'
+          test "$(git rev-parse HEAD)" = "${expected_sha_normalized}"
+          test "$(git rev-parse refs/remotes/origin/codex/v1.0-integration)" = "${expected_sha_normalized}"
 
       - name: Upload verified Pages artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
@@ -180,9 +241,11 @@ jobs:
           path: ./dist
 
   deploy:
-    name: Deploy approved main artifact
+    name: Deploy verified Pages artifact
     needs: build
-    if: github.ref == 'refs/heads/main'
+    if: >-
+      (inputs.deployment_mode == 'release' && github.ref == 'refs/heads/main') ||
+      (inputs.deployment_mode == 'review' && github.ref == 'refs/heads/codex/v1.0-integration')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -200,10 +263,25 @@ jobs:
           fetch-depth: 1
 
       - name: Require the dispatched commit to remain the main tip
+        if: inputs.deployment_mode == 'release'
         shell: bash
         run: |
           git fetch --no-tags origin main
           test "$(git rev-parse HEAD)" = "$(git rev-parse refs/remotes/origin/main)"
+
+      - name: Require the dispatched review commit to remain the branch tip
+        if: inputs.deployment_mode == 'review'
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ inputs.expected_sha }}
+        run: |
+          expected_sha_normalized="${EXPECTED_SHA,,}"
+          test "${GITHUB_REF}" = "refs/heads/codex/v1.0-integration"
+          test "${GITHUB_SHA}" = "${expected_sha_normalized}"
+          test "$(git rev-parse HEAD)" = "${expected_sha_normalized}"
+          git fetch --no-tags origin \
+            '+refs/heads/codex/v1.0-integration:refs/remotes/origin/codex/v1.0-integration'
+          test "$(git rev-parse refs/remotes/origin/codex/v1.0-integration)" = "${expected_sha_normalized}"
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
@@ -215,7 +293,9 @@ jobs:
   production-smoke:
     name: Verify the deployed production site
     needs: deploy
-    if: github.ref == 'refs/heads/main'
+    if: >-
+      (inputs.deployment_mode == 'release' && github.ref == 'refs/heads/main') ||
+      (inputs.deployment_mode == 'review' && github.ref == 'refs/heads/codex/v1.0-integration')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -223,6 +303,7 @@ jobs:
     env:
       TZ: UTC
       PLAYWRIGHT_BASE_URL: ${{ needs.deploy.outputs.page_url }}
+      SHOTS_BUILD_MODE: ${{ inputs.deployment_mode == 'review' && 'public-review' || 'release' }}
     steps:
       - name: Checkout the deployed test contract
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -279,11 +360,11 @@ jobs:
       - name: Run production browser and accessibility smoke tests
         run: pnpm test:e2e
 
-      - name: Upload privacy-verified production screenshots
+      - name: Upload privacy-verified deployment screenshots
         if: success()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: playwright-production-evidence
+          name: ${{ inputs.deployment_mode == 'release' && 'playwright-production-evidence' || 'playwright-public-review-production-evidence' }}
           path: test-results/**/*.png
           if-no-files-found: error
           retention-days: 14

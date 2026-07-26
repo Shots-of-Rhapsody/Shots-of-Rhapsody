@@ -12,6 +12,7 @@
 		"check": "astro check",
 		"build": "astro build && pagefind --site dist",
 		"verify:site": "node scripts/verify-built-site.mjs",
+		"verify:review": "node scripts/verify-built-site.mjs --review-build",
 		"verify:release": "node scripts/release/verify-release.mjs",
 		"verify:semantic": "node scripts/compare-built-html.mjs",
 		"preview": "astro preview",

@@ -4,6 +4,7 @@ import "../styles/tailwind.css";
 
 import { getRssUrl, url } from "@utils/url-utils";
 import { profileConfig, siteConfig } from "@/config";
+import { IS_PUBLIC_REVIEW } from "@/data/build-mode";
 
 interface Props {
 	title?: string;
@@ -62,12 +63,17 @@ const siteLang = (lang || siteConfig.lang).replace("_", "-");
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content={metadataDescription} />
 		<meta name="author" content={metadataAuthor} />
+		{IS_PUBLIC_REVIEW && (
+			<meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+		)}
 		<meta name="theme-color" content="#f5efdf" media="(prefers-color-scheme: light)" />
 		<meta name="theme-color" content="#1b1d1a" media="(prefers-color-scheme: dark)" />
 		<title>{pageTitle}</title>
 		<link rel="canonical" href={canonical} />
 		<link rel="icon" href={url("/mark.svg")} type="image/svg+xml" />
-		<link rel="alternate" type="application/rss+xml" title={siteConfig.title} href={getRssUrl(Astro.site ?? Astro.url)} />
+		{!IS_PUBLIC_REVIEW && (
+			<link rel="alternate" type="application/rss+xml" title={siteConfig.title} href={getRssUrl(Astro.site ?? Astro.url)} />
+		)}
 
 		<meta property="og:site_name" content={siteConfig.title} />
 		<meta property="og:url" content={canonical} />

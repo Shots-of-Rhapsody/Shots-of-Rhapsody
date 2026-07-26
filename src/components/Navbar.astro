@@ -1,14 +1,14 @@
 ---
 import { getCollection } from "astro:content";
 import { url } from "@utils/url-utils";
-import { getApprovedPodcastEpisodes } from "@/data/podcast-approval";
+import { getVisiblePodcastEpisodes } from "@/data/podcast-approval";
 import Search from "./Search.astro";
 
 const posts = await getCollection("posts");
 const hasNonfiction = posts.some(
 	(entry) => entry.data.section === "nonfiction",
 );
-const hasPodcast = getApprovedPodcastEpisodes().length > 0;
+const hasPodcast = getVisiblePodcastEpisodes().length > 0;
 const links = [
 	{ label: "Works", href: url("/archive/") },
 	...(hasNonfiction

@@ -1,6 +1,6 @@
 import type { CollectionEntry } from "astro:content";
-import publicationCatalog from "../../provenance/publication-catalog.json";
 import manifest from "../../provenance/tai-song/manifest.json";
+import { PUBLICATION_CATALOG as publicationCatalog } from "./publication-catalog";
 
 export const MANIFEST_SLUGS = [
 	"before-the-sky-went-quiet-part-i-the-girl-who-faded",

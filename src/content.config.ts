@@ -4,9 +4,10 @@ import { z } from "astro/zod";
 import firstPartyManifestJson from "../provenance/first-party/manifest.json";
 import claimReviewsJson from "../provenance/medium/claim-reviews.json";
 import mediumManifestJson from "../provenance/medium/manifest.json";
-import publicationCatalog from "../provenance/publication-catalog.json";
 import contentSignoffsJson from "../provenance/reviews/content-signoffs-v2.json";
 import manifest from "../provenance/tai-song/manifest.json";
+import { IS_PUBLIC_REVIEW } from "./data/build-mode";
+import { PUBLICATION_CATALOG as publicationCatalog } from "./data/publication-catalog";
 import type { ContentSignoffV2 } from "./data/signoffs";
 import { generateContentId } from "./utils/content-id";
 
@@ -129,19 +130,20 @@ for (const entry of publicationCatalog.entries.filter(
 		mediumManifest.state !== "active" ||
 		!source ||
 		source.paths.markdown !== entry.markdown ||
-		!signoff ||
-		claimReviews.version !== 1 ||
-		claimReview?.reviewer !== "Tai Song" ||
-		claimReview?.outcome !== "passed" ||
-		claimReview?.sourceSha256 !== source.hashes.rawSource ||
-		claimReview?.outputSha256 !== source.hashes.markdown ||
-		signoff.reviewer !== "Tai Song" ||
-		signoff.accuracy !== "passed" ||
-		signoff.rights !== "passed" ||
-		signoff.sourceSha256 !== source.hashes.rawSource ||
-		signoff.outputSha256 !== source.hashes.markdown ||
-		sourceAssets.length !== reviewedAssets.length ||
-		sourceAssets.some((digest, index) => digest !== reviewedAssets[index])
+		(!IS_PUBLIC_REVIEW &&
+			(!signoff ||
+				claimReviews.version !== 1 ||
+				claimReview?.reviewer !== "Tai Song" ||
+				claimReview?.outcome !== "passed" ||
+				claimReview?.sourceSha256 !== source.hashes.rawSource ||
+				claimReview?.outputSha256 !== source.hashes.markdown ||
+				signoff.reviewer !== "Tai Song" ||
+				signoff.accuracy !== "passed" ||
+				signoff.rights !== "passed" ||
+				signoff.sourceSha256 !== source.hashes.rawSource ||
+				signoff.outputSha256 !== source.hashes.markdown ||
+				sourceAssets.length !== reviewedAssets.length ||
+				sourceAssets.some((digest, index) => digest !== reviewedAssets[index])))
 	) {
 		throw new Error(
 			`Publication catalog refuses unsigned or stale Medium article ${entry.slug}`,

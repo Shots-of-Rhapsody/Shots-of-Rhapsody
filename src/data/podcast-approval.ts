@@ -2,8 +2,10 @@ import { createHash } from "node:crypto";
 import contentSignoffsJson from "../../provenance/reviews/content-signoffs-v2.json" with {
 	type: "json",
 };
+import { IS_PUBLIC_REVIEW } from "./build-mode.ts";
 import {
 	getPublishablePodcastEpisodes,
+	getReviewablePodcastEpisodes,
 	PODCAST_SHOW,
 	type PodcastEpisode,
 	type PodcastShow,
@@ -111,4 +113,10 @@ export function getApprovedPodcastEpisodes(
 			return false;
 		}
 	});
+}
+
+export function getVisiblePodcastEpisodes(): PodcastEpisode[] {
+	return IS_PUBLIC_REVIEW
+		? getReviewablePodcastEpisodes()
+		: getApprovedPodcastEpisodes();
 }

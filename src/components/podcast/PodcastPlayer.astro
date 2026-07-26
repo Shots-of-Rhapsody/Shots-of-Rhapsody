@@ -1,6 +1,7 @@
 ---
 import { url } from "@utils/url-utils";
 import podcastArtwork from "@/assets/podcast/shots-of-rhapsody-podcast-cover.png";
+import { IS_PUBLIC_REVIEW } from "@/data/build-mode";
 import type { PodcastEpisode, PodcastShow } from "@/data/podcast";
 import ImageWrapper from "../misc/ImageWrapper.astro";
 
@@ -10,12 +11,14 @@ interface Props {
 }
 
 const { episode, show } = Astro.props;
-if (episode.transcript === null) {
+if (episode.transcript === null && !IS_PUBLIC_REVIEW) {
 	throw new Error(`Podcast episode lacks a transcript: ${episode.slug}`);
 }
 
 const audioUrl = url(episode.audio.publicPath);
-const transcriptUrl = url(episode.transcript.publicPath);
+const transcriptUrl = episode.transcript
+	? url(episode.transcript.publicPath)
+	: undefined;
 const downloadSizeMiB = (episode.audio.byteLength / 1024 ** 2).toFixed(1);
 ---
 
@@ -37,7 +40,7 @@ const downloadSizeMiB = (episode.audio.byteLength / 1024 ** 2).toFixed(1);
 			<source src={audioUrl} type={episode.audio.mimeType} />
 		</audio>
 		<nav class="podcast-player__alternatives" aria-label="Episode alternatives">
-			<a href={transcriptUrl}>Read transcript</a>
+			{transcriptUrl && <a href={transcriptUrl}>Read transcript</a>}
 			<a href={audioUrl} download>Download audio ({downloadSizeMiB} MiB)</a>
 			<a href={url("/rights/")}>Rights and permissions</a>
 		</nav>
