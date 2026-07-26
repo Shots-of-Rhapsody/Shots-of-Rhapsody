@@ -87,6 +87,43 @@
           "byteSize": 3102338
         }
       ]
+    },
+    {
+      "slug": "what-comes-after-work-designing-a-purpose-driven-life",
+      "capturedAt": "2026-07-25T14:11:15.789Z",
+      "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/what-comes-after-work-designing-a-purpose-driven-life-06fcd3447f09",
+      "paths": {
+        "snapshot": "provenance/medium/posts/what-comes-after-work-designing-a-purpose-driven-life.json",
+        "markdown": "src/content/posts/what-comes-after-work-designing-a-purpose-driven-life/index.md"
+      },
+      "hashes": {
+        "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
+        "rawSource": "sha256:a239e097acb630494ffe0d2bb51c1a6ee6af164f4684dc4bbfac79b9f82c0ba9",
+        "snapshot": "sha256:6eb415f740ab0b1dc8927fe35be91c8dae0a0505076ec18813909b3ca10cad2b",
+        "markdown": "sha256:287f5ad742e5f5a8ac9022dc56e9a84694fd1dab2bad755758c690cd0f7361d2",
+        "bodyText": "sha256:052bf8b2c5f948f41e7a12a0cf41707c36867d2f1ac2a3bbf9550446328caf3b"
+      },
+      "content": {
+        "title": "The End of Work",
+        "subtitle": "In a system where labor defines worth, automation threatens more than income.",
+        "seriesLine": "A Ledger Series article on obsolescence, automation, and the myths of labor loss.",
+        "bodyBlockCount": 54
+      },
+      "assets": [
+        {
+          "id": "hero",
+          "role": "hero",
+          "path": "src/content/posts/what-comes-after-work-designing-a-purpose-driven-life/hero.webp",
+          "sha256": "sha256:69ecacac3ce4abb5ef4e535fc082d25eec05b2d2c61411327df9f7f2e9550393",
+          "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
+          "captureSha256": "sha256:cc58d93272b42c5931b827a592ae2377a14210a3fc1c63aa60724b9fb24bb8f0",
+          "pixelSha256": "sha256:9eedfbf2e0284849f88ce3d1b0d68af6cb2575739d33b060fe84332ef0927685",
+          "mimeType": "image/webp",
+          "width": 1800,
+          "height": 1800,
+          "byteSize": 2360566
+        }
+      ]
     }
   ]
 }
