@@ -11,6 +11,11 @@ import {
 	getVisiblePodcastEpisodes,
 } from "../src/data/podcast-approval.ts";
 import { PUBLICATION_CATALOG } from "../src/data/publication-catalog.ts";
+import {
+	getPublishedPostMarkdownPath,
+	isMasterFolder,
+	masterFolderForSection,
+} from "../src/utils/content-path.ts";
 import { HERO_IMAGE_WIDTHS } from "../src/utils/image-policy.ts";
 import { inspectPng, sha256 } from "./archive/lib/integrity.js";
 import { bodyTextSha256, renderBodyHtml } from "./archive/lib/render.js";
@@ -707,12 +712,12 @@ export async function loadPublicationManifest(
 	}
 	if (
 		!hasExactKeys(catalog, new Set(["schemaVersion", "entries"])) ||
-		catalog.schemaVersion !== 1 ||
+		catalog.schemaVersion !== 2 ||
 		!Array.isArray(catalog.entries) ||
 		catalog.entries.length < EXPECTED_ARCHIVE_COUNT
 	) {
 		failures.push(
-			"Publication catalog must use the exact version 1 contract and preserve the sealed archive",
+			"Publication catalog must use the exact version 2 contract and preserve the sealed archive",
 		);
 		return archiveManifest;
 	}
@@ -729,15 +734,18 @@ export async function loadPublicationManifest(
 		if (
 			!hasExactKeys(
 				entry,
-				new Set(["slug", "source", "markdown", "section"]),
+				new Set(["slug", "source", "markdown", "section", "masterFolder"]),
 			) ||
 			typeof entry.slug !== "string" ||
 			!/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(entry.slug) ||
 			seenSlugs.has(entry.slug) ||
 			!allowedSources.has(entry.source) ||
 			!allowedSections.has(entry.section) ||
+			!isMasterFolder(entry.masterFolder) ||
+			entry.masterFolder !== masterFolderForSection(entry.section) ||
 			(entry.source === "medium" && entry.section !== "nonfiction") ||
-			entry.markdown !== `src/content/posts/${entry.slug}/index.md`
+			entry.markdown !==
+				getPublishedPostMarkdownPath(entry.masterFolder, entry.slug)
 		) {
 			failures.push(`${label}: entry contract is invalid or duplicated`);
 			continue;
@@ -791,6 +799,7 @@ export async function loadPublicationManifest(
 			slug: entry.slug,
 			source: entry.source,
 			section: entry.section,
+			masterFolder: entry.masterFolder,
 			title,
 			published,
 			paths: { markdown: entry.markdown },
@@ -2165,7 +2174,7 @@ async function stagedMediumMarkdownPaths(repoRoot, failures) {
 		const { slug } = article;
 		const { markdown } = article.paths;
 		const label = `Medium staging manifest ${slug}`;
-		if (markdown !== `src/content/posts/${slug}/index.md`) {
+		if (markdown !== getPublishedPostMarkdownPath("nonfiction", slug)) {
 			failures.push(`${label}: Markdown path is not bound to its slug`);
 			continue;
 		}
@@ -2182,7 +2191,11 @@ async function stagedMediumMarkdownPaths(repoRoot, failures) {
 
 export async function verifyDraftSources(repoRoot, manifest, failures) {
 	const postsRoot = path.join(repoRoot, "src", "content", "posts");
-	const markdownFiles = (await walk(postsRoot)).filter((file) =>
+	const draftsRoot = path.join(repoRoot, "src", "content", "drafts");
+	const publishedMarkdown = (await walk(postsRoot)).filter((file) =>
+		file.toLowerCase().endsWith(".md"),
+	);
+	const draftMarkdown = (await walk(draftsRoot)).filter((file) =>
 		file.toLowerCase().endsWith(".md"),
 	);
 	const publishedPaths = new Set(
@@ -2193,7 +2206,7 @@ export async function verifyDraftSources(repoRoot, manifest, failures) {
 		),
 	);
 	const stagedMediumPaths = await stagedMediumMarkdownPaths(repoRoot, failures);
-	for (const file of markdownFiles) {
+	for (const file of publishedMarkdown) {
 		const draft = frontmatterDraftValue(await readFile(file, "utf8"));
 		const normalized = normalizedPath(path.resolve(file));
 		const cataloged = publishedPaths.has(normalized);
@@ -2206,6 +2219,75 @@ export async function verifyDraftSources(repoRoot, manifest, failures) {
 			failures.push(
 				`Uncataloged writing must remain an explicit draft: ${normalizedPath(path.relative(repoRoot, file))}`,
 			);
+	}
+	for (const file of draftMarkdown) {
+		const draft = frontmatterDraftValue(await readFile(file, "utf8"));
+		if (draft !== true)
+			failures.push(
+				`Writing stored under src/content/drafts must remain an explicit draft: ${normalizedPath(path.relative(repoRoot, file))}`,
+			);
+	}
+}
+
+const EXPECTED_DRAFT_FILES = [
+	"Modular Ethics/Modular Ethics.md",
+	"Modular Ethics/Modular Ethics.png",
+	"The Last Cup/The Last Cup.md",
+	"The Last Cup/The Last Cup.png",
+	"guide/cover.jpeg",
+	"guide/index.md",
+	"video.md",
+];
+
+export async function verifyContentLayout(repoRoot, manifest, failures) {
+	const postsRoot = path.join(repoRoot, "src", "content", "posts");
+	const topLevel = await readdir(postsRoot, { withFileTypes: true });
+	const topLevelShape = topLevel
+		.map(
+			(entry) => `${entry.isDirectory() ? "directory" : "other"}:${entry.name}`,
+		)
+		.sort();
+	if (
+		JSON.stringify(topLevelShape) !==
+		JSON.stringify(["directory:fiction", "directory:nonfiction"])
+	) {
+		failures.push(
+			"Published content root must contain only the fiction and nonfiction directories",
+		);
+	}
+
+	for (const masterFolder of ["fiction", "nonfiction"]) {
+		const expected = manifest.articles
+			.filter((article) => article.masterFolder === masterFolder)
+			.map((article) => article.slug)
+			.sort();
+		const actualEntries = await readdir(path.join(postsRoot, masterFolder), {
+			withFileTypes: true,
+		});
+		const actual = actualEntries
+			.filter((entry) => entry.isDirectory())
+			.map((entry) => entry.name)
+			.sort();
+		if (
+			actualEntries.some((entry) => !entry.isDirectory()) ||
+			JSON.stringify(actual) !== JSON.stringify(expected)
+		) {
+			failures.push(
+				`Published ${masterFolder} directories differ from the publication catalog`,
+			);
+		}
+	}
+
+	const draftsRoot = path.join(repoRoot, "src", "content", "drafts");
+	const actualDraftFiles = (await walk(draftsRoot))
+		.map((file) => normalizedPath(path.relative(draftsRoot, file)))
+		.sort();
+	if (
+		JSON.stringify(actualDraftFiles) !== JSON.stringify(EXPECTED_DRAFT_FILES)
+	) {
+		failures.push(
+			"Draft content root must contain exactly the four preserved legacy drafts and their assets",
+		);
 	}
 }
 
@@ -3631,6 +3713,8 @@ export async function verifyBuiltSite({
 			failures,
 			podcastEpisodes,
 		);
+		if (releaseTarget === "catalog")
+			await verifyContentLayout(repoRoot, publicationManifest, failures);
 		await verifyDraftSources(repoRoot, publicationManifest, failures);
 	}
 	await verifyHomepageMetadata(

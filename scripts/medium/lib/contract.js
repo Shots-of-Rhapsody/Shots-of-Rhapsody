@@ -1,5 +1,6 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { getPublishedPostsRoot } from "../../../src/utils/content-path.ts";
 
 export const INVENTORY_SCHEMA_VERSION = 1;
 export const MANIFEST_SCHEMA_VERSION = 1;
@@ -238,7 +239,10 @@ export function getMediumPaths(repoRoot = DEFAULT_REPO_ROOT) {
 			"summary-fallbacks.v1.json",
 		),
 		snapshotRoot: path.join(root, "provenance", "medium", "posts"),
-		postsRoot: path.join(root, "src", "content", "posts"),
+		postsRoot: path.join(
+			root,
+			...getPublishedPostsRoot("nonfiction").split("/"),
+		),
 	};
 }
 

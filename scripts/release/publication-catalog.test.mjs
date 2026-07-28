@@ -38,6 +38,16 @@ test("release and review modes use the same exact 35-work catalog", async () => 
 			catalog.entries.filter((entry) => entry.section === "nonfiction").length,
 			24,
 		);
+		assert.equal(
+			catalog.entries.filter((entry) => entry.masterFolder === "fiction")
+				.length,
+			11,
+		);
+		assert.equal(
+			catalog.entries.filter((entry) => entry.masterFolder === "nonfiction")
+				.length,
+			24,
+		);
 	}
 });
 
@@ -75,8 +85,9 @@ test("the v1 catalog rejects missing, extra, and path-drifted writing", async ()
 	extra.entries.push({
 		slug: "unapproved-work",
 		source: "first-party",
-		markdown: "src/content/posts/unapproved-work/index.md",
+		markdown: "src/content/posts/nonfiction/unapproved-work/index.md",
 		section: "nonfiction",
+		masterFolder: "nonfiction",
 	});
 	assert.throws(
 		() =>
@@ -86,5 +97,19 @@ test("the v1 catalog rejects missing, extra, and path-drifted writing", async ()
 				publicationCatalog: extra,
 			}),
 		/permits only/u,
+	);
+
+	const misplaced = structuredClone(fixture.publicationCatalog);
+	misplaced.entries[mediumIndex].masterFolder = "fiction";
+	misplaced.entries[mediumIndex].markdown =
+		`src/content/posts/fiction/${misplaced.entries[mediumIndex].slug}/index.md`;
+	assert.throws(
+		() =>
+			createEffectivePublicationCatalog({
+				mode: "release",
+				...fixture,
+				publicationCatalog: misplaced,
+			}),
+		/invalid publication entry/u,
 	);
 });

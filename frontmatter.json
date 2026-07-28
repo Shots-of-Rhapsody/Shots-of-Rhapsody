@@ -5,15 +5,26 @@
   "frontMatter.content.publicFolder": "public",
   "frontMatter.content.pageFolders": [
     {
-      "title": "posts",
-      "path": "[[workspace]]/src/content/posts"
+      "title": "Published Fiction",
+      "path": "[[workspace]]/src/content/posts/fiction",
+      "previewPath": "/Shots-of-Rhapsody/posts",
+      "trailingSlash": true,
+      "disableCreation": true
+    },
+    {
+      "title": "Published Non-Fiction",
+      "path": "[[workspace]]/src/content/posts/nonfiction",
+      "previewPath": "/Shots-of-Rhapsody/posts",
+      "trailingSlash": true,
+      "disableCreation": true
     }
   ],
   "frontMatter.taxonomy.contentTypes": [
     {
       "name": "default",
       "pageBundle": true,
-      "previewPath": "'blog'",
+      "previewPath": "/Shots-of-Rhapsody/posts",
+      "trailingSlash": true,
       "filePrefix": null,
       "clearEmpty": true,
       "fields": [

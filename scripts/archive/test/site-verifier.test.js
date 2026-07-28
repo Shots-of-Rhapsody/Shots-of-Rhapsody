@@ -19,6 +19,7 @@ import {
 	publicReviewRobotsFailures,
 	publicReviewSyndicationFailures,
 	validateNoProjectRobots,
+	verifyContentLayout,
 	verifyDraftSources,
 	verifyMediumRenderedBodies,
 	verifyNoPrivateBuildReferences,
@@ -72,7 +73,7 @@ function validMediumStagingManifest(slug, markdown) {
 					{
 						id: "hero",
 						role: "hero",
-						path: `src/content/posts/${slug}/hero.webp`,
+						path: `src/content/posts/nonfiction/${slug}/hero.webp`,
 						sha256: hash,
 						acquisitionManifestSha256: hash,
 						captureSha256: hash,
@@ -268,8 +269,8 @@ test("catalog publication mode preserves the sealed archive and exact contract",
 	const entries = [];
 	for (let index = 1; index <= 11; index += 1) {
 		const slug = `archive-${index}`;
-		const markdown = `src/content/posts/${slug}/index.md`;
-		await mkdir(path.join(root, "src", "content", "posts", slug), {
+		const markdown = `src/content/posts/fiction/${slug}/index.md`;
+		await mkdir(path.join(root, "src", "content", "posts", "fiction", slug), {
 			recursive: true,
 		});
 		await writeFile(
@@ -277,12 +278,18 @@ test("catalog publication mode preserves the sealed archive and exact contract",
 			`---\ntitle: ${JSON.stringify(`Archive ${index}`)}\npublished: ${JSON.stringify(`2026-07-${String(index).padStart(2, "0")}T00:00:00.000Z`)}\n---\n`,
 		);
 		articles.push({ slug, paths: { markdown } });
-		entries.push({ slug, source: "tai-song", markdown, section: "fiction" });
+		entries.push({
+			slug,
+			source: "tai-song",
+			markdown,
+			section: "fiction",
+			masterFolder: "fiction",
+		});
 	}
 	await mkdir(path.join(root, "provenance"), { recursive: true });
 	await writeFile(
 		path.join(root, "provenance", "publication-catalog.json"),
-		JSON.stringify({ schemaVersion: 1, entries }),
+		JSON.stringify({ schemaVersion: 2, entries }),
 	);
 	const failures = [];
 	const manifest = await loadPublicationManifest(
@@ -297,7 +304,7 @@ test("catalog publication mode preserves the sealed archive and exact contract",
 	await writeFile(
 		path.join(root, "provenance", "publication-catalog.json"),
 		JSON.stringify({
-			schemaVersion: 1,
+			schemaVersion: 2,
 			entries: [{ ...entries[0], unexpected: true }, ...entries.slice(1)],
 		}),
 	);
@@ -311,10 +318,13 @@ test("catalog publication mode preserves the sealed archive and exact contract",
 	assert.match(malformedFailures.join("\n"), /entry contract is invalid/u);
 
 	const mediumSlug = "medium-essay";
-	const mediumMarkdown = `src/content/posts/${mediumSlug}/index.md`;
-	await mkdir(path.join(root, "src", "content", "posts", mediumSlug), {
-		recursive: true,
-	});
+	const mediumMarkdown = `src/content/posts/fiction/${mediumSlug}/index.md`;
+	await mkdir(
+		path.join(root, "src", "content", "posts", "fiction", mediumSlug),
+		{
+			recursive: true,
+		},
+	);
 	await writeFile(
 		path.join(root, ...mediumMarkdown.split("/")),
 		'---\ntitle: "Medium Essay"\npublished: "2026-07-25T00:00:00.000Z"\ndraft: false\nsection: "fiction"\n---\n',
@@ -322,7 +332,7 @@ test("catalog publication mode preserves the sealed archive and exact contract",
 	await writeFile(
 		path.join(root, "provenance", "publication-catalog.json"),
 		JSON.stringify({
-			schemaVersion: 1,
+			schemaVersion: 2,
 			entries: [
 				...entries,
 				{
@@ -330,6 +340,7 @@ test("catalog publication mode preserves the sealed archive and exact contract",
 					source: "medium",
 					markdown: mediumMarkdown,
 					section: "fiction",
+					masterFolder: "fiction",
 				},
 			],
 		}),
@@ -344,6 +355,69 @@ test("catalog publication mode preserves the sealed archive and exact contract",
 	assert.match(classificationFailures.join("\n"), /entry contract is invalid/u);
 });
 
+test("content layout binds published slugs to two master folders and preserves four drafts", async (context) => {
+	const root = await mkdtemp(path.join(tmpdir(), "content-layout-"));
+	context.after(() => rm(root, { recursive: true, force: true }));
+	const manifest = {
+		articles: [
+			{ slug: "fiction-work", masterFolder: "fiction" },
+			{ slug: "nonfiction-work", masterFolder: "nonfiction" },
+		],
+	};
+	for (const article of manifest.articles) {
+		await mkdir(
+			path.join(
+				root,
+				"src",
+				"content",
+				"posts",
+				article.masterFolder,
+				article.slug,
+			),
+			{ recursive: true },
+		);
+	}
+	for (const relative of [
+		"Modular Ethics/Modular Ethics.md",
+		"Modular Ethics/Modular Ethics.png",
+		"The Last Cup/The Last Cup.md",
+		"The Last Cup/The Last Cup.png",
+		"guide/cover.jpeg",
+		"guide/index.md",
+		"video.md",
+	]) {
+		const target = path.join(root, "src", "content", "drafts", relative);
+		await mkdir(path.dirname(target), { recursive: true });
+		await writeFile(target, "fixture");
+	}
+
+	const failures = [];
+	await verifyContentLayout(root, manifest, failures);
+	assert.deepEqual(failures, []);
+
+	await writeFile(
+		path.join(root, "src", "content", "posts", "unexpected.md"),
+		"",
+	);
+	const unexpectedFailures = [];
+	await verifyContentLayout(root, manifest, unexpectedFailures);
+	assert.match(
+		unexpectedFailures.join("\n"),
+		/only the fiction and nonfiction directories/u,
+	);
+
+	const misplacedFailures = [];
+	await verifyContentLayout(
+		root,
+		{ articles: [{ slug: "fiction-work", masterFolder: "nonfiction" }] },
+		misplacedFailures,
+	);
+	assert.match(
+		misplacedFailures.join("\n"),
+		/Published (?:fiction|nonfiction) directories differ/u,
+	);
+});
+
 test("manifest-bound Medium staging stays private without requiring draft true", async (context) => {
 	const root = await mkdtemp(path.join(tmpdir(), "medium-staging-boundary-"));
 	context.after(() => rm(root, { recursive: true, force: true }));
@@ -351,8 +425,8 @@ test("manifest-bound Medium staging stays private without requiring draft true",
 	const entries = [];
 	for (let index = 1; index <= 11; index += 1) {
 		const slug = `archive-${index}`;
-		const markdown = `src/content/posts/${slug}/index.md`;
-		await mkdir(path.join(root, "src", "content", "posts", slug), {
+		const markdown = `src/content/posts/fiction/${slug}/index.md`;
+		await mkdir(path.join(root, "src", "content", "posts", "fiction", slug), {
 			recursive: true,
 		});
 		await writeFile(
@@ -360,20 +434,29 @@ test("manifest-bound Medium staging stays private without requiring draft true",
 			`---\ntitle: ${JSON.stringify(`Archive ${index}`)}\npublished: ${JSON.stringify(`2026-07-${String(index).padStart(2, "0")}T00:00:00.000Z`)}\n---\n`,
 		);
 		articles.push({ slug, paths: { markdown } });
-		entries.push({ slug, source: "tai-song", markdown, section: "fiction" });
+		entries.push({
+			slug,
+			source: "tai-song",
+			markdown,
+			section: "fiction",
+			masterFolder: "fiction",
+		});
 	}
 
 	const stagedSlug = "staged-medium-essay";
-	const stagedMarkdown = `src/content/posts/${stagedSlug}/index.md`;
+	const stagedMarkdown = `src/content/posts/nonfiction/${stagedSlug}/index.md`;
 	const unknownSlug = "unknown-essay";
-	const unknownMarkdown = `src/content/posts/${unknownSlug}/index.md`;
+	const unknownMarkdown = `src/content/posts/nonfiction/${unknownSlug}/index.md`;
 	for (const [slug, markdown] of [
 		[stagedSlug, stagedMarkdown],
 		[unknownSlug, unknownMarkdown],
 	]) {
-		await mkdir(path.join(root, "src", "content", "posts", slug), {
-			recursive: true,
-		});
+		await mkdir(
+			path.join(root, "src", "content", "posts", "nonfiction", slug),
+			{
+				recursive: true,
+			},
+		);
 		await writeFile(
 			path.join(root, ...markdown.split("/")),
 			`---\ntitle: ${JSON.stringify(slug)}\npublished: "2026-07-25T00:00:00.000Z"\ndraft: false\nsection: "nonfiction"\n---\n`,
@@ -383,12 +466,15 @@ test("manifest-bound Medium staging stays private without requiring draft true",
 	await mkdir(path.join(root, "provenance", "medium"), { recursive: true });
 	await writeFile(
 		path.join(root, "provenance", "publication-catalog.json"),
-		JSON.stringify({ schemaVersion: 1, entries }),
+		JSON.stringify({ schemaVersion: 2, entries }),
 	);
 	await writeFile(
 		path.join(root, "provenance", "medium", "manifest.json"),
 		JSON.stringify(validMediumStagingManifest(stagedSlug, stagedMarkdown)),
 	);
+	await mkdir(path.join(root, "src", "content", "drafts"), {
+		recursive: true,
+	});
 
 	const catalogFailures = [];
 	const publication = await loadPublicationManifest(
@@ -518,11 +604,11 @@ test("Medium rendered-body verification binds exact snapshot bytes and HTML", as
 		recursive: true,
 	});
 	await mkdir(path.join(root, "dist", "posts", slug), { recursive: true });
-	await mkdir(path.join(root, "src", "content", "posts", slug), {
+	await mkdir(path.join(root, "src", "content", "posts", "nonfiction", slug), {
 		recursive: true,
 	});
 	await writeFile(
-		path.join(root, "src", "content", "posts", slug, "hero.webp"),
+		path.join(root, "src", "content", "posts", "nonfiction", slug, "hero.webp"),
 		heroBytes,
 	);
 	await writeFile(
@@ -539,7 +625,7 @@ test("Medium rendered-body verification binds exact snapshot bytes and HTML", as
 				assets: [
 					{
 						role: "hero",
-						path: `src/content/posts/${slug}/hero.webp`,
+						path: `src/content/posts/nonfiction/${slug}/hero.webp`,
 						sha256: snapshot.hero.sha256,
 						acquisitionManifestSha256: snapshot.hero.acquisitionManifestSha256,
 						captureSha256: snapshot.hero.captureSha256,

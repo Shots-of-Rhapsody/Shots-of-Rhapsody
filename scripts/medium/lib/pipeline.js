@@ -12,6 +12,13 @@ import {
 } from "node:fs/promises";
 import path from "node:path";
 import {
+	getPublishedPostAssetPrefix,
+	getPublishedPostMarkdownPath,
+	isMasterFolder,
+	masterFolderForSection,
+	parsePublishedPostMarkdownPath,
+} from "../../../src/utils/content-path.ts";
+import {
 	validateContentSignoffsV2,
 	validatePresentationSignoffsV2,
 } from "../../content/signoffs.js";
@@ -1716,9 +1723,9 @@ function validatePublicationCatalog(value) {
 		new Set(["schemaVersion", "entries"]),
 		"publication catalog",
 	);
-	if (catalog.schemaVersion !== 1)
+	if (catalog.schemaVersion !== 2)
 		throw new MediumContractError(
-			"publication catalog schemaVersion must equal 1",
+			"publication catalog schemaVersion must equal 2",
 		);
 	if (!Array.isArray(catalog.entries))
 		throw new MediumContractError(
@@ -1729,7 +1736,7 @@ function validatePublicationCatalog(value) {
 		const entry = assertPlainObject(value, label);
 		assertOnlyKeys(
 			entry,
-			new Set(["slug", "source", "markdown", "section"]),
+			new Set(["slug", "source", "markdown", "section", "masterFolder"]),
 			label,
 		);
 		const slug = assertSlug(entry.slug, `${label}.slug`);
@@ -1746,6 +1753,12 @@ function validatePublicationCatalog(value) {
 		) {
 			throw new MediumContractError(`${label}.section is unsupported`);
 		}
+		if (!isMasterFolder(entry.masterFolder))
+			throw new MediumContractError(`${label}.masterFolder is unsupported`);
+		if (entry.masterFolder !== masterFolderForSection(entry.section))
+			throw new MediumContractError(
+				`${label}.masterFolder does not match its writing section`,
+			);
 		if (entry.source === "medium" && entry.section !== "nonfiction")
 			throw new MediumContractError(
 				`${label} must classify Medium writing as nonfiction`,
@@ -1754,11 +1767,17 @@ function validatePublicationCatalog(value) {
 			entry.markdown,
 			`${label}.markdown`,
 		);
-		if (markdown !== `src/content/posts/${slug}/index.md`)
+		if (markdown !== getPublishedPostMarkdownPath(entry.masterFolder, slug))
 			throw new MediumContractError(
 				`${label}.markdown does not match its slug`,
 			);
-		return { slug, source: entry.source, markdown, section: entry.section };
+		return {
+			slug,
+			source: entry.source,
+			markdown,
+			section: entry.section,
+			masterFolder: entry.masterFolder,
+		};
 	});
 	for (const field of ["slug", "markdown"]) {
 		const values = entries.map((entry) => entry[field]);
@@ -1796,7 +1815,8 @@ function validateFirstPartyManifest(value) {
 			article.markdown,
 			`${label}.markdown`,
 		);
-		if (markdown !== `src/content/posts/${slug}/index.md`)
+		const parsedMarkdown = parsePublishedPostMarkdownPath(markdown);
+		if (!parsedMarkdown || parsedMarkdown.slug !== slug)
 			throw new MediumContractError(
 				`${label}.markdown does not match its slug`,
 			);
@@ -1856,6 +1876,14 @@ function validateFirstPartyManifest(value) {
 		const assetPaths = assets.map((asset) => asset.path);
 		if (new Set(assetPaths).size !== assetPaths.length)
 			throw new MediumContractError(`${label}.assets repeat a path`);
+		const assetPrefix = getPublishedPostAssetPrefix(
+			parsedMarkdown.masterFolder,
+			slug,
+		);
+		if (assets.some((asset) => !asset.path.startsWith(assetPrefix)))
+			throw new MediumContractError(
+				`${label}.assets escape their article directory`,
+			);
 		return {
 			slug,
 			markdown,

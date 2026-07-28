@@ -36,3 +36,20 @@ export function generateContentId(
 	if (!id) throw new Error(`Unable to generate a content ID for ${entry}`);
 	return id;
 }
+
+/**
+ * Published writing is physically grouped by author-master folder, while its
+ * stable public ID remains the article slug. Reject unexpected layouts so a
+ * storage refactor cannot silently change routes.
+ */
+export function generatePostContentId(entry: string): string {
+	const normalized = entry.replace(/\\/g, "/");
+	const match =
+		/^(?:fiction|nonfiction)\/([a-z0-9]+(?:-[a-z0-9]+)*)\/index\.md$/u.exec(
+			normalized,
+		);
+	if (!match) {
+		throw new Error(`Published post entry has an unsupported layout: ${entry}`);
+	}
+	return match[1];
+}

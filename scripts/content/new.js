@@ -5,6 +5,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import {
+	getDraftPostDirectory,
+	getPublishedPostDirectory,
+} from "../../src/utils/content-path.ts";
+import {
 	AUTHOR_NAME,
 	assertSlug,
 	DEFAULT_REPO_ROOT,
@@ -59,16 +63,24 @@ export async function createDraft({
 	) {
 		throw new MediumContractError("date must use YYYY-MM-DD");
 	}
-	const directory = path.join(repoRoot, "src", "content", "posts", slug);
-	const target = path.join(directory, "index.md");
-	const legacyTarget = path.join(
+	const directory = path.join(
 		repoRoot,
-		"src",
-		"content",
-		"posts",
-		`${slug}.md`,
+		...getDraftPostDirectory(section, slug).split("/"),
 	);
-	if ((await pathExists(directory)) || (await pathExists(legacyTarget))) {
+	const target = path.join(directory, "index.md");
+	const conflicts = [
+		directory,
+		...["fiction", "nonfiction"].map((folder) =>
+			path.join(
+				repoRoot,
+				...getPublishedPostDirectory(folder, slug).split("/"),
+			),
+		),
+		path.join(repoRoot, "src", "content", "drafts", slug),
+		path.join(repoRoot, "src", "content", "drafts", `${slug}.md`),
+		path.join(repoRoot, "src", "content", "posts", `${slug}.md`),
+	];
+	if ((await Promise.all(conflicts.map(pathExists))).some(Boolean)) {
 		throw new MediumContractError(`Refusing duplicate content slug ${slug}`);
 	}
 	await mkdir(directory, { recursive: true });

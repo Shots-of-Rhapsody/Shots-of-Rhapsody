@@ -4,7 +4,10 @@ import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { parseFrontmatter } from "@astrojs/markdown-remark";
-import { generateContentId } from "../src/utils/content-id.ts";
+import {
+	generateContentId,
+	generatePostContentId,
+} from "../src/utils/content-id.ts";
 
 const repositoryRoot = path.resolve(
 	path.dirname(fileURLToPath(import.meta.url)),
@@ -36,6 +39,29 @@ test("preserves historical directory-index and nested post routes", () => {
 	assert.equal(generateContentId("video.md", {}), "video");
 });
 
+test("published master folders do not become part of stable post IDs", () => {
+	assert.equal(
+		generatePostContentId("fiction/before-the-sky-went-quiet/index.md"),
+		"before-the-sky-went-quiet",
+	);
+	assert.equal(
+		generatePostContentId("nonfiction/the-invisible-ledger/index.md"),
+		"the-invisible-ledger",
+	);
+	assert.equal(
+		generatePostContentId("fiction\\cold-children\\index.md"),
+		"cold-children",
+	);
+	for (const entry of [
+		"before-the-sky-went-quiet/index.md",
+		"poetry/poetic-biography/index.md",
+		"fiction/nested/work/index.md",
+		"fiction/work.md",
+	]) {
+		assert.throws(() => generatePostContentId(entry), /unsupported layout/u);
+	}
+});
+
 test("normalizes Windows paths and Unicode deterministically", () => {
 	assert.equal(
 		generateContentId("Café Notes\\L'Eté.mdx", {}),
@@ -50,23 +76,32 @@ test("explicit frontmatter slugs take precedence without case changes", () => {
 	);
 });
 
-test("the complete post inventory has unique deterministic route IDs", async () => {
+test("the complete two-folder post inventory preserves every public route", async () => {
 	const postsRoot = path.join(repositoryRoot, "src/content/posts");
+	const topLevel = await readdir(postsRoot, { withFileTypes: true });
+	assert.deepEqual(
+		topLevel
+			.map(
+				(entry) =>
+					`${entry.isDirectory() ? "directory" : "other"}:${entry.name}`,
+			)
+			.sort(),
+		["directory:fiction", "directory:nonfiction"],
+	);
 	const files = await listMarkdownFiles(postsRoot);
 	const owners = new Map();
-	let draftCount = 0;
 	for (const absolutePath of files) {
 		const entry = path.relative(postsRoot, absolutePath).replaceAll("\\", "/");
 		const source = await readFile(absolutePath, "utf8");
 		const { frontmatter } = parseFrontmatter(source);
-		const id = generateContentId(entry, frontmatter);
+		const id = generatePostContentId(entry);
 		assert.equal(
 			owners.get(id),
 			undefined,
 			`content ID ${id} is shared by ${owners.get(id)} and ${entry}`,
 		);
 		owners.set(id, entry);
-		if (frontmatter.draft === true) draftCount += 1;
+		assert.notEqual(frontmatter.draft, true, `${entry} must be published`);
 	}
 
 	const releaseTarget = JSON.parse(
@@ -78,16 +113,10 @@ test("the complete post inventory has unique deterministic route IDs", async () 
 	const expectedWritingCount =
 		releaseTarget.expected.archiveWriting +
 		releaseTarget.expected.mediumWriting;
-	const expectedDraftCount = 4;
 	assert.equal(
 		owners.size,
-		expectedWritingCount + expectedDraftCount,
-		"the repository inventory must retain every targeted work and four drafts",
-	);
-	assert.equal(
-		draftCount,
-		expectedDraftCount,
-		"the four legacy drafts must remain",
+		expectedWritingCount,
+		"the published inventory must contain exactly every targeted work",
 	);
 	const manifests = await Promise.all(
 		["tai-song", "medium"].map(async (source) =>
@@ -106,5 +135,38 @@ test("the complete post inventory has unique deterministic route IDs", async () 
 			owners.has(article.slug),
 			`manifest route ${article.slug} is missing`,
 		);
+	}
+
+	const catalog = JSON.parse(
+		await readFile(
+			path.join(repositoryRoot, "provenance/publication-catalog.json"),
+			"utf8",
+		),
+	);
+	assert.equal(catalog.schemaVersion, 2);
+	assert.equal(
+		catalog.entries.filter((entry) => entry.masterFolder === "fiction").length,
+		11,
+	);
+	assert.equal(
+		catalog.entries.filter((entry) => entry.masterFolder === "nonfiction")
+			.length,
+		24,
+	);
+	for (const entry of catalog.entries) {
+		assert.equal(
+			owners.get(entry.slug),
+			`${entry.masterFolder}/${entry.slug}/index.md`,
+		);
+	}
+
+	const draftsRoot = path.join(repositoryRoot, "src/content/drafts");
+	const draftFiles = await listMarkdownFiles(draftsRoot);
+	assert.equal(draftFiles.length, 4, "the four legacy drafts must remain");
+	for (const absolutePath of draftFiles) {
+		const { frontmatter } = parseFrontmatter(
+			await readFile(absolutePath, "utf8"),
+		);
+		assert.equal(frontmatter.draft, true);
 	}
 });

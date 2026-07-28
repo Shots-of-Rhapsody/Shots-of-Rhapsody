@@ -8,10 +8,10 @@ import manifest from "../provenance/tai-song/manifest.json";
 import { IS_PUBLIC_REVIEW } from "./data/build-mode";
 import { PUBLICATION_CATALOG as publicationCatalog } from "./data/publication-catalog";
 import type { ContentSignoffV2 } from "./data/signoffs";
-import { generateContentId } from "./utils/content-id";
+import { generateContentId, generatePostContentId } from "./utils/content-id";
+import { getPublishedPostMarkdownPath } from "./utils/content-path";
 
 const EXPECTED_ARCHIVE_POST_COUNT = 11;
-const postSourcePrefix = "src/content/posts/";
 const mediumManifest = mediumManifestJson as unknown as {
 	state: "awaiting-export" | "active";
 	articles: Array<{
@@ -36,7 +36,10 @@ const firstPartyManifest = firstPartyManifestJson as unknown as {
 	}>;
 };
 const publicPostPatterns = publicationCatalog.entries.map((article) => {
-	const expectedMarkdownPath = `${postSourcePrefix}${article.slug}/index.md`;
+	const expectedMarkdownPath = getPublishedPostMarkdownPath(
+		article.masterFolder,
+		article.slug,
+	);
 	if (article.markdown !== expectedMarkdownPath) {
 		throw new Error(
 			`Publication catalog path mismatch for ${article.slug}: expected ${expectedMarkdownPath}, received ${article.markdown}`,
@@ -49,11 +52,11 @@ const publicPostPatterns = publicationCatalog.entries.map((article) => {
 	) {
 		throw new Error(`Unsupported publication source for ${article.slug}`);
 	}
-	return `${article.slug}/index.md`;
+	return `${article.masterFolder}/${article.slug}/index.md`;
 });
 
 if (
-	publicationCatalog.schemaVersion !== 1 ||
+	publicationCatalog.schemaVersion !== 2 ||
 	publicPostPatterns.length < EXPECTED_ARCHIVE_POST_COUNT ||
 	new Set(publicPostPatterns).size !== publicPostPatterns.length
 ) {
@@ -390,7 +393,7 @@ const postsCollection = defineCollection({
 	loader: glob({
 		base: "./src/content/posts",
 		pattern: publicPostPatterns,
-		generateId: ({ entry, data }) => generateContentId(entry, data),
+		generateId: ({ entry }) => generatePostContentId(entry),
 	}),
 	schema: ({ image }) => createPostSchema(image),
 });

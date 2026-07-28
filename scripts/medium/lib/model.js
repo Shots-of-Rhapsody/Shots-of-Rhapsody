@@ -1,4 +1,5 @@
 import path from "node:path";
+import { getPublishedPostAssetPrefix } from "../../../src/utils/content-path.ts";
 import {
 	ALL_RIGHTS_RESERVED,
 	AUTHOR_NAME,
@@ -911,7 +912,10 @@ function validateManifestArticle(value, label) {
 			throw new MediumContractError(`${label}.assets repeats ${field}`);
 	}
 	if (
-		assets.some((asset) => !asset.path.startsWith(`src/content/posts/${slug}/`))
+		assets.some(
+			(asset) =>
+				!asset.path.startsWith(getPublishedPostAssetPrefix("nonfiction", slug)),
+		)
 	) {
 		throw new MediumContractError(
 			`${label}.assets escape their article directory`,

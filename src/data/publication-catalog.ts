@@ -7,9 +7,16 @@ import publicationCatalogJson from "../../provenance/publication-catalog.json" w
 import releaseTargetJson from "../../provenance/release-target.json" with {
 	type: "json",
 };
+import {
+	getPublishedPostMarkdownPath,
+	isMasterFolder,
+	type MasterFolder,
+	masterFolderForSection,
+	type WritingSection,
+} from "../utils/content-path.ts";
 import { IS_PUBLIC_REVIEW, type ShotsBuildMode } from "./build-mode.ts";
 
-export type WritingSection = "fiction" | "poetry-reflection" | "nonfiction";
+export type { MasterFolder, WritingSection } from "../utils/content-path.ts";
 export type PublicationSource = "tai-song" | "medium" | "first-party";
 
 export interface PublicationCatalogEntry {
@@ -17,10 +24,11 @@ export interface PublicationCatalogEntry {
 	readonly source: PublicationSource;
 	readonly markdown: string;
 	readonly section: WritingSection;
+	readonly masterFolder: MasterFolder;
 }
 
-export interface PublicationCatalogV1 {
-	readonly schemaVersion: 1;
+export interface PublicationCatalogV2 {
+	readonly schemaVersion: 2;
 	readonly entries: readonly PublicationCatalogEntry[];
 }
 
@@ -47,11 +55,14 @@ function assertCatalogEntry(
 ): void {
 	if (
 		!SLUG_PATTERN.test(entry.slug) ||
-		entry.markdown !== `src/content/posts/${entry.slug}/index.md` ||
 		!(["tai-song", "medium", "first-party"] as const).includes(entry.source) ||
 		!(["fiction", "poetry-reflection", "nonfiction"] as const).includes(
 			entry.section,
 		) ||
+		!isMasterFolder(entry.masterFolder) ||
+		entry.masterFolder !== masterFolderForSection(entry.section) ||
+		entry.markdown !==
+			getPublishedPostMarkdownPath(entry.masterFolder, entry.slug) ||
 		(entry.source === "medium" && entry.section !== "nonfiction")
 	) {
 		throw new Error(`${label} contains an invalid publication entry`);
@@ -65,12 +76,12 @@ export function createEffectivePublicationCatalog({
 	releaseTarget,
 }: {
 	readonly mode: ShotsBuildMode;
-	readonly publicationCatalog: PublicationCatalogV1;
+	readonly publicationCatalog: PublicationCatalogV2;
 	readonly mediumManifest: MediumManifest;
 	readonly releaseTarget: ReleaseTarget;
-}): PublicationCatalogV1 {
+}): PublicationCatalogV2 {
 	if (
-		publicationCatalog.schemaVersion !== 1 ||
+		publicationCatalog.schemaVersion !== 2 ||
 		publicationCatalog.entries.length < releaseTarget.expected.archiveWriting
 	) {
 		throw new Error(
@@ -142,7 +153,7 @@ export function createEffectivePublicationCatalog({
 
 export const PUBLICATION_CATALOG = createEffectivePublicationCatalog({
 	mode: IS_PUBLIC_REVIEW ? "public-review" : "release",
-	publicationCatalog: publicationCatalogJson as PublicationCatalogV1,
+	publicationCatalog: publicationCatalogJson as PublicationCatalogV2,
 	mediumManifest: mediumManifestJson as MediumManifest,
 	releaseTarget: releaseTargetJson as ReleaseTarget,
 });

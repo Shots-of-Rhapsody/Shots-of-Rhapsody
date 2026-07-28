@@ -847,6 +847,18 @@ test("draft creation is unpublished and refuses overwrite", async (context) => {
 		slug: "future-essay",
 		date: "2026-07-25",
 	});
+	assert.equal(
+		target,
+		path.join(
+			root,
+			"src",
+			"content",
+			"drafts",
+			"nonfiction",
+			"future-essay",
+			"index.md",
+		),
+	);
 	assert.match(await readFile(target, "utf8"), /draft: true/u);
 	await assert.rejects(
 		createDraft({
@@ -885,7 +897,12 @@ test("first-party publication binds the exact source bytes and refuses drafts", 
 	const article = {
 		slug: "exact-story",
 		hashes: { source: digest, output: digest },
-		assets: [{ role: "hero", path: "src/content/posts/exact-story/hero.png" }],
+		assets: [
+			{
+				role: "hero",
+				path: "src/content/posts/fiction/exact-story/hero.png",
+			},
+		],
 	};
 	assert.equal(verifyFirstPartyMarkdown(article, published), digest);
 	const draft = Buffer.from(
@@ -950,7 +967,7 @@ test("Medium manifest rejects duplicate or non-image assets", () => {
 	const hero = {
 		id: "hero",
 		role: "hero",
-		path: "src/content/posts/essay/hero.png",
+		path: "src/content/posts/nonfiction/essay/hero.png",
 		sha256: digest,
 		acquisitionManifestSha256: digest,
 		captureSha256: digest,
@@ -979,7 +996,7 @@ test("Medium manifest rejects duplicate or non-image assets", () => {
 				canonicalUrl: "https://medium.com/@ShotsOfRhapsody/essay-123",
 				paths: {
 					snapshot: "provenance/medium/posts/essay.json",
-					markdown: "src/content/posts/essay/index.md",
+					markdown: "src/content/posts/nonfiction/essay/index.md",
 				},
 				hashes: {
 					rawExport: digest,

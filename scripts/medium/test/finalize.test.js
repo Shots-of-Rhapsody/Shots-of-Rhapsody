@@ -414,7 +414,7 @@ test("active manifest produces a pending review scaffold through the repository 
 					"https://medium.com/@ShotsOfRhapsody/exact-essay-0123456789ab",
 				paths: {
 					snapshot: "provenance/medium/posts/exact-essay.json",
-					markdown: "src/content/posts/exact-essay/index.md",
+					markdown: "src/content/posts/nonfiction/exact-essay/index.md",
 				},
 				hashes: {
 					rawExport: DIGEST,
@@ -433,7 +433,7 @@ test("active manifest produces a pending review scaffold through the repository 
 					{
 						id: "hero",
 						role: "hero",
-						path: "src/content/posts/exact-essay/hero.webp",
+						path: "src/content/posts/nonfiction/exact-essay/hero.webp",
 						sha256: DIGEST,
 						acquisitionManifestSha256: DIGEST,
 						captureSha256: DIGEST,

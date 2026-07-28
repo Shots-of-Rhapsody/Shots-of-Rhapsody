@@ -45,6 +45,7 @@ interface PublicationCatalogEntry {
 	source: "tai-song" | "medium" | "first-party";
 	markdown: string;
 	section: "fiction" | "poetry-reflection" | "nonfiction";
+	masterFolder: "fiction" | "nonfiction";
 }
 
 interface MediumArticle {
@@ -97,7 +98,7 @@ const publicationCatalog = PUBLICATION_CATALOG as {
 	readonly schemaVersion: number;
 	readonly entries: readonly PublicationCatalogEntry[];
 };
-if (publicationCatalog.schemaVersion !== 1) {
+if (publicationCatalog.schemaVersion !== 2) {
 	throw new Error(
 		"Publication catalog schema is not supported by browser tests",
 	);

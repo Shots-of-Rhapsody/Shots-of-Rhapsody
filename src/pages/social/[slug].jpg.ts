@@ -7,6 +7,7 @@ import { PUBLICATION_CATALOG as publicationCatalog } from "@/data/publication-ca
 import firstPartyManifest from "../../../provenance/first-party/manifest.json";
 import mediumManifest from "../../../provenance/medium/manifest.json";
 import archiveManifest from "../../../provenance/tai-song/manifest.json";
+import { getPublishedPostAssetPrefix } from "../../utils/content-path";
 import {
 	SOCIAL_IMAGE_MAX_WIDTH,
 	SOCIAL_IMAGE_QUALITY,
@@ -68,10 +69,14 @@ const publicationImages = publicationCatalog.entries.map((entry) => {
 	const image = resolveImagePath(entry);
 	if (!image)
 		throw new Error(`Publication catalog lacks a hero image for ${entry.slug}`);
+	const expectedPrefix = getPublishedPostAssetPrefix(
+		entry.masterFolder,
+		entry.slug,
+	);
 	if (
-		!image.path.startsWith(`src/content/posts/${entry.slug}/`) ||
-		!/^src\/content\/posts\/[a-z0-9-]+\/[a-z0-9-]+\.(?:png|jpe?g|webp)$/u.test(
-			image.path,
+		!image.path.startsWith(expectedPrefix) ||
+		!/^[-a-z0-9]+\.(?:png|jpe?g|webp)$/u.test(
+			image.path.slice(expectedPrefix.length),
 		)
 	)
 		throw new Error(`Publication hero path is unsafe for ${entry.slug}`);
