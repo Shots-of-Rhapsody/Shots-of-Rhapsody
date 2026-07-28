@@ -4,6 +4,32 @@ This runbook covers provider-side controls that cannot be enforced by files in
 the repository. Do not perform these steps until the release candidate has
 passed the archive, browser, dependency, human-signoff, and disclosure gates.
 
+## Author-master handoff gate
+
+Run release work only from the canonical checkout; do not use or recreate
+duplicate or retired checkouts. Before freezing a candidate, require the
+one-direction publication path to be complete:
+
+```text
+Proton Docs -> supported HTML export -> deterministic verification -> reviewed Git pull request -> GitHub Actions -> GitHub Pages
+```
+
+- Proton Drive contains the reviewed native masters only under
+  `Blogging/Fiction` and `Blogging/Non-Fiction`.
+- The publication catalog binds those works to
+  `src/content/posts/fiction/<slug>/` or
+  `src/content/posts/nonfiction/<slug>/`, while the public address remains
+  `/posts/<slug>/`.
+- All 35 supported HTML exports reconcile with their sanitized ledger,
+  committed output, and approved assets. A missing or changed Proton export is
+  blocking; historical Medium or Vocal evidence is not a fallback master.
+- Raw exports, CLI inventory JSON, cloud IDs, private document URLs, account
+  data, `.protondoc` placeholders, and absolute local paths remain ignored and
+  absent from every Git ref and build artifact.
+- The optional Proton Drive CLI is restricted to explicit read-only name
+  inventory. It is neither a content exporter nor a build, deployment, or
+  runtime dependency.
+
 ## Before the final indexable release
 
 1. Confirm the release candidate is the current `main` commit and the tracked
@@ -100,6 +126,10 @@ audit report. Do not record tokens or collaborator email addresses.
 8. Tag the deployed commit `v1.0.0`, publish the release notes, and submit the
    sitemap index to Google Search Console.
 
+The deployed artifact must remain self-contained. Turning off Proton Drive,
+the local development computer, and every inventory/import utility must not
+affect routes, images, search, feeds, or podcast playback.
+
 Browser evidence is fail-closed for privacy: Playwright's automatic traces,
 videos, failure screenshots, and generated error-context snapshots are
 disabled. CI uploads only deliberate screenshots captured after the rendered
@@ -115,6 +145,8 @@ the complete browser suite succeeds.
 
 ## Authoritative references
 
+- [Proton Docs import and export](https://proton.me/support/drive-import-export-docs)
+- [Proton Drive CLI](https://proton.me/support/drive-cli)
 - [GitHub Pages custom workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
 - [Secure use of GitHub Actions](https://docs.github.com/en/actions/reference/security/secure-use)
 - [Repository visibility consequences](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/managing-repository-settings/setting-repository-visibility)

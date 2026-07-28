@@ -58,8 +58,8 @@ jobs:
       - name: Verify the complete committed author archive
         run: pnpm archive:verify --require-complete
 
-      - name: Verify all Proton author-master bindings
-        run: pnpm proton:verify --require-complete
+      - name: Verify the final two-folder Proton master ledger
+        run: pnpm proton:verify-v2 --require-complete --require-final-cloud
 
       - name: Verify the aggregate writing catalog
         run: pnpm content:verify --require-complete
