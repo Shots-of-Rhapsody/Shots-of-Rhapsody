@@ -127,6 +127,12 @@
 		},
 		{
 			"rule": "email-address-review",
+			"path": "scripts/proton/cloud.test.mjs",
+			"blob": "75259a055ef3ae330bcef8a798fccf24840e824b",
+			"reason": "Immutable synthetic CLI fixture using the reserved .invalid domain; it is not a deliverable address."
+		},
+		{
+			"rule": "email-address-review",
 			"path": "pnpm-lock.yaml",
 			"blob": "ec76b3305480b30e75ef753c1581cbdfba729d3a",
 			"reason": "Immutable lockfile blob containing only reviewed public package metadata."
@@ -465,6 +471,12 @@
 			"rule": "email-address-review",
 			"path": "scripts/medium/test/foundation.test.js",
 			"blob": "a90f045cef519ceb21779e7af4f8d869a694e4f6",
+			"reason": "Immutable synthetic test fixture containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/medium/test/foundation.test.js",
+			"blob": "d7f8d9285a04cf2c6fc031b007297ecc712b7940",
 			"reason": "Immutable synthetic test fixture containing an @2x image-density filename; the token is an asset name, not an email address."
 		},
 		{
