@@ -287,8 +287,8 @@ Run package-script options directly with pnpm 11; do not insert an additional
 literal `--`. Capture each observation to a new timestamped ignored file:
 
 ```powershell
-pnpm proton:cloud-capture --cli <absolute-cli-path> --output .proton-import/cloud-inventory/<timestamp>.v1.json
-pnpm proton:cloud-verify --capture .proton-import/cloud-inventory/<timestamp>.v1.json --preflight --require-complete
+pnpm proton:cloud-capture --cli <absolute-cli-path> --output .proton-import/cloud-inventory.<timestamp>.v1.json
+pnpm proton:cloud-verify --capture .proton-import/cloud-inventory.<timestamp>.v1.json --preflight --require-complete
 ```
 
 Preflight permits only exact, uniquely mapped legacy names. After the reviewed
@@ -296,7 +296,7 @@ one-at-a-time cloud renames, capture again to a different timestamped file and
 omit `--preflight`; final verification must pass before evidence is promoted:
 
 ```powershell
-pnpm proton:cloud-verify --capture .proton-import/cloud-inventory/<final-timestamp>.v1.json --require-complete
+pnpm proton:cloud-verify --capture .proton-import/cloud-inventory.<final-timestamp>.v1.json --require-complete
 ```
 
 Promotion means passing that exact final capture to `proton:record-v2`; it does
@@ -305,9 +305,9 @@ requires 35 fresh timestamped Docs exports, verifies all raw evidence, binds the
 immutable V1 ledger, and refuses to overwrite an existing V2 ledger:
 
 ```powershell
-pnpm proton:capture-scaffold --generated-at <UTC-ISO-TIMESTAMP> --cloud .proton-import/cloud-inventory/<final-timestamp>.v1.json
-pnpm proton:record-v2 --capture .proton-import/capture.v2.json --cloud .proton-import/cloud-inventory/<final-timestamp>.v1.json
-pnpm proton:verify-v2 --with-raw --with-cloud --require-complete --require-final-cloud --capture .proton-import/capture.v2.json --cloud .proton-import/cloud-inventory/<final-timestamp>.v1.json
+pnpm proton:capture-scaffold --generated-at <UTC-ISO-TIMESTAMP> --cloud .proton-import/cloud-inventory.<final-timestamp>.v1.json
+pnpm proton:record-v2 --capture .proton-import/capture.v2.json --cloud .proton-import/cloud-inventory.<final-timestamp>.v1.json
+pnpm proton:verify-v2 --with-raw --with-cloud --require-complete --require-final-cloud --capture .proton-import/capture.v2.json --cloud .proton-import/cloud-inventory.<final-timestamp>.v1.json
 ```
 
 Until that fresh V2 capture exists, the immutable V1 ledger and
@@ -349,7 +349,7 @@ requires a final unchanged cloud inventory, rejects any non-target drift, and
 reports only the changed evidence fields and approval invalidation:
 
 ```powershell
-pnpm proton:update --slug <slug> --previous-ledger-sha sha256:<digest> --capture .proton-import/capture.v2.json --cloud .proton-import/cloud-inventory/<timestamp>.v1.json
+pnpm proton:update --slug <slug> --previous-ledger-sha sha256:<digest> --capture .proton-import/capture.v2.json --cloud .proton-import/cloud-inventory.<timestamp>.v1.json
 ```
 
 Review that output before repeating the same command with `--write`. A title,
