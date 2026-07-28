@@ -306,9 +306,19 @@ immutable V1 ledger, and refuses to overwrite an existing V2 ledger:
 
 ```powershell
 pnpm proton:capture-scaffold --generated-at <UTC-ISO-TIMESTAMP> --cloud .proton-import/cloud-inventory.<final-timestamp>.v1.json
+pnpm proton:capture-finalize --cloud .proton-import/cloud-inventory.<final-timestamp>.v1.json
 pnpm proton:record-v2 --capture .proton-import/capture.v2.json --cloud .proton-import/cloud-inventory.<final-timestamp>.v1.json
 pnpm proton:verify-v2 --with-raw --with-cloud --require-complete --require-final-cloud --capture .proton-import/capture.v2.json --cloud .proton-import/cloud-inventory.<final-timestamp>.v1.json
 ```
+
+Before `capture-finalize`, place each supported Docs export at
+`.proton-import/raw/<master-folder>/<slug>/<YYYYMMDDTHHmmss.sssZ>/document.html`;
+Fiction also requires `hero-original.png` in the same timestamp directory.
+Finalization requires exactly one timestamp directory per expected work,
+re-verifies every title, body, mark, link, Unicode token, and hero, rejects
+duplicate timestamps and all unreferenced files inside the two V2 section
+roots, creates no approvals, and never overwrites `capture.v2.json`. Legacy flat
+V1 evidence outside `raw/fiction` and `raw/nonfiction` remains untouched.
 
 Until that fresh V2 capture exists, the immutable V1 ledger and
 `pnpm proton:verify` remain available as the historical local evidence

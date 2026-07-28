@@ -30,6 +30,7 @@
 		"proton:cloud-capture": "node scripts/proton/cloud-capture.mjs",
 		"proton:cloud-verify": "node scripts/proton/cloud-verify.mjs",
 		"proton:capture-scaffold": "node scripts/proton/capture-scaffold.mjs",
+		"proton:capture-finalize": "node scripts/proton/capture-finalize.mjs",
 		"proton:record": "node scripts/proton/record.mjs",
 		"proton:record-v2": "node scripts/proton/record-v2.mjs",
 		"proton:update": "node scripts/proton/update.mjs",

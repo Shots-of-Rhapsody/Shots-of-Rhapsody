@@ -41,8 +41,12 @@ When running repository scripts with pnpm 11, pass script options directly
 (for example, `pnpm proton:cloud-verify --preflight --require-complete`). Do not
 insert an extra literal `--`. Each Proton cloud observation uses a new
 timestamped ignored output; after final-name verification, the selected capture
-is bound through `proton:record-v2`. Never overwrite an earlier observation or
-create V2 evidence before fresh supported HTML exports exist.
+is finalized with `proton:capture-finalize` and bound through
+`proton:record-v2`. Finalization scans only the canonical `raw/fiction` and
+`raw/nonfiction` timestamp trees, rejects unreferenced files, creates no
+approvals, and never overwrites existing capture evidence. Never overwrite an
+earlier observation or create V2 evidence before fresh supported HTML exports
+exist.
 
 ## Submitting Code
 

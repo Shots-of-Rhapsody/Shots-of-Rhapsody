@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { lstat, open, writeFile } from "node:fs/promises";
+import { lstat, open, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import {
 	assertCanonicalUtc,
@@ -477,6 +477,121 @@ export async function loadCaptureV2({
 	return validateCaptureV2(file.value, { requireComplete });
 }
 
+export async function writeCaptureV2NoOverwrite({
+	repoRoot = DEFAULT_REPO_ROOT,
+	capture,
+	outputPath = DEFAULT_CAPTURE_PATH_V2,
+} = {}) {
+	assertSafeRepositoryPath(outputPath, "V2 capture output path");
+	if (!outputPath.startsWith(".proton-import/")) {
+		throw new ProtonContractError(
+			"V2 capture output must remain under .proton-import",
+		);
+	}
+	const normalized = validateCaptureV2(capture, { requireComplete: true });
+	try {
+		await writeFile(
+			path.join(repoRoot, ...outputPath.split("/")),
+			serializeJson(normalized),
+			{ flag: "wx" },
+		);
+	} catch (error) {
+		if (error?.code === "EEXIST") {
+			throw new ProtonContractError(
+				`Refusing to overwrite existing Proton V2 capture: ${outputPath}`,
+			);
+		}
+		throw error;
+	}
+	return outputPath;
+}
+
+async function walkV2Section({
+	absoluteDirectory,
+	relativeDirectory,
+	expectedFiles,
+	seen,
+}) {
+	let status;
+	try {
+		status = await lstat(absoluteDirectory);
+	} catch (error) {
+		if (error?.code === "ENOENT") {
+			throw new ProtonContractError(
+				`Required V2 raw directory is missing: ${relativeDirectory}`,
+			);
+		}
+		throw error;
+	}
+	if (!status.isDirectory() || status.isSymbolicLink()) {
+		throw new ProtonContractError(
+			`V2 raw directory must be a real directory: ${relativeDirectory}`,
+		);
+	}
+	for (const entry of await readdir(absoluteDirectory, {
+		withFileTypes: true,
+	})) {
+		const relative = `${relativeDirectory}/${entry.name}`;
+		const absolute = path.join(absoluteDirectory, entry.name);
+		const entryStatus = await lstat(absolute);
+		if (entryStatus.isSymbolicLink()) {
+			throw new ProtonContractError(
+				`V2 raw evidence cannot contain links: ${relative}`,
+			);
+		}
+		if (entryStatus.isDirectory()) {
+			if (![...expectedFiles].some((file) => file.startsWith(`${relative}/`))) {
+				throw new ProtonContractError(
+					`V2 raw evidence contains an orphan directory: ${relative}`,
+				);
+			}
+			await walkV2Section({
+				absoluteDirectory: absolute,
+				relativeDirectory: relative,
+				expectedFiles,
+				seen,
+			});
+			continue;
+		}
+		if (!entryStatus.isFile() || !expectedFiles.has(relative)) {
+			throw new ProtonContractError(
+				`V2 raw evidence contains an orphan file: ${relative}`,
+			);
+		}
+		seen.add(relative);
+	}
+}
+
+export async function verifyCaptureRawTree({
+	repoRoot = DEFAULT_REPO_ROOT,
+	capture,
+} = {}) {
+	const normalized = validateCaptureV2(capture, { requireComplete: true });
+	const expectedFiles = new Set(
+		normalized.records.flatMap((record) =>
+			[record.documentFile, record.heroFile].filter(Boolean),
+		),
+	);
+	const seen = new Set();
+	for (const masterFolder of ["fiction", "nonfiction"]) {
+		const relativeDirectory = `.proton-import/raw/${masterFolder}`;
+		await walkV2Section({
+			absoluteDirectory: path.join(repoRoot, ...relativeDirectory.split("/")),
+			relativeDirectory,
+			expectedFiles,
+			seen,
+		});
+	}
+	for (const expected of expectedFiles) {
+		if (!seen.has(expected)) {
+			throw new ProtonContractError(
+				`V2 raw evidence is missing referenced file: ${expected}`,
+			);
+		}
+	}
+	return { referencedFileCount: expectedFiles.size };
+}
+
 export async function loadLedgerV2({
 	repoRoot = DEFAULT_REPO_ROOT,
 	ledgerPath = DEFAULT_LEDGER_PATH_V2,
@@ -527,6 +642,7 @@ export async function createLedgerV2FromCapture({
 	const normalizedCapture = validateCaptureV2(capture, {
 		requireComplete: true,
 	});
+	await verifyCaptureRawTree({ repoRoot, capture: normalizedCapture });
 	const normalizedCloud = validateCloudCapture(cloudCapture, {
 		requireComplete: true,
 	});
@@ -710,6 +826,7 @@ export async function verifyLedgerV2Evidence({
 		const normalizedCapture = validateCaptureV2(capture, {
 			requireComplete,
 		});
+		await verifyCaptureRawTree({ repoRoot, capture: normalizedCapture });
 		const regenerated = await createLedgerV2FromCapture({
 			repoRoot,
 			capture: normalizedCapture,
