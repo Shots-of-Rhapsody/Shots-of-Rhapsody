@@ -30,6 +30,7 @@ import {
 } from "../medium/lib/contract.js";
 import { sha256 } from "../medium/lib/integrity.js";
 import { verifyMediumArticles } from "../medium/lib/pipeline.js";
+import { assignWindowsSafeCloudNames } from "./names.mjs";
 
 export const PROTON_MASTER_SCHEMA_VERSION = 1;
 export const PROTON_CAPTURE_SCHEMA_VERSION = 1;
@@ -571,6 +572,27 @@ function mediumSemanticModel(snapshot, hero) {
 	};
 }
 
+function mediumSemanticModelV2(snapshot, hero) {
+	return {
+		semanticModelVersion: 1,
+		articleTitle: snapshot.exportTitle,
+		header: {
+			summary: snapshot.summary,
+			title: snapshot.title,
+			subtitle: snapshot.subtitle,
+			seriesLine: snapshot.seriesLine,
+		},
+		hero: {
+			alt: snapshot.imageAlt ?? "",
+			caption: snapshot.imageCaption,
+			width: hero.width,
+			height: hero.height,
+			pixelSha256: hero.pixelSha256,
+		},
+		bodyDocument: snapshot.bodyDocument,
+	};
+}
+
 function archiveSemanticModel(snapshot) {
 	return {
 		schemaVersion: PROTON_MASTER_SCHEMA_VERSION,
@@ -588,7 +610,24 @@ function archiveSemanticModel(snapshot) {
 	};
 }
 
-async function loadExpectedBindings(repoRoot) {
+function archiveSemanticModelV2(snapshot) {
+	return {
+		semanticModelVersion: 1,
+		articleTitle: snapshot.title,
+		header: {
+			subtitle: snapshot.subtitle,
+		},
+		hero: {
+			alt: snapshot.hero.rawAlt,
+			caption: snapshot.imageCaption,
+			width: snapshot.hero.width,
+			height: snapshot.hero.height,
+		},
+		bodyDocument: snapshot.bodyDocument,
+	};
+}
+
+export async function loadExpectedBindings(repoRoot) {
 	try {
 		await Promise.all([
 			verifyArticles({ repoRoot, requireComplete: true }),
@@ -658,6 +697,8 @@ async function loadExpectedBindings(repoRoot) {
 		bindings.push({
 			slug: entry.slug,
 			section: "fiction",
+			masterFolder: "fiction",
+			articleTitle: snapshot.title,
 			cloudTitle:
 				ARCHIVE_CLOUD_TITLE_OVERRIDES.get(entry.slug) ?? snapshot.title,
 			sourceSnapshotSha256: entry.hashes.snapshot,
@@ -669,6 +710,7 @@ async function loadExpectedBindings(repoRoot) {
 			),
 			bodyBlockCount: snapshot.bodyDocument.blocks.length,
 			semanticSha256: canonicalDigest(archiveSemanticModel(snapshot)),
+			semanticSha256V2: canonicalDigest(archiveSemanticModelV2(snapshot)),
 			snapshot,
 		});
 	}
@@ -688,6 +730,8 @@ async function loadExpectedBindings(repoRoot) {
 		bindings.push({
 			slug: entry.slug,
 			section: "nonfiction",
+			masterFolder: "nonfiction",
+			articleTitle: evidence.snapshot.exportTitle,
 			cloudTitle: evidence.snapshot.exportTitle,
 			sourceSnapshotSha256: entry.hashes.snapshot,
 			siteOutputSha256: entry.hashes.markdown,
@@ -697,6 +741,11 @@ async function loadExpectedBindings(repoRoot) {
 			semanticSha256: canonicalDigest(
 				mediumSemanticModel(evidence.snapshot, evidence.hero),
 			),
+			semanticSha256V2: canonicalDigest(
+				mediumSemanticModelV2(evidence.snapshot, evidence.hero),
+			),
+			heroWidth: evidence.hero.width,
+			heroHeight: evidence.hero.height,
 			snapshot: evidence.snapshot,
 		});
 	}
@@ -711,6 +760,27 @@ async function loadExpectedBindings(repoRoot) {
 	}
 	return bindings.sort((left, right) =>
 		left.slug.localeCompare(right.slug, "en"),
+	);
+}
+
+export async function expectedMasterRecordsV2({
+	repoRoot = DEFAULT_REPO_ROOT,
+} = {}) {
+	const bindings = await loadExpectedBindings(repoRoot);
+	return assignWindowsSafeCloudNames(
+		bindings.map((binding) => ({
+			slug: binding.slug,
+			masterFolder: binding.masterFolder,
+			articleTitle: binding.articleTitle,
+			legacyCloudNames:
+				binding.cloudTitle === binding.articleTitle ? [] : [binding.cloudTitle],
+			sourceSnapshotSha256: binding.sourceSnapshotSha256,
+			siteOutputSha256: binding.siteOutputSha256,
+			heroSha256: binding.heroSha256,
+			heroPixelSha256: binding.heroPixelSha256,
+			bodyBlockCount: binding.bodyBlockCount,
+			semanticSha256: binding.semanticSha256V2,
+		})),
 	);
 }
 
@@ -850,7 +920,7 @@ export async function verifyFictionHeroBuffer(binding, buffer) {
 	}
 }
 
-function verifyArchiveRaw(binding, raw) {
+function verifyArchiveRaw(binding, raw, { requireLeadTitle = false } = {}) {
 	let extracted;
 	try {
 		extracted = extractProtonHtml(decodeUtf8(raw.buffer, binding.slug));
@@ -861,6 +931,7 @@ function verifyArchiveRaw(binding, raw) {
 		);
 	}
 	if (
+		(requireLeadTitle && extracted.leadTitle === undefined) ||
 		(extracted.leadTitle !== undefined &&
 			extracted.leadTitle !== binding.snapshot.title) ||
 		extracted.subtitle !== binding.snapshot.subtitle ||
@@ -878,11 +949,16 @@ function verifyArchiveRaw(binding, raw) {
 	};
 }
 
-async function verifyRawBinding(repoRoot, binding, captureEntry) {
-	if (
-		captureEntry.slug !== binding.slug ||
-		captureEntry.title !== binding.cloudTitle
-	) {
+export async function verifyRawBinding(repoRoot, binding, captureEntry) {
+	const capturedTitle =
+		captureEntry.articleTitle === undefined
+			? captureEntry.title
+			: captureEntry.articleTitle;
+	const expectedTitle =
+		captureEntry.articleTitle === undefined
+			? binding.cloudTitle
+			: binding.articleTitle;
+	if (captureEntry.slug !== binding.slug || capturedTitle !== expectedTitle) {
 		throw new ProtonContractError(
 			`Capture slug/title binding differs for ${binding.slug}`,
 		);
@@ -894,7 +970,9 @@ async function verifyRawBinding(repoRoot, binding, captureEntry) {
 	);
 	let verification;
 	if (binding.section === "fiction") {
-		verification = verifyArchiveRaw(binding, raw);
+		verification = verifyArchiveRaw(binding, raw, {
+			requireLeadTitle: captureEntry.articleTitle !== undefined,
+		});
 		const hero = await readRawFictionHero(
 			repoRoot,
 			captureEntry.heroFile,

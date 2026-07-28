@@ -1,5 +1,28 @@
 # Writing and Medium nonfiction workflow
 
+## Current source-of-truth workflow
+
+Work only from the canonical checkout; do not use or recreate duplicate or
+retired checkouts. Proton Docs is the current authoring master for all writing.
+The publication flow is strictly one-way:
+
+```text
+Proton Docs -> supported HTML export -> deterministic verification -> reviewed Git pull request -> GitHub Actions -> GitHub Pages
+```
+
+Keep exactly two native-document folders under `Blogging` in Proton Drive:
+`Fiction` for fiction, poetry, and reflection, and `Non-Fiction` for
+nonfiction. The repository mirrors them at
+`src/content/posts/fiction/<slug>/` and
+`src/content/posts/nonfiction/<slug>/`. Storage folders do not appear in public
+addresses; every approved work keeps `/posts/<slug>/`.
+
+The official Medium export described below is sealed historical acquisition
+evidence for the initial nonfiction import. It is not an alternate authoring
+master and must never be used to fill in, overwrite, or silently repair a
+missing or changed Proton document. Stop and obtain a supported Proton Docs
+HTML export instead.
+
 ## Start a future draft
 
 Create a non-public draft with a lowercase ASCII slug:
@@ -8,7 +31,13 @@ Create a non-public draft with a lowercase ASCII slug:
 pnpm content:new --section nonfiction --slug example-title
 ```
 
-Valid sections are `fiction`, `poetry-reflection`, and `nonfiction`. The command refuses to overwrite an existing path. Complete the title, subtitle, summary, description, category, image, caption, alt text, tags, and body before review. Keep `draft: true` until source, rights, accessibility, and presentation checks pass.
+Valid sections are `fiction`, `poetry-reflection`, and `nonfiction`. Fiction and
+poetry/reflection drafts are created beneath `src/content/drafts/fiction/`;
+nonfiction drafts are created beneath `src/content/drafts/nonfiction/`. The
+command refuses to overwrite an existing draft or published slug. Complete the
+title, subtitle, summary, description, category, image, caption, alt text,
+tags, and body before review. Keep `draft: true` until source, rights,
+accessibility, and presentation checks pass.
 
 Directly authored work is recorded in `provenance/first-party/manifest.json`
 only after its Markdown and assets are final. A matching human
@@ -18,7 +47,7 @@ publication catalog. The legacy `new-post` command is a safe alias of
 
 Use descriptive headings in logical order, short card summaries that accurately describe the work, meaningful link text, and concise alternative text for informative images. Use `imageAlt: null` only when an image is genuinely decorative and its visible caption carries the relevant context. Do not add search keywords, artificial update dates, or generated filler to an authored work.
 
-## Acquire the official Medium export
+## Preserve the historical Medium acquisition evidence
 
 Use Medium's logged-in **Settings → Security and apps → Download your information → Export** flow. Automated requests, profile scraping, RSS copies, and reader-page HTML are not accepted source evidence.
 
@@ -180,7 +209,7 @@ active markup in the authored body fails closed.
 
 Cards and page metadata use the exact exported summary when one exists. The one
 approved essay without an export summary requires an explicit Tai Song-reviewed
-fallback in the final inventory; the tooling never silently substitutes the
+site summary in the final inventory; the tooling never silently substitutes the
 display subtitle or generates new copy.
 
 The converter preserves text, headings, paragraphs, lists, quotations, links,
@@ -209,19 +238,19 @@ allowlist; missing or stale approvals keep release mode fail-closed even when an
 entry is present. This separation prevents partial imports and unsigned drafts
 from entering an approved release.
 
-## Create and verify the Proton Non-Fiction masters
+## Establish and update the Proton Non-Fiction masters
 
-Proton Drive is a private author archive, not import authority or a website
-runtime. Create a master package only after the reviewed inventory and imported
-Medium snapshot for that slug verify. The default command is a non-writing dry
-run:
+Proton Docs is the private authoring master, but it is not a website runtime.
+For the initial 24-essay migration only, create a self-contained bootstrap
+package after the reviewed historical inventory and imported snapshot for that
+slug verify. The default command is a non-writing dry run:
 
 ```sh
 node scripts/content/master-package.js --slug <slug>
 node scripts/content/master-package.js --slug <slug> --write
 ```
 
-The write mode creates exactly one ignored, self-contained file at
+The write mode creates exactly one ignored, self-contained bootstrap file at
 `.medium-import/proton-masters/<slug>/master.html`. It embeds the approved
 sanitized hero instead of loading it over the network, refuses to overwrite an
 existing package, and contains no Proton URL or document identifier. Its visible
@@ -230,8 +259,8 @@ authored subtitle, Ledger Series sentence, hero and complete post-hero body.
 Marks, links, lists, quotations, line breaks, blank blocks and Unicode come from
 the sealed Medium snapshot without editorial rewriting.
 
-Import the package through Proton Docs, using the exact exported headline as the
-cloud document name. Keep the Drive layout flat and exact:
+Import the package through Proton Docs, then use the exact target cloud name
+from the reviewed inventory. Keep the Drive layout flat and exact:
 
 ```text
 Blogging/
@@ -239,21 +268,66 @@ Blogging/
 └── Non-Fiction/   # exactly one native document per approved Medium essay
 ```
 
-Do not copy, rename, rewrite or reorganize anything in `Fiction` during this
-workflow. Ten approved cloud titles contain `:` or `?`, which Windows cannot
-represent literally in local filenames. Proton Drive may sanitize or omit those
-desktop placeholders; do not rename the cloud masters to force local filename
-parity. The authenticated cloud inventory and supported HTML exports are the
-authority. Never treat zero-byte `.protondoc` placeholders as readable content
-or verification evidence; local placeholder parity is only a convenience check.
+Do not copy, rename, rewrite, or reorganize anything in `Fiction` while
+establishing `Non-Fiction`. Some exact article titles contain characters that
+Windows cannot represent in a local filename. Use the reviewed,
+Windows-compatible target cloud name instead of inventing another spelling,
+and do not rename a cloud master merely to force desktop-placeholder parity.
+Never read, hash, edit, or treat a zero-byte `.protondoc` placeholder as content
+evidence.
 
-After importing and reviewing a document in Proton Docs, export it as HTML and
-save it beneath the ignored `.medium-import/` directory, for example
-`.medium-import/proton-exports/<slug>/page.html`. Verify that export locally:
+The optional official Proton Drive CLI may authenticate in the browser for an
+explicit inventory run and list only `Blogging/Fiction` and
+`Blogging/Non-Fiction` read-only. Its raw JSON contains cloud identifiers and
+must remain ignored. The CLI does not export Docs content, establish semantic
+fidelity, modify the cloud folders, participate in GitHub Actions, or serve the
+live site.
+
+Run package-script options directly with pnpm 11; do not insert an additional
+literal `--`. Capture each observation to a new timestamped ignored file:
+
+```powershell
+pnpm proton:cloud-capture --cli <absolute-cli-path> --output .proton-import/cloud-inventory/<timestamp>.v1.json
+pnpm proton:cloud-verify --capture .proton-import/cloud-inventory/<timestamp>.v1.json --preflight --require-complete
+```
+
+Preflight permits only exact, uniquely mapped legacy names. After the reviewed
+one-at-a-time cloud renames, capture again to a different timestamped file and
+omit `--preflight`; final verification must pass before evidence is promoted:
+
+```powershell
+pnpm proton:cloud-verify --capture .proton-import/cloud-inventory/<final-timestamp>.v1.json --require-complete
+```
+
+Promotion means passing that exact final capture to `proton:record-v2`; it does
+not mean overwriting or editing an earlier observation. The record command also
+requires 35 fresh timestamped Docs exports, verifies all raw evidence, binds the
+immutable V1 ledger, and refuses to overwrite an existing V2 ledger:
+
+```powershell
+pnpm proton:capture-scaffold --generated-at <UTC-ISO-TIMESTAMP> --cloud .proton-import/cloud-inventory/<final-timestamp>.v1.json
+pnpm proton:record-v2 --capture .proton-import/capture.v2.json --cloud .proton-import/cloud-inventory/<final-timestamp>.v1.json
+pnpm proton:verify-v2 --with-raw --with-cloud --require-complete --require-final-cloud --capture .proton-import/capture.v2.json --cloud .proton-import/cloud-inventory/<final-timestamp>.v1.json
+```
+
+Until that fresh V2 capture exists, the immutable V1 ledger and
+`pnpm proton:verify` remain available as the historical local evidence
+contract, while release CI and review deployment intentionally remain blocked.
+After V2 is committed, it becomes the sole current-content gate and retains the
+exact V1 ledger hash as immutable ancestry. Never fabricate a V2 capture or copy
+legacy exports into the timestamped structure merely to make the new command
+pass.
+
+After importing or intentionally revising a document in Proton Docs, use Docs'
+supported HTML export and save it beneath the ignored `.proton-import/`
+directory, for example
+`.proton-import/raw/<master-folder>/<slug>/<timestamp>/document.html`. Verify
+that export locally:
 
 ```sh
 node scripts/content/master-verify.js --slug <slug> \
-  .medium-import/proton-exports/<slug>/page.html
+  .proton-import/raw/<master-folder>/<slug>/<timestamp>/document.html
+pnpm proton:verify-v2 --with-raw --with-cloud --require-complete --require-final-cloud
 ```
 
 The verifier performs no network requests. It requires embedded image bytes or
@@ -263,12 +337,28 @@ decodes the hero and requires the exact approved dimensions and pixel identity;
 re-encoding alone is tolerated only when every decoded pixel remains identical.
 Remote images, Proton URLs or IDs, active markup, unsafe paths, linked files,
 malformed HTML, changed semantics and `.protondoc` placeholders fail closed.
-The HTML package, Proton export and verifier result remain ignored local
-evidence and are never required by GitHub Actions or the live static site.
+The bootstrap package, Proton export, cloud inventory, and verifier result
+remain ignored local evidence and are never required by GitHub Actions or the
+live static site. After a Proton master is established, do not regenerate it
+from the historical Medium ZIP or a public Medium page; an unavailable or
+ambiguous Proton export blocks publication.
+
+For a later intentional single-work revision, first record the exact current
+V2 ledger hash. `proton:update` defaults to a dry run, regenerates all bindings,
+requires a final unchanged cloud inventory, rejects any non-target drift, and
+reports only the changed evidence fields and approval invalidation:
+
+```powershell
+pnpm proton:update --slug <slug> --previous-ledger-sha sha256:<digest> --capture .proton-import/capture.v2.json --cloud .proton-import/cloud-inventory/<timestamp>.v1.json
+```
+
+Review that output before repeating the same command with `--write`. A title,
+slug, master-folder, cloud-name, or second-work change is outside this guarded
+update path and requires a separately reviewed migration.
 
 ## Publication boundary
 
-Source-platform names, URLs, IDs, ZIP hashes, and acquisition details remain in non-rendered provenance and repository documentation. Reader pages use only Shots of Rhapsody branding. Raw exports, account data, local paths, and `.medium-import/` must never be committed or deployed.
+Source-platform names, URLs, IDs, ZIP hashes, and acquisition details remain in non-rendered provenance and repository documentation. Reader pages use only Shots of Rhapsody branding. Raw exports, account data, cloud identifiers, local paths, `.proton-import/`, and `.medium-import/` must never be committed or deployed.
 
 No local importer utility is required by the live static site. GitHub Actions builds only committed, approved content with the frozen JavaScript dependency graph.
 
@@ -293,5 +383,6 @@ Authoritative references:
 - [Astro image handling](https://docs.astro.build/en/guides/images/)
 - [Sharp image output](https://sharp.pixelplumbing.com/api-output/)
 - [Proton Docs import and export](https://proton.me/support/drive-import-export-docs)
+- [Proton Drive CLI](https://proton.me/support/drive-cli)
 - [Google people-first content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content)
 - [WCAG 2.2](https://www.w3.org/TR/WCAG22/)
