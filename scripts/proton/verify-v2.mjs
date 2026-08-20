@@ -8,7 +8,6 @@ import {
 	DEFAULT_REPO_ROOT,
 } from "../medium/lib/contract.js";
 import {
-	DEFAULT_CLOUD_CAPTURE_PATH,
 	loadCloudCapture,
 	ProtonCloudError,
 	verifyCloudCaptureAgainstExpected,
@@ -34,7 +33,7 @@ Options:
   --require-complete    Require exactly 11 Fiction and 24 Non-Fiction records
   --require-final-cloud Require final Windows-safe cloud names
   --capture <path>      Ignored V2 export capture (default: ${DEFAULT_CAPTURE_PATH_V2})
-  --cloud <path>        Ignored cloud capture (default: ${DEFAULT_CLOUD_CAPTURE_PATH})
+  --cloud <path>        Explicit ignored cloud capture (required with raw/cloud mode)
   --ledger <path>       Committed V2 ledger (default: ${DEFAULT_LEDGER_PATH_V2})
   --json                Emit machine-readable output
   --help                Show this help
@@ -59,7 +58,7 @@ export async function main(argv = process.argv.slice(2)) {
 				"require-complete": { type: "boolean", default: false },
 				"require-final-cloud": { type: "boolean", default: false },
 				capture: { type: "string", default: DEFAULT_CAPTURE_PATH_V2 },
-				cloud: { type: "string", default: DEFAULT_CLOUD_CAPTURE_PATH },
+				cloud: { type: "string" },
 				ledger: { type: "string", default: DEFAULT_LEDGER_PATH_V2 },
 				json: { type: "boolean", default: false },
 				help: { type: "boolean", default: false },
@@ -80,6 +79,11 @@ export async function main(argv = process.argv.slice(2)) {
 		const requireComplete = values["require-complete"];
 		const withRaw = values["with-raw"];
 		const withCloud = values["with-cloud"] || withRaw;
+		if (withCloud && !values.cloud) {
+			throw new ProtonCloudError(
+				"--cloud is required with --with-raw or --with-cloud",
+			);
+		}
 		const ledgerPath = assertSafeRepositoryPath(values.ledger, "--ledger");
 		if (!ledgerPath.startsWith("provenance/proton/")) {
 			throw new ProtonContractError(
@@ -87,7 +91,9 @@ export async function main(argv = process.argv.slice(2)) {
 			);
 		}
 		const capturePath = ignoredPath(values.capture, "--capture");
-		const cloudPath = ignoredPath(values.cloud, "--cloud");
+		const cloudPath = withCloud
+			? ignoredPath(values.cloud, "--cloud")
+			: undefined;
 		const ledger = await loadLedgerV2({
 			repoRoot: DEFAULT_REPO_ROOT,
 			ledgerPath,

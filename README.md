@@ -79,7 +79,7 @@ pnpm test:future-content
 pnpm test:migration
 pnpm test:release-tools
 pnpm archive:verify --require-complete
-pnpm proton:verify --require-complete
+pnpm proton:verify-v2 --require-complete --require-final-cloud
 pnpm medium:verify --require-complete
 pnpm content:verify --require-complete
 pnpm podcast:verify --require-complete

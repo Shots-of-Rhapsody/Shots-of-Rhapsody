@@ -12,11 +12,7 @@ import {
 	DEFAULT_REPO_ROOT,
 	serializeJson,
 } from "../medium/lib/contract.js";
-import {
-	cloudInventoryDigest,
-	loadCloudCapture,
-	validateCloudCapture,
-} from "./cloud.mjs";
+import { cloudInventoryDigest, validateCloudCapture } from "./cloud.mjs";
 import {
 	loadExpectedBindings,
 	ProtonContractError,
@@ -869,12 +865,4 @@ export async function verifyLedgerV2Evidence({
 		cloudPhase: normalizedLedger.cloudInventory.phase,
 		complete: normalizedLedger.records.length === EXPECTED_RECORD_COUNT,
 	};
-}
-
-export async function loadDefaultCloudCapture({
-	repoRoot = DEFAULT_REPO_ROOT,
-} = {}) {
-	return loadCloudCapture(
-		path.join(repoRoot, ".proton-import", "cloud-inventory.v1.json"),
-	);
 }

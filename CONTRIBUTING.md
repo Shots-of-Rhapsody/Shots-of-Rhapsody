@@ -37,9 +37,9 @@ placeholder. The optional Proton Drive CLI may list cloud names read-only for
 inventory reconciliation; it must not export or modify content and is never a
 build or runtime dependency.
 
-When running repository scripts with pnpm 11, pass script options directly
-(for example, `pnpm proton:cloud-verify --preflight --require-complete`). Do not
-insert an extra literal `--`. Each Proton cloud observation uses a new
+When running repository scripts with pnpm 11, pass script options directly,
+including an explicit timestamped `--capture` value for cloud verification. Do
+not insert an extra literal `--`. Each Proton cloud observation uses a new
 timestamped ignored output; after final-name verification, the selected capture
 is finalized with `proton:capture-finalize` and bound through
 `proton:record-v2`. Finalization scans only the canonical `raw/fiction` and
@@ -66,7 +66,7 @@ pnpm install --frozen-lockfile
 pnpm test:archive
 pnpm test:future-content
 pnpm archive:verify --require-complete
-pnpm proton:verify --require-complete
+pnpm proton:verify-v2 --require-complete --require-final-cloud
 pnpm medium:verify --require-complete
 pnpm content:verify --require-complete
 pnpm podcast:verify --require-complete

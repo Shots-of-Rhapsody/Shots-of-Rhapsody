@@ -13,7 +13,6 @@ import {
 	serializeJson,
 } from "../medium/lib/contract.js";
 import {
-	DEFAULT_CLOUD_CAPTURE_PATH,
 	loadCloudCapture,
 	ProtonCloudError,
 	verifyCloudCaptureAgainstExpected,
@@ -52,7 +51,7 @@ const CONTENT_EVIDENCE_FIELDS = new Set([
 ]);
 
 const HELP = `Usage:
-  node scripts/proton/update.mjs --slug <slug> --previous-ledger-sha <sha256> [options]
+  node scripts/proton/update.mjs --slug <slug> --previous-ledger-sha <sha256> --cloud <path> [options]
 
 Regenerates the full V2 ledger from ignored evidence, then permits exactly one
 named work to differ. Dry-run is the default. --write atomically replaces the
@@ -62,7 +61,7 @@ Options:
   --slug <slug>                 The only work allowed to change
   --previous-ledger-sha <sha>  Exact current V2 ledger SHA-256
   --capture <path>              Ignored V2 export capture (default: ${DEFAULT_CAPTURE_PATH_V2})
-  --cloud <path>                Ignored final cloud capture (default: ${DEFAULT_CLOUD_CAPTURE_PATH})
+  --cloud <path>                Explicit ignored final cloud capture
   --ledger <path>               Committed V2 ledger (default: ${DEFAULT_LEDGER_PATH_V2})
   --write                       Apply the verified one-work ledger replacement
   --json                        Emit machine-readable output
@@ -258,7 +257,7 @@ export async function main(argv = process.argv.slice(2)) {
 				slug: { type: "string" },
 				"previous-ledger-sha": { type: "string" },
 				capture: { type: "string", default: DEFAULT_CAPTURE_PATH_V2 },
-				cloud: { type: "string", default: DEFAULT_CLOUD_CAPTURE_PATH },
+				cloud: { type: "string" },
 				ledger: { type: "string", default: DEFAULT_LEDGER_PATH_V2 },
 				write: { type: "boolean", default: false },
 				json: { type: "boolean", default: false },
@@ -277,9 +276,9 @@ export async function main(argv = process.argv.slice(2)) {
 		return 0;
 	}
 	try {
-		if (!values.slug || !values["previous-ledger-sha"]) {
+		if (!values.slug || !values["previous-ledger-sha"] || !values.cloud) {
 			throw new ProtonContractError(
-				"--slug and --previous-ledger-sha are required",
+				"--slug, --previous-ledger-sha, and --cloud are required",
 			);
 		}
 		const slug = assertSlug(values.slug, "--slug");

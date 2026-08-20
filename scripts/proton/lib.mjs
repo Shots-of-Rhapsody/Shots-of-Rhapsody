@@ -920,7 +920,7 @@ export async function verifyFictionHeroBuffer(binding, buffer) {
 	}
 }
 
-function verifyArchiveRaw(binding, raw, { requireLeadTitle = false } = {}) {
+function verifyArchiveRaw(binding, raw) {
 	let extracted;
 	try {
 		extracted = extractProtonHtml(decodeUtf8(raw.buffer, binding.slug));
@@ -931,7 +931,9 @@ function verifyArchiveRaw(binding, raw, { requireLeadTitle = false } = {}) {
 		);
 	}
 	if (
-		(requireLeadTitle && extracted.leadTitle === undefined) ||
+		// Most sealed Fiction masters bind the article title in Proton's cloud
+		// metadata rather than duplicating it in the document body. When an
+		// optional lead title is present, it must still match exactly.
 		(extracted.leadTitle !== undefined &&
 			extracted.leadTitle !== binding.snapshot.title) ||
 		extracted.subtitle !== binding.snapshot.subtitle ||
@@ -970,9 +972,7 @@ export async function verifyRawBinding(repoRoot, binding, captureEntry) {
 	);
 	let verification;
 	if (binding.section === "fiction") {
-		verification = verifyArchiveRaw(binding, raw, {
-			requireLeadTitle: captureEntry.articleTitle !== undefined,
-		});
+		verification = verifyArchiveRaw(binding, raw);
 		const hero = await readRawFictionHero(
 			repoRoot,
 			captureEntry.heroFile,

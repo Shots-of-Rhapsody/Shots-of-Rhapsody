@@ -11,7 +11,6 @@ import {
 	serializeJson,
 } from "../medium/lib/contract.js";
 import {
-	DEFAULT_CLOUD_CAPTURE_PATH,
 	loadCloudCapture,
 	ProtonCloudError,
 	verifyCloudCaptureAgainstExpected,
@@ -19,20 +18,18 @@ import {
 import { expectedMasterRecordsV2 } from "./lib.mjs";
 
 export const PROTON_CAPTURE_SCAFFOLD_VERSION = 2;
-export const DEFAULT_CAPTURE_SCAFFOLD_PATH =
-	".proton-import/capture-scaffold.v2.json";
 const EXPORT_TIMESTAMP_PLACEHOLDER = "<YYYYMMDDTHHmmss.sssZ>";
 
 const HELP = `Usage:
-  node scripts/proton/capture-scaffold.mjs --generated-at <UTC> [options]
+  node scripts/proton/capture-scaffold.mjs --generated-at <UTC> --cloud <path> --output <path> [options]
 
 Creates an ignored, no-overwrite pending export checklist. It creates no
 approval, review identity, pass status, raw export, or committed evidence.
 
 Options:
   --generated-at <UTC>  Canonical UTC scaffold timestamp
-  --cloud <path>        Ignored cloud capture (default: ${DEFAULT_CLOUD_CAPTURE_PATH})
-  --output <path>       Ignored scaffold (default: ${DEFAULT_CAPTURE_SCAFFOLD_PATH})
+  --cloud <path>        Explicit ignored cloud capture
+  --output <path>       New explicit ignored scaffold
   --json                Emit machine-readable output
   --help                Show this help
 `;
@@ -92,8 +89,8 @@ export async function main(argv = process.argv.slice(2)) {
 			args: argv,
 			options: {
 				"generated-at": { type: "string" },
-				cloud: { type: "string", default: DEFAULT_CLOUD_CAPTURE_PATH },
-				output: { type: "string", default: DEFAULT_CAPTURE_SCAFFOLD_PATH },
+				cloud: { type: "string" },
+				output: { type: "string" },
 				json: { type: "boolean", default: false },
 				help: { type: "boolean", default: false },
 			},
@@ -110,8 +107,10 @@ export async function main(argv = process.argv.slice(2)) {
 		return 0;
 	}
 	try {
-		if (!values["generated-at"]) {
-			throw new ProtonCloudError("--generated-at is required");
+		if (!values["generated-at"] || !values.cloud || !values.output) {
+			throw new ProtonCloudError(
+				"--generated-at, --cloud, and --output are required",
+			);
 		}
 		const generatedAt = assertCanonicalUtc(
 			values["generated-at"],

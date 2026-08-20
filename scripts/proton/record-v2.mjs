@@ -8,7 +8,6 @@ import {
 	DEFAULT_REPO_ROOT,
 } from "../medium/lib/contract.js";
 import {
-	DEFAULT_CLOUD_CAPTURE_PATH,
 	loadCloudCapture,
 	ProtonCloudError,
 	verifyCloudCaptureAgainstExpected,
@@ -23,14 +22,14 @@ import {
 } from "./v2.mjs";
 
 const HELP = `Usage:
-  node scripts/proton/record-v2.mjs [options]
+  node scripts/proton/record-v2.mjs --cloud <path> [options]
 
 Creates the first committed V2 ledger from 35 fresh, timestamped HTML exports.
 The command requires a final cloud inventory and never overwrites a ledger.
 
 Options:
   --capture <path>  Ignored V2 export capture (default: ${DEFAULT_CAPTURE_PATH_V2})
-  --cloud <path>    Ignored final cloud capture (default: ${DEFAULT_CLOUD_CAPTURE_PATH})
+  --cloud <path>    Explicit ignored final cloud capture
   --output <path>   New committed ledger (default: ${DEFAULT_LEDGER_PATH_V2})
   --json            Emit machine-readable output
   --help            Show this help
@@ -51,7 +50,7 @@ export async function main(argv = process.argv.slice(2)) {
 			args: argv,
 			options: {
 				capture: { type: "string", default: DEFAULT_CAPTURE_PATH_V2 },
-				cloud: { type: "string", default: DEFAULT_CLOUD_CAPTURE_PATH },
+				cloud: { type: "string" },
 				output: { type: "string", default: DEFAULT_LEDGER_PATH_V2 },
 				json: { type: "boolean", default: false },
 				help: { type: "boolean", default: false },
@@ -69,6 +68,9 @@ export async function main(argv = process.argv.slice(2)) {
 		return 0;
 	}
 	try {
+		if (!values.cloud) {
+			throw new ProtonCloudError("--cloud is required");
+		}
 		const capturePath = ignoredPath(values.capture, "--capture");
 		const cloudPath = ignoredPath(values.cloud, "--cloud");
 		const outputPath = assertSafeRepositoryPath(values.output, "--output");

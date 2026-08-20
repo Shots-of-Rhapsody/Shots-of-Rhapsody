@@ -8,7 +8,6 @@ import {
 	DEFAULT_REPO_ROOT,
 } from "../medium/lib/contract.js";
 import {
-	DEFAULT_CLOUD_CAPTURE_PATH,
 	loadCloudCapture,
 	ProtonCloudError,
 	verifyCloudCaptureAgainstExpected,
@@ -16,7 +15,7 @@ import {
 import { expectedMasterRecordsV2 } from "./lib.mjs";
 
 const HELP = `Usage:
-  node scripts/proton/cloud-verify.mjs [options]
+  node scripts/proton/cloud-verify.mjs --capture <path> [options]
 
 Verifies the ignored, sanitized CLI capture against the current committed
 writing inventory. Final mode fails until every observed cloud name equals its
@@ -25,7 +24,7 @@ deterministic Windows-safe target.
 Options:
   --preflight         Permit exact, uniquely mapped legacy names
   --require-complete  Require exactly 11 Fiction and 24 Non-Fiction Docs
-  --capture <path>    Ignored capture (default: ${DEFAULT_CLOUD_CAPTURE_PATH})
+  --capture <path>    Explicit ignored capture
   --json              Emit machine-readable output
   --help              Show this help
 `;
@@ -38,7 +37,7 @@ export async function main(argv = process.argv.slice(2)) {
 			options: {
 				preflight: { type: "boolean", default: false },
 				"require-complete": { type: "boolean", default: false },
-				capture: { type: "string", default: DEFAULT_CLOUD_CAPTURE_PATH },
+				capture: { type: "string" },
 				json: { type: "boolean", default: false },
 				help: { type: "boolean", default: false },
 			},
@@ -55,6 +54,9 @@ export async function main(argv = process.argv.slice(2)) {
 		return 0;
 	}
 	try {
+		if (!values.capture) {
+			throw new ProtonCloudError("--capture is required");
+		}
 		const requireComplete = values["require-complete"];
 		const capturePath = assertSafeRepositoryPath(values.capture, "--capture");
 		if (!capturePath.startsWith(".proton-import/")) {

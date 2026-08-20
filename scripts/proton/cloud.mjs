@@ -18,8 +18,6 @@ export const PROTON_REMOTE_FOLDERS = Object.freeze({
 	fiction: "/my-files/Blogging/Fiction",
 	nonfiction: "/my-files/Blogging/Non-Fiction",
 });
-export const DEFAULT_CLOUD_CAPTURE_PATH =
-	".proton-import/cloud-inventory.v1.json";
 
 const MAX_CLI_OUTPUT_BYTES = 4 * 1024 * 1024;
 const MAX_CAPTURE_BYTES = 2 * 1024 * 1024;

@@ -1,9 +1,11 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import sharp from "sharp";
+import { extractProtonHtml } from "../archive/lib/extract.js";
+import { makePng, readFixture } from "../archive/test/helpers.js";
 import { DEFAULT_REPO_ROOT, serializeJson } from "../medium/lib/contract.js";
 import { sha256 } from "../medium/lib/integrity.js";
 import {
@@ -15,6 +17,7 @@ import {
 	validateLedger,
 	verifyCaptureInventory,
 	verifyFictionHeroBuffer,
+	verifyRawBinding,
 	writeLedgerNoOverwrite,
 } from "./lib.mjs";
 
@@ -214,6 +217,79 @@ test("fiction hero verification binds exact PNG bytes, dimensions, and pixels", 
 			changedPixelsPng,
 		),
 		/hero pixels differ/u,
+	);
+});
+
+test("V2 Fiction accepts a cloud-bound title without duplicating it in the body", async (context) => {
+	const root = await mkdtemp(
+		path.join(os.tmpdir(), "proton-v2-fiction-title-"),
+	);
+	context.after(async () => {
+		await rm(root, { recursive: true, force: true });
+	});
+	const slug = "exact-work";
+	const timestamp = "20260728T123456.789Z";
+	const base = path.join(
+		root,
+		".proton-import",
+		"raw",
+		"fiction",
+		slug,
+		timestamp,
+	);
+	await mkdir(base, { recursive: true });
+	const html = await readFixture();
+	const extracted = extractProtonHtml(html);
+	assert.equal(extracted.leadTitle, undefined);
+	const png = makePng();
+	const pixels = await sharp(png)
+		.toColourspace("srgb")
+		.ensureAlpha()
+		.raw({ depth: "uchar" })
+		.toBuffer();
+	const documentFile = `.proton-import/raw/fiction/${slug}/${timestamp}/document.html`;
+	const heroFile = `.proton-import/raw/fiction/${slug}/${timestamp}/hero-original.png`;
+	await writeFile(path.join(base, "document.html"), html);
+	await writeFile(path.join(base, "hero-original.png"), png);
+	const binding = {
+		slug,
+		section: "fiction",
+		articleTitle: "Exact Article",
+		heroSha256: sha256(png),
+		heroPixelSha256: sha256(pixels),
+		bodyBlockCount: extracted.document.blocks.length,
+		snapshot: {
+			title: "Exact Article",
+			subtitle: extracted.subtitle,
+			imageCaption: extracted.caption,
+			hero: {
+				rawAlt: extracted.hero.alt,
+				width: 2,
+				height: 3,
+			},
+			bodyDocument: extracted.document,
+		},
+	};
+	const captureEntry = {
+		slug,
+		articleTitle: "Exact Article",
+		exportedAt: "2026-07-28T12:34:56.789Z",
+		file: documentFile,
+		heroFile,
+	};
+	await verifyRawBinding(root, binding, captureEntry);
+
+	const wrongTitleHtml = html
+		.replace(
+			'<h2 dir="ltr" style="font-size: 16px; text-align: start"><span style="white-space: pre-wrap">',
+			'<h1 dir="ltr" style="font-size: 16px; text-align: start"><span style="white-space: pre-wrap">Wrong Article</span><br><br><span style="white-space: pre-wrap">',
+		)
+		.replace("</h2>", "</h1>");
+	assert.equal(extractProtonHtml(wrongTitleHtml).leadTitle, "Wrong Article");
+	await writeFile(path.join(base, "document.html"), wrongTitleHtml);
+	await assert.rejects(
+		verifyRawBinding(root, binding, captureEntry),
+		/Exported fiction semantics differ/u,
 	);
 });
 

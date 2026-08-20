@@ -9,7 +9,6 @@ import {
 } from "../medium/lib/contract.js";
 import {
 	captureCloudInventory,
-	DEFAULT_CLOUD_CAPTURE_PATH,
 	PROTON_CLOUD_CAPTURE_SCHEMA_VERSION,
 	ProtonCloudError,
 	writeCloudCaptureNoOverwrite,
@@ -17,7 +16,7 @@ import {
 import { expectedMasterRecordsV2 } from "./lib.mjs";
 
 const HELP = `Usage:
-  node scripts/proton/cloud-capture.mjs --cli <absolute-path> [options]
+  node scripts/proton/cloud-capture.mjs --cli <absolute-path> --output <path> [options]
 
 Runs only the two fixed, read-only Proton folder listings. Raw CLI JSON is
 parsed in memory and is never printed or written. The ignored output contains
@@ -26,7 +25,7 @@ The executable must match Proton's published Windows x64 0.6.0 SHA-512.
 
 Options:
   --cli <path>     Absolute Proton Drive CLI executable path
-  --output <path>  Ignored output (default: ${DEFAULT_CLOUD_CAPTURE_PATH})
+  --output <path>  New explicit ignored output
   --json           Emit a sanitized summary
   --help           Show this help
 `;
@@ -38,7 +37,7 @@ export async function main(argv = process.argv.slice(2)) {
 			args: argv,
 			options: {
 				cli: { type: "string" },
-				output: { type: "string", default: DEFAULT_CLOUD_CAPTURE_PATH },
+				output: { type: "string" },
 				json: { type: "boolean", default: false },
 				help: { type: "boolean", default: false },
 			},
@@ -55,8 +54,8 @@ export async function main(argv = process.argv.slice(2)) {
 		return 0;
 	}
 	try {
-		if (!values.cli) {
-			throw new ProtonCloudError("--cli is required");
+		if (!values.cli || !values.output) {
+			throw new ProtonCloudError("--cli and --output are required");
 		}
 		const outputPath = assertSafeRepositoryPath(values.output, "--output");
 		if (!outputPath.startsWith(".proton-import/")) {

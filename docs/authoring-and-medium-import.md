@@ -305,7 +305,7 @@ requires 35 fresh timestamped Docs exports, verifies all raw evidence, binds the
 immutable V1 ledger, and refuses to overwrite an existing V2 ledger:
 
 ```powershell
-pnpm proton:capture-scaffold --generated-at <UTC-ISO-TIMESTAMP> --cloud .proton-import/cloud-inventory.<final-timestamp>.v1.json
+pnpm proton:capture-scaffold --generated-at <UTC-ISO-TIMESTAMP> --cloud .proton-import/cloud-inventory.<final-timestamp>.v1.json --output .proton-import/capture-scaffold.v2.<timestamp>.json
 pnpm proton:capture-finalize --cloud .proton-import/cloud-inventory.<final-timestamp>.v1.json
 pnpm proton:record-v2 --capture .proton-import/capture.v2.json --cloud .proton-import/cloud-inventory.<final-timestamp>.v1.json
 pnpm proton:verify-v2 --with-raw --with-cloud --require-complete --require-final-cloud --capture .proton-import/capture.v2.json --cloud .proton-import/cloud-inventory.<final-timestamp>.v1.json
@@ -337,7 +337,7 @@ that export locally:
 ```sh
 node scripts/content/master-verify.js --slug <slug> \
   .proton-import/raw/<master-folder>/<slug>/<timestamp>/document.html
-pnpm proton:verify-v2 --with-raw --with-cloud --require-complete --require-final-cloud
+pnpm proton:verify-v2 --with-raw --with-cloud --require-complete --require-final-cloud --capture .proton-import/capture.v2.json --cloud .proton-import/cloud-inventory.<final-timestamp>.v1.json
 ```
 
 The verifier performs no network requests. It requires embedded image bytes or

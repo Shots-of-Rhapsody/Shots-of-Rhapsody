@@ -41,13 +41,13 @@ A Word or PDF download may be retained locally as a secondary visual witness, bu
 Run a read-only plan first:
 
 ```sh
-pnpm archive:import -- --slug <slug>
+pnpm archive:import --slug <slug>
 ```
 
 After reviewing the plan, write the deterministic outputs:
 
 ```sh
-pnpm archive:import -- --slug <slug> --captured-at <UTC-ISO-TIMESTAMP> --write
+pnpm archive:import --slug <slug> --captured-at <UTC-ISO-TIMESTAMP> --write
 pnpm archive:verify --slug <slug> --with-raw
 pnpm check
 pnpm build

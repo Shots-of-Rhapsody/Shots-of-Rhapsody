@@ -9,7 +9,6 @@ import {
 	DEFAULT_REPO_ROOT,
 } from "../medium/lib/contract.js";
 import {
-	DEFAULT_CLOUD_CAPTURE_PATH,
 	loadCloudCapture,
 	ProtonCloudError,
 	verifyCloudCaptureAgainstExpected,
@@ -28,7 +27,7 @@ const TIMESTAMP_DIRECTORY =
 	/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})\.(\d{3})Z$/u;
 
 const HELP = `Usage:
-  node scripts/proton/capture-finalize.mjs [options]
+  node scripts/proton/capture-finalize.mjs --cloud <path> [options]
 
 Scans only .proton-import/raw/fiction and raw/nonfiction, requires one canonical
 timestamped export per expected work, verifies all HTML/image semantics, and
@@ -36,7 +35,7 @@ creates the ignored V2 capture without approvals. Nothing is uploaded or read
 from the network, and existing output is never overwritten.
 
 Options:
-  --cloud <path>   Ignored final cloud capture (default: ${DEFAULT_CLOUD_CAPTURE_PATH})
+  --cloud <path>   Explicit ignored final cloud capture
   --output <path>  New ignored V2 capture (default: ${DEFAULT_CAPTURE_PATH_V2})
   --json           Emit machine-readable output
   --help           Show this help
@@ -209,7 +208,7 @@ export async function main(argv = process.argv.slice(2)) {
 		values = parseArgs({
 			args: argv,
 			options: {
-				cloud: { type: "string", default: DEFAULT_CLOUD_CAPTURE_PATH },
+				cloud: { type: "string" },
 				output: { type: "string", default: DEFAULT_CAPTURE_PATH_V2 },
 				json: { type: "boolean", default: false },
 				help: { type: "boolean", default: false },
@@ -227,6 +226,9 @@ export async function main(argv = process.argv.slice(2)) {
 		return 0;
 	}
 	try {
+		if (!values.cloud) {
+			throw new ProtonCloudError("--cloud is required");
+		}
 		const cloudPath = ignoredPath(values.cloud, "--cloud");
 		const outputPath = ignoredPath(values.output, "--output");
 		const expected = await expectedMasterRecordsV2({
