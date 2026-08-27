@@ -1,4 +1,317 @@
 {
   "version": 2,
-  "entries": []
+  "entries": [
+    {
+      "slug": "beyond-scarcity-how-automation-ai-could-end-economic-struggle",
+      "kind": "writing",
+      "sourceSha256": "sha256:d4e98625e0916126a2e9369d030436586abd724fd7dca9986293b65afa613c82",
+      "outputSha256": "sha256:48329b9c8aaad2ea4fa83b4ca80d1e103df30c0b6d5b95d1fa744ff60a2ca2c8",
+      "assetSha256": [
+        "sha256:c2c5b08f8ccc6efce7d56a8ad8e8bb4ce013c62fb338071700a10c170607e798"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "closing-the-gap-how-a-fairer-global-economy-could-lift-billions",
+      "kind": "writing",
+      "sourceSha256": "sha256:65ebdf9da501df0a45049777a9de7267bfd5283f10d4d9feddbc99e1a0bb2052",
+      "outputSha256": "sha256:b76be20461111e375ca54629c80edc45fa8c9097a1bba12b5fadce4bf756a3e4",
+      "assetSha256": [
+        "sha256:f4c8327008607706341cfd26800fb9e2a87d106d693ec6c56a7d2a85afc6cde1"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "debt-as-destiny-how-the-credit-system-controls-lives",
+      "kind": "writing",
+      "sourceSha256": "sha256:60ddbec0be7e6a0bf36891c78f7f395e81725258279a12c84f1d0179aef346f5",
+      "outputSha256": "sha256:81e9b6f94404f2c8b499037c75b39eb763692bf5a51dc6e96f18a09b8b803c5c",
+      "assetSha256": [
+        "sha256:e6f310b0231c8960e9ef1e6b14b66e0e22f674d31382e7476a49d83ebd1fcc3c"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "origins-orders",
+      "kind": "writing",
+      "sourceSha256": "sha256:72655569dfb40d93bb75106d07aa17a477fd7c9c66f671d31a1afa519c87271a",
+      "outputSha256": "sha256:90f437d91abe6225962d5ee3ffc3e6aafd68a48896a33463d03b884c7491ec1d",
+      "assetSha256": [
+        "sha256:eed7ac5909604705bb8fdda51efbd56e0dac05fcdf61090e98296a51fc692a29"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "the-aspiration-economy",
+      "kind": "writing",
+      "sourceSha256": "sha256:e0720bf67a0bc71edac831bdd906ac44a44d10d113f1c198826db890ddf7ae2a",
+      "outputSha256": "sha256:6d485a77569fce2c027b332a73d536044ab1017c8ffaa9b0ffb80ee35fbcaa4d",
+      "assetSha256": [
+        "sha256:a34df5c5ef0f45071d20293344ea51144c0fc6f661e747c5863d40225b652264"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "the-collateral-shift",
+      "kind": "writing",
+      "sourceSha256": "sha256:26a4948705deb40f43038b83b29c684a6ad8efddd3597546adaedd8efe54a5d7",
+      "outputSha256": "sha256:e8233237acc0ea9a9cdcbdc76d744490f1d2600b1b2aba61df99ce849226e1ee",
+      "assetSha256": [
+        "sha256:d22cbcd9bf423ac3f3ec97798e13600eee8044bb66baf523051ee270a021b5cd"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "the-economics-of-loneliness-how-disconnection-became-a-market-failure",
+      "kind": "writing",
+      "sourceSha256": "sha256:344b04b5cded127e3e365b0e25eac76e01a4e73fa583628c259a19c9a1d545ba",
+      "outputSha256": "sha256:1f126a2c23330a32583f93b211dc3bec2c03f3d8e71a72081202b56dbcb1c635",
+      "assetSha256": [
+        "sha256:37a566db82bf6152e2d434c18acaf4a5c31c62585be81ab77fa1643531f239a3"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "the-economy-is-built-on-nature-we-just-dont-count-it",
+      "kind": "writing",
+      "sourceSha256": "sha256:900cedf4b478d696bb41a656aaa9f12284cb7fc702916bc838c54d471704878c",
+      "outputSha256": "sha256:54a719a5b55df57915dc0651478a015e4b5de9d98b3f473afc05ebe3b47d1d46",
+      "assetSha256": [
+        "sha256:1fdb3a0ddf2ce33a87ef1b41da563e9c2d285d8f6fbae90301ff2971e9101dcf"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "the-education-illusion",
+      "kind": "writing",
+      "sourceSha256": "sha256:d9ba303a5057b0626636a309b4feb0a642f881803bad4fa0b2d211d1d05076d7",
+      "outputSha256": "sha256:f81dbce9f8890219b4cd9cbd4cdaab2ee2ac918fa58e0d6a306a7632cb8b7436",
+      "assetSha256": [
+        "sha256:60f39098d00ba30e118c4523ed878487ce982bf0a47de6d69f759ace64a2ee2f"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking",
+      "kind": "writing",
+      "sourceSha256": "sha256:fe12718e30c4006d191dfc8321811a356cafedbbb59b0e01e0ca736c9d9c495b",
+      "outputSha256": "sha256:bf063f4864666bccc780461936683d9d59aaef3381c4cb4417ff8908f15956bb",
+      "assetSha256": [
+        "sha256:04b5097187a17822aa71a80c134181c83bf9029b97e875b0d7a44de7770f0ff5"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "the-identity-economy",
+      "kind": "writing",
+      "sourceSha256": "sha256:271d094e4b8e251324fff50505f5c89bbba2161c9d5cd7e025c5af153a1e255f",
+      "outputSha256": "sha256:fa3d85c33796c986627f03c66b2cb1bf1d973ca1b2e714f90dca32070d8915af",
+      "assetSha256": [
+        "sha256:48c6dd24904bd63fbb100e8b8ff0f6756b98314749aa7dac3416b97e5f3d6360"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "the-informal-majority",
+      "kind": "writing",
+      "sourceSha256": "sha256:5afd6e64e4962541e849be18128cd71e9c5055f786655ae02fb9b806444bc525",
+      "outputSha256": "sha256:bf001a45509a427798b1b37d8b528fe5855bc163a8509a15c246c81c03913cb3",
+      "assetSha256": [
+        "sha256:00b1f3ad0eaa0d8f2693920fff97ae1ebc61656651aefcf1531dc5870eb8ff5c"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "the-invisible-ledger",
+      "kind": "writing",
+      "sourceSha256": "sha256:39fc0cb6002d9006ce8b5cc11f03bce034b223230b3727ab3be41f8146edcc6f",
+      "outputSha256": "sha256:521f036cc21f475868bebf3f880c85bd4b7bf927f2675dfb03cfd91ea5375d8a",
+      "assetSha256": [
+        "sha256:db09120dd63f26eca95dc54838a0db630e9220e56e9fc88887d229810af6e60d"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "the-next-leap-from-global-competition-to-human-cooperation",
+      "kind": "writing",
+      "sourceSha256": "sha256:415633c3e2b8060d3346f316745b95883c4e9e0c66e9fcd64b65897dba68b696",
+      "outputSha256": "sha256:e2b5a79fbfe4627f127fe13c402fb17cb9e0d0afefa65c8c78dd3c04e89fdb21",
+      "assetSha256": [
+        "sha256:5743628e2f2949fcf9faafb533e4c39ee028564d3a4c4fb2d8f85887319113ad"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "the-psychology-of-belief-why-humans-prefer-comfort-over-truth",
+      "kind": "writing",
+      "sourceSha256": "sha256:55b4d3e848f16c90b58bd2c56415886a57f1a79a281063d62ec2ea8cca6aa244",
+      "outputSha256": "sha256:5d650dd4f839d1e552098cbe29bbc5ac52ca32bf1ddbaacd7cb4ba6e76c499e9",
+      "assetSha256": [
+        "sha256:ba243cdd1d022b54b158e3911f1542177d77b318a6e06e31df73dbc57597eac2"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "the-remittance-paradox",
+      "kind": "writing",
+      "sourceSha256": "sha256:f223e21b3dfa3f173380a60a419aa01925c429ad944231c3ee6d5a79fea1b1ee",
+      "outputSha256": "sha256:13b54743f92acc1a31968a90dda91b1d920dca8aec30d72488849e14f9e7fab1",
+      "assetSha256": [
+        "sha256:da005c8bb598310da530a723ddeb196312e6961cd0e7ea113dbe504090dba859"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "the-rise-of-zero-cost-economies-what-happens-when-prices-disappear",
+      "kind": "writing",
+      "sourceSha256": "sha256:71e46d3e502cf2c5bc856dcaf2ed5b9e998de0fd4d8d61c66a9cb8ceb216281d",
+      "outputSha256": "sha256:47f78a1f104c7eb59bed06e320d76d4f3e8ba3f4e994d36ba20e8327bd32ca73",
+      "assetSha256": [
+        "sha256:108203f226621c550a84ea746a577fe6b13b41dc3e870fe3497e9256dd7e5a13"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "the-shadow-subsidy",
+      "kind": "writing",
+      "sourceSha256": "sha256:1e943769e137c3a3a830bbc79712192fc5d0fccc45cfa4597f47f9f68e0c2454",
+      "outputSha256": "sha256:99dcbefd0212e1c171995a83a64a31df172240dd0204bbe6e00235d8ae8cfefd",
+      "assetSha256": [
+        "sha256:d55db095becfbbec09940097d3ac46e1eef9bbb13dc5f56d59def3354880ef55"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "the-trillion-dollar-economy-no-one-talks-about",
+      "kind": "writing",
+      "sourceSha256": "sha256:18b3605b79eaae7e5d5b6e2cc79254173a376aca60fe421cfff04b38a5f27355",
+      "outputSha256": "sha256:92022120d9753c484129dcc9fa27e652a5b1c14822832a6d8c24aadf184ef335",
+      "assetSha256": [
+        "sha256:93b38a1e92f4254279dca447fcfc1744d4cf7e0b2b882687db8e356ca60336fc"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "the-water-economy",
+      "kind": "writing",
+      "sourceSha256": "sha256:db0ec3592d86f7bb8b550203a65458fe3837fed7c500aca2a847ada90dc64c38",
+      "outputSha256": "sha256:782d14300ed3698f55a0ce79fea990d9815e7457d2819961b0909cb53e5201ba",
+      "assetSha256": [
+        "sha256:cc36ae521f3823f0444ebc18ac6bd4f4396ddf461d9c3db62c9e16434aab89f9"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "what-comes-after-work-designing-a-purpose-driven-life",
+      "kind": "writing",
+      "sourceSha256": "sha256:a239e097acb630494ffe0d2bb51c1a6ee6af164f4684dc4bbfac79b9f82c0ba9",
+      "outputSha256": "sha256:287f5ad742e5f5a8ac9022dc56e9a84694fd1dab2bad755758c690cd0f7361d2",
+      "assetSha256": [
+        "sha256:69ecacac3ce4abb5ef4e535fc082d25eec05b2d2c61411327df9f7f2e9550393"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "what-we-call-freedom-isnt-really-freedom",
+      "kind": "writing",
+      "sourceSha256": "sha256:71153f592190d0d93bceade154e465a602f822dc29b4fd98e37b86059fbf0a7e",
+      "outputSha256": "sha256:c4905105043f0858b8a8932003b5712415b741ba7ae9d864f881fe29dc5529c9",
+      "assetSha256": [
+        "sha256:869c84bed45487ddb6239d9c4498c324490f74e0a8db4a51602ce20867842026"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource",
+      "kind": "writing",
+      "sourceSha256": "sha256:6ad2918190f9729bf365773d2d928d7ad20d6f66d52c53174b43bf7815fcb3c3",
+      "outputSha256": "sha256:287032fe12bedfa281406c4f461c105954c77f247a5909431a5d88c46315dc42",
+      "assetSha256": [
+        "sha256:825d61f7c32c3354086d675f36b98b08244961721374974500491b0bb227eb86"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    },
+    {
+      "slug": "why-family-is-not-sacred-by-default",
+      "kind": "writing",
+      "sourceSha256": "sha256:57efb98067c1fc5e15fa0fa78339fe4c367e91a387c165b69cf097e470816b76",
+      "outputSha256": "sha256:5bfb56670ea7d91d568b34cae79256d35eebcd269b2a4ed31114d02856ad714c",
+      "assetSha256": [
+        "sha256:4805a825f70c518512b43624ffda113b228dcd23628f0afa572687fe1b356f91"
+      ],
+      "reviewer": "Tai Song",
+      "reviewedAt": "2026-08-27T07:31:54.233Z",
+      "accuracy": "passed",
+      "rights": "passed"
+    }
+  ]
 }
