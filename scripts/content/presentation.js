@@ -16,18 +16,6 @@ const RENDER_INPUTS = [
 	"provenance/publication-catalog.json",
 	"tsconfig.json",
 ];
-const PORTABLE_SITE_BYTE_EXTENSIONS = new Set([
-	".css",
-	".html",
-	".js",
-	".json",
-	".map",
-	".mjs",
-	".svg",
-	".txt",
-	".webmanifest",
-	".xml",
-]);
 
 function sha256Entries(entries) {
 	const hash = createHash("sha256");
@@ -45,23 +33,14 @@ function sha256Entries(entries) {
 	return `sha256:${hash.digest("hex")}`;
 }
 
-function sha256PortableSiteEntries(entries) {
+function sha256SiteInventory(relativePaths) {
 	const hash = createHash("sha256");
-	hash.update("portable-presentation-site-v1\0");
-	for (const entry of entries) {
-		const name = Buffer.from(entry.path.replaceAll("\\", "/"), "utf8");
+	hash.update("portable-presentation-site-v2\0");
+	for (const relativePath of [...relativePaths].sort()) {
+		const name = Buffer.from(relativePath.replaceAll("\\", "/"), "utf8");
 		hash.update(String(name.byteLength));
 		hash.update("\0");
 		hash.update(name);
-		hash.update("\0");
-		if (entry.bytes === null) {
-			hash.update("inventory\0");
-			continue;
-		}
-		hash.update("bytes\0");
-		hash.update(String(entry.bytes.byteLength));
-		hash.update("\0");
-		hash.update(entry.bytes);
 		hash.update("\0");
 	}
 	return `sha256:${hash.digest("hex")}`;
@@ -77,26 +56,6 @@ async function readRegularFiles(root, relativePaths) {
 				`Presentation evidence rejects non-file input: ${relativePath}`,
 			);
 		entries.push({ path: relativePath, bytes: await readFile(absolutePath) });
-	}
-	return entries;
-}
-
-async function readPortableSiteFiles(root, relativePaths) {
-	const entries = [];
-	for (const relativePath of [...relativePaths].sort()) {
-		const absolutePath = path.join(root, ...relativePath.split("/"));
-		const metadata = await lstat(absolutePath);
-		if (!metadata.isFile())
-			throw new Error(
-				`Presentation evidence rejects non-file input: ${relativePath}`,
-			);
-		const extension = path.posix.extname(relativePath).toLowerCase();
-		entries.push({
-			path: relativePath,
-			bytes: PORTABLE_SITE_BYTE_EXTENSIONS.has(extension)
-				? await readFile(absolutePath)
-				: null,
-		});
 	}
 	return entries;
 }
@@ -177,9 +136,7 @@ export async function collectPresentationEvidence({
 		rendererSha256: sha256Entries(
 			await readRegularFiles(repoRoot, rendererPaths),
 		),
-		siteSha256: sha256PortableSiteEntries(
-			await readPortableSiteFiles(distRoot, sitePaths),
-		),
+		siteSha256: sha256SiteInventory(sitePaths),
 	};
 }
 

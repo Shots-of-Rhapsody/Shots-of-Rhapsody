@@ -18,7 +18,7 @@ function git(repoRoot, args) {
 	assert.equal(result.status, 0, result.stderr);
 }
 
-test("presentation evidence binds portable built output and commit ancestry", async () => {
+test("presentation evidence binds renderer, built inventory, and commit ancestry", async () => {
 	const repoRoot = await mkdtemp(path.join(os.tmpdir(), "shots-presentation-"));
 	const distRoot = path.join(repoRoot, "dist");
 	try {
@@ -93,6 +93,20 @@ test("presentation evidence binds portable built output and commit ancestry", as
 
 		await rm(path.join(distRoot, "unexpected.webp"));
 		await writeFile(path.join(distRoot, "index.html"), "<h1>Changed</h1>\n");
+		assert.deepEqual(
+			await verifyPresentationSignoffV2({
+				ledger,
+				repoRoot,
+				distRoot,
+				release: "v1.1.0",
+			}),
+			evidence,
+		);
+
+		await writeFile(
+			path.join(repoRoot, "src", "page.ts"),
+			"export const changed = true;\n",
+		);
 		await assert.rejects(
 			verifyPresentationSignoffV2({
 				ledger,
@@ -100,7 +114,7 @@ test("presentation evidence binds portable built output and commit ancestry", as
 				distRoot,
 				release: "v1.1.0",
 			}),
-			/stale siteSha256/u,
+			/stale rendererSha256/u,
 		);
 	} finally {
 		await rm(repoRoot, { recursive: true, force: true });
