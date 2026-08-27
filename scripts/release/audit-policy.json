@@ -51,12 +51,37 @@
 		],
 		"allowedMessageEmailObjects": [
 			{
+				"object": "2b03d69c724bc90839a270745a265c4cf1080ea9",
+				"location": "commit-message",
+				"reason": "Exact GitHub Dependabot PR commit with a verified public noreply trailer."
+			},
+			{
 				"object": "a80e389f2140d40eadc766240c3aacce31297ccd",
 				"location": "commit-message",
 				"reason": "Exact GitHub Dependabot PR commit with a verified public noreply trailer."
 			},
 			{
+				"object": "b0b8e69f4ef0507d86790d01e581280e44180f34",
+				"location": "commit-message",
+				"reason": "Exact GitHub Dependabot PR commit with a verified public noreply trailer."
+			},
+			{
+				"object": "b2a3d8afd5a09418ece5fe6e61eb110bb45843c5",
+				"location": "commit-message",
+				"reason": "Exact GitHub Dependabot PR commit with a verified public noreply trailer."
+			},
+			{
 				"object": "dc82acd18ce6e1f4956b29101e2b9c3072d019f6",
+				"location": "commit-message",
+				"reason": "Exact GitHub Dependabot PR commit with a verified public noreply trailer."
+			},
+			{
+				"object": "de6203764dac3c598875379462562997ab812a7a",
+				"location": "commit-message",
+				"reason": "Exact GitHub Dependabot PR commit with a verified public noreply trailer."
+			},
+			{
+				"object": "e333a396737214f6dc0a5c857d10bb8e1f320d82",
 				"location": "commit-message",
 				"reason": "Exact GitHub Dependabot PR commit with a verified public noreply trailer."
 			},
@@ -73,11 +98,31 @@
 		],
 		"allowedSignedOffByObjects": [
 			{
+				"object": "2b03d69c724bc90839a270745a265c4cf1080ea9",
+				"reason": "Exact GitHub Dependabot PR commit authored by dependabot[bot], committed by GitHub, and carrying only its public noreply trailer."
+			},
+			{
 				"object": "a80e389f2140d40eadc766240c3aacce31297ccd",
 				"reason": "Exact GitHub Dependabot PR commit authored by dependabot[bot], committed by GitHub, and carrying only its public noreply trailer."
 			},
 			{
+				"object": "b0b8e69f4ef0507d86790d01e581280e44180f34",
+				"reason": "Exact GitHub Dependabot PR commit authored by dependabot[bot], committed by GitHub, and carrying only its public noreply trailer."
+			},
+			{
+				"object": "b2a3d8afd5a09418ece5fe6e61eb110bb45843c5",
+				"reason": "Exact GitHub Dependabot PR commit authored by dependabot[bot], committed by GitHub, and carrying only its public noreply trailer."
+			},
+			{
 				"object": "dc82acd18ce6e1f4956b29101e2b9c3072d019f6",
+				"reason": "Exact GitHub Dependabot PR commit authored by dependabot[bot], committed by GitHub, and carrying only its public noreply trailer."
+			},
+			{
+				"object": "de6203764dac3c598875379462562997ab812a7a",
+				"reason": "Exact GitHub Dependabot PR commit authored by dependabot[bot], committed by GitHub, and carrying only its public noreply trailer."
+			},
+			{
+				"object": "e333a396737214f6dc0a5c857d10bb8e1f320d82",
 				"reason": "Exact GitHub Dependabot PR commit authored by dependabot[bot], committed by GitHub, and carrying only its public noreply trailer."
 			},
 			{
