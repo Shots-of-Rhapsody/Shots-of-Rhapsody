@@ -38,6 +38,11 @@
 				"object": "66f2eb9cb188cfef1a75d24fe5887a47fed8aa76",
 				"role": "author",
 				"reason": "Exact GitHub-generated merge for reviewed PR #5; the provider recorded the authenticated maintainer through a public noreply identity."
+			},
+			{
+				"object": "28ed478d7e2220816472bd9b920801913090c382",
+				"role": "author",
+				"reason": "Exact GitHub-generated merge for reviewed PR #14; the provider recorded the authenticated maintainer through a public noreply identity."
 			}
 		],
 		"allowedMessageEmailObjects": [
