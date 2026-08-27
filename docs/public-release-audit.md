@@ -5,8 +5,8 @@ Status: **Public review deployed; final release not yet approved**
 The current Pages artifact is a globally `noindex` review build. This report is
 intentionally incomplete until the exact release-candidate
 commit has passed every automated gate and Tai Song has completed all 11
-`ReviewSignoffV1` records, all 25 `ContentSignoffV2` records, the podcast
-publication review, and the release-wide
+`ReviewSignoffV1` records, all 24 writing `ContentSignoffV2` records, the
+zero-published-podcast boundary, and the release-wide
 `PresentationSignoffV2` record. Keeping this document in a pending state
 prevents a planning or tool run from being mistaken for release approval.
 

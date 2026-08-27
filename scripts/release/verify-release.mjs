@@ -8,14 +8,14 @@ import {
 	verifyAggregateContent,
 	verifyMediumArticles,
 } from "../medium/lib/pipeline.js";
-import { verifyPodcastRelease } from "../podcast/verify.mjs";
+import { verifyPodcastTarget } from "../podcast/verify.mjs";
 import { verifyBuiltSite } from "../verify-built-site.mjs";
 
 const repositoryRoot = fileURLToPath(new URL("../../", import.meta.url));
 const RELEASE_EXPECTATIONS = Object.freeze({
 	archiveWriting: 11,
 	mediumWriting: 24,
-	podcastEpisodes: 1,
+	podcastEpisodes: 0,
 });
 const RELEASE_POLICY = Object.freeze({
 	writingAccuracy: "source-fidelity",
@@ -28,7 +28,7 @@ const defaultDependencies = Object.freeze({
 	verifyBuiltSite,
 	verifyAggregateContent,
 	verifyMediumArticles,
-	verifyPodcastRelease,
+	verifyPodcastTarget,
 });
 
 export function validateReleaseTarget(value) {
@@ -142,9 +142,10 @@ export function validateCombinedReleaseSummary({
 		podcastCount !== podcastEpisodes
 	) {
 		failures.push(
-			`v1.0.0 requires exactly ${podcastEpisodes} complete podcast episode with built artifacts`,
+			`v1.0.0 requires exactly ${podcastEpisodes} complete podcast episodes with built-artifact verification`,
 		);
 	}
+	const podcastHtmlPages = podcastEpisodes === 0 ? 0 : podcastEpisodes + 1;
 	for (const [field, expected] of [
 		["postPages", publishedWriting],
 		["rssItems", publishedWriting],
@@ -153,7 +154,7 @@ export function validateCombinedReleaseSummary({
 		["nonfictionEntries", mediumWriting],
 		["podcastEpisodes", podcastEpisodes],
 		["pagefindRecords", publishedWriting + podcastEpisodes],
-		["htmlPages", publishedWriting + podcastEpisodes + 8],
+		["htmlPages", publishedWriting + podcastHtmlPages + 7],
 	]) {
 		if (site?.[field] !== expected) {
 			failures.push(
@@ -251,11 +252,12 @@ export async function verifyRelease({
 			() => requirePresentationTarget({ repoRoot, release: target.release }),
 		],
 		[
-			"podcast release",
+			"podcast target boundary",
 			() =>
-				dependencies.verifyPodcastRelease({
+				dependencies.verifyPodcastTarget({
 					withBuilt: true,
 					release: target.release,
+					expectedEpisodes: target.expected.podcastEpisodes,
 				}),
 		],
 	];

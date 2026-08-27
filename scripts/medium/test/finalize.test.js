@@ -292,7 +292,7 @@ test("aggregate completion uses the release target instead of an empty Medium pl
 					expected: {
 						archiveWriting: 11,
 						mediumWriting: 24,
-						podcastEpisodes: 1,
+						podcastEpisodes: 0,
 					},
 					policy: {
 						writingAccuracy: "source-fidelity",
@@ -312,21 +312,22 @@ test("aggregate completion uses the release target instead of an empty Medium pl
 	);
 });
 
-test("aggregate review evidence accepts only the exact 24-writing and one-podcast signoff set", () => {
+test("aggregate review evidence accepts only the exact 24-writing blog signoff set", () => {
 	const mediumSlugs = Array.from(
 		{ length: 24 },
 		(_, index) => `essay-${String(index + 1).padStart(2, "0")}`,
 	);
-	const contentSignoffs = [
-		...mediumSlugs.map((slug) => ({ slug, kind: "writing" })),
-		{ slug: "modular-ethics", kind: "podcast" },
-	];
+	const contentSignoffs = mediumSlugs.map((slug) => ({
+		slug,
+		kind: "writing",
+	}));
 	assert.deepEqual(
 		validateAggregateReviewIdentitySets({
 			mediumSlugs,
 			contentSignoffs,
+			podcastEpisodes: 0,
 		}),
-		{ contentSignoffCount: 25 },
+		{ contentSignoffCount: 24 },
 	);
 	for (const changedSignoffs of [
 		contentSignoffs.slice(1),
@@ -334,15 +335,14 @@ test("aggregate review evidence accepts only the exact 24-writing and one-podcas
 		contentSignoffs.map((entry, index) =>
 			index === 0 ? { ...entry, kind: "podcast" } : entry,
 		),
-		contentSignoffs.filter(
-			(entry) => `${entry.kind}:${entry.slug}` !== "podcast:modular-ethics",
-		),
+		[...contentSignoffs, { slug: "modular-ethics", kind: "podcast" }],
 	]) {
 		assert.throws(
 			() =>
 				validateAggregateReviewIdentitySets({
 					mediumSlugs,
 					contentSignoffs: changedSignoffs,
+					podcastEpisodes: 0,
 				}),
 			/Content signoffs must exactly match/u,
 		);

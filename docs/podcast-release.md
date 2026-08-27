@@ -140,9 +140,11 @@ Primary references:
 
 ## Local verification
 
-Podcast boundary tests and the draft verifier run in normal CI. Complete
-publication verification remains intentionally fail-closed until approved
-metadata and artwork, content signoff, and presentation signoff exist.
+Podcast boundary tests and the target-aware draft verifier run in normal CI.
+The current writing release requires zero published podcast episodes and fails
+if a podcast route, cover, or audio artifact reaches the build. A future change
+to a one-episode target reactivates the approved metadata and artwork, content
+signoff, presentation signoff, and deployed-media requirements.
 
 ```powershell
 pnpm test:future-content

@@ -60,7 +60,7 @@ The workflow and acceptance criteria are documented in:
 - [Archive provenance](provenance/tai-song/README.md)
 - [Human-review checklist](provenance/tai-song/review-checklist.md)
 
-The strict release verifier reconciles 35 writing records and one podcast episode with built routes, RSS, archive data, search input, sitemap entries, metadata, structured data, article bodies, heroes, and audio bytes. Writing accuracy means exact reproduction from the approved author master. Independent nonfiction claim research remains optional internal work and is not a publication gate. Release remains blocked until all required source-fidelity, rights, podcast-metadata, and presentation approvals are genuine and complete.
+The strict release verifier reconciles 35 writing records and zero published podcast episodes with built routes, RSS, archive data, search input, sitemap entries, metadata, structured data, article bodies, and heroes. It also proves that the retained podcast draft has no public route, cover, or audio artifact. Writing accuracy means exact reproduction from the approved author master. Independent nonfiction claim research remains optional internal work and is not a publication gate. The writing release remains blocked until all required source-fidelity, rights, and presentation approvals are genuine and complete; a future podcast release separately reactivates every podcast metadata, artwork, content, and deployment gate.
 
 ## Development
 

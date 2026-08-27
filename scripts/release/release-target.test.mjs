@@ -19,7 +19,7 @@ const TARGET = Object.freeze({
 	expected: Object.freeze({
 		archiveWriting: 11,
 		mediumWriting: 24,
-		podcastEpisodes: 1,
+		podcastEpisodes: 0,
 	}),
 	policy: Object.freeze({
 		writingAccuracy: "source-fidelity",
@@ -30,14 +30,14 @@ const TARGET = Object.freeze({
 });
 
 const SITE = Object.freeze({
-	htmlPages: 44,
+	htmlPages: 42,
 	postPages: 35,
 	rssItems: 35,
-	pagefindRecords: 36,
+	pagefindRecords: 35,
 	archiveEntries: 35,
 	authorWorks: 35,
 	nonfictionEntries: 24,
-	podcastEpisodes: 1,
+	podcastEpisodes: 0,
 });
 
 const AGGREGATE = Object.freeze({
@@ -58,7 +58,7 @@ const MEDIUM = Object.freeze({
 
 const PODCAST = Object.freeze({
 	complete: true,
-	episodes: 1,
+	episodes: 0,
 	builtArtifactsChecked: true,
 });
 
@@ -214,7 +214,7 @@ test("combined release runs every content and presentation gate", async (context
 				mediumOptions = options;
 				return MEDIUM;
 			},
-			verifyPodcastRelease: async (options) => {
+			verifyPodcastTarget: async (options) => {
 				podcastOptions = options;
 				return PODCAST;
 			},
@@ -232,6 +232,7 @@ test("combined release runs every content and presentation gate", async (context
 	assert.deepEqual(podcastOptions, {
 		withBuilt: true,
 		release: "v1.0.0",
+		expectedEpisodes: 0,
 	});
 	assert.doesNotThrow(() =>
 		validateCombinedReleaseSummary({
@@ -255,7 +256,7 @@ test("combined release rejects missing target-specific presentation approval", a
 				verifyBuiltSite: async () => SITE,
 				verifyAggregateContent: async () => AGGREGATE,
 				verifyMediumArticles: async () => MEDIUM,
-				verifyPodcastRelease: async () => PODCAST,
+				verifyPodcastTarget: async () => PODCAST,
 			},
 		}),
 		/Presentation signoff is missing for v1\.0\.0/u,
@@ -300,8 +301,8 @@ test("combined release rejects missing or extra Medium inventory", () => {
 	}
 });
 
-test("combined release rejects missing or extra podcast episodes", () => {
-	for (const episodes of [0, 2]) {
+test("combined release rejects unexpected podcast episodes", () => {
+	for (const episodes of [1, 2]) {
 		assert.throws(
 			() =>
 				validateCombinedReleaseSummary({
@@ -311,7 +312,7 @@ test("combined release rejects missing or extra podcast episodes", () => {
 					medium: MEDIUM,
 					podcast: { ...PODCAST, episodes },
 				}),
-			/exactly 1 complete podcast/u,
+			/exactly 0 complete podcast/u,
 		);
 	}
 });
@@ -372,7 +373,7 @@ test("combined release summary reports every independent surface drift", () => {
 				site: { ...SITE, postPages: 34, rssItems: 36 },
 				aggregate: { ...AGGREGATE, complete: false, publishedCount: 34 },
 				medium: { ...MEDIUM, complete: false, importedCount: 23 },
-				podcast: { ...PODCAST, complete: false, episodes: 0 },
+				podcast: { ...PODCAST, complete: false, episodes: 1 },
 			}),
 		(error) => {
 			assert.match(
@@ -380,7 +381,7 @@ test("combined release summary reports every independent surface drift", () => {
 				/aggregate content verification is incomplete/u,
 			);
 			assert.match(error.message, /exactly 24 complete, approved Medium/u);
-			assert.match(error.message, /exactly 1 complete podcast/u);
+			assert.match(error.message, /exactly 0 complete podcast/u);
 			assert.match(error.message, /expected 35 postPages, received 34/u);
 			assert.match(error.message, /expected 35 rssItems, received 36/u);
 			return true;
@@ -407,7 +408,7 @@ test("combined release runs and reports every failed gate", async (context) => {
 					calls.push("medium");
 					throw new Error("Medium approvals pending");
 				},
-				verifyPodcastRelease: async () => {
+				verifyPodcastTarget: async () => {
 					calls.push("podcast");
 					throw new Error("podcast metadata pending");
 				},

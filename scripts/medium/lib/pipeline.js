@@ -2011,7 +2011,6 @@ export function validateAggregateReleaseTarget(value) {
 			podcastEpisodes: assertInteger(
 				expected.podcastEpisodes,
 				"release target.expected.podcastEpisodes",
-				{ positive: true },
 			),
 		},
 		policy: {
@@ -2058,20 +2057,29 @@ function requireExactIdentitySet(actualValues, expectedValues, label) {
 export function validateAggregateReviewIdentitySets({
 	mediumSlugs,
 	contentSignoffs,
+	podcastEpisodes,
 } = {}) {
-	if (!Array.isArray(mediumSlugs) || !Array.isArray(contentSignoffs)) {
+	if (
+		!Array.isArray(mediumSlugs) ||
+		!Array.isArray(contentSignoffs) ||
+		!Number.isInteger(podcastEpisodes) ||
+		podcastEpisodes < 0 ||
+		podcastEpisodes > 1
+	) {
 		throw new MediumContractError(
-			"Aggregate review identity inputs must be arrays",
+			"Aggregate review identity inputs are invalid",
 		);
 	}
 	const writingIdentities = mediumSlugs.map(
 		(slug) => `writing:${assertSlug(slug)}`,
 	);
+	const podcastIdentities =
+		podcastEpisodes === 1 ? ["podcast:modular-ethics"] : [];
 	requireExactIdentitySet(
 		contentSignoffs.map(
 			(signoff) => `${signoff?.kind}:${assertSlug(signoff?.slug)}`,
 		),
-		[...writingIdentities, "podcast:modular-ethics"],
+		[...writingIdentities, ...podcastIdentities],
 		"Content signoffs",
 	);
 	return {
@@ -2190,6 +2198,7 @@ export async function verifyAggregateContent({
 		validateAggregateReviewIdentitySets({
 			mediumSlugs: mediumManifest.articles.map((article) => article.slug),
 			contentSignoffs,
+			podcastEpisodes: releaseTarget.expected.podcastEpisodes,
 		});
 	}
 	const archiveBySlug = new Map(

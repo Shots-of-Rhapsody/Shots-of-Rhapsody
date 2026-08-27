@@ -18,7 +18,11 @@ import {
 	PODCAST_AUDIO_DECISIONS,
 	validatePodcastAudioDecisionLedgerV1,
 } from "../../src/data/podcast-audio-decisions.ts";
-import { verifyPodcastDraft, verifyPodcastRelease } from "./verify.mjs";
+import {
+	verifyPodcastDraft,
+	verifyPodcastRelease,
+	verifyPodcastTarget,
+} from "./verify.mjs";
 
 test("approved identity, route, media path, and measurements are exact", () => {
 	const episode = PODCAST_EPISODES[0];
@@ -395,6 +399,20 @@ test("draft evidence matches the permanent MP3", async () => {
 test("complete verification rejects the unreviewed draft", async () => {
 	await assert.rejects(
 		verifyPodcastRelease(),
+		/Podcast publication is incomplete/u,
+	);
+});
+
+test("the current release target strictly preserves the unpublished draft", async () => {
+	const result = await verifyPodcastTarget();
+	assert.equal(result.episodes, 0);
+	assert.equal(result.builtArtifactsChecked, false);
+	assert.equal(result.complete, true);
+});
+
+test("a one-episode target reactivates every publication gate", async () => {
+	await assert.rejects(
+		verifyPodcastTarget({ expectedEpisodes: 1 }),
 		/Podcast publication is incomplete/u,
 	);
 });

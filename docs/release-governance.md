@@ -80,8 +80,9 @@ Proton Docs -> supported HTML export -> deterministic verification -> reviewed G
 
 ## Public repository hardening
 
-After all 11 `ReviewSignoffV1` records, 25 `ContentSignoffV2` records, and the
-release-wide `PresentationSignoffV2` record pass for the exact candidate:
+After all 11 `ReviewSignoffV1` records, 24 writing `ContentSignoffV2` records,
+the zero-published-podcast boundary, and the release-wide
+`PresentationSignoffV2` record pass for the exact candidate:
 
 1. Confirm `Shots-of-Rhapsody/Shots-of-Rhapsody` remains public and that the
    exact candidate discloses only the approved repository history and assets.

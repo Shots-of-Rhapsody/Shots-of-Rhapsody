@@ -50,6 +50,11 @@ const presentationSignoffsPath = path.join(
 	"reviews",
 	"presentation-signoffs-v2.json",
 );
+const releaseTargetPath = path.join(
+	repositoryRoot,
+	"provenance",
+	"release-target.json",
+);
 
 function sha256(bytes) {
 	return `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
@@ -64,6 +69,21 @@ async function exists(filePath) {
 			return false;
 		throw error;
 	}
+}
+
+async function readPodcastReleaseTarget() {
+	const target = JSON.parse(await readFile(releaseTargetPath, "utf8"));
+	const expectedEpisodes = target?.expected?.podcastEpisodes;
+	if (
+		target?.schemaVersion !== 3 ||
+		target?.release !== "v1.0.0" ||
+		!Number.isInteger(expectedEpisodes) ||
+		expectedEpisodes < 0 ||
+		expectedEpisodes > 1
+	) {
+		throw new Error("Podcast release target is invalid");
+	}
+	return { release: target.release, expectedEpisodes };
 }
 
 async function findFiles(directory, extension) {
@@ -192,10 +212,18 @@ export async function verifyPodcastDraft({ withBuilt = false } = {}) {
 			episode.slug,
 			"index.html",
 		);
-		if (await exists(builtAudioPath))
-			throw new Error("Draft podcast audio leaked into the built site");
-		if (await exists(builtEpisodePath))
-			throw new Error("Draft podcast episode route leaked into the built site");
+		for (const [builtPath, label] of [
+			[builtAudioPath, "audio"],
+			[builtEpisodePath, "episode route"],
+			[
+				path.join(repositoryRoot, "dist", "podcast", "index.html"),
+				"index route",
+			],
+			[builtFilePath(PODCAST_SHOW.artwork.publicPath), "cover"],
+		]) {
+			if (await exists(builtPath))
+				throw new Error(`Draft podcast ${label} leaked into the built site`);
+		}
 		const exposedAudio = await findFiles(
 			path.join(repositoryRoot, "dist"),
 			".mp3",
@@ -216,6 +244,9 @@ export async function verifyPodcastDraft({ withBuilt = false } = {}) {
 		coverPngSha256: coverPngHash,
 		publicationBlockers: blockers,
 		publishableEpisodes: 0,
+		episodes: 0,
+		builtArtifactsChecked: withBuilt,
+		complete: true,
 	};
 }
 
@@ -391,6 +422,22 @@ export async function verifyPodcastRelease({
 	};
 }
 
+export async function verifyPodcastTarget({
+	withBuilt = false,
+	release,
+	expectedEpisodes,
+} = {}) {
+	const configured = await readPodcastReleaseTarget();
+	const resolvedRelease = release ?? configured.release;
+	const resolvedExpected = expectedEpisodes ?? configured.expectedEpisodes;
+	if (resolvedRelease !== "v1.0.0")
+		throw new Error(`Unsupported podcast release target: ${resolvedRelease}`);
+	if (resolvedExpected === 0) return verifyPodcastDraft({ withBuilt });
+	if (resolvedExpected === 1)
+		return verifyPodcastRelease({ withBuilt, release: resolvedRelease });
+	throw new Error("Podcast release target episode count is unsupported");
+}
+
 export async function verifyPodcastPublicationState({
 	withBuilt = false,
 } = {}) {
@@ -412,7 +459,7 @@ if (invokedPath === fileURLToPath(import.meta.url)) {
 			throw new Error(`Unknown podcast verification option: ${unsupported[0]}`);
 		const withBuilt = process.argv.includes("--with-built");
 		const result = process.argv.includes("--require-complete")
-			? await verifyPodcastRelease({ withBuilt })
+			? await verifyPodcastTarget({ withBuilt })
 			: await verifyPodcastPublicationState({ withBuilt });
 		console.log(JSON.stringify(result, null, 2));
 	} catch (error) {
