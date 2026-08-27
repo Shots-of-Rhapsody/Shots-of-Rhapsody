@@ -42,6 +42,14 @@ test("presentation evidence binds renderer, built inventory, and commit ancestry
 			"fixture",
 		]);
 
+		await mkdir(path.join(distRoot, "pagefind", "fragment"), {
+			recursive: true,
+		});
+		await writeFile(
+			path.join(distRoot, "pagefind", "fragment", "en_deadbee.pf_fragment"),
+			Buffer.from("windows pagefind bytes"),
+		);
+
 		const evidence = await collectPresentationEvidence({
 			repoRoot,
 			distRoot,
@@ -93,6 +101,23 @@ test("presentation evidence binds renderer, built inventory, and commit ancestry
 
 		await rm(path.join(distRoot, "unexpected.webp"));
 		await writeFile(path.join(distRoot, "index.html"), "<h1>Changed</h1>\n");
+		assert.deepEqual(
+			await verifyPresentationSignoffV2({
+				ledger,
+				repoRoot,
+				distRoot,
+				release: "v1.1.0",
+			}),
+			evidence,
+		);
+
+		await rm(
+			path.join(distRoot, "pagefind", "fragment", "en_deadbee.pf_fragment"),
+		);
+		await writeFile(
+			path.join(distRoot, "pagefind", "fragment", "en_cafebabe.pf_fragment"),
+			Buffer.from("linux pagefind bytes"),
+		);
 		assert.deepEqual(
 			await verifyPresentationSignoffV2({
 				ledger,

@@ -16,6 +16,8 @@ const RENDER_INPUTS = [
 	"provenance/publication-catalog.json",
 	"tsconfig.json",
 ];
+const PAGEFIND_HASHED_INVENTORY_PATH =
+	/^(pagefind\/(?:fragment|index)\/[^/]+_|pagefind\/pagefind\.[^/]+_)[0-9a-f]+(\.pf_(?:fragment|index|meta))$/u;
 
 function sha256Entries(entries) {
 	const hash = createHash("sha256");
@@ -35,9 +37,16 @@ function sha256Entries(entries) {
 
 function sha256SiteInventory(relativePaths) {
 	const hash = createHash("sha256");
-	hash.update("portable-presentation-site-v2\0");
-	for (const relativePath of [...relativePaths].sort()) {
-		const name = Buffer.from(relativePath.replaceAll("\\", "/"), "utf8");
+	hash.update("portable-presentation-site-v3\0");
+	const inventoryPaths = relativePaths
+		.map((relativePath) =>
+			relativePath
+				.replaceAll("\\", "/")
+				.replace(PAGEFIND_HASHED_INVENTORY_PATH, "$1<content-hash>$2"),
+		)
+		.sort();
+	for (const relativePath of inventoryPaths) {
+		const name = Buffer.from(relativePath, "utf8");
 		hash.update(String(name.byteLength));
 		hash.update("\0");
 		hash.update(name);
