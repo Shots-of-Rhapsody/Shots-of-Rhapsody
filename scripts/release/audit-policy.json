@@ -31,6 +31,10 @@
 			{
 				"name": "dependabot[bot]",
 				"reason": "Standard GitHub Dependabot identity."
+			},
+			{
+				"name": "Artaius",
+				"reason": "Authenticated maintainer public GitHub merge identity; provider-generated merge commits remain subject to repository email review, release auditing, required checks, and branch protection."
 			}
 		],
 		"allowedIdentityObjects": [
