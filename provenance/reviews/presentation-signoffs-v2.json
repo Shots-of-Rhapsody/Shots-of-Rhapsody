@@ -3,11 +3,11 @@
   "releases": [
     {
       "release": "v1.0.0",
-      "reviewedCommit": "c07e1e00c3e1e503b19417858e717b166e243a0b",
+      "reviewedCommit": "848d5c817f96136f8fe8912e21d1bfb253ccb28e",
       "rendererSha256": "sha256:e90e4df1699390406cb7f0cbc96618e105102223dae2b5a36a99ce7718e9cb85",
-      "siteSha256": "sha256:7b0ba05904ec9af5b188876d8379149dd9509ee12d2ed8e2a6e7017f6e307736",
+      "siteSha256": "sha256:985970f84c0af8e3f882f0d3e021de4a0b3d6d8c392533eaf2f36c31d769c50d",
       "reviewer": "Tai Song",
-      "reviewedAt": "2026-08-27T08:40:43.221Z",
+      "reviewedAt": "2026-08-27T09:48:46.790Z",
       "responsive": "passed",
       "accessibility": "passed"
     }
