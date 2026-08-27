@@ -181,6 +181,24 @@
 		},
 		{
 			"rule": "email-address-review",
+			"path": "scripts/content/test/presentation.test.js",
+			"blob": "2f8a3307bd5ad5cbf6bf3627ec3ceabb0fec7718",
+			"reason": "Immutable test fixture using the reserved .invalid domain; it is not a deliverable address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/content/test/presentation.test.js",
+			"blob": "6e2367479913d44422dcb049ce5ee75dd27c08b1",
+			"reason": "Immutable test fixture using the reserved .invalid domain; it is not a deliverable address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/content/test/presentation.test.js",
+			"blob": "7508504ee1c3ce87aab139caa51de1c676c3c52b",
+			"reason": "Immutable test fixture using the reserved .invalid domain; it is not a deliverable address."
+		},
+		{
+			"rule": "email-address-review",
 			"path": "scripts/proton/cloud.test.mjs",
 			"blob": "75259a055ef3ae330bcef8a798fccf24840e824b",
 			"reason": "Immutable synthetic CLI fixture using the reserved .invalid domain; it is not a deliverable address."
@@ -549,6 +567,12 @@
 			"rule": "email-address-review",
 			"path": "scripts/release/release-target.test.mjs",
 			"blob": "ced4b2b708ca70d43db42d369c087cdc845e93c2",
+			"reason": "Immutable synthetic test fixture using the reserved .invalid domain; it is not a deliverable address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/release/release-target.test.mjs",
+			"blob": "09b97799e399f6e3f32b1595b0c3ba2859d438f1",
 			"reason": "Immutable synthetic test fixture using the reserved .invalid domain; it is not a deliverable address."
 		}
 	],
