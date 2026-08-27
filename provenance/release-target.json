@@ -1,9 +1,15 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "release": "v1.0.0",
   "expected": {
     "archiveWriting": 11,
     "mediumWriting": 24,
-    "podcastEpisodes": 1
+    "podcastEpisodes": 0
+  },
+  "policy": {
+    "writingAccuracy": "source-fidelity",
+    "nonfictionClaimResearch": "optional-internal",
+    "podcastTranscript": "optional",
+    "podcastFeed": "disabled-until-permanent-domain"
   }
 }

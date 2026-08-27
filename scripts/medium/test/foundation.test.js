@@ -42,6 +42,21 @@ const AWAITING_INVENTORY = {
 	articles: [],
 };
 
+function escapeHtmlAttribute(value) {
+	return String(value)
+		.replaceAll("&", "&amp;")
+		.replaceAll('"', "&quot;")
+		.replaceAll("<", "&lt;")
+		.replaceAll(">", "&gt;");
+}
+
+test("fixture attribute escaping handles every HTML metacharacter", () => {
+	assert.equal(
+		escapeHtmlAttribute('first&second&third"<fourth>'),
+		"first&amp;second&amp;third&quot;&lt;fourth&gt;",
+	);
+});
+
 test("awaiting-export inventory is valid but cannot contain candidates", () => {
 	assert.equal(
 		validateMediumInventory(AWAITING_INVENTORY).state,
@@ -296,7 +311,8 @@ function officialExpected(overrides = {}) {
 
 test("official export separates export metadata from its exact display layout", () => {
 	const href =
-		"https://example.com/research?utm_source=source.example&section=one";
+		"https://example.com/research?utm_source=source.example&section=one&chapter=two";
+	const escapedHref = escapeHtmlAttribute(href);
 	const html = officialStoryExport({
 		exportTitle:
 			"The Future of Money: Will Cryptocurrency and AI Kill Traditional Banking?",
@@ -308,7 +324,7 @@ test("official export separates export metadata from its exact display layout", 
 			"A Ledger Series article on currency, control, and financial power in transition.",
 		postHeroBody: [
 			'<h3 name="100e" id="100e" class="graf graf--h3 graf-after--figure">Later heading</h3>',
-			`<p name="100f" id="100f" class="graf graf--p graf-after--h3">Plain&nbsp;<strong class="markup--strong markup--p-strong">bold</strong> and <em class="markup--em markup--p-em">italic</em> — text.<br>Next <a href="${href.replace("&", "&amp;")}" data-href="${href.replace("&", "&amp;")}" class="markup--anchor markup--p-anchor" rel="noopener ugc nofollow noopener" target="_blank">linked</a>.</p>`,
+			`<p name="100f" id="100f" class="graf graf--p graf-after--h3">Plain&nbsp;<strong class="markup--strong markup--p-strong">bold</strong> and <em class="markup--em markup--p-em">italic</em> — text.<br>Next <a href="${escapedHref}" data-href="${escapedHref}" class="markup--anchor markup--p-anchor" rel="noopener ugc nofollow noopener" target="_blank">linked</a>.</p>`,
 			'<ul class="postList"><li name="100f" id="100f" class="graf graf--li graf-after--p"><strong class="markup--strong markup--li-strong">Bullet</strong></li></ul>',
 			'<ol class="postList"><li name="101a" id="101a" class="graf graf--li graf-after--li">Numbered</li></ol>',
 		].join(""),
@@ -831,6 +847,18 @@ test("draft creation is unpublished and refuses overwrite", async (context) => {
 		slug: "future-essay",
 		date: "2026-07-25",
 	});
+	assert.equal(
+		target,
+		path.join(
+			root,
+			"src",
+			"content",
+			"drafts",
+			"nonfiction",
+			"future-essay",
+			"index.md",
+		),
+	);
 	assert.match(await readFile(target, "utf8"), /draft: true/u);
 	await assert.rejects(
 		createDraft({
@@ -869,7 +897,12 @@ test("first-party publication binds the exact source bytes and refuses drafts", 
 	const article = {
 		slug: "exact-story",
 		hashes: { source: digest, output: digest },
-		assets: [{ role: "hero", path: "src/content/posts/exact-story/hero.png" }],
+		assets: [
+			{
+				role: "hero",
+				path: "src/content/posts/fiction/exact-story/hero.png",
+			},
+		],
 	};
 	assert.equal(verifyFirstPartyMarkdown(article, published), digest);
 	const draft = Buffer.from(
@@ -934,7 +967,7 @@ test("Medium manifest rejects duplicate or non-image assets", () => {
 	const hero = {
 		id: "hero",
 		role: "hero",
-		path: "src/content/posts/essay/hero.png",
+		path: "src/content/posts/nonfiction/essay/hero.png",
 		sha256: digest,
 		acquisitionManifestSha256: digest,
 		captureSha256: digest,
@@ -963,7 +996,7 @@ test("Medium manifest rejects duplicate or non-image assets", () => {
 				canonicalUrl: "https://medium.com/@ShotsOfRhapsody/essay-123",
 				paths: {
 					snapshot: "provenance/medium/posts/essay.json",
-					markdown: "src/content/posts/essay/index.md",
+					markdown: "src/content/posts/nonfiction/essay/index.md",
 				},
 				hashes: {
 					rawExport: digest,

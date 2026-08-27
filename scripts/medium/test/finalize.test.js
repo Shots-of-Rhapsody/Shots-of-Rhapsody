@@ -287,12 +287,18 @@ test("aggregate completion uses the release target instead of an empty Medium pl
 		() =>
 			reconcileAggregateReleaseTarget({
 				target: {
-					schemaVersion: 2,
+					schemaVersion: 3,
 					release: "v1.0.0",
 					expected: {
 						archiveWriting: 11,
 						mediumWriting: 24,
-						podcastEpisodes: 1,
+						podcastEpisodes: 0,
+					},
+					policy: {
+						writingAccuracy: "source-fidelity",
+						nonfictionClaimResearch: "optional-internal",
+						podcastTranscript: "optional",
+						podcastFeed: "disabled-until-permanent-domain",
 					},
 				},
 				archive: { importedCount: 11, complete: true },
@@ -306,55 +312,37 @@ test("aggregate completion uses the release target instead of an empty Medium pl
 	);
 });
 
-test("aggregate review evidence accepts only the exact 24-writing and one-podcast identity set", () => {
+test("aggregate review evidence accepts only the exact 24-writing blog signoff set", () => {
 	const mediumSlugs = Array.from(
 		{ length: 24 },
 		(_, index) => `essay-${String(index + 1).padStart(2, "0")}`,
 	);
-	const claimReviews = mediumSlugs.map((slug) => ({ slug }));
-	const contentSignoffs = [
-		...mediumSlugs.map((slug) => ({ slug, kind: "writing" })),
-		{ slug: "modular-ethics", kind: "podcast" },
-	];
+	const contentSignoffs = mediumSlugs.map((slug) => ({
+		slug,
+		kind: "writing",
+	}));
 	assert.deepEqual(
 		validateAggregateReviewIdentitySets({
 			mediumSlugs,
-			claimReviews,
 			contentSignoffs,
+			podcastEpisodes: 0,
 		}),
-		{ claimReviewCount: 24, contentSignoffCount: 25 },
+		{ contentSignoffCount: 24 },
 	);
-
-	for (const changedClaims of [
-		claimReviews.slice(1),
-		[...claimReviews, { slug: "excluded-response" }],
-	]) {
-		assert.throws(
-			() =>
-				validateAggregateReviewIdentitySets({
-					mediumSlugs,
-					claimReviews: changedClaims,
-					contentSignoffs,
-				}),
-			/Medium claim reviews must exactly match/u,
-		);
-	}
 	for (const changedSignoffs of [
 		contentSignoffs.slice(1),
 		[...contentSignoffs, { slug: "excluded-response", kind: "writing" }],
 		contentSignoffs.map((entry, index) =>
 			index === 0 ? { ...entry, kind: "podcast" } : entry,
 		),
-		contentSignoffs.filter(
-			(entry) => `${entry.kind}:${entry.slug}` !== "podcast:modular-ethics",
-		),
+		[...contentSignoffs, { slug: "modular-ethics", kind: "podcast" }],
 	]) {
 		assert.throws(
 			() =>
 				validateAggregateReviewIdentitySets({
 					mediumSlugs,
-					claimReviews,
 					contentSignoffs: changedSignoffs,
+					podcastEpisodes: 0,
 				}),
 			/Content signoffs must exactly match/u,
 		);
@@ -426,7 +414,7 @@ test("active manifest produces a pending review scaffold through the repository 
 					"https://medium.com/@ShotsOfRhapsody/exact-essay-0123456789ab",
 				paths: {
 					snapshot: "provenance/medium/posts/exact-essay.json",
-					markdown: "src/content/posts/exact-essay/index.md",
+					markdown: "src/content/posts/nonfiction/exact-essay/index.md",
 				},
 				hashes: {
 					rawExport: DIGEST,
@@ -445,7 +433,7 @@ test("active manifest produces a pending review scaffold through the repository 
 					{
 						id: "hero",
 						role: "hero",
-						path: "src/content/posts/exact-essay/hero.webp",
+						path: "src/content/posts/nonfiction/exact-essay/hero.webp",
 						sha256: DIGEST,
 						acquisitionManifestSha256: DIGEST,
 						captureSha256: DIGEST,

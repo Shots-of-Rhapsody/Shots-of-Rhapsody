@@ -8,21 +8,27 @@ import {
 	verifyAggregateContent,
 	verifyMediumArticles,
 } from "../medium/lib/pipeline.js";
-import { verifyPodcastRelease } from "../podcast/verify.mjs";
+import { verifyPodcastTarget } from "../podcast/verify.mjs";
 import { verifyBuiltSite } from "../verify-built-site.mjs";
 
 const repositoryRoot = fileURLToPath(new URL("../../", import.meta.url));
 const RELEASE_EXPECTATIONS = Object.freeze({
 	archiveWriting: 11,
 	mediumWriting: 24,
-	podcastEpisodes: 1,
+	podcastEpisodes: 0,
+});
+const RELEASE_POLICY = Object.freeze({
+	writingAccuracy: "source-fidelity",
+	nonfictionClaimResearch: "optional-internal",
+	podcastTranscript: "optional",
+	podcastFeed: "disabled-until-permanent-domain",
 });
 
 const defaultDependencies = Object.freeze({
 	verifyBuiltSite,
 	verifyAggregateContent,
 	verifyMediumArticles,
-	verifyPodcastRelease,
+	verifyPodcastTarget,
 });
 
 export function validateReleaseTarget(value) {
@@ -30,8 +36,11 @@ export function validateReleaseTarget(value) {
 		value === null ||
 		typeof value !== "object" ||
 		Array.isArray(value) ||
-		!hasExactKeys(value, new Set(["schemaVersion", "release", "expected"])) ||
-		value.schemaVersion !== 2 ||
+		!hasExactKeys(
+			value,
+			new Set(["schemaVersion", "release", "expected", "policy"]),
+		) ||
+		value.schemaVersion !== 3 ||
 		value.release !== "v1.0.0" ||
 		value.expected === null ||
 		typeof value.expected !== "object" ||
@@ -39,10 +48,17 @@ export function validateReleaseTarget(value) {
 		!hasExactKeys(value.expected, new Set(Object.keys(RELEASE_EXPECTATIONS))) ||
 		Object.entries(RELEASE_EXPECTATIONS).some(
 			([field, expected]) => value.expected[field] !== expected,
+		) ||
+		value.policy === null ||
+		typeof value.policy !== "object" ||
+		Array.isArray(value.policy) ||
+		!hasExactKeys(value.policy, new Set(Object.keys(RELEASE_POLICY))) ||
+		Object.entries(RELEASE_POLICY).some(
+			([field, expected]) => value.policy[field] !== expected,
 		)
 	) {
 		throw new Error(
-			"Release target must be the exact schema version 2 contract for the combined v1.0.0 release",
+			"Release target must be the exact schema version 3 contract for the combined v1.0.0 release",
 		);
 	}
 	return value;
@@ -126,9 +142,10 @@ export function validateCombinedReleaseSummary({
 		podcastCount !== podcastEpisodes
 	) {
 		failures.push(
-			`v1.0.0 requires exactly ${podcastEpisodes} complete podcast episode with built artifacts`,
+			`v1.0.0 requires exactly ${podcastEpisodes} complete podcast episodes with built-artifact verification`,
 		);
 	}
+	const podcastHtmlPages = podcastEpisodes === 0 ? 0 : podcastEpisodes + 1;
 	for (const [field, expected] of [
 		["postPages", publishedWriting],
 		["rssItems", publishedWriting],
@@ -136,8 +153,8 @@ export function validateCombinedReleaseSummary({
 		["authorWorks", publishedWriting],
 		["nonfictionEntries", mediumWriting],
 		["podcastEpisodes", podcastEpisodes],
-		["pagefindRecords", publishedWriting + podcastEpisodes * 2],
-		["htmlPages", publishedWriting + podcastEpisodes * 2 + 8],
+		["pagefindRecords", publishedWriting + podcastEpisodes],
+		["htmlPages", publishedWriting + podcastHtmlPages + 7],
 	]) {
 		if (site?.[field] !== expected) {
 			failures.push(
@@ -235,11 +252,12 @@ export async function verifyRelease({
 			() => requirePresentationTarget({ repoRoot, release: target.release }),
 		],
 		[
-			"podcast release",
+			"podcast target boundary",
 			() =>
-				dependencies.verifyPodcastRelease({
+				dependencies.verifyPodcastTarget({
 					withBuilt: true,
 					release: target.release,
+					expectedEpisodes: target.expected.podcastEpisodes,
 				}),
 		],
 	];

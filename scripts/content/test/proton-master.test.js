@@ -296,6 +296,7 @@ async function createFixture(
 		"src",
 		"content",
 		"posts",
+		"nonfiction",
 		"exact-essay",
 		"index.md",
 	);
@@ -304,6 +305,7 @@ async function createFixture(
 		"src",
 		"content",
 		"posts",
+		"nonfiction",
 		"exact-essay",
 		"hero.webp",
 	);
@@ -312,6 +314,7 @@ async function createFixture(
 		"src",
 		"content",
 		"posts",
+		"nonfiction",
 		"exact-essay",
 		"diagram.png",
 	);
@@ -340,7 +343,7 @@ async function createFixture(
 				canonicalUrl: article.canonicalUrl,
 				paths: {
 					snapshot: "provenance/medium/posts/exact-essay.json",
-					markdown: "src/content/posts/exact-essay/index.md",
+					markdown: "src/content/posts/nonfiction/exact-essay/index.md",
 				},
 				hashes: {
 					rawExport: inventory.export.sha256,
@@ -359,7 +362,7 @@ async function createFixture(
 					{
 						id: heroAsset.id,
 						role: heroAsset.role,
-						path: "src/content/posts/exact-essay/hero.webp",
+						path: "src/content/posts/nonfiction/exact-essay/hero.webp",
 						sha256: heroAsset.sha256,
 						acquisitionManifestSha256: heroAsset.acquisitionManifestSha256,
 						captureSha256: heroAsset.captureSha256,
@@ -372,7 +375,7 @@ async function createFixture(
 					{
 						id: bodyAsset.id,
 						role: bodyAsset.role,
-						path: "src/content/posts/exact-essay/diagram.png",
+						path: "src/content/posts/nonfiction/exact-essay/diagram.png",
 						sha256: bodyAsset.sha256,
 						mimeType: bodyAsset.mimeType,
 						width: bodyAsset.width,

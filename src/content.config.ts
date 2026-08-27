@@ -2,17 +2,16 @@ import { defineCollection, type ImageFunction } from "astro:content";
 import { file, glob } from "astro/loaders";
 import { z } from "astro/zod";
 import firstPartyManifestJson from "../provenance/first-party/manifest.json";
-import claimReviewsJson from "../provenance/medium/claim-reviews.json";
 import mediumManifestJson from "../provenance/medium/manifest.json";
 import contentSignoffsJson from "../provenance/reviews/content-signoffs-v2.json";
 import manifest from "../provenance/tai-song/manifest.json";
 import { IS_PUBLIC_REVIEW } from "./data/build-mode";
 import { PUBLICATION_CATALOG as publicationCatalog } from "./data/publication-catalog";
 import type { ContentSignoffV2 } from "./data/signoffs";
-import { generateContentId } from "./utils/content-id";
+import { generateContentId, generatePostContentId } from "./utils/content-id";
+import { getPublishedPostMarkdownPath } from "./utils/content-path";
 
 const EXPECTED_ARCHIVE_POST_COUNT = 11;
-const postSourcePrefix = "src/content/posts/";
 const mediumManifest = mediumManifestJson as unknown as {
 	state: "awaiting-export" | "active";
 	articles: Array<{
@@ -36,18 +35,11 @@ const firstPartyManifest = firstPartyManifestJson as unknown as {
 		assets: Array<{ sha256: string }>;
 	}>;
 };
-const claimReviews = claimReviewsJson as unknown as {
-	version: number;
-	articles: Array<{
-		slug: string;
-		sourceSha256: string;
-		outputSha256: string;
-		reviewer: string;
-		outcome: string;
-	}>;
-};
 const publicPostPatterns = publicationCatalog.entries.map((article) => {
-	const expectedMarkdownPath = `${postSourcePrefix}${article.slug}/index.md`;
+	const expectedMarkdownPath = getPublishedPostMarkdownPath(
+		article.masterFolder,
+		article.slug,
+	);
 	if (article.markdown !== expectedMarkdownPath) {
 		throw new Error(
 			`Publication catalog path mismatch for ${article.slug}: expected ${expectedMarkdownPath}, received ${article.markdown}`,
@@ -60,11 +52,11 @@ const publicPostPatterns = publicationCatalog.entries.map((article) => {
 	) {
 		throw new Error(`Unsupported publication source for ${article.slug}`);
 	}
-	return `${article.slug}/index.md`;
+	return `${article.masterFolder}/${article.slug}/index.md`;
 });
 
 if (
-	publicationCatalog.schemaVersion !== 1 ||
+	publicationCatalog.schemaVersion !== 2 ||
 	publicPostPatterns.length < EXPECTED_ARCHIVE_POST_COUNT ||
 	new Set(publicPostPatterns).size !== publicPostPatterns.length
 ) {
@@ -119,9 +111,6 @@ for (const entry of publicationCatalog.entries.filter(
 	const signoff = contentSignoffs.entries.find(
 		(review) => review.kind === "writing" && review.slug === entry.slug,
 	);
-	const claimReview = claimReviews.articles.find(
-		(review) => review.slug === entry.slug,
-	);
 	const sourceAssets = [...(source?.assets ?? [])]
 		.map((asset) => asset.sha256)
 		.sort();
@@ -131,13 +120,7 @@ for (const entry of publicationCatalog.entries.filter(
 		!source ||
 		source.paths.markdown !== entry.markdown ||
 		(!IS_PUBLIC_REVIEW &&
-			(!signoff ||
-				claimReviews.version !== 1 ||
-				claimReview?.reviewer !== "Tai Song" ||
-				claimReview?.outcome !== "passed" ||
-				claimReview?.sourceSha256 !== source.hashes.rawSource ||
-				claimReview?.outputSha256 !== source.hashes.markdown ||
-				signoff.reviewer !== "Tai Song" ||
+			(signoff?.reviewer !== "Tai Song" ||
 				signoff.accuracy !== "passed" ||
 				signoff.rights !== "passed" ||
 				signoff.sourceSha256 !== source.hashes.rawSource ||
@@ -410,7 +393,7 @@ const postsCollection = defineCollection({
 	loader: glob({
 		base: "./src/content/posts",
 		pattern: publicPostPatterns,
-		generateId: ({ entry, data }) => generateContentId(entry, data),
+		generateId: ({ entry }) => generatePostContentId(entry),
 	}),
 	schema: ({ image }) => createPostSchema(image),
 });

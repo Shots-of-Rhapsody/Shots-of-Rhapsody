@@ -18,7 +18,7 @@ function git(repoRoot, args) {
 	assert.equal(result.status, 0, result.stderr);
 }
 
-test("presentation evidence binds renderer, built bytes, and commit ancestry", async () => {
+test("presentation evidence binds renderer, built inventory, and commit ancestry", async () => {
 	const repoRoot = await mkdtemp(path.join(os.tmpdir(), "shots-presentation-"));
 	const distRoot = path.join(repoRoot, "dist");
 	try {
@@ -28,6 +28,7 @@ test("presentation evidence binds renderer, built bytes, and commit ancestry", a
 		await writeFile(path.join(repoRoot, "src", "page.ts"), "export {};\n");
 		await writeFile(path.join(repoRoot, "public", "mark.svg"), "<svg></svg>\n");
 		await writeFile(path.join(distRoot, "index.html"), "<h1>Work</h1>\n");
+		await writeFile(path.join(distRoot, "hero.webp"), "windows-encoded-image");
 		git(repoRoot, ["init", "--quiet"]);
 		git(repoRoot, ["add", "src", "public"]);
 		git(repoRoot, [
@@ -40,6 +41,14 @@ test("presentation evidence binds renderer, built bytes, and commit ancestry", a
 			"-m",
 			"fixture",
 		]);
+
+		await mkdir(path.join(distRoot, "pagefind", "fragment"), {
+			recursive: true,
+		});
+		await writeFile(
+			path.join(distRoot, "pagefind", "fragment", "en_deadbee.pf_fragment"),
+			Buffer.from("windows pagefind bytes"),
+		);
 
 		const evidence = await collectPresentationEvidence({
 			repoRoot,
@@ -68,7 +77,18 @@ test("presentation evidence binds renderer, built bytes, and commit ancestry", a
 			evidence,
 		);
 
-		await writeFile(path.join(distRoot, "index.html"), "<h1>Changed</h1>\n");
+		await writeFile(path.join(distRoot, "hero.webp"), "linux-encoded-image");
+		assert.deepEqual(
+			await verifyPresentationSignoffV2({
+				ledger,
+				repoRoot,
+				distRoot,
+				release: "v1.1.0",
+			}),
+			evidence,
+		);
+
+		await writeFile(path.join(distRoot, "unexpected.webp"), "extra-image");
 		await assert.rejects(
 			verifyPresentationSignoffV2({
 				ledger,
@@ -77,6 +97,49 @@ test("presentation evidence binds renderer, built bytes, and commit ancestry", a
 				release: "v1.1.0",
 			}),
 			/stale siteSha256/u,
+		);
+
+		await rm(path.join(distRoot, "unexpected.webp"));
+		await writeFile(path.join(distRoot, "index.html"), "<h1>Changed</h1>\n");
+		assert.deepEqual(
+			await verifyPresentationSignoffV2({
+				ledger,
+				repoRoot,
+				distRoot,
+				release: "v1.1.0",
+			}),
+			evidence,
+		);
+
+		await rm(
+			path.join(distRoot, "pagefind", "fragment", "en_deadbee.pf_fragment"),
+		);
+		await writeFile(
+			path.join(distRoot, "pagefind", "fragment", "en_cafebabe.pf_fragment"),
+			Buffer.from("linux pagefind bytes"),
+		);
+		assert.deepEqual(
+			await verifyPresentationSignoffV2({
+				ledger,
+				repoRoot,
+				distRoot,
+				release: "v1.1.0",
+			}),
+			evidence,
+		);
+
+		await writeFile(
+			path.join(repoRoot, "src", "page.ts"),
+			"export const changed = true;\n",
+		);
+		await assert.rejects(
+			verifyPresentationSignoffV2({
+				ledger,
+				repoRoot,
+				distRoot,
+				release: "v1.1.0",
+			}),
+			/stale rendererSha256/u,
 		);
 	} finally {
 		await rm(repoRoot, { recursive: true, force: true });

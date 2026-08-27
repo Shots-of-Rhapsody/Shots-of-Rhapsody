@@ -13,7 +13,7 @@ import { createPendingMediumReviewScaffold } from "./lib/pipeline.js";
 const HELP = `Usage:
   node scripts/medium/review-scaffold.js [--write] [--json]
 
-Creates pending claim-review and content-signoff worksheets from the active
+Creates optional claim-research and required content-signoff worksheets from the active
 Medium manifest. A reviewer must either add reviewed claims or provide the
 explicit no-material-claims rationale; these alternatives cannot be combined.
 Hashes are current, but all human statuses remain explicitly pending/null. The

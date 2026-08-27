@@ -6,6 +6,7 @@ export interface ContentSignoffV2 {
 	readonly assetSha256: readonly `sha256:${string}`[];
 	readonly reviewer: "Tai Song";
 	readonly reviewedAt: string;
+	/** Confirms exact reproduction from the hash-bound author master. */
 	readonly accuracy: "passed";
 	readonly rights: "passed";
 }

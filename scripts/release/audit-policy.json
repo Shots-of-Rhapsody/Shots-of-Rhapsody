@@ -33,8 +33,53 @@
 				"reason": "Standard GitHub Dependabot identity."
 			}
 		],
-		"allowedIdentityObjects": [],
-		"allowedMessageEmailObjects": []
+		"allowedIdentityObjects": [
+			{
+				"object": "66f2eb9cb188cfef1a75d24fe5887a47fed8aa76",
+				"role": "author",
+				"reason": "Exact GitHub-generated merge for reviewed PR #5; the provider recorded the authenticated maintainer through a public noreply identity."
+			}
+		],
+		"allowedMessageEmailObjects": [
+			{
+				"object": "a80e389f2140d40eadc766240c3aacce31297ccd",
+				"location": "commit-message",
+				"reason": "Exact GitHub Dependabot PR commit with a verified public noreply trailer."
+			},
+			{
+				"object": "dc82acd18ce6e1f4956b29101e2b9c3072d019f6",
+				"location": "commit-message",
+				"reason": "Exact GitHub Dependabot PR commit with a verified public noreply trailer."
+			},
+			{
+				"object": "f6e69fa06e5cf617dc7f5be6df9717e155527209",
+				"location": "commit-message",
+				"reason": "Exact GitHub Dependabot PR commit with a verified public noreply trailer."
+			},
+			{
+				"object": "fa824b103bf1b1974b74b0347f6b9ff045605c56",
+				"location": "commit-message",
+				"reason": "Exact GitHub Dependabot PR commit with a verified public noreply trailer."
+			}
+		],
+		"allowedSignedOffByObjects": [
+			{
+				"object": "a80e389f2140d40eadc766240c3aacce31297ccd",
+				"reason": "Exact GitHub Dependabot PR commit authored by dependabot[bot], committed by GitHub, and carrying only its public noreply trailer."
+			},
+			{
+				"object": "dc82acd18ce6e1f4956b29101e2b9c3072d019f6",
+				"reason": "Exact GitHub Dependabot PR commit authored by dependabot[bot], committed by GitHub, and carrying only its public noreply trailer."
+			},
+			{
+				"object": "f6e69fa06e5cf617dc7f5be6df9717e155527209",
+				"reason": "Exact GitHub Dependabot PR commit authored by dependabot[bot], committed by GitHub, and carrying only its public noreply trailer."
+			},
+			{
+				"object": "fa824b103bf1b1974b74b0347f6b9ff045605c56",
+				"reason": "Exact GitHub Dependabot PR commit authored by dependabot[bot], committed by GitHub, and carrying only its public noreply trailer."
+			}
+		]
 	},
 	"contentAllowlists": {},
 	"contentAllowlistEntries": [
@@ -63,10 +108,28 @@
 			"reason": "Immutable scanner source containing its own detection expressions."
 		},
 		{
+			"rules": [
+				"github-token",
+				"provider-token",
+				"private-key",
+				"local-user-path",
+				"email-address-review"
+			],
+			"path": "scripts/release/audit-repository.mjs",
+			"blob": "da3e93d84e4ed046dbcbf0d2441fdfd105f1116d",
+			"reason": "Immutable scanner source containing its own detection expressions."
+		},
+		{
 			"rule": "email-address-review",
 			"path": "scripts/content/test/presentation.test.js",
 			"blob": "2985bab94477aa67ae90d636b2d1c74be51abb24",
 			"reason": "Immutable test fixture using the reserved .invalid domain; it is not a deliverable address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/proton/cloud.test.mjs",
+			"blob": "75259a055ef3ae330bcef8a798fccf24840e824b",
+			"reason": "Immutable synthetic CLI fixture using the reserved .invalid domain; it is not a deliverable address."
 		},
 		{
 			"rule": "email-address-review",
@@ -406,6 +469,18 @@
 		},
 		{
 			"rule": "email-address-review",
+			"path": "scripts/medium/test/foundation.test.js",
+			"blob": "a90f045cef519ceb21779e7af4f8d869a694e4f6",
+			"reason": "Immutable synthetic test fixture containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/medium/test/foundation.test.js",
+			"blob": "d7f8d9285a04cf2c6fc031b007297ecc712b7940",
+			"reason": "Immutable synthetic test fixture containing an @2x image-density filename; the token is an asset name, not an email address."
+		},
+		{
+			"rule": "email-address-review",
 			"path": "scripts/release/release-target.test.mjs",
 			"blob": "256b93f7bfba6c65556fae0cf74205d67ce5b69f",
 			"reason": "Immutable synthetic test fixture using the reserved .invalid domain; it is not a deliverable address."
@@ -414,6 +489,12 @@
 			"rule": "email-address-review",
 			"path": "scripts/release/release-target.test.mjs",
 			"blob": "8e745eebece0422759876faeecacff5273b0b8ad",
+			"reason": "Immutable synthetic test fixture using the reserved .invalid domain; it is not a deliverable address."
+		},
+		{
+			"rule": "email-address-review",
+			"path": "scripts/release/release-target.test.mjs",
+			"blob": "ced4b2b708ca70d43db42d369c087cdc845e93c2",
 			"reason": "Immutable synthetic test fixture using the reserved .invalid domain; it is not a deliverable address."
 		}
 	],

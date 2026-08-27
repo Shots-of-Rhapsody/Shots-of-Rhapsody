@@ -18,7 +18,11 @@ import {
 	PODCAST_AUDIO_DECISIONS,
 	validatePodcastAudioDecisionLedgerV1,
 } from "../../src/data/podcast-audio-decisions.ts";
-import { verifyPodcastDraft, verifyPodcastRelease } from "./verify.mjs";
+import {
+	verifyPodcastDraft,
+	verifyPodcastRelease,
+	verifyPodcastTarget,
+} from "./verify.mjs";
 
 test("approved identity, route, media path, and measurements are exact", () => {
 	const episode = PODCAST_EPISODES[0];
@@ -83,15 +87,19 @@ function completeEpisode() {
 			distributionDecision: "retain-current-audio",
 			qualityApproved: true,
 		},
-		transcript: {
-			sourcePath: "src/content/podcast/modular-ethics/transcript.html",
-			publicPath: "/podcast/modular-ethics/transcript/",
-			vttPath: "/podcast/transcripts/modular-ethics.vtt",
-			language: "en",
-			sha256:
-				"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-			reviewed: true,
-		},
+		transcript: null,
+	};
+}
+
+function reviewedTranscript() {
+	return {
+		sourcePath: "src/content/podcast/modular-ethics/transcript.html",
+		publicPath: "/podcast/modular-ethics/transcript/",
+		vttPath: "/podcast/transcripts/modular-ethics.vtt",
+		language: "en",
+		sha256:
+			"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+		reviewed: true,
 	};
 }
 
@@ -111,10 +119,11 @@ function approvedAudioDecision(episode = completeEpisode()) {
 	};
 }
 
-test("the recorded episode remains fail-closed without a transcript", () => {
+test("the recorded episode remains fail-closed on missing publication metadata", () => {
 	const blockers = getPodcastPublicationBlockers(PODCAST_EPISODES[0]);
 	assert.ok(blockers.includes("episode-draft"));
-	assert.ok(blockers.includes("transcript-missing"));
+	assert.ok(blockers.includes("episode-description-missing"));
+	assert.ok(!blockers.some((blocker) => blocker.startsWith("transcript-")));
 	assert.ok(!blockers.some((blocker) => blocker.startsWith("audio-")));
 	assert.equal(isPodcastEpisodePublishable(PODCAST_EPISODES[0]), false);
 	assert.deepEqual(getPublishablePodcastEpisodes(), []);
@@ -124,7 +133,9 @@ test("the recorded episode remains fail-closed without a transcript", () => {
 test("changing only the episode status cannot bypass publication gates", () => {
 	const episode = { ...PODCAST_EPISODES[0], status: "published" };
 	assert.ok(
-		getPodcastPublicationBlockers(episode).includes("transcript-missing"),
+		getPodcastPublicationBlockers(episode).includes(
+			"episode-description-missing",
+		),
 	);
 	assert.throws(
 		() => assertPodcastManifest([episode]),
@@ -132,7 +143,7 @@ test("changing only the episode status cannot bypass publication gates", () => {
 	);
 });
 
-test("a complete reviewed fixture is eligible for publication", () => {
+test("a complete reviewed fixture is eligible without a transcript", () => {
 	const show = completeShow();
 	const episode = completeEpisode();
 	const audioDecisions = approvedAudioDecision(episode);
@@ -146,6 +157,30 @@ test("a complete reviewed fixture is eligible for publication", () => {
 	);
 	assert.doesNotThrow(() =>
 		assertPodcastManifest([episode], show, audioDecisions),
+	);
+});
+
+test("a provided podcast transcript must be reviewed", () => {
+	const show = completeShow();
+	const episode = {
+		...completeEpisode(),
+		transcript: { ...reviewedTranscript(), reviewed: false },
+	};
+	assert.ok(
+		getPodcastPublicationBlockers(
+			episode,
+			show,
+			approvedAudioDecision(episode),
+		).includes("transcript-unreviewed"),
+	);
+	episode.transcript.reviewed = true;
+	assert.deepEqual(
+		getPodcastPublicationBlockers(
+			episode,
+			show,
+			approvedAudioDecision(episode),
+		),
+		[],
 	);
 });
 
@@ -263,9 +298,36 @@ test("audio decision records reject inferred or malformed approval", () => {
 	);
 });
 
-test("podcast approval binds audio, transcript, artwork, and metadata", () => {
+test("podcast approval binds audio, artwork, and metadata without a transcript", () => {
 	const show = completeShow();
 	const episode = completeEpisode();
+	const ledger = {
+		version: 2,
+		entries: [
+			{
+				slug: episode.slug,
+				kind: "podcast",
+				sourceSha256: episode.audio.sha256,
+				outputSha256: getPodcastReviewOutputSha256(episode, show),
+				assetSha256: [episode.audio.sha256, show.artwork.sha256],
+				reviewer: "Tai Song",
+				reviewedAt: "2026-07-25T12:00:00.000Z",
+				accuracy: "passed",
+				rights: "passed",
+			},
+		],
+	};
+	assert.doesNotThrow(() => assertPodcastContentSignoff(episode, ledger, show));
+	ledger.entries[0].outputSha256 = `sha256:${"f".repeat(64)}`;
+	assert.throws(
+		() => assertPodcastContentSignoff(episode, ledger, show),
+		/stale episode metadata/u,
+	);
+});
+
+test("podcast approval binds an optional transcript when one is present", () => {
+	const show = completeShow();
+	const episode = { ...completeEpisode(), transcript: reviewedTranscript() };
 	const ledger = {
 		version: 2,
 		entries: [
@@ -287,11 +349,6 @@ test("podcast approval binds audio, transcript, artwork, and metadata", () => {
 		],
 	};
 	assert.doesNotThrow(() => assertPodcastContentSignoff(episode, ledger, show));
-	ledger.entries[0].outputSha256 = `sha256:${"f".repeat(64)}`;
-	assert.throws(
-		() => assertPodcastContentSignoff(episode, ledger, show),
-		/stale transcript or metadata/u,
-	);
 });
 
 test("podcast publication requires a genuine content signoff", () => {
@@ -325,7 +382,7 @@ test("podcast publication timestamps use canonical UTC form", () => {
 	);
 });
 
-test("draft evidence matches the permanent MP3 and remains absent from dist", async () => {
+test("draft evidence matches the permanent MP3", async () => {
 	const result = await verifyPodcastDraft();
 	assert.equal(result.audioBytes, 57_831_360);
 	assert.equal(
@@ -342,6 +399,20 @@ test("draft evidence matches the permanent MP3 and remains absent from dist", as
 test("complete verification rejects the unreviewed draft", async () => {
 	await assert.rejects(
 		verifyPodcastRelease(),
+		/Podcast publication is incomplete/u,
+	);
+});
+
+test("the current release target strictly preserves the unpublished draft", async () => {
+	const result = await verifyPodcastTarget();
+	assert.equal(result.episodes, 0);
+	assert.equal(result.builtArtifactsChecked, false);
+	assert.equal(result.complete, true);
+});
+
+test("a one-episode target reactivates every publication gate", async () => {
+	await assert.rejects(
+		verifyPodcastTarget({ expectedEpisodes: 1 }),
 		/Podcast publication is incomplete/u,
 	);
 });

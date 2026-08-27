@@ -1,11 +1,12 @@
 # Shots of Rhapsody public-release disclosure audit
 
-Status: **Not yet approved for public release**
+Status: **Public review deployed; final release not yet approved**
 
-This report is intentionally incomplete until the exact release-candidate
+The current Pages artifact is a globally `noindex` review build. This report is
+intentionally incomplete until the exact release-candidate
 commit has passed every automated gate and Tai Song has completed all 11
-`ReviewSignoffV1` records, all 24 nonfiction claim reviews, all 25
-`ContentSignoffV2` records, the podcast publication review, and the release-wide
+`ReviewSignoffV1` records, all 24 writing `ContentSignoffV2` records, the
+zero-published-podcast boundary, and the release-wide
 `PresentationSignoffV2` record. Keeping this document in a pending state
 prevents a planning or tool run from being mistaken for release approval.
 
@@ -20,7 +21,7 @@ prevents a planning or tool run from being mistaken for release approval.
 - Refs, commits, and blobs scanned: pending
 - GitHub pull requests, issues, reviews, Actions logs/artifacts, releases,
   deploy keys, webhooks, and collaborator permissions reviewed: pending
-- GitHub automatic secret-scanning result after public conversion: pending
+- GitHub automatic secret-scanning result for the exact release commit: pending
 - Manual WCAG 2.2 keyboard and contrast review on desktop and mobile,
   including visible focus, logical tab order, menus, search, and both themes:
   pending
@@ -47,12 +48,13 @@ approval:
 
 The sanitized repository was recreated under the canonical owner and name, so
 the superseded provider-side pull-request refs are not part of the current
-repository. Public release remains blocked until an unauthenticated check
+repository. Final indexable release remains blocked until an unauthenticated check
 confirms that deleted-repository and superseded commit URLs expose no old
-private material, and until every writing, claim, podcast, rights, and
+private material, and until every writing, podcast, rights, and
 presentation approval is complete against the final release candidate. GitHub
-Support is a fallback only if an old URL still exposes deleted private data.
-Until the checks pass, the repository must remain private.
+Support is a fallback only if an old URL still exposes deleted private data. If
+a public privacy defect appears, disable Pages immediately and keep the release
+blocked until remediation and a fresh disclosure audit pass.
 
 ## Accepted disclosures
 
@@ -64,11 +66,11 @@ the final privacy and credential audit passes:
 - prior GitHub Actions logs;
 - author-controlled imported article snapshots and approved hero images;
 - the exact 57,831,360-byte Episode 1 MP3, intended for the verified public
-  episode route after transcript and release approval.
+  episode route after metadata, rights, content, and presentation approval.
 
 Acceptance of disclosure is not a content license. Tai Song's 35 written works,
-their approved images, podcast audio, artwork, and transcript remain All Rights
-Reserved.
+their approved images, podcast audio, artwork, and any published transcript
+remain All Rights Reserved.
 
 ## Fail-closed outcomes
 

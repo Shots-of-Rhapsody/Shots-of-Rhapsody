@@ -68,6 +68,6 @@ the acquisition-manifest, capture, site-ready, and decoded-pixel hashes forward.
 Verification reconciles them with `hero-assets.v1.json`; a swapped or stale
 asset cannot be published merely because its filename is valid.
 
-Copy fidelity, factual review, and publication approval are separate gates. `claim-reviews.json` binds nonfiction claim review to the current source and output hashes. A current Tai Song `ContentSignoffV2` and an explicit entry in the aggregate publication catalog are also required before an imported article can become a public route.
+Copy fidelity, optional factual research, and publication approval remain separate records. `claim-reviews.json` may bind internal nonfiction research to current source and output hashes, but it is not a v1.0.0 publication gate and never changes imported prose. A current Tai Song source-fidelity and rights `ContentSignoffV2` plus an explicit entry in the aggregate publication catalog are required before an imported article can enter an approved release.
 
 The Medium source package is separate from the sealed 11-work Proton/Vocal archive. Importing nonfiction must not rewrite or reinterpret that existing evidence.

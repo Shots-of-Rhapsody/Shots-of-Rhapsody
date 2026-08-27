@@ -20,6 +20,7 @@ import { IS_PUBLIC_REVIEW } from "../data/build-mode.ts";
 import { PODCAST_SHOW } from "../data/podcast.ts";
 import { getVisiblePodcastEpisodes } from "../data/podcast-approval.ts";
 import { PUBLICATION_CATALOG } from "../data/publication-catalog.ts";
+import { getPublishedPostAssetPrefix } from "../utils/content-path.ts";
 import { DISPLAY_IMAGE_QUALITY } from "../utils/image-policy.ts";
 
 const IMAGE_EXTENSION = /\.(?:avif|gif|jpe?g|png|svg|webp)$/iu;
@@ -90,17 +91,19 @@ async function readJson(filePath) {
 	return JSON.parse(await readFile(filePath, "utf8"));
 }
 
-async function readVerifiedSourceAsset(asset, slug) {
+async function readVerifiedSourceAsset(asset, slug, masterFolder) {
 	if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(slug)) {
 		throw new Error(`Publication slug is unsafe: ${slug}`);
 	}
-	const expectedPrefix = `src/content/posts/${slug}/`;
+	const expectedPrefix = getPublishedPostAssetPrefix(masterFolder, slug);
+	const assetName =
+		typeof asset.path === "string"
+			? asset.path.slice(expectedPrefix.length)
+			: "";
 	if (
 		typeof asset.path !== "string" ||
 		!asset.path.startsWith(expectedPrefix) ||
-		!/^src\/content\/posts\/[a-z0-9]+(?:-[a-z0-9]+)*\/[a-z0-9]+(?:[._-][a-z0-9]+)*\.(?:jpe?g|png|webp)$/u.test(
-			asset.path,
-		) ||
+		!/^[-a-z0-9]+(?:[._-][a-z0-9]+)*\.(?:jpe?g|png|webp)$/u.test(assetName) ||
 		asset.path.includes("\\") ||
 		asset.path.split("/").some((segment) => segment === "..")
 	) {
@@ -209,7 +212,7 @@ function publicationEntries({ archive, medium, firstParty, catalog }) {
 		"first-party": firstPartyArticles,
 	};
 	if (
-		catalog?.schemaVersion !== 1 ||
+		catalog?.schemaVersion !== 2 ||
 		!Array.isArray(catalog.entries) ||
 		catalog.entries.length < 11
 	)
@@ -260,7 +263,11 @@ async function emitBodyDerivatives(outputRoot, entries) {
 	const expected = new Set();
 	for (const entry of entries) {
 		for (const asset of entry.assets.filter((asset) => asset.role === "body")) {
-			const bytes = await readVerifiedSourceAsset(asset, entry.slug);
+			const bytes = await readVerifiedSourceAsset(
+				asset,
+				entry.slug,
+				entry.masterFolder,
+			);
 			for (const width of responsiveBodyImageWidths(asset.width)) {
 				for (const format of ["avif", "webp"]) {
 					const relative = bodyImageOutputPath(
@@ -413,7 +420,11 @@ export default function publicationAssets() {
 				});
 				for (const entry of entries) {
 					for (const asset of entry.assets) {
-						await readVerifiedSourceAsset(asset, entry.slug);
+						await readVerifiedSourceAsset(
+							asset,
+							entry.slug,
+							entry.masterFolder,
+						);
 					}
 				}
 				const expectedBodyImages = await emitBodyDerivatives(

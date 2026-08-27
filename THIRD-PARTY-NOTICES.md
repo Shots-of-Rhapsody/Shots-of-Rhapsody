@@ -21,7 +21,7 @@ attribution requirements.
 
 ## Draft guide cover
 
-`src/content/posts/guide/cover.jpeg` is referenced only by the unpublished Fuwari guide draft. The draft records its external [Civitai image source](https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/208fc754-890d-4adb-9753-2c963332675d/width=2048/01651-1456859105-(colour_1.5),girl,_Blue,yellow,green,cyan,purple,red,pink,_best,8k,UHD,masterpiece,male%20focus,%201boy,gloves,%20ponytail,%20long%20hair,.jpeg). It is excluded from the production site and is not offered for reuse by this repository.
+`src/content/drafts/guide/cover.jpeg` is referenced only by the unpublished Fuwari guide draft. The draft records its external [Civitai image source](https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/208fc754-890d-4adb-9753-2c963332675d/width=2048/01651-1456859105-(colour_1.5),girl,_Blue,yellow,green,cyan,purple,red,pink,_best,8k,UHD,masterpiece,male%20focus,%201boy,gloves,%20ponytail,%20long%20hair,.jpeg). It is excluded from the production site and is not offered for reuse by this repository.
 
 ## Project branding and imagery with separate provenance
 
@@ -33,10 +33,6 @@ attribution records referenced Unsplash, the Pixiv work “星と少女” by St
 and an Artaius Midjourney showcase without preserving a reliable file-by-file
 mapping. These legacy files are excluded from the public artifact; their
 presence in repository history does not grant permission to reuse them.
-
-## Historical podcast player
-
-The player files under `legacy/podcast/` are retained for repository history and excluded from the built site. They are not used to render or play the approved first-party episode. Their presence does not grant permission to reuse the player or its historical metadata.
 
 ## Tai Song archive
 

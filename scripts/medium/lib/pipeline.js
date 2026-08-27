@@ -11,7 +11,13 @@ import {
 	writeFile,
 } from "node:fs/promises";
 import path from "node:path";
-import { validateClaimReviews } from "../../content/claims.js";
+import {
+	getPublishedPostAssetPrefix,
+	getPublishedPostMarkdownPath,
+	isMasterFolder,
+	masterFolderForSection,
+	parsePublishedPostMarkdownPath,
+} from "../../../src/utils/content-path.ts";
 import {
 	validateContentSignoffsV2,
 	validatePresentationSignoffsV2,
@@ -1717,9 +1723,9 @@ function validatePublicationCatalog(value) {
 		new Set(["schemaVersion", "entries"]),
 		"publication catalog",
 	);
-	if (catalog.schemaVersion !== 1)
+	if (catalog.schemaVersion !== 2)
 		throw new MediumContractError(
-			"publication catalog schemaVersion must equal 1",
+			"publication catalog schemaVersion must equal 2",
 		);
 	if (!Array.isArray(catalog.entries))
 		throw new MediumContractError(
@@ -1730,7 +1736,7 @@ function validatePublicationCatalog(value) {
 		const entry = assertPlainObject(value, label);
 		assertOnlyKeys(
 			entry,
-			new Set(["slug", "source", "markdown", "section"]),
+			new Set(["slug", "source", "markdown", "section", "masterFolder"]),
 			label,
 		);
 		const slug = assertSlug(entry.slug, `${label}.slug`);
@@ -1747,6 +1753,12 @@ function validatePublicationCatalog(value) {
 		) {
 			throw new MediumContractError(`${label}.section is unsupported`);
 		}
+		if (!isMasterFolder(entry.masterFolder))
+			throw new MediumContractError(`${label}.masterFolder is unsupported`);
+		if (entry.masterFolder !== masterFolderForSection(entry.section))
+			throw new MediumContractError(
+				`${label}.masterFolder does not match its writing section`,
+			);
 		if (entry.source === "medium" && entry.section !== "nonfiction")
 			throw new MediumContractError(
 				`${label} must classify Medium writing as nonfiction`,
@@ -1755,11 +1767,17 @@ function validatePublicationCatalog(value) {
 			entry.markdown,
 			`${label}.markdown`,
 		);
-		if (markdown !== `src/content/posts/${slug}/index.md`)
+		if (markdown !== getPublishedPostMarkdownPath(entry.masterFolder, slug))
 			throw new MediumContractError(
 				`${label}.markdown does not match its slug`,
 			);
-		return { slug, source: entry.source, markdown, section: entry.section };
+		return {
+			slug,
+			source: entry.source,
+			markdown,
+			section: entry.section,
+			masterFolder: entry.masterFolder,
+		};
 	});
 	for (const field of ["slug", "markdown"]) {
 		const values = entries.map((entry) => entry[field]);
@@ -1797,7 +1815,8 @@ function validateFirstPartyManifest(value) {
 			article.markdown,
 			`${label}.markdown`,
 		);
-		if (markdown !== `src/content/posts/${slug}/index.md`)
+		const parsedMarkdown = parsePublishedPostMarkdownPath(markdown);
+		if (!parsedMarkdown || parsedMarkdown.slug !== slug)
 			throw new MediumContractError(
 				`${label}.markdown does not match its slug`,
 			);
@@ -1857,6 +1876,14 @@ function validateFirstPartyManifest(value) {
 		const assetPaths = assets.map((asset) => asset.path);
 		if (new Set(assetPaths).size !== assetPaths.length)
 			throw new MediumContractError(`${label}.assets repeat a path`);
+		const assetPrefix = getPublishedPostAssetPrefix(
+			parsedMarkdown.masterFolder,
+			slug,
+		);
+		if (assets.some((asset) => !asset.path.startsWith(assetPrefix)))
+			throw new MediumContractError(
+				`${label}.assets escape their article directory`,
+			);
 		return {
 			slug,
 			markdown,
@@ -1931,11 +1958,11 @@ export function validateAggregateReleaseTarget(value) {
 	const target = assertPlainObject(value, "release target");
 	assertOnlyKeys(
 		target,
-		new Set(["schemaVersion", "release", "expected"]),
+		new Set(["schemaVersion", "release", "expected", "policy"]),
 		"release target",
 	);
-	if (target.schemaVersion !== 2) {
-		throw new MediumContractError("release target schemaVersion must equal 2");
+	if (target.schemaVersion !== 3) {
+		throw new MediumContractError("release target schemaVersion must equal 3");
 	}
 	const expected = assertPlainObject(
 		target.expected,
@@ -1946,8 +1973,29 @@ export function validateAggregateReleaseTarget(value) {
 		new Set(["archiveWriting", "mediumWriting", "podcastEpisodes"]),
 		"release target.expected",
 	);
+	const policy = assertPlainObject(target.policy, "release target.policy");
+	assertOnlyKeys(
+		policy,
+		new Set([
+			"writingAccuracy",
+			"nonfictionClaimResearch",
+			"podcastTranscript",
+			"podcastFeed",
+		]),
+		"release target.policy",
+	);
+	if (
+		policy.writingAccuracy !== "source-fidelity" ||
+		policy.nonfictionClaimResearch !== "optional-internal" ||
+		policy.podcastTranscript !== "optional" ||
+		policy.podcastFeed !== "disabled-until-permanent-domain"
+	) {
+		throw new MediumContractError(
+			"release target.policy differs from the approved publication policy",
+		);
+	}
 	return {
-		schemaVersion: 2,
+		schemaVersion: 3,
 		release: assertNonEmptyString(target.release, "release target.release"),
 		expected: {
 			archiveWriting: assertInteger(
@@ -1963,8 +2011,13 @@ export function validateAggregateReleaseTarget(value) {
 			podcastEpisodes: assertInteger(
 				expected.podcastEpisodes,
 				"release target.expected.podcastEpisodes",
-				{ positive: true },
 			),
+		},
+		policy: {
+			writingAccuracy: "source-fidelity",
+			nonfictionClaimResearch: "optional-internal",
+			podcastTranscript: "optional",
+			podcastFeed: "disabled-until-permanent-domain",
 		},
 	};
 }
@@ -2003,35 +2056,33 @@ function requireExactIdentitySet(actualValues, expectedValues, label) {
 
 export function validateAggregateReviewIdentitySets({
 	mediumSlugs,
-	claimReviews,
 	contentSignoffs,
+	podcastEpisodes,
 } = {}) {
 	if (
 		!Array.isArray(mediumSlugs) ||
-		!Array.isArray(claimReviews) ||
-		!Array.isArray(contentSignoffs)
+		!Array.isArray(contentSignoffs) ||
+		!Number.isInteger(podcastEpisodes) ||
+		podcastEpisodes < 0 ||
+		podcastEpisodes > 1
 	) {
 		throw new MediumContractError(
-			"Aggregate review identity inputs must be arrays",
+			"Aggregate review identity inputs are invalid",
 		);
 	}
 	const writingIdentities = mediumSlugs.map(
 		(slug) => `writing:${assertSlug(slug)}`,
 	);
-	requireExactIdentitySet(
-		claimReviews.map((review) => assertSlug(review?.slug)),
-		mediumSlugs,
-		"Medium claim reviews",
-	);
+	const podcastIdentities =
+		podcastEpisodes === 1 ? ["podcast:modular-ethics"] : [];
 	requireExactIdentitySet(
 		contentSignoffs.map(
 			(signoff) => `${signoff?.kind}:${assertSlug(signoff?.slug)}`,
 		),
-		[...writingIdentities, "podcast:modular-ethics"],
+		[...writingIdentities, ...podcastIdentities],
 		"Content signoffs",
 	);
 	return {
-		claimReviewCount: claimReviews.length,
 		contentSignoffCount: contentSignoffs.length,
 	};
 }
@@ -2143,25 +2194,13 @@ export async function verifyAggregateContent({
 			.filter((entry) => entry.kind === "writing")
 			.map((entry) => [entry.slug, entry]),
 	);
-	const claimReviewEntries = validateClaimReviews(
-		parseJson(
-			await readRequired(
-				path.join(repoRoot, "provenance", "medium", "claim-reviews.json"),
-				"Medium claim reviews",
-			),
-			"Medium claim reviews",
-		),
-	);
 	if (requireComplete) {
 		validateAggregateReviewIdentitySets({
 			mediumSlugs: mediumManifest.articles.map((article) => article.slug),
-			claimReviews: claimReviewEntries,
 			contentSignoffs,
+			podcastEpisodes: releaseTarget.expected.podcastEpisodes,
 		});
 	}
-	const claimReviews = new Map(
-		claimReviewEntries.map((review) => [review.slug, review]),
-	);
 	const archiveBySlug = new Map(
 		archiveManifest.articles.map((article) => [article.slug, article]),
 	);
@@ -2229,10 +2268,6 @@ export async function verifyAggregateContent({
 			const signedAssets = [...(signoff?.assetSha256 ?? [])].sort();
 			if (
 				!signoff ||
-				claimReviews.get(entry.slug)?.sourceSha256 !==
-					sourceEntry.hashes.rawSource ||
-				claimReviews.get(entry.slug)?.outputSha256 !==
-					sourceEntry.hashes.markdown ||
 				signoff.sourceSha256 !== sourceEntry.hashes.rawSource ||
 				signoff.outputSha256 !== sourceEntry.hashes.markdown ||
 				approvedAssets.length !== signedAssets.length ||

@@ -1,5 +1,6 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { getPublishedPostsRoot } from "../../../src/utils/content-path.ts";
 
 export const MANIFEST_SCHEMA_VERSION = 1;
 export const SNAPSHOT_SCHEMA_VERSION = 1;
@@ -159,7 +160,7 @@ export function getRepositoryPaths(repoRoot = DEFAULT_REPO_ROOT) {
 		inventoryPath: path.join(root, "provenance", "tai-song", "inventory.json"),
 		manifestPath: path.join(root, "provenance", "tai-song", "manifest.json"),
 		snapshotRoot: path.join(root, "provenance", "tai-song", "posts"),
-		postsRoot: path.join(root, "src", "content", "posts"),
+		postsRoot: path.join(root, ...getPublishedPostsRoot("fiction").split("/")),
 	};
 }
 

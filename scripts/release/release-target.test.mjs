@@ -14,24 +14,30 @@ import {
 } from "./verify-release.mjs";
 
 const TARGET = Object.freeze({
-	schemaVersion: 2,
+	schemaVersion: 3,
 	release: "v1.0.0",
 	expected: Object.freeze({
 		archiveWriting: 11,
 		mediumWriting: 24,
-		podcastEpisodes: 1,
+		podcastEpisodes: 0,
+	}),
+	policy: Object.freeze({
+		writingAccuracy: "source-fidelity",
+		nonfictionClaimResearch: "optional-internal",
+		podcastTranscript: "optional",
+		podcastFeed: "disabled-until-permanent-domain",
 	}),
 });
 
 const SITE = Object.freeze({
-	htmlPages: 45,
+	htmlPages: 42,
 	postPages: 35,
 	rssItems: 35,
-	pagefindRecords: 37,
+	pagefindRecords: 35,
 	archiveEntries: 35,
 	authorWorks: 35,
 	nonfictionEntries: 24,
-	podcastEpisodes: 1,
+	podcastEpisodes: 0,
 });
 
 const AGGREGATE = Object.freeze({
@@ -52,7 +58,7 @@ const MEDIUM = Object.freeze({
 
 const PODCAST = Object.freeze({
 	complete: true,
-	episodes: 1,
+	episodes: 0,
 	builtArtifactsChecked: true,
 });
 
@@ -150,7 +156,7 @@ test("release target accepts only the exact combined v1.0.0 contract", () => {
 	assert.deepEqual(validateReleaseTarget(TARGET), TARGET);
 	for (const value of [
 		{},
-		{ ...TARGET, schemaVersion: 1 },
+		{ ...TARGET, schemaVersion: 2 },
 		{ ...TARGET, release: "v1.1.0" },
 		{ ...TARGET, draft: true },
 		{ ...TARGET, expected: { ...TARGET.expected, mediumWriting: 23 } },
@@ -158,6 +164,19 @@ test("release target accepts only the exact combined v1.0.0 contract", () => {
 		{
 			...TARGET,
 			expected: { ...TARGET.expected, unexpectedWriting: 1 },
+		},
+		{ ...TARGET, policy: undefined },
+		{
+			...TARGET,
+			policy: { ...TARGET.policy, writingAccuracy: "fact-checked" },
+		},
+		{
+			...TARGET,
+			policy: { ...TARGET.policy, podcastTranscript: "required" },
+		},
+		{
+			...TARGET,
+			policy: { ...TARGET.policy, unexpectedPolicy: true },
 		},
 	]) {
 		assert.throws(() => validateReleaseTarget(value), /Release target/u);
@@ -195,7 +214,7 @@ test("combined release runs every content and presentation gate", async (context
 				mediumOptions = options;
 				return MEDIUM;
 			},
-			verifyPodcastRelease: async (options) => {
+			verifyPodcastTarget: async (options) => {
 				podcastOptions = options;
 				return PODCAST;
 			},
@@ -213,6 +232,7 @@ test("combined release runs every content and presentation gate", async (context
 	assert.deepEqual(podcastOptions, {
 		withBuilt: true,
 		release: "v1.0.0",
+		expectedEpisodes: 0,
 	});
 	assert.doesNotThrow(() =>
 		validateCombinedReleaseSummary({
@@ -236,7 +256,7 @@ test("combined release rejects missing target-specific presentation approval", a
 				verifyBuiltSite: async () => SITE,
 				verifyAggregateContent: async () => AGGREGATE,
 				verifyMediumArticles: async () => MEDIUM,
-				verifyPodcastRelease: async () => PODCAST,
+				verifyPodcastTarget: async () => PODCAST,
 			},
 		}),
 		/Presentation signoff is missing for v1\.0\.0/u,
@@ -281,8 +301,8 @@ test("combined release rejects missing or extra Medium inventory", () => {
 	}
 });
 
-test("combined release rejects missing or extra podcast episodes", () => {
-	for (const episodes of [0, 2]) {
+test("combined release rejects unexpected podcast episodes", () => {
+	for (const episodes of [1, 2]) {
 		assert.throws(
 			() =>
 				validateCombinedReleaseSummary({
@@ -292,7 +312,7 @@ test("combined release rejects missing or extra podcast episodes", () => {
 					medium: MEDIUM,
 					podcast: { ...PODCAST, episodes },
 				}),
-			/exactly 1 complete podcast/u,
+			/exactly 0 complete podcast/u,
 		);
 	}
 });
@@ -322,10 +342,10 @@ test("combined release rejects writing-source and public-surface drift", () => {
 		);
 	}
 	for (const site of [
-		{ ...SITE, htmlPages: 44 },
+		{ ...SITE, htmlPages: 45 },
 		{ ...SITE, postPages: 36 },
 		{ ...SITE, rssItems: 34 },
-		{ ...SITE, pagefindRecords: 38 },
+		{ ...SITE, pagefindRecords: 37 },
 		{ ...SITE, archiveEntries: 34 },
 		{ ...SITE, authorWorks: 36 },
 		{ ...SITE, nonfictionEntries: 23 },
@@ -353,7 +373,7 @@ test("combined release summary reports every independent surface drift", () => {
 				site: { ...SITE, postPages: 34, rssItems: 36 },
 				aggregate: { ...AGGREGATE, complete: false, publishedCount: 34 },
 				medium: { ...MEDIUM, complete: false, importedCount: 23 },
-				podcast: { ...PODCAST, complete: false, episodes: 0 },
+				podcast: { ...PODCAST, complete: false, episodes: 1 },
 			}),
 		(error) => {
 			assert.match(
@@ -361,7 +381,7 @@ test("combined release summary reports every independent surface drift", () => {
 				/aggregate content verification is incomplete/u,
 			);
 			assert.match(error.message, /exactly 24 complete, approved Medium/u);
-			assert.match(error.message, /exactly 1 complete podcast/u);
+			assert.match(error.message, /exactly 0 complete podcast/u);
 			assert.match(error.message, /expected 35 postPages, received 34/u);
 			assert.match(error.message, /expected 35 rssItems, received 36/u);
 			return true;
@@ -388,9 +408,9 @@ test("combined release runs and reports every failed gate", async (context) => {
 					calls.push("medium");
 					throw new Error("Medium approvals pending");
 				},
-				verifyPodcastRelease: async () => {
+				verifyPodcastTarget: async () => {
 					calls.push("podcast");
-					throw new Error("podcast transcript pending");
+					throw new Error("podcast metadata pending");
 				},
 			},
 		}),
@@ -398,7 +418,7 @@ test("combined release runs and reports every failed gate", async (context) => {
 			assert.match(error.message, /archive review pending/u);
 			assert.match(error.message, /catalog incomplete/u);
 			assert.match(error.message, /Medium approvals pending/u);
-			assert.match(error.message, /podcast transcript pending/u);
+			assert.match(error.message, /podcast metadata pending/u);
 			return true;
 		},
 	);

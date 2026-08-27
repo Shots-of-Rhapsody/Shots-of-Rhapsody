@@ -3,7 +3,7 @@ import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
 import { gunzipSync } from "node:zlib";
-import { parse, parseFragment } from "parse5";
+import { defaultTreeAdapter, parse, parseFragment } from "parse5";
 import { IS_PUBLIC_REVIEW } from "../src/data/build-mode.ts";
 import { PODCAST_SHOW } from "../src/data/podcast.ts";
 import {
@@ -11,6 +11,11 @@ import {
 	getVisiblePodcastEpisodes,
 } from "../src/data/podcast-approval.ts";
 import { PUBLICATION_CATALOG } from "../src/data/publication-catalog.ts";
+import {
+	getPublishedPostMarkdownPath,
+	isMasterFolder,
+	masterFolderForSection,
+} from "../src/utils/content-path.ts";
 import { HERO_IMAGE_WIDTHS } from "../src/utils/image-policy.ts";
 import { inspectPng, sha256 } from "./archive/lib/integrity.js";
 import { bodyTextSha256, renderBodyHtml } from "./archive/lib/render.js";
@@ -99,23 +104,18 @@ async function walk(directory) {
 	return files;
 }
 
+const HTML_TEXT_CONTEXT = defaultTreeAdapter.createElement(
+	"textarea",
+	"http://www.w3.org/1999/xhtml",
+	[],
+);
+
 function decodeHtml(value) {
-	return value
-		.replace(/&amp;/g, "&")
-		.replace(/&quot;/g, '"')
-		.replace(/&#39;|&apos;/g, "'")
-		.replace(/&lt;/g, "<")
-		.replace(/&gt;/g, ">")
-		.replace(/&#(\d+);/g, (_, codePoint) =>
-			String.fromCodePoint(Number(codePoint)),
-		)
-		.replace(/&#x([0-9a-f]+);/gi, (_, codePoint) =>
-			String.fromCodePoint(Number.parseInt(codePoint, 16)),
-		);
+	return nodeText(parseFragment(HTML_TEXT_CONTEXT, String(value)));
 }
 
 function visibleText(markup) {
-	return decodeHtml(markup.replace(/<[^>]*>/g, ""));
+	return nodeText(parseFragment(String(markup)));
 }
 
 function escapeRegExp(value) {
@@ -128,6 +128,17 @@ function elementsWithAttribute(root, name) {
 		if (node.attrs?.some((attribute) => attribute.name === name)) {
 			matches.push(node);
 		}
+		for (const child of node.childNodes ?? []) visit(child);
+	};
+	visit(root);
+	return matches;
+}
+
+function elementsWithTagName(root, name) {
+	const matches = [];
+	const normalizedName = name.toLowerCase();
+	const visit = (node) => {
+		if (node.tagName?.toLowerCase() === normalizedName) matches.push(node);
 		for (const child of node.childNodes ?? []) visit(child);
 	};
 	visit(root);
@@ -601,22 +612,19 @@ function xmlElementText(xml, name) {
 	return match ? decodeHtml(match[1]) : undefined;
 }
 
-function attributes(tag) {
-	const result = {};
-	const expression =
-		/([^\s=/>]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/g;
-	for (const match of tag.matchAll(expression)) {
-		result[match[1].toLowerCase()] = decodeHtml(
-			match[2] ?? match[3] ?? match[4] ?? "",
-		);
-	}
-	return result;
+function attributes(node) {
+	return Object.fromEntries(
+		(node.attrs ?? []).map((attribute) => [
+			attribute.name.toLowerCase(),
+			attribute.value,
+		]),
+	);
 }
 
 function tags(html, name) {
-	return [...html.matchAll(new RegExp(`<${name}\\b[^>]*>`, "gi"))].map(
-		(match) => ({ raw: match[0], attributes: attributes(match[0]) }),
-	);
+	return elementsWithTagName(parseFragment(String(html)), name).map((node) => ({
+		attributes: attributes(node),
+	}));
 }
 
 function normalizedPath(value) {
@@ -704,12 +712,12 @@ export async function loadPublicationManifest(
 	}
 	if (
 		!hasExactKeys(catalog, new Set(["schemaVersion", "entries"])) ||
-		catalog.schemaVersion !== 1 ||
+		catalog.schemaVersion !== 2 ||
 		!Array.isArray(catalog.entries) ||
 		catalog.entries.length < EXPECTED_ARCHIVE_COUNT
 	) {
 		failures.push(
-			"Publication catalog must use the exact version 1 contract and preserve the sealed archive",
+			"Publication catalog must use the exact version 2 contract and preserve the sealed archive",
 		);
 		return archiveManifest;
 	}
@@ -726,15 +734,18 @@ export async function loadPublicationManifest(
 		if (
 			!hasExactKeys(
 				entry,
-				new Set(["slug", "source", "markdown", "section"]),
+				new Set(["slug", "source", "markdown", "section", "masterFolder"]),
 			) ||
 			typeof entry.slug !== "string" ||
 			!/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(entry.slug) ||
 			seenSlugs.has(entry.slug) ||
 			!allowedSources.has(entry.source) ||
 			!allowedSections.has(entry.section) ||
+			!isMasterFolder(entry.masterFolder) ||
+			entry.masterFolder !== masterFolderForSection(entry.section) ||
 			(entry.source === "medium" && entry.section !== "nonfiction") ||
-			entry.markdown !== `src/content/posts/${entry.slug}/index.md`
+			entry.markdown !==
+				getPublishedPostMarkdownPath(entry.masterFolder, entry.slug)
 		) {
 			failures.push(`${label}: entry contract is invalid or duplicated`);
 			continue;
@@ -788,6 +799,7 @@ export async function loadPublicationManifest(
 			slug: entry.slug,
 			source: entry.source,
 			section: entry.section,
+			masterFolder: entry.masterFolder,
 			title,
 			published,
 			paths: { markdown: entry.markdown },
@@ -1012,15 +1024,15 @@ async function resolveBuiltUrl(
 }
 
 function extractJsonLd(html, label, failures) {
-	const scripts = [
-		...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi),
-	].filter((match) => attributes(match[1]).type === "application/ld+json");
+	const scripts = elementsWithTagName(parse(String(html)), "script").filter(
+		(node) => attributeValue(node, "type") === "application/ld+json",
+	);
 	if (scripts.length !== 1) {
 		failures.push(`${label}: expected exactly one JSON-LD script`);
 		return undefined;
 	}
 	try {
-		return JSON.parse(scripts[0][2]);
+		return JSON.parse(nodeText(scripts[0]));
 	} catch (error) {
 		failures.push(`${label}: invalid JSON-LD (${error.message})`);
 		return undefined;
@@ -2162,7 +2174,7 @@ async function stagedMediumMarkdownPaths(repoRoot, failures) {
 		const { slug } = article;
 		const { markdown } = article.paths;
 		const label = `Medium staging manifest ${slug}`;
-		if (markdown !== `src/content/posts/${slug}/index.md`) {
+		if (markdown !== getPublishedPostMarkdownPath("nonfiction", slug)) {
 			failures.push(`${label}: Markdown path is not bound to its slug`);
 			continue;
 		}
@@ -2179,7 +2191,11 @@ async function stagedMediumMarkdownPaths(repoRoot, failures) {
 
 export async function verifyDraftSources(repoRoot, manifest, failures) {
 	const postsRoot = path.join(repoRoot, "src", "content", "posts");
-	const markdownFiles = (await walk(postsRoot)).filter((file) =>
+	const draftsRoot = path.join(repoRoot, "src", "content", "drafts");
+	const publishedMarkdown = (await walk(postsRoot)).filter((file) =>
+		file.toLowerCase().endsWith(".md"),
+	);
+	const draftMarkdown = (await walk(draftsRoot)).filter((file) =>
 		file.toLowerCase().endsWith(".md"),
 	);
 	const publishedPaths = new Set(
@@ -2190,7 +2206,7 @@ export async function verifyDraftSources(repoRoot, manifest, failures) {
 		),
 	);
 	const stagedMediumPaths = await stagedMediumMarkdownPaths(repoRoot, failures);
-	for (const file of markdownFiles) {
+	for (const file of publishedMarkdown) {
 		const draft = frontmatterDraftValue(await readFile(file, "utf8"));
 		const normalized = normalizedPath(path.resolve(file));
 		const cataloged = publishedPaths.has(normalized);
@@ -2203,6 +2219,75 @@ export async function verifyDraftSources(repoRoot, manifest, failures) {
 			failures.push(
 				`Uncataloged writing must remain an explicit draft: ${normalizedPath(path.relative(repoRoot, file))}`,
 			);
+	}
+	for (const file of draftMarkdown) {
+		const draft = frontmatterDraftValue(await readFile(file, "utf8"));
+		if (draft !== true)
+			failures.push(
+				`Writing stored under src/content/drafts must remain an explicit draft: ${normalizedPath(path.relative(repoRoot, file))}`,
+			);
+	}
+}
+
+const EXPECTED_DRAFT_FILES = [
+	"Modular Ethics/Modular Ethics.md",
+	"Modular Ethics/Modular Ethics.png",
+	"The Last Cup/The Last Cup.md",
+	"The Last Cup/The Last Cup.png",
+	"guide/cover.jpeg",
+	"guide/index.md",
+	"video.md",
+];
+
+export async function verifyContentLayout(repoRoot, manifest, failures) {
+	const postsRoot = path.join(repoRoot, "src", "content", "posts");
+	const topLevel = await readdir(postsRoot, { withFileTypes: true });
+	const topLevelShape = topLevel
+		.map(
+			(entry) => `${entry.isDirectory() ? "directory" : "other"}:${entry.name}`,
+		)
+		.sort();
+	if (
+		JSON.stringify(topLevelShape) !==
+		JSON.stringify(["directory:fiction", "directory:nonfiction"])
+	) {
+		failures.push(
+			"Published content root must contain only the fiction and nonfiction directories",
+		);
+	}
+
+	for (const masterFolder of ["fiction", "nonfiction"]) {
+		const expected = manifest.articles
+			.filter((article) => article.masterFolder === masterFolder)
+			.map((article) => article.slug)
+			.sort();
+		const actualEntries = await readdir(path.join(postsRoot, masterFolder), {
+			withFileTypes: true,
+		});
+		const actual = actualEntries
+			.filter((entry) => entry.isDirectory())
+			.map((entry) => entry.name)
+			.sort();
+		if (
+			actualEntries.some((entry) => !entry.isDirectory()) ||
+			JSON.stringify(actual) !== JSON.stringify(expected)
+		) {
+			failures.push(
+				`Published ${masterFolder} directories differ from the publication catalog`,
+			);
+		}
+	}
+
+	const draftsRoot = path.join(repoRoot, "src", "content", "drafts");
+	const actualDraftFiles = (await walk(draftsRoot))
+		.map((file) => normalizedPath(path.relative(draftsRoot, file)))
+		.sort();
+	if (
+		JSON.stringify(actualDraftFiles) !== JSON.stringify(EXPECTED_DRAFT_FILES)
+	) {
+		failures.push(
+			"Draft content root must contain exactly the four preserved legacy drafts and their assets",
+		);
 	}
 }
 
@@ -3431,7 +3516,6 @@ export function verifyPodcastArtifacts(
 	distRoot,
 	podcastEpisodes,
 	failures,
-	{ allowMissingTranscript = false } = {},
 ) {
 	const expected = new Set();
 	if (podcastEpisodes.length > 0) {
@@ -3441,11 +3525,6 @@ export function verifyPodcastArtifacts(
 			expected.add(`podcast/${episode.slug}/index.html`);
 			expected.add(episode.audio.publicPath.replace(/^\//u, ""));
 			if (episode.transcript === null) {
-				if (!allowMissingTranscript) {
-					failures.push(
-						`Approved podcast episode lacks a transcript: ${episode.slug}`,
-					);
-				}
 				continue;
 			}
 			expected.add(`podcast/${episode.slug}/transcript/index.html`);
@@ -3634,6 +3713,8 @@ export async function verifyBuiltSite({
 			failures,
 			podcastEpisodes,
 		);
+		if (releaseTarget === "catalog")
+			await verifyContentLayout(repoRoot, publicationManifest, failures);
 		await verifyDraftSources(repoRoot, publicationManifest, failures);
 	}
 	await verifyHomepageMetadata(
@@ -3664,9 +3745,7 @@ export async function verifyBuiltSite({
 		failures.push(failure);
 	}
 	await verifyNoPrivateBuildReferences(files, failures);
-	verifyPodcastArtifacts(files, distRoot, podcastEpisodes, failures, {
-		allowMissingTranscript: reviewBuild,
-	});
+	verifyPodcastArtifacts(files, distRoot, podcastEpisodes, failures);
 	const imageVerification = await inspectBuiltImages({
 		dist: distRoot,
 		repoRoot,

@@ -136,7 +136,15 @@ test("dry-run writes nothing and first write creates neutral deterministic evide
 	assert.doesNotMatch(manifestText, /media\.example\.invalid/u);
 
 	const markdown = await readFile(
-		path.join(root, "src", "content", "posts", SAMPLE_SLUG, "index.md"),
+		path.join(
+			root,
+			"src",
+			"content",
+			"posts",
+			"fiction",
+			SAMPLE_SLUG,
+			"index.md",
+		),
 		"utf8",
 	);
 	assert.match(markdown, /^image: "\.\/hero-original\.png"$/mu);
@@ -229,6 +237,7 @@ test("refuses unmanaged destinations and tampered managed updates", async (testC
 		"src",
 		"content",
 		"posts",
+		"fiction",
 		SAMPLE_SLUG,
 		"index.md",
 	);
@@ -280,6 +289,7 @@ test("refuses unmanaged destinations and tampered managed updates", async (testC
 		"src",
 		"content",
 		"posts",
+		"fiction",
 		SAMPLE_SLUG,
 		"index.md",
 	);

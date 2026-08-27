@@ -4,6 +4,20 @@ import { extractProtonHtml } from "../lib/extract.js";
 import { bodyTextSha256, renderBodyHtml } from "../lib/render.js";
 import { readFixture, SAMPLE_CAPTION, SAMPLE_SUBTITLE } from "./helpers.js";
 
+function escapeHtmlText(value) {
+	return String(value)
+		.replaceAll("&", "&amp;")
+		.replaceAll("<", "&lt;")
+		.replaceAll(">", "&gt;");
+}
+
+test("fixture text escaping handles every HTML metacharacter", () => {
+	assert.equal(
+		escapeHtmlText("first & second & third < fourth > fifth"),
+		"first &amp; second &amp; third &lt; fourth &gt; fifth",
+	);
+});
+
 test("extracts the observed Proton HTML contract without retaining its URL", async () => {
 	const result = extractProtonHtml(await readFixture());
 	assert.equal(result.subtitle, SAMPLE_SUBTITLE);
@@ -35,7 +49,7 @@ test("preserves source code points, entities, marks, breaks, and empty blocks", 
 });
 
 test("accepts the observed split subtitle/hero lead and inert author link", () => {
-	const html = `<h2 dir="ltr" style="text-align: start"><span style="font-size: 16px; white-space: pre-wrap">${SAMPLE_SUBTITLE.replace("&", "&amp;")}</span></h2><p dir="ltr" style="text-align: start"><a href="https://vocal.media/authors/tai-song"></a><br><img src="https://media.example.invalid/private-object" alt="" width="inherit" height="inherit"><br><span style="white-space: pre-wrap">${SAMPLE_CAPTION.replace("&", "&amp;")}</span><br><br><br><span style="white-space: pre-wrap">Body resumes here.</span></p><p style="text-align: start"><br></p>`;
+	const html = `<h2 dir="ltr" style="text-align: start"><span style="font-size: 16px; white-space: pre-wrap">${escapeHtmlText(SAMPLE_SUBTITLE)}</span></h2><p dir="ltr" style="text-align: start"><a href="https://vocal.media/authors/tai-song"></a><br><img src="https://media.example.invalid/private-object" alt="" width="inherit" height="inherit"><br><span style="white-space: pre-wrap">${escapeHtmlText(SAMPLE_CAPTION)}</span><br><br><br><span style="white-space: pre-wrap">Body resumes here.</span></p><p style="text-align: start"><br></p>`;
 	const result = extractProtonHtml(html);
 	assert.equal(result.leadTitle, undefined);
 	assert.equal(result.subtitle, SAMPLE_SUBTITLE);
@@ -61,7 +75,7 @@ test("accepts the observed split subtitle/hero lead and inert author link", () =
 });
 
 test("extracts an optional observed lead title without adding it to the body", () => {
-	const html = `<h1 dir="ltr" style="font-size: 16px; text-align: start"><span style="white-space: pre-wrap">Exact Article</span><br><br><span style="white-space: pre-wrap">${SAMPLE_SUBTITLE.replace("&", "&amp;")}</span><br><br><img src="https://media.example.invalid/private-object" alt="" width="inherit" height="inherit"><br><br><span style="white-space: pre-wrap">${SAMPLE_CAPTION.replace("&", "&amp;")}</span><br><br><br><span style="white-space: pre-wrap">First body block.</span></h1>`;
+	const html = `<h1 dir="ltr" style="font-size: 16px; text-align: start"><span style="white-space: pre-wrap">Exact Article</span><br><br><span style="white-space: pre-wrap">${escapeHtmlText(SAMPLE_SUBTITLE)}</span><br><br><img src="https://media.example.invalid/private-object" alt="" width="inherit" height="inherit"><br><br><span style="white-space: pre-wrap">${escapeHtmlText(SAMPLE_CAPTION)}</span><br><br><br><span style="white-space: pre-wrap">First body block.</span></h1>`;
 	const result = extractProtonHtml(html);
 	assert.equal(result.leadTitle, "Exact Article");
 	assert.equal(result.subtitle, SAMPLE_SUBTITLE);

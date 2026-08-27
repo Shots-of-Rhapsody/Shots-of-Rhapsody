@@ -4,7 +4,33 @@ This runbook covers provider-side controls that cannot be enforced by files in
 the repository. Do not perform these steps until the release candidate has
 passed the archive, browser, dependency, human-signoff, and disclosure gates.
 
-## Before changing repository visibility
+## Author-master handoff gate
+
+Run release work only from the canonical checkout; do not use or recreate
+duplicate or retired checkouts. Before freezing a candidate, require the
+one-direction publication path to be complete:
+
+```text
+Proton Docs -> supported HTML export -> deterministic verification -> reviewed Git pull request -> GitHub Actions -> GitHub Pages
+```
+
+- Proton Drive contains the reviewed native masters only under
+  `Blogging/Fiction` and `Blogging/Non-Fiction`.
+- The publication catalog binds those works to
+  `src/content/posts/fiction/<slug>/` or
+  `src/content/posts/nonfiction/<slug>/`, while the public address remains
+  `/posts/<slug>/`.
+- All 35 supported HTML exports reconcile with their sanitized ledger,
+  committed output, and approved assets. A missing or changed Proton export is
+  blocking; historical Medium or Vocal evidence is not a fallback master.
+- Raw exports, CLI inventory JSON, cloud IDs, private document URLs, account
+  data, `.protondoc` placeholders, and absolute local paths remain ignored and
+  absent from every Git ref and build artifact.
+- The optional Proton Drive CLI is restricted to explicit read-only name
+  inventory. It is neither a content exporter nor a build, deployment, or
+  runtime dependency.
+
+## Before the final indexable release
 
 1. Confirm the release candidate is the current `main` commit and the tracked
    worktree is clean.
@@ -38,10 +64,11 @@ passed the archive, browser, dependency, human-signoff, and disclosure gates.
    repository path, or private document identifier into an artifact or report.
    Paths explicitly listed as accepted public disclosures are the only path
    exception.
-5. Keep the repository private if either scanner reports a blocking finding.
-   Revoke or rotate credentials before any history remediation. A raw Proton
-   export or real document identifier requires an explicit owner decision
-   before rewriting history.
+5. Block the final release if either scanner reports a finding. Disable Pages
+   immediately if a public privacy or credential defect is discovered, and
+   revoke or rotate affected credentials before any history remediation. A raw
+   Proton export or real document identifier requires an explicit owner
+   decision before rewriting history.
 6. Review every redacted Git author, committer, tagger, commit/tag-message, and
    ref-name finding. Identity exceptions are bound to one immutable Git object
    and role. The documented Fuwari ancestry is trusted only through its pinned
@@ -51,15 +78,16 @@ passed the archive, browser, dependency, human-signoff, and disclosure gates.
    recreation removed those provider refs from the current canonical
    repository; contact GitHub Support only if an old URL remains accessible.
 
-## First public conversion
+## Public repository hardening
 
-After all 11 `ReviewSignoffV1` records, 25 `ContentSignoffV2` records, the 24
-nonfiction claim reviews, and the release-wide `PresentationSignoffV2` record
-pass for the exact candidate:
+After all 11 `ReviewSignoffV1` records, 24 writing `ContentSignoffV2` records,
+the zero-published-podcast boundary, and the release-wide
+`PresentationSignoffV2` record pass for the exact candidate:
 
-1. Change `Shots-of-Rhapsody/Shots-of-Rhapsody` from private to public.
-2. Wait for GitHub secret scanning to complete and confirm there are no open
-   alerts. Enable secret push protection.
+1. Confirm `Shots-of-Rhapsody/Shots-of-Rhapsody` remains public and that the
+   exact candidate discloses only the approved repository history and assets.
+2. Confirm GitHub secret scanning has completed with no open alerts and secret
+   push protection remains enabled.
 3. Enable Dependabot alerts, Dependabot security updates, and private
    vulnerability reporting.
 4. Set Actions policy to the exact action repositories used by the workflows,
@@ -79,10 +107,10 @@ pass for the exact candidate:
 Record the ruleset ID, enabled features, and required check names in the final
 audit report. Do not record tokens or collaborator email addresses.
 
-## First GitHub Pages deployment
+## Final GitHub Pages deployment
 
-1. In organization settings, allow public Pages publication.
-2. In repository **Settings → Pages**, choose **GitHub Actions**.
+1. Confirm organization policy still allows public Pages publication.
+2. Confirm repository **Settings → Pages** uses **GitHub Actions**.
 3. Protect the `github-pages` environment so only `main` can deploy.
 4. Dispatch **Deploy Astro to GitHub Pages** from the approved `main` SHA. The
    workflow is intentionally manual and refuses to deploy any other ref.
@@ -99,6 +127,10 @@ audit report. Do not record tokens or collaborator email addresses.
 8. Tag the deployed commit `v1.0.0`, publish the release notes, and submit the
    sitemap index to Google Search Console.
 
+The deployed artifact must remain self-contained. Turning off Proton Drive,
+the local development computer, and every inventory/import utility must not
+affect routes, images, search, feeds, or podcast playback.
+
 Browser evidence is fail-closed for privacy: Playwright's automatic traces,
 videos, failure screenshots, and generated error-context snapshots are
 disabled. CI uploads only deliberate screenshots captured after the rendered
@@ -114,6 +146,8 @@ the complete browser suite succeeds.
 
 ## Authoritative references
 
+- [Proton Docs import and export](https://proton.me/support/drive-import-export-docs)
+- [Proton Drive CLI](https://proton.me/support/drive-cli)
 - [GitHub Pages custom workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
 - [Secure use of GitHub Actions](https://docs.github.com/en/actions/reference/security/secure-use)
 - [Repository visibility consequences](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/managing-repository-settings/setting-repository-visibility)

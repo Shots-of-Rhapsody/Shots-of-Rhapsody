@@ -28,7 +28,7 @@ jobs:
     name: Build and verify selected Pages artifact
     if: >-
       (inputs.deployment_mode == 'release' && github.ref == 'refs/heads/main') ||
-      (inputs.deployment_mode == 'review' && github.ref == 'refs/heads/codex/v1.0-integration')
+      (inputs.deployment_mode == 'review' && github.ref == 'refs/heads/codex/v1.0-release')
     runs-on: ubuntu-latest
     env:
       TZ: UTC
@@ -57,15 +57,15 @@ jobs:
             exit 1
           fi
           expected_sha_normalized="${EXPECTED_SHA,,}"
-          test "${GITHUB_REF}" = "refs/heads/codex/v1.0-integration"
+          test "${GITHUB_REF}" = "refs/heads/codex/v1.0-release"
           test "${GITHUB_SHA}" = "${expected_sha_normalized}"
           test "$(git rev-parse HEAD)" = "${expected_sha_normalized}"
           git fetch --no-tags origin \
-            '+refs/heads/codex/v1.0-integration:refs/remotes/origin/codex/v1.0-integration'
-          test "$(git rev-parse refs/remotes/origin/codex/v1.0-integration)" = "${expected_sha_normalized}"
+            '+refs/heads/codex/v1.0-release:refs/remotes/origin/codex/v1.0-release'
+          test "$(git rev-parse refs/remotes/origin/codex/v1.0-release)" = "${expected_sha_normalized}"
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
         with:
           version: 11.16.0
           run_install: false
@@ -93,6 +93,9 @@ jobs:
 
       - name: Verify the complete committed archive
         run: pnpm archive:verify --require-complete
+
+      - name: Verify the final two-folder Proton master ledger
+        run: pnpm proton:verify-v2 --require-complete --require-final-cloud
 
       - name: Verify complete approved writing and podcast evidence
         if: inputs.deployment_mode == 'release'
@@ -231,9 +234,9 @@ jobs:
         run: |
           expected_sha_normalized="${EXPECTED_SHA,,}"
           git fetch --no-tags origin \
-            '+refs/heads/codex/v1.0-integration:refs/remotes/origin/codex/v1.0-integration'
+            '+refs/heads/codex/v1.0-release:refs/remotes/origin/codex/v1.0-release'
           test "$(git rev-parse HEAD)" = "${expected_sha_normalized}"
-          test "$(git rev-parse refs/remotes/origin/codex/v1.0-integration)" = "${expected_sha_normalized}"
+          test "$(git rev-parse refs/remotes/origin/codex/v1.0-release)" = "${expected_sha_normalized}"
 
       - name: Upload verified Pages artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
@@ -245,7 +248,7 @@ jobs:
     needs: build
     if: >-
       (inputs.deployment_mode == 'release' && github.ref == 'refs/heads/main') ||
-      (inputs.deployment_mode == 'review' && github.ref == 'refs/heads/codex/v1.0-integration')
+      (inputs.deployment_mode == 'review' && github.ref == 'refs/heads/codex/v1.0-release')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -276,12 +279,12 @@ jobs:
           EXPECTED_SHA: ${{ inputs.expected_sha }}
         run: |
           expected_sha_normalized="${EXPECTED_SHA,,}"
-          test "${GITHUB_REF}" = "refs/heads/codex/v1.0-integration"
+          test "${GITHUB_REF}" = "refs/heads/codex/v1.0-release"
           test "${GITHUB_SHA}" = "${expected_sha_normalized}"
           test "$(git rev-parse HEAD)" = "${expected_sha_normalized}"
           git fetch --no-tags origin \
-            '+refs/heads/codex/v1.0-integration:refs/remotes/origin/codex/v1.0-integration'
-          test "$(git rev-parse refs/remotes/origin/codex/v1.0-integration)" = "${expected_sha_normalized}"
+            '+refs/heads/codex/v1.0-release:refs/remotes/origin/codex/v1.0-release'
+          test "$(git rev-parse refs/remotes/origin/codex/v1.0-release)" = "${expected_sha_normalized}"
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
@@ -295,7 +298,7 @@ jobs:
     needs: deploy
     if: >-
       (inputs.deployment_mode == 'release' && github.ref == 'refs/heads/main') ||
-      (inputs.deployment_mode == 'review' && github.ref == 'refs/heads/codex/v1.0-integration')
+      (inputs.deployment_mode == 'review' && github.ref == 'refs/heads/codex/v1.0-release')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -311,7 +314,7 @@ jobs:
           fetch-depth: 1
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
         with:
           version: 11.16.0
           run_install: false

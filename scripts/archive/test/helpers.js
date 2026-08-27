@@ -113,7 +113,7 @@ export async function makeRepository(testContext, options = {}) {
 	await mkdir(path.join(root, "provenance", "tai-song"), {
 		recursive: true,
 	});
-	await mkdir(path.join(root, "src", "content", "posts"), {
+	await mkdir(path.join(root, "src", "content", "posts", "fiction"), {
 		recursive: true,
 	});
 	await writeFile(

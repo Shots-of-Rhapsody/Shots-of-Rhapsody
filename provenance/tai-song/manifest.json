@@ -19,8 +19,8 @@
       },
       "paths": {
         "snapshot": "provenance/tai-song/posts/before-the-sky-went-quiet-part-i-the-girl-who-faded.json",
-        "markdown": "src/content/posts/before-the-sky-went-quiet-part-i-the-girl-who-faded/index.md",
-        "image": "src/content/posts/before-the-sky-went-quiet-part-i-the-girl-who-faded/hero-original.png"
+        "markdown": "src/content/posts/fiction/before-the-sky-went-quiet-part-i-the-girl-who-faded/index.md",
+        "image": "src/content/posts/fiction/before-the-sky-went-quiet-part-i-the-girl-who-faded/hero-original.png"
       },
       "hashes": {
         "rawPage": "sha256:a390257b21bb52a55890afdcb86d5941259ec77e7d113005420ac77d8a12dc78",
@@ -54,8 +54,8 @@
       },
       "paths": {
         "snapshot": "provenance/tai-song/posts/before-the-sky-went-quiet-part-ii-the-goodbye.json",
-        "markdown": "src/content/posts/before-the-sky-went-quiet-part-ii-the-goodbye/index.md",
-        "image": "src/content/posts/before-the-sky-went-quiet-part-ii-the-goodbye/hero-original.png"
+        "markdown": "src/content/posts/fiction/before-the-sky-went-quiet-part-ii-the-goodbye/index.md",
+        "image": "src/content/posts/fiction/before-the-sky-went-quiet-part-ii-the-goodbye/hero-original.png"
       },
       "hashes": {
         "rawPage": "sha256:b63ab5050dad93c6ff643b6efffbb2955f8b503a84892b87b5265070a42a569e",
@@ -89,8 +89,8 @@
       },
       "paths": {
         "snapshot": "provenance/tai-song/posts/before-the-sky-went-quiet-part-iii-the-echo-that-stayed.json",
-        "markdown": "src/content/posts/before-the-sky-went-quiet-part-iii-the-echo-that-stayed/index.md",
-        "image": "src/content/posts/before-the-sky-went-quiet-part-iii-the-echo-that-stayed/hero-original.png"
+        "markdown": "src/content/posts/fiction/before-the-sky-went-quiet-part-iii-the-echo-that-stayed/index.md",
+        "image": "src/content/posts/fiction/before-the-sky-went-quiet-part-iii-the-echo-that-stayed/hero-original.png"
       },
       "hashes": {
         "rawPage": "sha256:a0c8a626b8fe9fd7ce0be0a6e64bc2a750e3a8592e91871a065f70eb9f669430",
@@ -124,8 +124,8 @@
       },
       "paths": {
         "snapshot": "provenance/tai-song/posts/cold-children.json",
-        "markdown": "src/content/posts/cold-children/index.md",
-        "image": "src/content/posts/cold-children/hero-original.png"
+        "markdown": "src/content/posts/fiction/cold-children/index.md",
+        "image": "src/content/posts/fiction/cold-children/hero-original.png"
       },
       "hashes": {
         "rawPage": "sha256:697adacc029529e593d72ca499f97e629e60b5e05579d1b0819606fcaae504c9",
@@ -159,8 +159,8 @@
       },
       "paths": {
         "snapshot": "provenance/tai-song/posts/eggasaurus-rex.json",
-        "markdown": "src/content/posts/eggasaurus-rex/index.md",
-        "image": "src/content/posts/eggasaurus-rex/hero-original.png"
+        "markdown": "src/content/posts/fiction/eggasaurus-rex/index.md",
+        "image": "src/content/posts/fiction/eggasaurus-rex/hero-original.png"
       },
       "hashes": {
         "rawPage": "sha256:89ff3a2e6ad2bc50967df175ee9a5e253d7f998f95e7f192d96f1cdfec638aba",
@@ -194,8 +194,8 @@
       },
       "paths": {
         "snapshot": "provenance/tai-song/posts/lanterns-for-the-unreturning.json",
-        "markdown": "src/content/posts/lanterns-for-the-unreturning/index.md",
-        "image": "src/content/posts/lanterns-for-the-unreturning/hero-original.png"
+        "markdown": "src/content/posts/fiction/lanterns-for-the-unreturning/index.md",
+        "image": "src/content/posts/fiction/lanterns-for-the-unreturning/hero-original.png"
       },
       "hashes": {
         "rawPage": "sha256:52f97eb7ecfd5e9a361bf44143a95473ec09ca3f8f44c441e549c3224171dbc5",
@@ -229,8 +229,8 @@
       },
       "paths": {
         "snapshot": "provenance/tai-song/posts/poetic-biography.json",
-        "markdown": "src/content/posts/poetic-biography/index.md",
-        "image": "src/content/posts/poetic-biography/hero-original.png"
+        "markdown": "src/content/posts/fiction/poetic-biography/index.md",
+        "image": "src/content/posts/fiction/poetic-biography/hero-original.png"
       },
       "hashes": {
         "rawPage": "sha256:0b74a45cef06f5df9674b0e8820704778744dad74e260e2a4099cd2eb2bd17fc",
@@ -264,8 +264,8 @@
       },
       "paths": {
         "snapshot": "provenance/tai-song/posts/the-guild-a-chronicle-of-pretty-souls.json",
-        "markdown": "src/content/posts/the-guild-a-chronicle-of-pretty-souls/index.md",
-        "image": "src/content/posts/the-guild-a-chronicle-of-pretty-souls/hero-original.png"
+        "markdown": "src/content/posts/fiction/the-guild-a-chronicle-of-pretty-souls/index.md",
+        "image": "src/content/posts/fiction/the-guild-a-chronicle-of-pretty-souls/hero-original.png"
       },
       "hashes": {
         "rawPage": "sha256:078d3b9ab628e0cd4970bb26c8c6d739147d9153065eae736f9b6881b45c899f",
@@ -299,8 +299,8 @@
       },
       "paths": {
         "snapshot": "provenance/tai-song/posts/the-khan-who-chose-the-grain.json",
-        "markdown": "src/content/posts/the-khan-who-chose-the-grain/index.md",
-        "image": "src/content/posts/the-khan-who-chose-the-grain/hero-original.png"
+        "markdown": "src/content/posts/fiction/the-khan-who-chose-the-grain/index.md",
+        "image": "src/content/posts/fiction/the-khan-who-chose-the-grain/hero-original.png"
       },
       "hashes": {
         "rawPage": "sha256:0ddea6897e6ea428d226c8bc4719d00d05560d2365570d2faa395c2d8bc00e52",
@@ -334,8 +334,8 @@
       },
       "paths": {
         "snapshot": "provenance/tai-song/posts/the-seventh-skin.json",
-        "markdown": "src/content/posts/the-seventh-skin/index.md",
-        "image": "src/content/posts/the-seventh-skin/hero-original.png"
+        "markdown": "src/content/posts/fiction/the-seventh-skin/index.md",
+        "image": "src/content/posts/fiction/the-seventh-skin/hero-original.png"
       },
       "hashes": {
         "rawPage": "sha256:1a0719f5ec408ac633e443d177e8897f3386b65fb194ed22b7be039efeb895fd",
@@ -369,8 +369,8 @@
       },
       "paths": {
         "snapshot": "provenance/tai-song/posts/where-we-last-were-us.json",
-        "markdown": "src/content/posts/where-we-last-were-us/index.md",
-        "image": "src/content/posts/where-we-last-were-us/hero-original.png"
+        "markdown": "src/content/posts/fiction/where-we-last-were-us/index.md",
+        "image": "src/content/posts/fiction/where-we-last-were-us/hero-original.png"
       },
       "hashes": {
         "rawPage": "sha256:c667d5a950c1d56c3fa0d68e5027e7ced4a8349c107321aa8ac35a3f4d7fb815",

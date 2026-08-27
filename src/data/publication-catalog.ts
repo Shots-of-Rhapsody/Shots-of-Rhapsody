@@ -7,9 +7,16 @@ import publicationCatalogJson from "../../provenance/publication-catalog.json" w
 import releaseTargetJson from "../../provenance/release-target.json" with {
 	type: "json",
 };
+import {
+	getPublishedPostMarkdownPath,
+	isMasterFolder,
+	type MasterFolder,
+	masterFolderForSection,
+	type WritingSection,
+} from "../utils/content-path.ts";
 import { IS_PUBLIC_REVIEW, type ShotsBuildMode } from "./build-mode.ts";
 
-export type WritingSection = "fiction" | "poetry-reflection" | "nonfiction";
+export type { MasterFolder, WritingSection } from "../utils/content-path.ts";
 export type PublicationSource = "tai-song" | "medium" | "first-party";
 
 export interface PublicationCatalogEntry {
@@ -17,10 +24,11 @@ export interface PublicationCatalogEntry {
 	readonly source: PublicationSource;
 	readonly markdown: string;
 	readonly section: WritingSection;
+	readonly masterFolder: MasterFolder;
 }
 
-export interface PublicationCatalogV1 {
-	readonly schemaVersion: 1;
+export interface PublicationCatalogV2 {
+	readonly schemaVersion: 2;
 	readonly entries: readonly PublicationCatalogEntry[];
 }
 
@@ -47,11 +55,14 @@ function assertCatalogEntry(
 ): void {
 	if (
 		!SLUG_PATTERN.test(entry.slug) ||
-		entry.markdown !== `src/content/posts/${entry.slug}/index.md` ||
 		!(["tai-song", "medium", "first-party"] as const).includes(entry.source) ||
 		!(["fiction", "poetry-reflection", "nonfiction"] as const).includes(
 			entry.section,
 		) ||
+		!isMasterFolder(entry.masterFolder) ||
+		entry.masterFolder !== masterFolderForSection(entry.section) ||
+		entry.markdown !==
+			getPublishedPostMarkdownPath(entry.masterFolder, entry.slug) ||
 		(entry.source === "medium" && entry.section !== "nonfiction")
 	) {
 		throw new Error(`${label} contains an invalid publication entry`);
@@ -59,18 +70,18 @@ function assertCatalogEntry(
 }
 
 export function createEffectivePublicationCatalog({
-	mode,
+	mode: _mode,
 	publicationCatalog,
 	mediumManifest,
 	releaseTarget,
 }: {
 	readonly mode: ShotsBuildMode;
-	readonly publicationCatalog: PublicationCatalogV1;
+	readonly publicationCatalog: PublicationCatalogV2;
 	readonly mediumManifest: MediumManifest;
 	readonly releaseTarget: ReleaseTarget;
-}): PublicationCatalogV1 {
+}): PublicationCatalogV2 {
 	if (
-		publicationCatalog.schemaVersion !== 1 ||
+		publicationCatalog.schemaVersion !== 2 ||
 		publicationCatalog.entries.length < releaseTarget.expected.archiveWriting
 	) {
 		throw new Error(
@@ -88,50 +99,61 @@ export function createEffectivePublicationCatalog({
 			"The release publication catalog must contain the sealed archive",
 		);
 	}
-
-	if (mode === "release") return publicationCatalog;
 	if (
 		publicationCatalog.entries.some((entry) => entry.source === "first-party")
 	) {
 		throw new Error(
-			"Public review permits only the sealed archive and Medium essays",
+			"The v1.0.0 publication catalog permits only the sealed archive and Medium essays",
 		);
 	}
 	if (mediumManifest.state !== "active") {
-		throw new Error("Public review requires the active Medium manifest");
+		throw new Error("The v1.0.0 catalog requires the active Medium manifest");
 	}
 	if (mediumManifest.articles.length !== releaseTarget.expected.mediumWriting) {
-		throw new Error("Public review requires exactly 24 Medium essays");
+		throw new Error("The v1.0.0 catalog requires exactly 24 Medium essays");
 	}
 
-	const mediumEntries: PublicationCatalogEntry[] = mediumManifest.articles.map(
-		(article) => ({
-			slug: article.slug,
-			source: "medium",
-			markdown: article.paths.markdown,
-			section: "nonfiction",
-		}),
+	const mediumEntries = publicationCatalog.entries.filter(
+		(entry) => entry.source === "medium",
 	);
 	for (const entry of mediumEntries) {
-		assertCatalogEntry(entry, "Public-review Medium catalog");
+		assertCatalogEntry(entry, "Release Medium catalog");
 	}
-
-	const entries = [...archiveEntries, ...mediumEntries];
-	if (new Set(entries.map((entry) => entry.slug)).size !== entries.length) {
-		throw new Error("Public-review publication catalog repeats a slug");
+	const mediumBySlug = new Map(
+		mediumManifest.articles.map((article) => [article.slug, article]),
+	);
+	if (
+		mediumEntries.length !== releaseTarget.expected.mediumWriting ||
+		mediumEntries.some(
+			(entry) =>
+				mediumBySlug.get(entry.slug)?.paths.markdown !== entry.markdown,
+		) ||
+		mediumManifest.articles.some(
+			(article) => !mediumEntries.some((entry) => entry.slug === article.slug),
+		)
+	) {
+		throw new Error(
+			"The v1.0.0 publication catalog must bind all 24 Medium essays to their manifest paths",
+		);
 	}
 	if (
-		entries.length !==
+		publicationCatalog.entries.length !==
 		releaseTarget.expected.archiveWriting + releaseTarget.expected.mediumWriting
 	) {
-		throw new Error("Public-review publication catalog has an invalid count");
+		throw new Error("The v1.0.0 publication catalog has an invalid count");
 	}
-	return { schemaVersion: 1, entries };
+	if (
+		new Set(publicationCatalog.entries.map((entry) => entry.slug)).size !==
+		publicationCatalog.entries.length
+	) {
+		throw new Error("The v1.0.0 publication catalog repeats a slug");
+	}
+	return publicationCatalog;
 }
 
 export const PUBLICATION_CATALOG = createEffectivePublicationCatalog({
 	mode: IS_PUBLIC_REVIEW ? "public-review" : "release",
-	publicationCatalog: publicationCatalogJson as PublicationCatalogV1,
+	publicationCatalog: publicationCatalogJson as PublicationCatalogV2,
 	mediumManifest: mediumManifestJson as MediumManifest,
 	releaseTarget: releaseTargetJson as ReleaseTarget,
 });

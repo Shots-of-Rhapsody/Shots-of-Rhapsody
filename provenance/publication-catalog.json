@@ -1,71 +1,250 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "entries": [
     {
       "slug": "before-the-sky-went-quiet-part-i-the-girl-who-faded",
       "source": "tai-song",
-      "markdown": "src/content/posts/before-the-sky-went-quiet-part-i-the-girl-who-faded/index.md",
-      "section": "fiction"
+      "markdown": "src/content/posts/fiction/before-the-sky-went-quiet-part-i-the-girl-who-faded/index.md",
+      "section": "fiction",
+      "masterFolder": "fiction"
     },
     {
       "slug": "before-the-sky-went-quiet-part-ii-the-goodbye",
       "source": "tai-song",
-      "markdown": "src/content/posts/before-the-sky-went-quiet-part-ii-the-goodbye/index.md",
-      "section": "fiction"
+      "markdown": "src/content/posts/fiction/before-the-sky-went-quiet-part-ii-the-goodbye/index.md",
+      "section": "fiction",
+      "masterFolder": "fiction"
     },
     {
       "slug": "before-the-sky-went-quiet-part-iii-the-echo-that-stayed",
       "source": "tai-song",
-      "markdown": "src/content/posts/before-the-sky-went-quiet-part-iii-the-echo-that-stayed/index.md",
-      "section": "fiction"
+      "markdown": "src/content/posts/fiction/before-the-sky-went-quiet-part-iii-the-echo-that-stayed/index.md",
+      "section": "fiction",
+      "masterFolder": "fiction"
     },
     {
       "slug": "cold-children",
       "source": "tai-song",
-      "markdown": "src/content/posts/cold-children/index.md",
-      "section": "fiction"
+      "markdown": "src/content/posts/fiction/cold-children/index.md",
+      "section": "fiction",
+      "masterFolder": "fiction"
     },
     {
       "slug": "eggasaurus-rex",
       "source": "tai-song",
-      "markdown": "src/content/posts/eggasaurus-rex/index.md",
-      "section": "fiction"
+      "markdown": "src/content/posts/fiction/eggasaurus-rex/index.md",
+      "section": "fiction",
+      "masterFolder": "fiction"
     },
     {
       "slug": "lanterns-for-the-unreturning",
       "source": "tai-song",
-      "markdown": "src/content/posts/lanterns-for-the-unreturning/index.md",
-      "section": "fiction"
+      "markdown": "src/content/posts/fiction/lanterns-for-the-unreturning/index.md",
+      "section": "fiction",
+      "masterFolder": "fiction"
     },
     {
       "slug": "poetic-biography",
       "source": "tai-song",
-      "markdown": "src/content/posts/poetic-biography/index.md",
-      "section": "poetry-reflection"
+      "markdown": "src/content/posts/fiction/poetic-biography/index.md",
+      "section": "poetry-reflection",
+      "masterFolder": "fiction"
     },
     {
       "slug": "the-guild-a-chronicle-of-pretty-souls",
       "source": "tai-song",
-      "markdown": "src/content/posts/the-guild-a-chronicle-of-pretty-souls/index.md",
-      "section": "poetry-reflection"
+      "markdown": "src/content/posts/fiction/the-guild-a-chronicle-of-pretty-souls/index.md",
+      "section": "poetry-reflection",
+      "masterFolder": "fiction"
     },
     {
       "slug": "the-khan-who-chose-the-grain",
       "source": "tai-song",
-      "markdown": "src/content/posts/the-khan-who-chose-the-grain/index.md",
-      "section": "fiction"
+      "markdown": "src/content/posts/fiction/the-khan-who-chose-the-grain/index.md",
+      "section": "fiction",
+      "masterFolder": "fiction"
     },
     {
       "slug": "the-seventh-skin",
       "source": "tai-song",
-      "markdown": "src/content/posts/the-seventh-skin/index.md",
-      "section": "fiction"
+      "markdown": "src/content/posts/fiction/the-seventh-skin/index.md",
+      "section": "fiction",
+      "masterFolder": "fiction"
     },
     {
       "slug": "where-we-last-were-us",
       "source": "tai-song",
-      "markdown": "src/content/posts/where-we-last-were-us/index.md",
-      "section": "poetry-reflection"
+      "markdown": "src/content/posts/fiction/where-we-last-were-us/index.md",
+      "section": "poetry-reflection",
+      "masterFolder": "fiction"
+    },
+    {
+      "slug": "beyond-scarcity-how-automation-ai-could-end-economic-struggle",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/beyond-scarcity-how-automation-ai-could-end-economic-struggle/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "closing-the-gap-how-a-fairer-global-economy-could-lift-billions",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/closing-the-gap-how-a-fairer-global-economy-could-lift-billions/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "debt-as-destiny-how-the-credit-system-controls-lives",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/debt-as-destiny-how-the-credit-system-controls-lives/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "origins-orders",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/origins-orders/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "the-aspiration-economy",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/the-aspiration-economy/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "the-collateral-shift",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/the-collateral-shift/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "the-economics-of-loneliness-how-disconnection-became-a-market-failure",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/the-economics-of-loneliness-how-disconnection-became-a-market-failure/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "the-economy-is-built-on-nature-we-just-dont-count-it",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/the-economy-is-built-on-nature-we-just-dont-count-it/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "the-education-illusion",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/the-education-illusion/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "the-identity-economy",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/the-identity-economy/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "the-informal-majority",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/the-informal-majority/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "the-invisible-ledger",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/the-invisible-ledger/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "the-next-leap-from-global-competition-to-human-cooperation",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/the-next-leap-from-global-competition-to-human-cooperation/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "the-psychology-of-belief-why-humans-prefer-comfort-over-truth",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/the-psychology-of-belief-why-humans-prefer-comfort-over-truth/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "the-remittance-paradox",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/the-remittance-paradox/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "the-rise-of-zero-cost-economies-what-happens-when-prices-disappear",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/the-rise-of-zero-cost-economies-what-happens-when-prices-disappear/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "the-shadow-subsidy",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/the-shadow-subsidy/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "the-trillion-dollar-economy-no-one-talks-about",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/the-trillion-dollar-economy-no-one-talks-about/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "the-water-economy",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/the-water-economy/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "what-comes-after-work-designing-a-purpose-driven-life",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/what-comes-after-work-designing-a-purpose-driven-life/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "what-we-call-freedom-isnt-really-freedom",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/what-we-call-freedom-isnt-really-freedom/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
+    },
+    {
+      "slug": "why-family-is-not-sacred-by-default",
+      "source": "medium",
+      "markdown": "src/content/posts/nonfiction/why-family-is-not-sacred-by-default/index.md",
+      "section": "nonfiction",
+      "masterFolder": "nonfiction"
     }
   ]
 }

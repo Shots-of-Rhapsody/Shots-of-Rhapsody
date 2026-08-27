@@ -20,7 +20,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/beyond-scarcity-how-automation-ai-could-end-economic-struggle-1b84e081e845",
       "paths": {
         "snapshot": "provenance/medium/posts/beyond-scarcity-how-automation-ai-could-end-economic-struggle.json",
-        "markdown": "src/content/posts/beyond-scarcity-how-automation-ai-could-end-economic-struggle/index.md"
+        "markdown": "src/content/posts/nonfiction/beyond-scarcity-how-automation-ai-could-end-economic-struggle/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -39,7 +39,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/beyond-scarcity-how-automation-ai-could-end-economic-struggle/hero.webp",
+          "path": "src/content/posts/nonfiction/beyond-scarcity-how-automation-ai-could-end-economic-struggle/hero.webp",
           "sha256": "sha256:c2c5b08f8ccc6efce7d56a8ad8e8bb4ce013c62fb338071700a10c170607e798",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:75fbcdf3b84b470251b848cb8ae7ccdb18b4fa768268b4979220226ef55657de",
@@ -57,7 +57,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/closing-the-gap-how-a-fairer-global-economy-could-lift-billions-24c9923e2f19",
       "paths": {
         "snapshot": "provenance/medium/posts/closing-the-gap-how-a-fairer-global-economy-could-lift-billions.json",
-        "markdown": "src/content/posts/closing-the-gap-how-a-fairer-global-economy-could-lift-billions/index.md"
+        "markdown": "src/content/posts/nonfiction/closing-the-gap-how-a-fairer-global-economy-could-lift-billions/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -76,7 +76,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/closing-the-gap-how-a-fairer-global-economy-could-lift-billions/hero.webp",
+          "path": "src/content/posts/nonfiction/closing-the-gap-how-a-fairer-global-economy-could-lift-billions/hero.webp",
           "sha256": "sha256:f4c8327008607706341cfd26800fb9e2a87d106d693ec6c56a7d2a85afc6cde1",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:2efc8cbe4206f58151de6b3cd0a0f606a1039426f93a00fb099f86af7f8c555d",
@@ -94,7 +94,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/debt-as-destiny-how-the-credit-system-controls-lives-5f67cd4ff1c5",
       "paths": {
         "snapshot": "provenance/medium/posts/debt-as-destiny-how-the-credit-system-controls-lives.json",
-        "markdown": "src/content/posts/debt-as-destiny-how-the-credit-system-controls-lives/index.md"
+        "markdown": "src/content/posts/nonfiction/debt-as-destiny-how-the-credit-system-controls-lives/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -113,7 +113,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/debt-as-destiny-how-the-credit-system-controls-lives/hero.webp",
+          "path": "src/content/posts/nonfiction/debt-as-destiny-how-the-credit-system-controls-lives/hero.webp",
           "sha256": "sha256:e6f310b0231c8960e9ef1e6b14b66e0e22f674d31382e7476a49d83ebd1fcc3c",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:1ae7c898181cd94ec2eb607d9b228e4cd0762af2fedc18095208a31b7b723275",
@@ -131,7 +131,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/origins-orders-d3f3f81fe11f",
       "paths": {
         "snapshot": "provenance/medium/posts/origins-orders.json",
-        "markdown": "src/content/posts/origins-orders/index.md"
+        "markdown": "src/content/posts/nonfiction/origins-orders/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -150,7 +150,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/origins-orders/hero.webp",
+          "path": "src/content/posts/nonfiction/origins-orders/hero.webp",
           "sha256": "sha256:eed7ac5909604705bb8fdda51efbd56e0dac05fcdf61090e98296a51fc692a29",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:11a33bdba027ce7baa031645220e062e5bbc4d9cbb0dc39978abbb00a8bae80f",
@@ -168,7 +168,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-aspiration-economy-c79c4bd2c4ff",
       "paths": {
         "snapshot": "provenance/medium/posts/the-aspiration-economy.json",
-        "markdown": "src/content/posts/the-aspiration-economy/index.md"
+        "markdown": "src/content/posts/nonfiction/the-aspiration-economy/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -187,7 +187,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/the-aspiration-economy/hero.webp",
+          "path": "src/content/posts/nonfiction/the-aspiration-economy/hero.webp",
           "sha256": "sha256:a34df5c5ef0f45071d20293344ea51144c0fc6f661e747c5863d40225b652264",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:7a5c5bc3cf2f5446d3fdfeb0fff83e1bbeb43b69f68ca1ba4364edb2b164a5f1",
@@ -205,7 +205,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-collateral-shift-2e24528b3eb4",
       "paths": {
         "snapshot": "provenance/medium/posts/the-collateral-shift.json",
-        "markdown": "src/content/posts/the-collateral-shift/index.md"
+        "markdown": "src/content/posts/nonfiction/the-collateral-shift/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -224,7 +224,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/the-collateral-shift/hero.webp",
+          "path": "src/content/posts/nonfiction/the-collateral-shift/hero.webp",
           "sha256": "sha256:d22cbcd9bf423ac3f3ec97798e13600eee8044bb66baf523051ee270a021b5cd",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:0f8f0ef19091e3dc6cecfb2c07c7afb8bccb82f0d2b811769012711845d8a2e0",
@@ -242,7 +242,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-economics-of-loneliness-how-disconnection-became-a-market-failure-e9a8dfdba5f3",
       "paths": {
         "snapshot": "provenance/medium/posts/the-economics-of-loneliness-how-disconnection-became-a-market-failure.json",
-        "markdown": "src/content/posts/the-economics-of-loneliness-how-disconnection-became-a-market-failure/index.md"
+        "markdown": "src/content/posts/nonfiction/the-economics-of-loneliness-how-disconnection-became-a-market-failure/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -261,7 +261,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/the-economics-of-loneliness-how-disconnection-became-a-market-failure/hero.webp",
+          "path": "src/content/posts/nonfiction/the-economics-of-loneliness-how-disconnection-became-a-market-failure/hero.webp",
           "sha256": "sha256:37a566db82bf6152e2d434c18acaf4a5c31c62585be81ab77fa1643531f239a3",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:e8fdfb192b8bccc8cfe82cbe6cf8799417499032089c2e1c81098354dbe38913",
@@ -279,7 +279,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-economy-is-built-on-nature-we-just-dont-count-it-6c801f9d71cc",
       "paths": {
         "snapshot": "provenance/medium/posts/the-economy-is-built-on-nature-we-just-dont-count-it.json",
-        "markdown": "src/content/posts/the-economy-is-built-on-nature-we-just-dont-count-it/index.md"
+        "markdown": "src/content/posts/nonfiction/the-economy-is-built-on-nature-we-just-dont-count-it/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -298,7 +298,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/the-economy-is-built-on-nature-we-just-dont-count-it/hero.webp",
+          "path": "src/content/posts/nonfiction/the-economy-is-built-on-nature-we-just-dont-count-it/hero.webp",
           "sha256": "sha256:1fdb3a0ddf2ce33a87ef1b41da563e9c2d285d8f6fbae90301ff2971e9101dcf",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:45c0de0c7002008db6139295ced61a78c55f8abfbbb8b659fe56c9d8536a54cd",
@@ -316,7 +316,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-education-illusion-5ebad0c48b7e",
       "paths": {
         "snapshot": "provenance/medium/posts/the-education-illusion.json",
-        "markdown": "src/content/posts/the-education-illusion/index.md"
+        "markdown": "src/content/posts/nonfiction/the-education-illusion/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -335,7 +335,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/the-education-illusion/hero.webp",
+          "path": "src/content/posts/nonfiction/the-education-illusion/hero.webp",
           "sha256": "sha256:60f39098d00ba30e118c4523ed878487ce982bf0a47de6d69f759ace64a2ee2f",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:1010e7761e8bf0eb7d4fe367b702b5ddccc3025c8038631db305bcac3a7d11a6",
@@ -353,7 +353,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking-b093d81a7c12",
       "paths": {
         "snapshot": "provenance/medium/posts/the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking.json",
-        "markdown": "src/content/posts/the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking/index.md"
+        "markdown": "src/content/posts/nonfiction/the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -372,7 +372,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking/hero.webp",
+          "path": "src/content/posts/nonfiction/the-future-of-money-will-cryptocurrency-and-ai-kill-traditional-banking/hero.webp",
           "sha256": "sha256:04b5097187a17822aa71a80c134181c83bf9029b97e875b0d7a44de7770f0ff5",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:783c0729091a5777a63db07beb437d7f454d8321aeb1aa3fc6b4370f7bddda23",
@@ -390,7 +390,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-identity-economy-8db3aed3582c",
       "paths": {
         "snapshot": "provenance/medium/posts/the-identity-economy.json",
-        "markdown": "src/content/posts/the-identity-economy/index.md"
+        "markdown": "src/content/posts/nonfiction/the-identity-economy/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -409,7 +409,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/the-identity-economy/hero.webp",
+          "path": "src/content/posts/nonfiction/the-identity-economy/hero.webp",
           "sha256": "sha256:48c6dd24904bd63fbb100e8b8ff0f6756b98314749aa7dac3416b97e5f3d6360",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:a52ec1e3496ec4514bc1e78ca604f09abad3e334ef3b7f2f3c735a8bb997c3d8",
@@ -427,7 +427,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-informal-majority-e44dfd41f3ce",
       "paths": {
         "snapshot": "provenance/medium/posts/the-informal-majority.json",
-        "markdown": "src/content/posts/the-informal-majority/index.md"
+        "markdown": "src/content/posts/nonfiction/the-informal-majority/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -446,7 +446,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/the-informal-majority/hero.webp",
+          "path": "src/content/posts/nonfiction/the-informal-majority/hero.webp",
           "sha256": "sha256:00b1f3ad0eaa0d8f2693920fff97ae1ebc61656651aefcf1531dc5870eb8ff5c",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:055a007cb95768cff7bdb744c322ece3bf518fa0e7c2723d2bc0923bd1016251",
@@ -464,7 +464,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-invisible-ledger-2505f05b7201",
       "paths": {
         "snapshot": "provenance/medium/posts/the-invisible-ledger.json",
-        "markdown": "src/content/posts/the-invisible-ledger/index.md"
+        "markdown": "src/content/posts/nonfiction/the-invisible-ledger/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -483,7 +483,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/the-invisible-ledger/hero.webp",
+          "path": "src/content/posts/nonfiction/the-invisible-ledger/hero.webp",
           "sha256": "sha256:db09120dd63f26eca95dc54838a0db630e9220e56e9fc88887d229810af6e60d",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:d1a20828d75d01631cbaa1ad2b4728baaf96a135b415fa34f5e3fd8d047416ee",
@@ -501,7 +501,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-next-leap-from-global-competition-to-human-cooperation-b0f2805608c5",
       "paths": {
         "snapshot": "provenance/medium/posts/the-next-leap-from-global-competition-to-human-cooperation.json",
-        "markdown": "src/content/posts/the-next-leap-from-global-competition-to-human-cooperation/index.md"
+        "markdown": "src/content/posts/nonfiction/the-next-leap-from-global-competition-to-human-cooperation/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -520,7 +520,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/the-next-leap-from-global-competition-to-human-cooperation/hero.webp",
+          "path": "src/content/posts/nonfiction/the-next-leap-from-global-competition-to-human-cooperation/hero.webp",
           "sha256": "sha256:5743628e2f2949fcf9faafb533e4c39ee028564d3a4c4fb2d8f85887319113ad",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:9174f7fb0505465c9f26679cda18a29a0f856d480f3f639341b50feb4a2af683",
@@ -538,7 +538,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-psychology-of-belief-why-humans-prefer-comfort-over-truth-a9787ad7f605",
       "paths": {
         "snapshot": "provenance/medium/posts/the-psychology-of-belief-why-humans-prefer-comfort-over-truth.json",
-        "markdown": "src/content/posts/the-psychology-of-belief-why-humans-prefer-comfort-over-truth/index.md"
+        "markdown": "src/content/posts/nonfiction/the-psychology-of-belief-why-humans-prefer-comfort-over-truth/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -557,7 +557,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/the-psychology-of-belief-why-humans-prefer-comfort-over-truth/hero.webp",
+          "path": "src/content/posts/nonfiction/the-psychology-of-belief-why-humans-prefer-comfort-over-truth/hero.webp",
           "sha256": "sha256:ba243cdd1d022b54b158e3911f1542177d77b318a6e06e31df73dbc57597eac2",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:04e83fbc4ddf8c8e4c99098d7bf811c84ae56cd481f989391540a2c36fe454e2",
@@ -575,7 +575,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-remittance-paradox-dc6992732720",
       "paths": {
         "snapshot": "provenance/medium/posts/the-remittance-paradox.json",
-        "markdown": "src/content/posts/the-remittance-paradox/index.md"
+        "markdown": "src/content/posts/nonfiction/the-remittance-paradox/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -594,7 +594,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/the-remittance-paradox/hero.webp",
+          "path": "src/content/posts/nonfiction/the-remittance-paradox/hero.webp",
           "sha256": "sha256:da005c8bb598310da530a723ddeb196312e6961cd0e7ea113dbe504090dba859",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:04f3bc4692b0139c4020739a321c838fede64dc6e9c968e198eb8125eae92eb5",
@@ -612,7 +612,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-rise-of-zero-cost-economies-what-happens-when-prices-disappear-6757f5dd592e",
       "paths": {
         "snapshot": "provenance/medium/posts/the-rise-of-zero-cost-economies-what-happens-when-prices-disappear.json",
-        "markdown": "src/content/posts/the-rise-of-zero-cost-economies-what-happens-when-prices-disappear/index.md"
+        "markdown": "src/content/posts/nonfiction/the-rise-of-zero-cost-economies-what-happens-when-prices-disappear/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -631,7 +631,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/the-rise-of-zero-cost-economies-what-happens-when-prices-disappear/hero.webp",
+          "path": "src/content/posts/nonfiction/the-rise-of-zero-cost-economies-what-happens-when-prices-disappear/hero.webp",
           "sha256": "sha256:108203f226621c550a84ea746a577fe6b13b41dc3e870fe3497e9256dd7e5a13",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:3d72193481fd2372681b331f0d9cd25adef3707684ce6e80de82e23c2472a8b2",
@@ -649,7 +649,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-shadow-subsidy-90d432a7abea",
       "paths": {
         "snapshot": "provenance/medium/posts/the-shadow-subsidy.json",
-        "markdown": "src/content/posts/the-shadow-subsidy/index.md"
+        "markdown": "src/content/posts/nonfiction/the-shadow-subsidy/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -668,7 +668,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/the-shadow-subsidy/hero.webp",
+          "path": "src/content/posts/nonfiction/the-shadow-subsidy/hero.webp",
           "sha256": "sha256:d55db095becfbbec09940097d3ac46e1eef9bbb13dc5f56d59def3354880ef55",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:6cdc734c01dc7b5b355d1db61de9d74acf3027731c1e8cbfe6f4eab2ab124596",
@@ -686,7 +686,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-trillion-dollar-economy-no-one-talks-about-b1810889d3b6",
       "paths": {
         "snapshot": "provenance/medium/posts/the-trillion-dollar-economy-no-one-talks-about.json",
-        "markdown": "src/content/posts/the-trillion-dollar-economy-no-one-talks-about/index.md"
+        "markdown": "src/content/posts/nonfiction/the-trillion-dollar-economy-no-one-talks-about/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -705,7 +705,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/the-trillion-dollar-economy-no-one-talks-about/hero.webp",
+          "path": "src/content/posts/nonfiction/the-trillion-dollar-economy-no-one-talks-about/hero.webp",
           "sha256": "sha256:93b38a1e92f4254279dca447fcfc1744d4cf7e0b2b882687db8e356ca60336fc",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:5037dd253edeb04a01af226f63299b2136fb549e6faa6424ea4856720a739fe5",
@@ -723,7 +723,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/the-water-economy-2bb7ef210efd",
       "paths": {
         "snapshot": "provenance/medium/posts/the-water-economy.json",
-        "markdown": "src/content/posts/the-water-economy/index.md"
+        "markdown": "src/content/posts/nonfiction/the-water-economy/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -742,7 +742,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/the-water-economy/hero.webp",
+          "path": "src/content/posts/nonfiction/the-water-economy/hero.webp",
           "sha256": "sha256:cc36ae521f3823f0444ebc18ac6bd4f4396ddf461d9c3db62c9e16434aab89f9",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:752f074c19c46dd2d841e58950ba0495330b4bbb5b359127eab86d5e20054826",
@@ -760,7 +760,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/what-comes-after-work-designing-a-purpose-driven-life-06fcd3447f09",
       "paths": {
         "snapshot": "provenance/medium/posts/what-comes-after-work-designing-a-purpose-driven-life.json",
-        "markdown": "src/content/posts/what-comes-after-work-designing-a-purpose-driven-life/index.md"
+        "markdown": "src/content/posts/nonfiction/what-comes-after-work-designing-a-purpose-driven-life/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -779,7 +779,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/what-comes-after-work-designing-a-purpose-driven-life/hero.webp",
+          "path": "src/content/posts/nonfiction/what-comes-after-work-designing-a-purpose-driven-life/hero.webp",
           "sha256": "sha256:69ecacac3ce4abb5ef4e535fc082d25eec05b2d2c61411327df9f7f2e9550393",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:cc58d93272b42c5931b827a592ae2377a14210a3fc1c63aa60724b9fb24bb8f0",
@@ -797,7 +797,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/what-we-call-freedom-isnt-really-freedom-26ecc317aa63",
       "paths": {
         "snapshot": "provenance/medium/posts/what-we-call-freedom-isnt-really-freedom.json",
-        "markdown": "src/content/posts/what-we-call-freedom-isnt-really-freedom/index.md"
+        "markdown": "src/content/posts/nonfiction/what-we-call-freedom-isnt-really-freedom/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -816,7 +816,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/what-we-call-freedom-isnt-really-freedom/hero.webp",
+          "path": "src/content/posts/nonfiction/what-we-call-freedom-isnt-really-freedom/hero.webp",
           "sha256": "sha256:869c84bed45487ddb6239d9c4498c324490f74e0a8db4a51602ce20867842026",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:3f26906002bb21da390291fd29cecce1954e82275314b5ebdb70bd2f57cf740f",
@@ -834,7 +834,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource-c2f680f7c679",
       "paths": {
         "snapshot": "provenance/medium/posts/who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource.json",
-        "markdown": "src/content/posts/who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource/index.md"
+        "markdown": "src/content/posts/nonfiction/who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -853,7 +853,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource/hero.webp",
+          "path": "src/content/posts/nonfiction/who-stole-your-time-the-silent-economics-of-a-vanishing-life-resource/hero.webp",
           "sha256": "sha256:825d61f7c32c3354086d675f36b98b08244961721374974500491b0bb227eb86",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:926389d208c4ca47918b554d8833e118f679c7cb2aff6b8db6136a277f4cc76b",
@@ -871,7 +871,7 @@
       "canonicalUrl": "https://medium.com/@ShotsOfRhapsody/why-family-is-not-sacred-by-default-62dc7ecda7cb",
       "paths": {
         "snapshot": "provenance/medium/posts/why-family-is-not-sacred-by-default.json",
-        "markdown": "src/content/posts/why-family-is-not-sacred-by-default/index.md"
+        "markdown": "src/content/posts/nonfiction/why-family-is-not-sacred-by-default/index.md"
       },
       "hashes": {
         "rawExport": "sha256:c65ce7926d43813103d4fd1c7faaa7df3f40be642fb74be72c0e3d6d1cec1c85",
@@ -890,7 +890,7 @@
         {
           "id": "hero",
           "role": "hero",
-          "path": "src/content/posts/why-family-is-not-sacred-by-default/hero.webp",
+          "path": "src/content/posts/nonfiction/why-family-is-not-sacred-by-default/hero.webp",
           "sha256": "sha256:4805a825f70c518512b43624ffda113b228dcd23628f0afa572687fe1b356f91",
           "acquisitionManifestSha256": "sha256:0d69e778a94687b646431598575d593b246425b9762863f96156bbb3471953aa",
           "captureSha256": "sha256:7b19b2c1f05f461410c747b1d542868aa575ae99768705f7d2f5b37f69ca2a29",

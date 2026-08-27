@@ -50,6 +50,11 @@ const presentationSignoffsPath = path.join(
 	"reviews",
 	"presentation-signoffs-v2.json",
 );
+const releaseTargetPath = path.join(
+	repositoryRoot,
+	"provenance",
+	"release-target.json",
+);
 
 function sha256(bytes) {
 	return `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
@@ -64,6 +69,21 @@ async function exists(filePath) {
 			return false;
 		throw error;
 	}
+}
+
+async function readPodcastReleaseTarget() {
+	const target = JSON.parse(await readFile(releaseTargetPath, "utf8"));
+	const expectedEpisodes = target?.expected?.podcastEpisodes;
+	if (
+		target?.schemaVersion !== 3 ||
+		target?.release !== "v1.0.0" ||
+		!Number.isInteger(expectedEpisodes) ||
+		expectedEpisodes < 0 ||
+		expectedEpisodes > 1
+	) {
+		throw new Error("Podcast release target is invalid");
+	}
+	return { release: target.release, expectedEpisodes };
 }
 
 async function findFiles(directory, extension) {
@@ -175,40 +195,46 @@ async function verifyTrackedPodcastEvidence() {
 	};
 }
 
-export async function verifyPodcastDraft() {
+export async function verifyPodcastDraft({ withBuilt = false } = {}) {
 	const { episode, audioStats, audioHash, coverHash, coverPngHash } =
 		await verifyTrackedPodcastEvidence();
 
 	const blockers = getPodcastPublicationBlockers(episode);
-	if (!blockers.includes("transcript-missing"))
-		throw new Error(
-			"Podcast draft must remain blocked while no transcript exists",
-		);
 	if (getPublishablePodcastEpisodes().length !== 0)
 		throw new Error("Podcast draft unexpectedly became publishable");
 
-	const builtAudioPath = builtFilePath(episode.audio.publicPath);
-	const builtEpisodePath = path.join(
-		repositoryRoot,
-		"dist",
-		"podcast",
-		episode.slug,
-		"index.html",
-	);
-	if (await exists(builtAudioPath))
-		throw new Error("Draft podcast audio leaked into the built site");
-	if (await exists(builtEpisodePath))
-		throw new Error("Draft podcast episode route leaked into the built site");
-	const exposedAudio = await findFiles(
-		path.join(repositoryRoot, "dist"),
-		".mp3",
-	);
-	if (exposedAudio.length > 0)
-		throw new Error(
-			`Draft MP3 files leaked into publication assets: ${exposedAudio
-				.map((file) => path.relative(repositoryRoot, file))
-				.join(", ")}`,
+	if (withBuilt) {
+		const builtAudioPath = builtFilePath(episode.audio.publicPath);
+		const builtEpisodePath = path.join(
+			repositoryRoot,
+			"dist",
+			"podcast",
+			episode.slug,
+			"index.html",
 		);
+		for (const [builtPath, label] of [
+			[builtAudioPath, "audio"],
+			[builtEpisodePath, "episode route"],
+			[
+				path.join(repositoryRoot, "dist", "podcast", "index.html"),
+				"index route",
+			],
+			[builtFilePath(PODCAST_SHOW.artwork.publicPath), "cover"],
+		]) {
+			if (await exists(builtPath))
+				throw new Error(`Draft podcast ${label} leaked into the built site`);
+		}
+		const exposedAudio = await findFiles(
+			path.join(repositoryRoot, "dist"),
+			".mp3",
+		);
+		if (exposedAudio.length > 0)
+			throw new Error(
+				`Draft MP3 files leaked into publication assets: ${exposedAudio
+					.map((file) => path.relative(repositoryRoot, file))
+					.join(", ")}`,
+			);
+	}
 
 	return {
 		episode: episode.slug,
@@ -218,6 +244,9 @@ export async function verifyPodcastDraft() {
 		coverPngSha256: coverPngHash,
 		publicationBlockers: blockers,
 		publishableEpisodes: 0,
+		episodes: 0,
+		builtArtifactsChecked: withBuilt,
+		complete: true,
 	};
 }
 
@@ -267,26 +296,11 @@ export async function verifyPodcastRelease({
 		) {
 			throw new Error(`Published podcast audio differs for ${episode.slug}`);
 		}
-		if (episode.transcript === null)
-			throw new Error(
-				`Published podcast transcript is missing for ${episode.slug}`,
-			);
-		const transcript = await readFile(
-			path.join(repositoryRoot, ...episode.transcript.sourcePath.split("/")),
-		);
-		if (sha256(transcript) !== episode.transcript.sha256)
-			throw new Error(`Published transcript differs for ${episode.slug}`);
-		const canonicalTranscript = canonicalTranscriptHtml(
-			transcript.toString("utf8"),
-			`Podcast transcript ${episode.slug}`,
-		);
 		assertPodcastContentSignoff(episode, contentSignoffs);
 		if (withBuilt) {
 			const builtAudioPath = builtFilePath(episode.audio.publicPath);
-			const builtTranscriptPath = builtRoutePath(episode.transcript.publicPath);
 			for (const builtPath of [
 				builtAudioPath,
-				builtTranscriptPath,
 				path.join(
 					repositoryRoot,
 					"dist",
@@ -304,22 +318,63 @@ export async function verifyPodcastRelease({
 				sha256(builtAudio) !== episode.audio.sha256
 			)
 				throw new Error(`Built podcast audio differs for ${episode.slug}`);
-			const builtTranscript = parse(
-				await readFile(builtTranscriptPath, "utf8"),
+		}
+		if (episode.transcript !== null) {
+			const transcript = await readFile(
+				path.join(repositoryRoot, ...episode.transcript.sourcePath.split("/")),
 			);
-			const transcriptElement = findElement(
-				builtTranscript,
-				"data-podcast-transcript",
+			if (sha256(transcript) !== episode.transcript.sha256)
+				throw new Error(`Published transcript differs for ${episode.slug}`);
+			const canonicalTranscript = canonicalTranscriptHtml(
+				transcript.toString("utf8"),
+				`Podcast transcript ${episode.slug}`,
 			);
-			if (!transcriptElement)
-				throw new Error(
-					`Built podcast transcript wrapper is missing: ${episode.slug}`,
+			if (withBuilt) {
+				const builtTranscriptPath = builtRoutePath(
+					episode.transcript.publicPath,
 				);
-			const builtCanonicalTranscript = (transcriptElement.childNodes ?? [])
-				.map((node) => serializeOuter(node))
-				.join("");
-			if (builtCanonicalTranscript !== canonicalTranscript)
-				throw new Error(`Built podcast transcript differs for ${episode.slug}`);
+				if (!(await exists(builtTranscriptPath)))
+					throw new Error(
+						`Podcast release artifact is missing: ${builtTranscriptPath}`,
+					);
+				const builtTranscript = parse(
+					await readFile(builtTranscriptPath, "utf8"),
+				);
+				const transcriptElement = findElement(
+					builtTranscript,
+					"data-podcast-transcript",
+				);
+				if (!transcriptElement)
+					throw new Error(
+						`Built podcast transcript wrapper is missing: ${episode.slug}`,
+					);
+				const builtCanonicalTranscript = (transcriptElement.childNodes ?? [])
+					.map((node) => serializeOuter(node))
+					.join("");
+				if (builtCanonicalTranscript !== canonicalTranscript)
+					throw new Error(
+						`Built podcast transcript differs for ${episode.slug}`,
+					);
+			}
+		} else if (withBuilt) {
+			const builtEpisode = await readFile(
+				path.join(
+					repositoryRoot,
+					"dist",
+					"podcast",
+					episode.slug,
+					"index.html",
+				),
+				"utf8",
+			);
+			if (
+				builtEpisode.includes("data-podcast-transcript") ||
+				builtEpisode.includes(`/podcast/${episode.slug}/transcript/`)
+			) {
+				throw new Error(
+					`Transcript-free podcast episode exposes transcript data: ${episode.slug}`,
+				);
+			}
 		}
 	}
 	if (withBuilt) {
@@ -367,11 +422,27 @@ export async function verifyPodcastRelease({
 	};
 }
 
+export async function verifyPodcastTarget({
+	withBuilt = false,
+	release,
+	expectedEpisodes,
+} = {}) {
+	const configured = await readPodcastReleaseTarget();
+	const resolvedRelease = release ?? configured.release;
+	const resolvedExpected = expectedEpisodes ?? configured.expectedEpisodes;
+	if (resolvedRelease !== "v1.0.0")
+		throw new Error(`Unsupported podcast release target: ${resolvedRelease}`);
+	if (resolvedExpected === 0) return verifyPodcastDraft({ withBuilt });
+	if (resolvedExpected === 1)
+		return verifyPodcastRelease({ withBuilt, release: resolvedRelease });
+	throw new Error("Podcast release target episode count is unsupported");
+}
+
 export async function verifyPodcastPublicationState({
 	withBuilt = false,
 } = {}) {
 	return getPublishablePodcastEpisodes().length === 0
-		? verifyPodcastDraft()
+		? verifyPodcastDraft({ withBuilt })
 		: verifyPodcastRelease({ withBuilt });
 }
 
@@ -388,7 +459,7 @@ if (invokedPath === fileURLToPath(import.meta.url)) {
 			throw new Error(`Unknown podcast verification option: ${unsupported[0]}`);
 		const withBuilt = process.argv.includes("--with-built");
 		const result = process.argv.includes("--require-complete")
-			? await verifyPodcastRelease({ withBuilt })
+			? await verifyPodcastTarget({ withBuilt })
 			: await verifyPodcastPublicationState({ withBuilt });
 		console.log(JSON.stringify(result, null, 2));
 	} catch (error) {
