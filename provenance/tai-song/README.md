@@ -1,9 +1,13 @@
 # Tai Song archive provenance
 
-This directory contains the fixed inventory, sanitized author-master snapshots, integrity manifest, and human review checklist for the 11-article Tai Song archive.
+This directory contains the fixed inventory, sanitized author-master snapshots, integrity manifest, and review records for 11 fiction, poetry, and reflection works.
 
-Proton Docs HTML exports are the authority for current article content and hero presentation. Historical Vocal URLs and publication metadata are retained separately as public publication history. Raw Proton exports and all private document references remain ignored under `.proton-import/`.
+Proton Docs HTML exports establish current text and hero presentation. Historical Vocal URLs and metadata preserve earlier publication history. Raw exports and private document references remain excluded from Git.
 
-Human review is recorded separately in the structured [`ReviewSignoffV1` record](review-signoffs.json). Each entry binds the reviewed snapshot, generated Markdown, and hero-image hashes to the reviewed commit, Tai Song's reviewer identity, canonical UTC timestamp, and passed text/presentation decisions. The committed record remains empty until Tai Song completes all eleven comparisons; automated integrity never fills it in.
+## Review evidence
 
-See the [archive import runbook](../../docs/tai-song-import.md) for capture, import, verification, and update procedures.
+The structured [review signoffs](review-signoffs.json) bind each reviewed snapshot, generated Markdown, and hero-image hash to a commit, Tai Song's reviewer identity, a UTC timestamp, and text/presentation decisions.
+
+The file currently contains eleven review records. Any content revision must be verified against current evidence and receive the required fresh approval. Automated integrity checks never create human signoffs.
+
+See the [review checklist](review-checklist.md), [archive import guide](../../docs/tai-song-import.md), and [content rights policy](../../CONTENT-LICENSE.md).

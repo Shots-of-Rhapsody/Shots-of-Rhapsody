@@ -1,17 +1,15 @@
-# First-party writing manifest
+# First-party writing
 
-This manifest is the approval boundary for future writing created directly for
-Shots of Rhapsody. `pnpm content:new` creates an unlisted draft, never a public
-entry. A work may join `provenance/publication-catalog.json` only after its
-Markdown and assets are hashed here and a matching `ContentSignoffV2` record is
-completed by Tai Song.
+This directory holds the [manifest](manifest.json) for future writing created directly for Shots of Rhapsody.
 
-For directly authored writing, both `hashes.source` and `hashes.output` must
-equal the current Markdown bytes; verification also requires exactly one
-frontmatter `draft: false` declaration. This prevents a placeholder draft or a
-detached claimed source digest from entering the publication catalog.
-Every asset declares `role: "hero"` or `role: "body"`, and each work has
-exactly one hero plus its MIME type, dimensions, and byte size so responsive
-and social derivatives are deterministic.
+`pnpm content:new` creates an unlisted draft. Publication requires the work's Markdown and assets to be hashed in the manifest, a matching `ContentSignoffV2` completed by Tai Song, and an explicit entry in the [publication catalog](../publication-catalog.json).
 
-The live site never discovers drafts through a broad content glob.
+## Verification rules
+
+- `hashes.source` and `hashes.output` must both match the current Markdown bytes.
+- The Markdown must contain exactly one frontmatter `draft: false` declaration.
+- Every asset declares a `hero` or `body` role.
+- Each work has exactly one hero, with its MIME type, dimensions, and byte size recorded for reproducible responsive and social images.
+- Drafts are never published through unrestricted folder discovery.
+
+See the [writing workflow](../../docs/authoring-and-medium-import.md) and [contribution guidance](../../CONTRIBUTING.md). Writing and media remain subject to the [content rights policy](../../CONTENT-LICENSE.md).

@@ -1,126 +1,54 @@
 # Shots of Rhapsody
 
-> Fiction, poetry, nonfiction, and audio preserved with source-level care.
+Shots of Rhapsody is Tai Song's independent publication for fiction, poetry, reflection, nonfiction, and audio. This repository contains its website, creative work, and tools for preserving the author's writing and images through publication.
 
-Shots of Rhapsody is Tai Song's independent publication. The combined v1.0.0 release target contains 35 written works—11 fiction, poetry, and reflection pieces plus 24 nonfiction essays—and the first episode of Shots of Rhapsody Podcast.
+## What is here
 
-The site presents creative work without silently editing it. Titles, subtitles, summaries, body text, paragraph order, emphasis, punctuation, Unicode, captions, and image bytes are covered by deterministic provenance checks. Automated checks do not replace the required human side-by-side review.
+The current publication catalog contains 35 written works: 11 fiction, poetry, and reflection pieces, and 24 nonfiction essays. The [release target](provenance/release-target.json) includes zero published podcast episodes. Episode 1 is retained as a draft for a future, separately approved release.
 
-## Release collection
+The Astro website provides article pages, archives, author information, static search, RSS, and responsive images. It builds a self-contained static site for GitHub Pages. Podcast pages and audio verification tools are also implemented, with publication controlled by explicit approvals.
 
-The release catalog is generated only from approved, hash-bound manifests. The original 11 works retain their sealed Proton-backed verification contract. The 24 nonfiction essays retain their sealed historical account-export evidence while their reconciled Proton Docs are the current authoring masters. Their exported headline and summary, authored pre-hero title and subtitle, Ledger Series sentence, body structure, and metadata-free hero derivative remain separately verifiable. The historical account export is not a fallback source for a missing or changed Proton master. Episode 1 retains the exact approved MP3 bytes and will not publish without approved episode metadata, artwork, rights, and content signoff. A transcript is optional for this release and is published only if separately reviewed.
+## Get started
 
-Four repository-only posts and the nine excluded response records remain outside production routes, feeds, archives, search, and sitemaps.
+Use Node.js 24 and the pinned pnpm version in [package.json](package.json).
 
-## Mission
-
-Shots of Rhapsody gives imaginative and reflective writing a durable home while keeping the author's voice intact. The project values:
-
-- faithful preservation over editorial normalization;
-- clear provenance without exposing private author-workspace data;
-- accessible presentation of images, captions, and article structure;
-- explicit boundaries between open-source code and copyrighted creative work;
-- reviewable, reproducible publishing changes.
-
-## Integrity workflow
-
-The publication path is one-way and review-gated:
-
-```text
-Proton Docs -> supported HTML export -> deterministic verification -> reviewed Git pull request -> GitHub Actions -> GitHub Pages
+```sh
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
-The canonical Proton layout is `Blogging/Fiction` for the 11 fiction, poetry,
-and reflection masters and `Blogging/Non-Fiction` for the 24 nonfiction
-masters. The repository mirrors that boundary physically at
-`src/content/posts/fiction/<slug>/` and
-`src/content/posts/nonfiction/<slug>/`. Physical storage never changes the
-stable public URL, which remains `/posts/<slug>/`.
+To check and build the site:
 
-Importers and verification tools run only from the canonical checkout. Do not
-use or recreate duplicate or retired checkouts. Raw author exports stay under
-the ignored
-`.proton-import/` directory; the sealed `.medium-import/` material is retained
-only as historical acquisition evidence. Committed outputs contain sanitized
-provenance, deterministic writing output, and approved local assets. Raw HTML,
-cloud identifiers, account data, private document URLs, and absolute machine
-paths are never committed or deployed. Any future podcast transcript work
-remains ignored under `.podcast-import/` until Tai Song approves it.
-
-The optional official Proton Drive CLI is limited to authenticated, read-only
-cloud-name inventory. It is not a Docs content exporter, synchronizer, build
-tool, or live-site dependency. Article content enters the workflow only through
-Proton Docs' supported HTML export.
-
-The workflow and acceptance criteria are documented in:
-
-- [Tai Song archive import runbook](docs/tai-song-import.md)
-- [Writing and nonfiction import workflow](docs/authoring-and-medium-import.md)
-- [Podcast release workflow](docs/podcast-release.md)
-- [Archive provenance](provenance/tai-song/README.md)
-- [Human-review checklist](provenance/tai-song/review-checklist.md)
-
-The strict release verifier reconciles 35 writing records and zero published podcast episodes with built routes, RSS, archive data, search input, sitemap entries, metadata, structured data, article bodies, and heroes. It also proves that the retained podcast draft has no public route, cover, or audio artifact. Writing accuracy means exact reproduction from the approved author master. Independent nonfiction claim research remains optional internal work and is not a publication gate. The writing release remains blocked until all required source-fidelity, rights, and presentation approvals are genuine and complete; a future podcast release separately reactivates every podcast metadata, artwork, content, and deployment gate.
-
-## Development
-
-The project uses Astro's static output and retains the reviewed Fuwari Git
-lineage, while the public interface is a project-specific Song-literati reading
-system. It uses one self-hosted Latin Noto Serif family, native browser
-controls, responsive Astro images, and Pagefind's static search index. There is
-no client framework, CMS, database, analytics service, or application server.
-
-Use Node.js 24 and the pinned package manager and lockfile:
-
-```shell
-pnpm install --frozen-lockfile
-pnpm test:archive
-pnpm test:future-content
-pnpm test:migration
-pnpm test:release-tools
-pnpm archive:verify --require-complete
-pnpm proton:verify-v2 --require-complete --require-final-cloud
-pnpm medium:verify --require-complete
-pnpm content:verify --require-complete
-pnpm podcast:verify --require-complete
+```sh
 pnpm lint:ci
 pnpm type-check
 pnpm build
 pnpm verify:site
-pnpm podcast:verify --require-complete --with-built
-pnpm verify:release
-pnpm test:e2e
-pnpm audit --json
 ```
 
-`pnpm verify:site` validates the current approved publication catalog. `pnpm verify:release` is the combined publication gate: it aggregates missing Medium, podcast, catalog, content-signoff, and presentation-signoff evidence and fails closed until the complete release is ready.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the complete test sequence and [release governance](docs/release-governance.md) for publication requirements. Development checks and a successful build do not replace release approval.
 
-Fuwari's pinned lineage and review-only update procedure are documented in [Fuwari upstream synchronization](docs/upstream-sync.md). Upstream is fetch-only; project changes are pushed only to the Shots of Rhapsody repository.
+## Preserve the work
 
-## Hosting independence
+Article text, presentation, and images are verified against approved author masters. Imported writing must be changed through the author's reviewed source-update process; do not hand-edit imported text, provenance, or approved images.
 
-The release workflow builds the site from a clean checkout and the frozen lockfile.
-The static host receives only the generated artifact: HTML, CSS, small
-browser modules, Pagefind data, responsive image derivatives, RSS, sitemap,
-structured data, and the single approved episode asset. Release verification also ensures the artifact does not emit a
-misleading project-path `robots.txt`. The live site needs no environment
-secret, local path, local process, Proton export, Python utility, API, or
-database. Once a verified artifact is deployed, the development computer can
-be offline without affecting the website.
+Proton Docs is the current authoring source. Historical source-platform records establish provenance, while automated verification and genuine human review remain separate requirements. Keep raw exports, private document identifiers, account data, and credentials out of Git and deployment artifacts.
 
-Raw author-master exports and the optional read-only cloud inventory remain
-ignored local verification evidence. They are required only for the private
-raw-backed comparison—not to build, deploy, search, or serve the public site.
+The publication catalog controls what readers can see. Drafts and excluded records stay out of public routes, feeds, archives, search, and sitemaps. Podcast metadata, artwork, rights, and content require their own approval; a transcript is optional and requires review if published.
 
-## Repository
+## Repository guide
 
-- [Shots-of-Rhapsody/Shots-of-Rhapsody](https://github.com/Shots-of-Rhapsody/Shots-of-Rhapsody)
-- Issues and changes should be proposed through that repository's normal review process.
+- [`src/content/`](src/content/): writing, drafts, and podcast metadata
+- [`src/pages/`](src/pages/) and [`src/components/`](src/components/): website presentation
+- [`provenance/`](provenance/): publication catalog, source records, and review evidence
+- [`scripts/`](scripts/): import, integrity, media, and release checks
+- [`tests/`](tests/): browser and accessibility tests
+- [Writing workflow](docs/authoring-and-medium-import.md), [archive import](docs/tai-song-import.md), and [podcast release](docs/podcast-release.md): detailed contribution paths
+
+Open an [issue](https://github.com/Shots-of-Rhapsody/Shots-of-Rhapsody/issues) before major changes. The site retains its [Fuwari](https://github.com/saicaca/fuwari) code lineage; upstream updates follow the [reviewed synchronization process](docs/upstream-sync.md).
 
 ## Rights and attribution
 
-The root [MIT License](LICENSE) applies to repository software and the Fuwari-derived theme code. It does **not** license the articles, hero images, project branding, or other creative media.
+The [MIT License](LICENSE) covers repository software and Fuwari-derived code. The 35 catalog-controlled written works, their approved hero images, and podcast media are **All Rights Reserved**. Other material follows the content rights policy, including the existing CC BY-NC-SA 4.0 fallback for repository-only drafts lacking a specific per-post license.
 
-Tai Song's writing, original artwork, podcast audio, and any published transcript are **All Rights Reserved**. Source-platform records remain non-rendered provenance only. Repository-only drafts remain outside the publication catalog until separately reviewed.
-
-See [Content rights and licensing](CONTENT-LICENSE.md) and [Third-party notices](THIRD-PARTY-NOTICES.md) for the complete scope.
+See [Content rights and licensing](CONTENT-LICENSE.md) and [Third-party notices](THIRD-PARTY-NOTICES.md) before reusing material.
