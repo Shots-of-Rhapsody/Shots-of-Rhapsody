@@ -2,9 +2,15 @@
 
 Shots of Rhapsody is Tai Song's independent publication for fiction, poetry, reflection, nonfiction, and audio. This repository contains its website, creative work, and tools for preserving the author's writing and images through publication.
 
-## What is here
+## Current status
 
-The current publication catalog contains 35 written works: 11 fiction, poetry, and reflection pieces, and 24 nonfiction essays. The [release target](provenance/release-target.json) includes zero published podcast episodes. Episode 1 is retained as a draft for a future, separately approved release.
+The [release review record](docs/public-release-audit.md) describes a deployed public review version; the final release is not yet approved. This record does not verify the version running today.
+
+The current publication catalog contains 35 written works: 11 fiction, poetry, and reflection pieces, and 24 nonfiction essays. The [release target](provenance/release-target.json) includes zero published podcast episodes. Episode 1 remains a draft, and the podcast feed stays disabled until a permanent domain and the required release approvals are in place.
+
+The [podcast release guide](docs/podcast-release.md) still describes a combined writing-and-podcast launch, which conflicts with the current zero-podcast target. Reconcile that guidance before preparing a release; this README does not change the release plan.
+
+## What is here
 
 The Astro website provides article pages, archives, author information, static search, RSS, and responsive images. It builds a self-contained static site for GitHub Pages. Podcast pages and audio verification tools are also implemented, with publication controlled by explicit approvals.
 
